@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search } from "lucide-react";
 
 interface TestItem {
   id: string;
@@ -112,6 +112,25 @@ const strokeTests: TestItem[] = [
   { id: "ophthalmology", name: "Ophthalmological/Fundus Examination", category: "Advanced" },
   { id: "fabrys", name: "Fabry's: GLA Activity", category: "Advanced" },
   { id: "skinpxe", name: "Skin: Pseudoxanthoma Elasticum", category: "Advanced" },
+  
+  // Aortic Atheroma Grading (Katz Classification)
+  { id: "aortic_grade1", name: "Grade 1: Normal-appearing intima", category: "Aortic Atheroma Grading" },
+  { id: "aortic_grade2", name: "Grade 2: Extensive intimal thickening", category: "Aortic Atheroma Grading" },
+  { id: "aortic_grade3", name: "Grade 3: Sessile atheroma protruding <5 mm", category: "Aortic Atheroma Grading" },
+  { id: "aortic_grade4", name: "Grade 4: Sessile atheroma protruding ≥5 mm", category: "Aortic Atheroma Grading" },
+  { id: "aortic_grade5", name: "Grade 5: Mobile atheroma (may be ulcerated)", category: "Aortic Atheroma Grading" },
+  
+  // ESUS-Related Aetiologies
+  { id: "occult_cancer", name: "Occult Cancer", category: "ESUS Aetiologies" },
+  { id: "branch_artery", name: "Branch Artery Disease", category: "ESUS Aetiologies" },
+  { id: "aortic_arch_athero", name: "Aortic Arch Atherosclerosis", category: "ESUS Aetiologies" },
+  { id: "nonstenotic_laa", name: "Non-stenotic Extracranial Large Artery Atherosclerosis", category: "ESUS Aetiologies" },
+  { id: "minor_valve", name: "Minor Valve Disease", category: "ESUS Aetiologies" },
+  { id: "lv_wall_motion", name: "LV Wall Motion Abnormalities", category: "ESUS Aetiologies" },
+  { id: "carotid_siphon", name: "Carotid Siphon Disease", category: "ESUS Aetiologies" },
+  { id: "atrial_cardiopathy", name: "Atrial Cardiopathy without AFib", category: "ESUS Aetiologies" },
+  { id: "nonischemic_cm", name: "Non-ischemic Cardiomyopathy", category: "ESUS Aetiologies" },
+  { id: "hyperhomocysteinemia", name: "Hyperhomocysteinemia", category: "ESUS Aetiologies" },
 ];
 
 const categoryIcons: Record<string, any> = {
@@ -127,6 +146,8 @@ const categoryIcons: Record<string, any> = {
   "Vascular Imaging": Heart,
   "Cardiac": Heart,
   "Advanced": Eye,
+  "Aortic Atheroma Grading": Heart,
+  "ESUS Aetiologies": Search,
 };
 
 export default function StrokeWorkupChecklist() {
