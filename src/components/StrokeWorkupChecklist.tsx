@@ -134,8 +134,8 @@ const strokeTests: TestItem[] = [
   
   // Lipid Assessment
   { id: "lipid_panel", name: "Standard Lipid Panel (TC, LDL, HDL, TG)", category: "Lipid Assessment" },
-  { id: "apob", name: "ApoB Level", category: "Lipid Assessment" },
-  { id: "lpa", name: "Lp(a) Level", category: "Lipid Assessment" },
+  { id: "apob", name: "ApoB Level (Normal: <90 mg/dL; High risk: <70 mg/dL; Very high risk: <55 mg/dL)", category: "Lipid Assessment" },
+  { id: "lpa", name: "Lp(a) Level (Normal: <30 mg/dL or <75 nmol/L; Elevated: ≥50 mg/dL or ≥125 nmol/L)", category: "Lipid Assessment" },
   { id: "lipid_high_apob", name: "High ApoB → Treat for high atherogenic load", category: "Lipid Assessment" },
   { id: "lipid_normal_apob_high_lpa", name: "Normal ApoB + High Lp(a) → Hidden inherited risk", category: "Lipid Assessment" },
   { id: "lipid_both_high", name: "Both High → Very high lifetime risk, aggressive management", category: "Lipid Assessment" },
