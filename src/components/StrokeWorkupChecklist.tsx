@@ -131,6 +131,14 @@ const strokeTests: TestItem[] = [
   { id: "atrial_cardiopathy", name: "Atrial Cardiopathy without AFib", category: "ESUS Aetiologies" },
   { id: "nonischemic_cm", name: "Non-ischemic Cardiomyopathy", category: "ESUS Aetiologies" },
   { id: "hyperhomocysteinemia", name: "Hyperhomocysteinemia", category: "ESUS Aetiologies" },
+  
+  // Lipid Assessment
+  { id: "lipid_panel", name: "Standard Lipid Panel (TC, LDL, HDL, TG)", category: "Lipid Assessment" },
+  { id: "apob", name: "ApoB Level", category: "Lipid Assessment" },
+  { id: "lpa", name: "Lp(a) Level", category: "Lipid Assessment" },
+  { id: "lipid_high_apob", name: "High ApoB → Treat for high atherogenic load", category: "Lipid Assessment" },
+  { id: "lipid_normal_apob_high_lpa", name: "Normal ApoB + High Lp(a) → Hidden inherited risk", category: "Lipid Assessment" },
+  { id: "lipid_both_high", name: "Both High → Very high lifetime risk, aggressive management", category: "Lipid Assessment" },
 ];
 
 const categoryIcons: Record<string, any> = {
@@ -148,6 +156,7 @@ const categoryIcons: Record<string, any> = {
   "Advanced": Eye,
   "Aortic Atheroma Grading": Heart,
   "ESUS Aetiologies": Search,
+  "Lipid Assessment": TestTube,
 };
 
 export default function StrokeWorkupChecklist() {
