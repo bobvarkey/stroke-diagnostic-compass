@@ -146,15 +146,33 @@ const strokeTests: TestItem[] = [
   { id: "pheno_svd", name: "Small Vessel Disease (lacunar infarcts, WMH, microbleeds)", category: "Stroke Phenotypes" },
   { id: "pheno_lva", name: "Large Vessel Atherosclerosis (extracranial carotid/vertebral)", category: "Stroke Phenotypes" },
   { id: "pheno_icad", name: "Intracranial Atherosclerosis (MCA, basilar, ICA stenosis)", category: "Stroke Phenotypes" },
-  { id: "pheno_cardio", name: "Cardioembolism (AF, PFO, valve disease, LAA thrombus)", category: "Stroke Phenotypes" },
+  { id: "pheno_cardio", name: "Cardioembolism (see Cardioembolism Aetiologies below)", category: "Stroke Phenotypes" },
   { id: "pheno_esus", name: "ESUS (Embolic Stroke of Undetermined Source)", category: "Stroke Phenotypes" },
   { id: "pheno_heme", name: "Hematological Causes (APLS, PNH, sickle cell, thrombophilia)", category: "Stroke Phenotypes" },
   { id: "pheno_radiation", name: "Radiation Vasculopathy", category: "Stroke Phenotypes" },
   { id: "pheno_fmd", name: "Fibromuscular Dysplasia (FMD)", category: "Stroke Phenotypes" },
   { id: "pheno_dissection", name: "Arterial Dissection (carotid/vertebral)", category: "Stroke Phenotypes" },
   { id: "pheno_vasculitis", name: "CNS Vasculitis (primary or secondary)", category: "Stroke Phenotypes" },
+  { id: "pheno_iatrogenic", name: "Iatrogenic (stroke within 24h of vascular/cardiac/neurosurgical procedure)", category: "Stroke Phenotypes" },
+  { id: "pheno_drug", name: "Drug Use (cocaine or methamphetamine positive on drug screen)", category: "Stroke Phenotypes" },
   { id: "pheno_other", name: "Other Vasculopathies (moyamoya, RCVS, etc.)", category: "Stroke Phenotypes" },
+  
+  // Cardioembolism Aetiologies
+  { id: "ce_af", name: "Known or ECG-detected AF or atrial flutter", category: "Cardioembolism Aetiologies" },
+  { id: "ce_thrombus", name: "Intracardiac thrombus", category: "Cardioembolism Aetiologies" },
+  { id: "ce_mech_valve", name: "Mechanical heart valve", category: "Cardioembolism Aetiologies" },
+  { id: "ce_tumor", name: "Left-sided cardiac tumors (myxoma, fibroelastoma)", category: "Cardioembolism Aetiologies" },
+  { id: "ce_ms", name: "Severe mitral stenosis", category: "Cardioembolism Aetiologies" },
+  { id: "ce_stemi", name: "STEMI within 4 weeks", category: "Cardioembolism Aetiologies" },
+  { id: "ce_ef", name: "Left ventricular ejection fraction <30%", category: "Cardioembolism Aetiologies" },
+  { id: "ce_endocarditis", name: "Infective or non-infective endocarditis", category: "Cardioembolism Aetiologies" },
+  { id: "ce_pfo", name: "PFO (if PASCAL classification is definite, probable, or possible)", category: "Cardioembolism Aetiologies" },
+  { id: "ce_lv_aneurysm", name: "Left ventricular apical aneurysm", category: "Cardioembolism Aetiologies" },
+  { id: "ce_lvnc", name: "Left ventricular noncompaction", category: "Cardioembolism Aetiologies" },
 ];
+
+// AF Burden Clinical Note
+const afBurdenNote = `The type and burden of device-detected AF are paramount to appropriate management. High-burden AF (longest episode >24 hours) significantly elevates stroke risk - anticoagulation or LAA occlusion should be considered. Low-burden AF (6 min–24 hours) management is less clear. AF detected within 12 months of continuous cardiac monitoring, particularly episodes >24 hours, is more likely causal for ESUS. Although prolonged monitoring increases AF detection, further research is needed for low-burden AF management, especially when detected beyond 12 months.`;
 
 const categoryIcons: Record<string, any> = {
   "Basic Laboratory": TestTube,
@@ -173,6 +191,7 @@ const categoryIcons: Record<string, any> = {
   "ESUS Aetiologies": Search,
   "Lipid Assessment": TestTube,
   "Stroke Phenotypes": Droplets,
+  "Cardioembolism Aetiologies": Heart,
 };
 
 // ISPS25 Flowchart Component
@@ -381,6 +400,17 @@ export default function StrokeWorkupChecklist() {
                 <Progress value={categoryProgress} className="h-1" />
               </CardHeader>
               <CardContent className="pt-6">
+                {category === "Cardioembolism Aetiologies" && (
+                  <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-700 rounded-lg">
+                    <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-2">
+                      <Activity className="h-4 w-4" />
+                      AF Burden Management Note
+                    </h4>
+                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                      {afBurdenNote}
+                    </p>
+                  </div>
+                )}
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                   {categoryTests.map((test) => (
                     <div
