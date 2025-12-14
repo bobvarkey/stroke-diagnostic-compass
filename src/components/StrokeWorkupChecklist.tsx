@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface TestItem {
   id: string;
@@ -30,6 +31,7 @@ const strokeTests: TestItem[] = [
   { id: "thrombin", name: "Thrombin Time", category: "Coagulation" },
   { id: "platelets", name: "Platelet Count", category: "Coagulation" },
   { id: "fibrinogen", name: "Fibrinogen", category: "Coagulation" },
+  { id: "ddimer_coag", name: "D-dimer", category: "Coagulation" },
   
   // Infectious Disease Workup
   { id: "vdrl", name: "VDRL", category: "Infectious Disease" },
@@ -139,6 +141,19 @@ const strokeTests: TestItem[] = [
   { id: "lipid_high_apob", name: "High ApoB → Treat for high atherogenic load", category: "Lipid Assessment" },
   { id: "lipid_normal_apob_high_lpa", name: "Normal ApoB + High Lp(a) → Hidden inherited risk", category: "Lipid Assessment" },
   { id: "lipid_both_high", name: "Both High → Very high lifetime risk, aggressive management", category: "Lipid Assessment" },
+  
+  // Stroke Phenotypes
+  { id: "pheno_svd", name: "Small Vessel Disease (lacunar infarcts, WMH, microbleeds)", category: "Stroke Phenotypes" },
+  { id: "pheno_lva", name: "Large Vessel Atherosclerosis (extracranial carotid/vertebral)", category: "Stroke Phenotypes" },
+  { id: "pheno_icad", name: "Intracranial Atherosclerosis (MCA, basilar, ICA stenosis)", category: "Stroke Phenotypes" },
+  { id: "pheno_cardio", name: "Cardioembolism (AF, PFO, valve disease, LAA thrombus)", category: "Stroke Phenotypes" },
+  { id: "pheno_esus", name: "ESUS (Embolic Stroke of Undetermined Source)", category: "Stroke Phenotypes" },
+  { id: "pheno_heme", name: "Hematological Causes (APLS, PNH, sickle cell, thrombophilia)", category: "Stroke Phenotypes" },
+  { id: "pheno_radiation", name: "Radiation Vasculopathy", category: "Stroke Phenotypes" },
+  { id: "pheno_fmd", name: "Fibromuscular Dysplasia (FMD)", category: "Stroke Phenotypes" },
+  { id: "pheno_dissection", name: "Arterial Dissection (carotid/vertebral)", category: "Stroke Phenotypes" },
+  { id: "pheno_vasculitis", name: "CNS Vasculitis (primary or secondary)", category: "Stroke Phenotypes" },
+  { id: "pheno_other", name: "Other Vasculopathies (moyamoya, RCVS, etc.)", category: "Stroke Phenotypes" },
 ];
 
 const categoryIcons: Record<string, any> = {
@@ -157,7 +172,135 @@ const categoryIcons: Record<string, any> = {
   "Aortic Atheroma Grading": Heart,
   "ESUS Aetiologies": Search,
   "Lipid Assessment": TestTube,
+  "Stroke Phenotypes": Droplets,
 };
+
+// ISPS25 Flowchart Component
+function ISPS25Flowchart() {
+  const [isOpen, setIsOpen] = useState(true);
+  
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-medical-header/30 bg-gradient-to-br from-medical-section to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-medical-header/10">
+            <CardTitle className="flex items-center justify-between text-medical-header">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                ISPS25 - Ischemic Stroke Phenotyping System 2025
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            <div className="space-y-6">
+              {/* Main Flow */}
+              <div className="flex flex-col items-center space-y-4">
+                {/* Ischemic Stroke Box */}
+                <div className="bg-medical-header text-white px-6 py-3 rounded-lg font-semibold shadow-lg">
+                  Ischemic Stroke
+                </div>
+                <ArrowRight className="h-6 w-6 rotate-90 text-medical-header" />
+                
+                {/* First Pass Workup */}
+                <div className="w-full max-w-3xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <h3 className="font-bold text-blue-800 dark:text-blue-300 mb-2">Minimum First Pass Workup</h3>
+                  <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-400">
+                    <li>• Comprehensive history and exam</li>
+                    <li>• Brain imaging</li>
+                    <li>• TTE, ECG</li>
+                    <li>• Cervical and intracranial vessel imaging (aortic arch to vertex)</li>
+                    <li>• 24h continuous telemetry</li>
+                    <li>• Laboratory tests, toxicology</li>
+                    <li>• Age-appropriate cancer screening</li>
+                  </ul>
+                </div>
+                
+                <ArrowRight className="h-6 w-6 rotate-90 text-medical-header" />
+                
+                {/* Phenotype Outcomes */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl">
+                  <div className="bg-sky-100 dark:bg-sky-900/30 border border-sky-300 dark:border-sky-700 rounded-lg p-3 text-center">
+                    <span className="text-sm font-medium text-sky-800 dark:text-sky-300">Small Vessel Disease*</span>
+                  </div>
+                  <div className="bg-sky-100 dark:bg-sky-900/30 border border-sky-300 dark:border-sky-700 rounded-lg p-3 text-center">
+                    <span className="text-sm font-medium text-sky-800 dark:text-sky-300">Cardioembolism*</span>
+                  </div>
+                  <div className="bg-sky-100 dark:bg-sky-900/30 border border-sky-300 dark:border-sky-700 rounded-lg p-3 text-center">
+                    <span className="text-sm font-medium text-sky-800 dark:text-sky-300">Large Artery Atherosclerosis*</span>
+                  </div>
+                  <div className="bg-sky-100 dark:bg-sky-900/30 border border-sky-300 dark:border-sky-700 rounded-lg p-3 text-center">
+                    <span className="text-sm font-medium text-sky-800 dark:text-sky-300">Other Determined Cause*</span>
+                  </div>
+                </div>
+                
+                <div className="text-center text-muted-foreground text-sm">OR</div>
+                
+                {/* Undetermined Cause Path */}
+                <div className="bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-lg px-6 py-3">
+                  <span className="font-semibold text-amber-800 dark:text-amber-300">Undetermined Cause</span>
+                </div>
+                
+                <ArrowRight className="h-6 w-6 rotate-90 text-amber-600" />
+                
+                {/* Second Pass Workup */}
+                <div className="w-full max-w-3xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                  <h3 className="font-bold text-amber-800 dark:text-amber-300 mb-2">Minimum Second Pass Workup</h3>
+                  <ul className="text-sm space-y-1 text-amber-700 dark:text-amber-400">
+                    <li>• APLS testing if age &lt;60 years, recurrent ESUS, suspected SLE, unexplained PTT elevation</li>
+                    <li>• TEE if age &lt;60 years</li>
+                    <li>• Prolonged cardiac monitoring if age ≥40 years</li>
+                    <li>• Genetic testing/counseling in select patients</li>
+                    <li>• MRI/MRA with T1 fat saturation if concern for dissection</li>
+                    <li>• CT chest/abdomen/pelvis if D-dimer ≥2.5mg/dL, 3-territory sign, "B symptoms", or recurrent ESUS</li>
+                  </ul>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <ArrowRight className="h-6 w-6 rotate-90 text-amber-600" />
+                  <span className="text-sm text-muted-foreground">Negative workup</span>
+                </div>
+                
+                {/* ESUS 2.0 */}
+                <div className="bg-red-600 text-white px-8 py-4 rounded-lg font-bold shadow-lg">
+                  ESUS 2.0
+                </div>
+              </div>
+              
+              {/* Cardioembolism Subtypes */}
+              <div className="mt-6 grid md:grid-cols-2 gap-4">
+                <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                  <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">Cardioembolism Subtypes</h4>
+                  <ul className="text-sm space-y-1 text-purple-700 dark:text-purple-400">
+                    <li>• "PFO-associated" if PFO+ and PASCAL definite/probable/possible</li>
+                    <li>• "AF-associated" if AF detected within 12 months of prolonged monitoring</li>
+                    <li>• Cardiac myxoma or fibroelastoma-related</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                  <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">Other Determined Causes</h4>
+                  <ul className="text-sm space-y-1 text-green-700 dark:text-green-400">
+                    <li>• Occult malignancy identified</li>
+                    <li>• New diagnosis of APLS</li>
+                    <li>• Cervical artery dissection on MRI/MRA</li>
+                    <li>• Evidence of genetic disorder</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <p className="text-xs text-muted-foreground text-center mt-4">
+                Reference: Yaghi S, et al. <em>Stroke</em> (2025). ISPS25 Proposal.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
 
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
@@ -185,6 +328,9 @@ export default function StrokeWorkupChecklist() {
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
       </div>
+
+      {/* ISPS25 Flowchart */}
+      <ISPS25Flowchart />
 
       <Card className="bg-medical-section border-medical-header/20">
         <CardHeader>
