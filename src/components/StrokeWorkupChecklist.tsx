@@ -466,6 +466,89 @@ function NIHSSScaleReference() {
   );
 }
 
+// Modified Rankin Scale (mRS) Component
+function MRSScaleReference() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const mrsLevels = [
+    { score: 0, label: "No symptoms", description: "No symptoms at all", color: "bg-green-500" },
+    { score: 1, label: "No significant disability", description: "Despite symptoms, able to carry out all usual duties and activities", color: "bg-green-400" },
+    { score: 2, label: "Slight disability", description: "Unable to carry out all previous activities but able to look after own affairs without assistance", color: "bg-lime-400" },
+    { score: 3, label: "Moderate disability", description: "Requiring some help, but able to walk without assistance", color: "bg-yellow-400" },
+    { score: 4, label: "Moderately severe disability", description: "Unable to walk without assistance and unable to attend to own bodily needs without assistance", color: "bg-orange-400" },
+    { score: 5, label: "Severe disability", description: "Bedridden, incontinent, and requiring constant nursing care and attention", color: "bg-red-500" },
+    { score: 6, label: "Dead", description: "Death", color: "bg-gray-700" },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-violet-300 dark:border-violet-700 bg-gradient-to-br from-violet-50 dark:from-violet-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-violet-100/50 dark:bg-violet-900/30">
+            <CardTitle className="flex items-center justify-between text-violet-800 dark:text-violet-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                mRS - Modified Rankin Scale (0-6)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Outcome Categories */}
+            <div className="mb-6 p-4 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
+              <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">Functional Outcome Categories</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-green-100 dark:bg-green-900/40 border border-green-300 dark:border-green-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-green-800 dark:text-green-300">mRS 0-1</div>
+                  <div className="text-sm text-green-700 dark:text-green-400">Excellent Outcome</div>
+                  <div className="text-xs text-green-600 dark:text-green-500 mt-1">Functionally independent</div>
+                </div>
+                <div className="bg-yellow-100 dark:bg-yellow-900/40 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-yellow-800 dark:text-yellow-300">mRS 0-2</div>
+                  <div className="text-sm text-yellow-700 dark:text-yellow-400">Good Outcome</div>
+                  <div className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">Independent in ADLs</div>
+                </div>
+                <div className="bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-red-800 dark:text-red-300">mRS 3-6</div>
+                  <div className="text-sm text-red-700 dark:text-red-400">Poor Outcome</div>
+                  <div className="text-xs text-red-600 dark:text-red-500 mt-1">Dependent or deceased</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Scale Levels */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">Scale Definitions</h4>
+              {mrsLevels.map((level) => (
+                <div key={level.score} className="flex items-start gap-3 p-3 bg-violet-50/50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800 rounded-lg">
+                  <div className={`flex-shrink-0 w-10 h-10 ${level.color} rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md`}>
+                    {level.score}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-violet-800 dark:text-violet-300">{level.label}</div>
+                    <div className="text-sm text-violet-600 dark:text-violet-400">{level.description}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700 rounded-lg">
+              <p className="text-xs text-violet-600 dark:text-violet-400">
+                <strong>Clinical Notes:</strong> mRS is the most widely used outcome measure in stroke trials. Assess at 90 days post-stroke for primary outcome. 
+                "Shift analysis" examines improvement across the entire scale. mRS 0-2 is typically considered "good outcome" in clinical trials.
+                Pre-stroke mRS should be documented to assess change.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
@@ -498,6 +581,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* NIHSS Scale Reference */}
       <NIHSSScaleReference />
+
+      {/* mRS Scale Reference */}
+      <MRSScaleReference />
 
       <Card className="bg-medical-section border-medical-header/20">
         <CardHeader>
