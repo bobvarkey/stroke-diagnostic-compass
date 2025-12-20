@@ -191,6 +191,17 @@ const strokeTests: TestItem[] = [
 // AF Burden Clinical Note
 const afBurdenNote = `The type and burden of device-detected AF are paramount to appropriate management. High-burden AF (longest episode >24 hours) significantly elevates stroke risk - anticoagulation or LAA occlusion should be considered. Low-burden AF (6 min–24 hours) management is less clear. AF detected within 12 months of continuous cardiac monitoring, particularly episodes >24 hours, is more likely causal for ESUS. Although prolonged monitoring increases AF detection, further research is needed for low-burden AF management, especially when detected beyond 12 months.`;
 
+// STRIVE Criteria for Cerebral Small Vessel Disease
+const striveMarkers = [
+  { name: "Recent Small Subcortical Infarcts", desc: "Acute lesions <20mm in axial plane, in perforating artery territory" },
+  { name: "Lacunes", desc: "Round/ovoid fluid-filled cavities 3-15mm, in perforating artery territory" },
+  { name: "White Matter Hyperintensities", desc: "Hyperintense on T2/FLAIR, variable size; use Fazekas scale (0-3)" },
+  { name: "Perivascular Spaces", desc: "Fluid-filled spaces following vessels; rate in basal ganglia and centrum semiovale" },
+  { name: "Cerebral Microbleeds", desc: "Small round hypointense lesions on T2*/SWI, 2-10mm; distinguish lobar vs. deep" },
+  { name: "Cortical Superficial Siderosis", desc: "Linear hypointensity on T2*/SWI following cortical surface" },
+  { name: "Brain Atrophy", desc: "Lower brain volume not due to focal injury; global and regional assessment" },
+];
+
 const categoryIcons: Record<string, any> = {
   "Basic Laboratory": TestTube,
   "Chemistry Profile": TestTube,
@@ -427,6 +438,22 @@ export default function StrokeWorkupChecklist() {
                     <p className="text-sm text-amber-700 dark:text-amber-400">
                       {afBurdenNote}
                     </p>
+                  </div>
+                )}
+                {category === "HMOD Evaluation" && (
+                  <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-700 rounded-lg">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center gap-2">
+                      <Brain className="h-4 w-4" />
+                      STRIVE-2 Criteria (STandards for ReportIng Vascular changes on nEuroimaging)
+                    </h4>
+                    <div className="grid gap-2 md:grid-cols-2">
+                      {striveMarkers.map((marker, idx) => (
+                        <div key={idx} className="text-sm">
+                          <span className="font-medium text-blue-800 dark:text-blue-300">{marker.name}:</span>
+                          <span className="text-blue-700 dark:text-blue-400 ml-1">{marker.desc}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
