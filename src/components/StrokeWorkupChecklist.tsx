@@ -671,6 +671,158 @@ function ASPECTSScoreReference() {
   );
 }
 
+// Metabolic Syndrome Criteria Checker Component
+function MetabolicSyndromeChecker() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [idfCriteria, setIdfCriteria] = useState<Set<string>>(new Set());
+  const [atpCriteria, setAtpCriteria] = useState<Set<string>>(new Set());
+
+  const toggleIdfCriteria = (id: string) => {
+    const newSet = new Set(idfCriteria);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setIdfCriteria(newSet);
+  };
+
+  const toggleAtpCriteria = (id: string) => {
+    const newSet = new Set(atpCriteria);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setAtpCriteria(newSet);
+  };
+
+  const idfItems = [
+    { id: "idf_waist", name: "Central Obesity (REQUIRED)", desc: "Waist ≥94cm (men) or ≥80cm (women) - Europid; ≥90cm (men) or ≥80cm (women) - Asian", required: true },
+    { id: "idf_tg", name: "Raised Triglycerides", desc: "≥150 mg/dL (1.7 mmol/L) or specific treatment", required: false },
+    { id: "idf_hdl", name: "Reduced HDL-C", desc: "<40 mg/dL (men) or <50 mg/dL (women), or specific treatment", required: false },
+    { id: "idf_bp", name: "Raised Blood Pressure", desc: "Systolic ≥130 or Diastolic ≥85 mmHg, or treatment for HTN", required: false },
+    { id: "idf_glucose", name: "Raised Fasting Glucose", desc: "≥100 mg/dL (5.6 mmol/L) or previously diagnosed T2DM", required: false },
+  ];
+
+  const atpItems = [
+    { id: "atp_waist", name: "Abdominal Obesity", desc: "Waist >102cm (men) or >88cm (women)" },
+    { id: "atp_tg", name: "Raised Triglycerides", desc: "≥150 mg/dL (1.7 mmol/L)" },
+    { id: "atp_hdl", name: "Low HDL-C", desc: "<40 mg/dL (men) or <50 mg/dL (women)" },
+    { id: "atp_bp", name: "Raised Blood Pressure", desc: "≥130/85 mmHg or on antihypertensive medication" },
+    { id: "atp_glucose", name: "Raised Fasting Glucose", desc: "≥100 mg/dL (5.6 mmol/L) or on treatment" },
+  ];
+
+  const idfMet = idfCriteria.has("idf_waist") && 
+    (idfItems.filter(i => !i.required && idfCriteria.has(i.id)).length >= 2);
+  
+  const atpMet = atpCriteria.size >= 3;
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-amber-300 dark:border-amber-700 bg-gradient-to-br from-amber-50 dark:from-amber-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-amber-100/50 dark:bg-amber-900/30">
+            <CardTitle className="flex items-center justify-between text-amber-800 dark:text-amber-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Metabolic Syndrome Criteria Checker (IDF / ATP III)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* IDF Criteria */}
+              <div className="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="font-semibold text-amber-800 dark:text-amber-300">IDF Definition (2005)</h4>
+                  <div className={`px-3 py-1 rounded-full text-sm font-medium ${idfMet ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                    {idfMet ? 'MetS Present' : 'MetS Absent'}
+                  </div>
+                </div>
+                <p className="text-xs text-amber-600 dark:text-amber-500 mb-4">
+                  Requires: Central obesity (mandatory) + ≥2 of remaining criteria
+                </p>
+                <div className="space-y-3">
+                  {idfItems.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                        idfCriteria.has(item.id) 
+                          ? 'bg-amber-200 dark:bg-amber-800/50 border border-amber-400 dark:border-amber-600' 
+                          : 'bg-white dark:bg-amber-950/30 border border-amber-100 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/30'
+                      }`}
+                      onClick={() => toggleIdfCriteria(item.id)}
+                    >
+                      <Checkbox 
+                        checked={idfCriteria.has(item.id)} 
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1">
+                        <div className={`font-medium text-sm ${item.required ? 'text-red-700 dark:text-red-400' : 'text-amber-800 dark:text-amber-300'}`}>
+                          {item.name}
+                        </div>
+                        <div className="text-xs text-amber-600 dark:text-amber-500">{item.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ATP III Criteria */}
+              <div className="bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="font-semibold text-orange-800 dark:text-orange-300">ATP III / NCEP Definition</h4>
+                  <div className={`px-3 py-1 rounded-full text-sm font-medium ${atpMet ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                    {atpMet ? 'MetS Present' : 'MetS Absent'}
+                  </div>
+                </div>
+                <p className="text-xs text-orange-600 dark:text-orange-500 mb-4">
+                  Requires: ≥3 of 5 criteria (no mandatory component)
+                </p>
+                <div className="space-y-3">
+                  {atpItems.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                        atpCriteria.has(item.id) 
+                          ? 'bg-orange-200 dark:bg-orange-800/50 border border-orange-400 dark:border-orange-600' 
+                          : 'bg-white dark:bg-orange-950/30 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/30'
+                      }`}
+                      onClick={() => toggleAtpCriteria(item.id)}
+                    >
+                      <Checkbox 
+                        checked={atpCriteria.has(item.id)} 
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1">
+                        <div className="font-medium text-sm text-orange-800 dark:text-orange-300">{item.name}</div>
+                        <div className="text-xs text-orange-600 dark:text-orange-500">{item.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Significance */}
+            <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                <strong>Clinical Significance:</strong> Metabolic syndrome increases cardiovascular risk 2-fold and diabetes risk 5-fold. 
+                IDF emphasizes central obesity as the primary driver. ATP III treats all criteria equally. 
+                Both definitions identify similar high-risk populations. Treatment focuses on lifestyle modification, weight loss, and managing individual components.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
@@ -709,6 +861,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* ASPECTS Score Reference */}
       <ASPECTSScoreReference />
+
+      {/* Metabolic Syndrome Checker */}
+      <MetabolicSyndromeChecker />
 
       <Card className="bg-medical-section border-medical-header/20">
         <CardHeader>
