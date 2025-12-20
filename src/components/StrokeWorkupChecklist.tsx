@@ -1174,6 +1174,189 @@ function HASBLEDCalculator() {
   );
 }
 
+// ABCD2 Score Calculator Component
+function ABCD2Calculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [criteria, setCriteria] = useState<Set<string>>(new Set());
+
+  const toggleCriteria = (id: string) => {
+    const newSet = new Set(criteria);
+    
+    // Handle mutually exclusive options
+    if (id === "clinical_weakness") {
+      newSet.delete("clinical_speech");
+    } else if (id === "clinical_speech") {
+      newSet.delete("clinical_weakness");
+    }
+    if (id === "duration_60") {
+      newSet.delete("duration_10_59");
+    } else if (id === "duration_10_59") {
+      newSet.delete("duration_60");
+    }
+    
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setCriteria(newSet);
+  };
+
+  const criteriaItems = [
+    { id: "age", letter: "A", name: "Age ≥60 years", desc: "Patient is 60 years old or older", points: 1 },
+    { id: "bp", letter: "B", name: "Blood Pressure ≥140/90", desc: "Initial BP ≥140 systolic and/or ≥90 diastolic", points: 1 },
+    { id: "clinical_weakness", letter: "C", name: "Unilateral Weakness", desc: "Unilateral weakness during TIA", points: 2, exclusive: "clinical" },
+    { id: "clinical_speech", letter: "C", name: "Speech Impairment (no weakness)", desc: "Speech disturbance without weakness", points: 1, exclusive: "clinical" },
+    { id: "duration_60", letter: "D", name: "Duration ≥60 minutes", desc: "TIA symptoms lasted 60 minutes or longer", points: 2, exclusive: "duration" },
+    { id: "duration_10_59", letter: "D", name: "Duration 10-59 minutes", desc: "TIA symptoms lasted 10-59 minutes", points: 1, exclusive: "duration" },
+    { id: "diabetes", letter: "D", name: "Diabetes", desc: "History of diabetes mellitus", points: 1 },
+  ];
+
+  const totalScore = criteriaItems.reduce((sum, item) => {
+    return sum + (criteria.has(item.id) ? item.points : 0);
+  }, 0);
+
+  const getRiskLevel = (score: number) => {
+    if (score <= 1) return { level: "Low", color: "bg-green-500", day2Risk: "0%", day7Risk: "0.4%", day90Risk: "1.0%", recommendation: "Outpatient workup may be appropriate" };
+    if (score <= 3) return { level: "Low-Moderate", color: "bg-yellow-500", day2Risk: "1.3%", day7Risk: "1.2%", day90Risk: "3.1%", recommendation: "Consider urgent evaluation within 24-48 hours" };
+    if (score <= 5) return { level: "Moderate-High", color: "bg-orange-500", day2Risk: "4.1%", day7Risk: "5.9%", day90Risk: "9.8%", recommendation: "Urgent evaluation and admission recommended" };
+    return { level: "High", color: "bg-red-500", day2Risk: "8.1%", day7Risk: "11.7%", day90Risk: "17.8%", recommendation: "Hospital admission strongly recommended" };
+  };
+
+  const risk = getRiskLevel(totalScore);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-sky-300 dark:border-sky-700 bg-gradient-to-br from-sky-50 dark:from-sky-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-sky-100/50 dark:bg-sky-900/30">
+            <CardTitle className="flex items-center justify-between text-sky-800 dark:text-sky-300">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                ABCD² Score - TIA Stroke Risk (0-7)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Score Display */}
+            <div className="mb-6 p-4 bg-sky-100 dark:bg-sky-900/40 rounded-lg">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className={`w-20 h-20 ${risk.color} rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg`}>
+                    {totalScore}
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-sky-800 dark:text-sky-300">{risk.level} Risk</div>
+                    <div className="text-sm text-sky-600 dark:text-sky-400">2-day stroke risk: {risk.day2Risk}</div>
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-sky-950/50 rounded-lg p-3 border border-sky-200 dark:border-sky-700">
+                  <div className="text-xs font-medium text-sky-600 dark:text-sky-400 mb-1">Recommendation</div>
+                  <div className="text-sm font-semibold text-sky-800 dark:text-sky-300">{risk.recommendation}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Criteria Checklist */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-sky-800 dark:text-sky-300 mb-3">Risk Factors (Select all that apply)</h4>
+              <div className="grid grid-cols-1 gap-3">
+                {criteriaItems.map((item) => (
+                  <div 
+                    key={item.id} 
+                    className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      criteria.has(item.id) 
+                        ? 'bg-sky-200 dark:bg-sky-800/50 border border-sky-400 dark:border-sky-600' 
+                        : 'bg-white dark:bg-sky-950/30 border border-sky-100 dark:border-sky-800 hover:bg-sky-100 dark:hover:bg-sky-900/30'
+                    }`}
+                    onClick={() => toggleCriteria(item.id)}
+                  >
+                    <Checkbox 
+                      checked={criteria.has(item.id)} 
+                      className="mt-0.5"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-8 h-8 bg-sky-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                          {item.letter}
+                        </span>
+                        <span className="font-medium text-sm text-sky-800 dark:text-sky-300">{item.name}</span>
+                        <span className={`ml-auto px-2 py-0.5 rounded text-xs font-bold ${item.points === 2 ? 'bg-orange-200 dark:bg-orange-800 text-orange-800 dark:text-orange-200' : 'bg-sky-200 dark:bg-sky-700 text-sky-800 dark:text-sky-200'}`}>
+                          +{item.points}
+                        </span>
+                      </div>
+                      <div className="text-xs text-sky-600 dark:text-sky-500 mt-1 ml-10">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Risk Stratification Table */}
+            <div className="mt-6 overflow-x-auto">
+              <h4 className="font-semibold text-sky-800 dark:text-sky-300 mb-3">Stroke Risk by Score</h4>
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-sky-200 dark:border-sky-700">
+                    <th className="text-left py-2 px-2 text-sky-800 dark:text-sky-300">Score</th>
+                    <th className="text-center py-2 px-2 text-sky-800 dark:text-sky-300">Risk Level</th>
+                    <th className="text-center py-2 px-2 text-sky-800 dark:text-sky-300">2-Day</th>
+                    <th className="text-center py-2 px-2 text-sky-800 dark:text-sky-300">7-Day</th>
+                    <th className="text-center py-2 px-2 text-sky-800 dark:text-sky-300">90-Day</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="bg-green-50 dark:bg-green-900/20">
+                    <td className="py-2 px-2 font-medium">0-1</td>
+                    <td className="py-2 px-2 text-center">Low</td>
+                    <td className="py-2 px-2 text-center">0%</td>
+                    <td className="py-2 px-2 text-center">0.4%</td>
+                    <td className="py-2 px-2 text-center">1.0%</td>
+                  </tr>
+                  <tr className="bg-yellow-50 dark:bg-yellow-900/20">
+                    <td className="py-2 px-2 font-medium">2-3</td>
+                    <td className="py-2 px-2 text-center">Low-Moderate</td>
+                    <td className="py-2 px-2 text-center">1.3%</td>
+                    <td className="py-2 px-2 text-center">1.2%</td>
+                    <td className="py-2 px-2 text-center">3.1%</td>
+                  </tr>
+                  <tr className="bg-orange-50 dark:bg-orange-900/20">
+                    <td className="py-2 px-2 font-medium">4-5</td>
+                    <td className="py-2 px-2 text-center">Moderate-High</td>
+                    <td className="py-2 px-2 text-center">4.1%</td>
+                    <td className="py-2 px-2 text-center">5.9%</td>
+                    <td className="py-2 px-2 text-center">9.8%</td>
+                  </tr>
+                  <tr className="bg-red-50 dark:bg-red-900/20">
+                    <td className="py-2 px-2 font-medium">6-7</td>
+                    <td className="py-2 px-2 text-center">High</td>
+                    <td className="py-2 px-2 text-center">8.1%</td>
+                    <td className="py-2 px-2 text-center">11.7%</td>
+                    <td className="py-2 px-2 text-center">17.8%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-sky-50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-700 rounded-lg">
+              <p className="text-xs text-sky-600 dark:text-sky-400">
+                <strong>Clinical Notes:</strong> ABCD² score helps stratify TIA patients for urgent workup. 
+                Score ≥4 generally warrants hospital admission. Imaging (MRI DWI, vessel imaging) is essential regardless of score. 
+                ABCD² does not replace clinical judgment – consider mechanism, vessel imaging, and other risk factors. 
+                Dual antiplatelet therapy (DAPT) for 21 days reduces early recurrent stroke in high-risk TIA.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Metabolic Syndrome Criteria Checker Component
 function MetabolicSyndromeChecker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -1373,6 +1556,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* HAS-BLED Calculator */}
       <HASBLEDCalculator />
+
+      {/* ABCD2 Calculator */}
+      <ABCD2Calculator />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
