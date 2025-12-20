@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 
 interface TestItem {
   id: string;
@@ -1475,6 +1476,19 @@ export default function StrokeWorkupChecklist() {
                         <div className="p-2 bg-indigo-100/70 dark:bg-indigo-900/50 rounded">
                           <span className="font-medium">Exclusions:</span> Deep hemorrhage, anticoagulant-associated ICH (INR &gt;3), other identified cause
                         </div>
+                      </div>
+                      
+                      {/* Boston Criteria Flowchart Image */}
+                      <div className="mt-4">
+                        <img 
+                          src={bostonCriteriaFlowchart} 
+                          alt="Boston Criteria v2.0 Flowchart for CAA Diagnosis showing clinical/radiologic criteria and pathology-based classification" 
+                          className="w-full rounded-lg border border-indigo-200 dark:border-indigo-700 shadow-md"
+                        />
+                        <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-2 text-center">
+                          TFNE: Transient focal neurologic event; ICH: Intracerebral hemorrhage; CSS: Cortical superficial siderosis; 
+                          cSAH: Convexity subarachnoid hemorrhage; DPS: Dilated perivascular spaces; WMH: White matter hyperintensities
+                        </p>
                       </div>
                     </div>
                   </div>
