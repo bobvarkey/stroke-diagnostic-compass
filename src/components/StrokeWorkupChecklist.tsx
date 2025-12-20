@@ -992,6 +992,188 @@ function CHA2DS2VAScCalculator() {
   );
 }
 
+// HAS-BLED Score Calculator Component
+function HASBLEDCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [criteria, setCriteria] = useState<Set<string>>(new Set());
+
+  const toggleCriteria = (id: string) => {
+    const newSet = new Set(criteria);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setCriteria(newSet);
+  };
+
+  const criteriaItems = [
+    { id: "htn", letter: "H", name: "Hypertension", desc: "Uncontrolled, systolic BP >160 mmHg", points: 1 },
+    { id: "renal", letter: "A", name: "Abnormal Renal Function", desc: "Dialysis, transplant, Cr >2.26 mg/dL or >200 μmol/L", points: 1 },
+    { id: "liver", letter: "A", name: "Abnormal Liver Function", desc: "Cirrhosis, bilirubin >2x ULN, AST/ALT/ALP >3x ULN", points: 1 },
+    { id: "stroke", letter: "S", name: "Stroke History", desc: "Prior stroke (ischemic or hemorrhagic)", points: 1 },
+    { id: "bleeding", letter: "B", name: "Bleeding History/Predisposition", desc: "Prior major bleed, anemia, or bleeding diathesis", points: 1 },
+    { id: "inr", letter: "L", name: "Labile INR", desc: "Unstable/high INRs, TTR <60% (if on warfarin)", points: 1 },
+    { id: "elderly", letter: "E", name: "Elderly", desc: "Age >65 years", points: 1 },
+    { id: "drugs", letter: "D", name: "Drugs", desc: "Antiplatelet agents, NSAIDs", points: 1 },
+    { id: "alcohol", letter: "D", name: "Alcohol", desc: "≥8 drinks/week", points: 1 },
+  ];
+
+  const totalScore = criteriaItems.reduce((sum, item) => {
+    return sum + (criteria.has(item.id) ? item.points : 0);
+  }, 0);
+
+  const getRiskLevel = (score: number) => {
+    if (score === 0) return { level: "Low", color: "bg-green-500", annualRisk: "0.9%", interpretation: "Anticoagulation generally safe" };
+    if (score === 1) return { level: "Low", color: "bg-green-400", annualRisk: "3.4%", interpretation: "Anticoagulation generally safe" };
+    if (score === 2) return { level: "Moderate", color: "bg-yellow-500", annualRisk: "4.1%", interpretation: "Anticoagulation with caution, address modifiable factors" };
+    if (score === 3) return { level: "High", color: "bg-orange-500", annualRisk: "5.8%", interpretation: "Consider alternatives, address modifiable risk factors" };
+    if (score === 4) return { level: "High", color: "bg-orange-600", annualRisk: "8.9%", interpretation: "High bleeding risk, careful consideration needed" };
+    return { level: "Very High", color: "bg-red-500", annualRisk: "9.1%+", interpretation: "Very high bleeding risk, consider alternatives to anticoagulation" };
+  };
+
+  const risk = getRiskLevel(totalScore);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-rose-300 dark:border-rose-700 bg-gradient-to-br from-rose-50 dark:from-rose-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-rose-100/50 dark:bg-rose-900/30">
+            <CardTitle className="flex items-center justify-between text-rose-800 dark:text-rose-300">
+              <div className="flex items-center gap-2">
+                <Droplets className="h-5 w-5" />
+                HAS-BLED Score Calculator (0-9)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Score Display */}
+            <div className="mb-6 p-4 bg-rose-100 dark:bg-rose-900/40 rounded-lg">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className={`w-20 h-20 ${risk.color} rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg`}>
+                    {totalScore}
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-rose-800 dark:text-rose-300">{risk.level} Bleeding Risk</div>
+                    <div className="text-sm text-rose-600 dark:text-rose-400">Annual Major Bleeding Risk: {risk.annualRisk}</div>
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-rose-950/50 rounded-lg p-3 border border-rose-200 dark:border-rose-700">
+                  <div className="text-xs font-medium text-rose-600 dark:text-rose-400 mb-1">Interpretation</div>
+                  <div className="text-sm font-semibold text-rose-800 dark:text-rose-300">{risk.interpretation}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Criteria Checklist */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3">Risk Factors (Select all that apply)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {criteriaItems.map((item) => (
+                  <div 
+                    key={item.id} 
+                    className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      criteria.has(item.id) 
+                        ? 'bg-rose-200 dark:bg-rose-800/50 border border-rose-400 dark:border-rose-600' 
+                        : 'bg-white dark:bg-rose-950/30 border border-rose-100 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/30'
+                    }`}
+                    onClick={() => toggleCriteria(item.id)}
+                  >
+                    <Checkbox 
+                      checked={criteria.has(item.id)} 
+                      className="mt-0.5"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-8 h-8 bg-rose-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                          {item.letter}
+                        </span>
+                        <span className="font-medium text-sm text-rose-800 dark:text-rose-300">{item.name}</span>
+                        <span className="ml-auto px-2 py-0.5 rounded text-xs font-bold bg-rose-200 dark:bg-rose-700 text-rose-800 dark:text-rose-200">
+                          +{item.points}
+                        </span>
+                      </div>
+                      <div className="text-xs text-rose-600 dark:text-rose-500 mt-1 ml-10">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Modifiable Risk Factors */}
+            <div className="mt-6 p-4 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-700 rounded-lg">
+              <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">Modifiable Risk Factors</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2 text-center text-green-700 dark:text-green-400">
+                  <div className="font-medium">H</div>
+                  <div className="text-xs">Control BP</div>
+                </div>
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2 text-center text-green-700 dark:text-green-400">
+                  <div className="font-medium">L</div>
+                  <div className="text-xs">Improve TTR / Use DOAC</div>
+                </div>
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2 text-center text-green-700 dark:text-green-400">
+                  <div className="font-medium">D</div>
+                  <div className="text-xs">Stop NSAIDs/antiplatelets</div>
+                </div>
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2 text-center text-green-700 dark:text-green-400">
+                  <div className="font-medium">D</div>
+                  <div className="text-xs">Reduce alcohol</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Risk Stratification Table */}
+            <div className="mt-6 overflow-x-auto">
+              <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3">Annual Major Bleeding Risk by Score</h4>
+              <div className="grid grid-cols-6 gap-2 text-center text-xs">
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2">
+                  <div className="font-bold text-green-800 dark:text-green-300">0</div>
+                  <div className="text-green-600 dark:text-green-400">0.9%</div>
+                </div>
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2">
+                  <div className="font-bold text-green-800 dark:text-green-300">1</div>
+                  <div className="text-green-600 dark:text-green-400">3.4%</div>
+                </div>
+                <div className="bg-yellow-100 dark:bg-yellow-900/40 rounded p-2">
+                  <div className="font-bold text-yellow-800 dark:text-yellow-300">2</div>
+                  <div className="text-yellow-600 dark:text-yellow-400">4.1%</div>
+                </div>
+                <div className="bg-orange-100 dark:bg-orange-900/40 rounded p-2">
+                  <div className="font-bold text-orange-800 dark:text-orange-300">3</div>
+                  <div className="text-orange-600 dark:text-orange-400">5.8%</div>
+                </div>
+                <div className="bg-orange-200 dark:bg-orange-900/50 rounded p-2">
+                  <div className="font-bold text-orange-800 dark:text-orange-300">4</div>
+                  <div className="text-orange-600 dark:text-orange-400">8.9%</div>
+                </div>
+                <div className="bg-red-100 dark:bg-red-900/40 rounded p-2">
+                  <div className="font-bold text-red-800 dark:text-red-300">≥5</div>
+                  <div className="text-red-600 dark:text-red-400">9.1%+</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-700 rounded-lg">
+              <p className="text-xs text-rose-600 dark:text-rose-400">
+                <strong>Clinical Notes:</strong> HAS-BLED ≥3 indicates high bleeding risk but is NOT a contraindication to anticoagulation. 
+                Use to identify modifiable risk factors. High CHA₂DS₂-VASc often outweighs high HAS-BLED. 
+                DOACs have lower major bleeding rates than warfarin, especially intracranial hemorrhage. 
+                Reassess bleeding risk periodically.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Metabolic Syndrome Criteria Checker Component
 function MetabolicSyndromeChecker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -1188,6 +1370,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* CHA2DS2-VASc Calculator */}
       <CHA2DS2VAScCalculator />
+
+      {/* HAS-BLED Calculator */}
+      <HASBLEDCalculator />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
