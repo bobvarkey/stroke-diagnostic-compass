@@ -1709,6 +1709,141 @@ export default function StrokeWorkupChecklist() {
         })}
       </div>
 
+      {/* Discharge Summary Template */}
+      <Collapsible>
+        <Card className="border-emerald-300 dark:border-emerald-700 bg-gradient-to-br from-emerald-50 dark:from-emerald-950/30 to-background">
+          <CollapsibleTrigger className="w-full">
+            <CardHeader className="bg-emerald-100/50 dark:bg-emerald-900/30">
+              <CardTitle className="flex items-center justify-between text-emerald-800 dark:text-emerald-300">
+                <div className="flex items-center gap-2">
+                  <Stethoscope className="h-5 w-5" />
+                  Stroke Discharge Summary Template
+                </div>
+                <ChevronDown className="h-5 w-5" />
+              </CardTitle>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="pt-6">
+              {/* Overview */}
+              <div className="mb-4 p-3 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
+                <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Overview</h4>
+                <ul className="text-sm text-emerald-700 dark:text-emerald-400 space-y-1 list-disc list-inside">
+                  <li>Write the summary you would want to read – succinct, highlight relevant details, clear accountability for follow up</li>
+                  <li>Fix chart errors permanently in the source, not just the document</li>
+                  <li>Delete sections with no information rather than leaving placeholder text</li>
+                </ul>
+              </div>
+
+              {/* Template Sections */}
+              <div className="grid gap-3 md:grid-cols-2">
+                {/* Administrative */}
+                <div className="p-3 bg-white dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                    <span className="w-6 h-6 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-bold">1</span>
+                    Administrative
+                  </h5>
+                  <ul className="text-xs text-emerald-600 dark:text-emerald-500 space-y-1">
+                    <li>• Admission date and time</li>
+                    <li>• Discharge date and time</li>
+                    <li>• Primary care provider</li>
+                    <li>• Relevant specialists (admitting, follow-up, discharging)</li>
+                  </ul>
+                </div>
+
+                {/* Diagnoses */}
+                <div className="p-3 bg-white dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                    <span className="w-6 h-6 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-bold">2</span>
+                    Diagnoses
+                  </h5>
+                  <ul className="text-xs text-emerald-600 dark:text-emerald-500 space-y-1">
+                    <li>• <strong>Most Responsible Diagnosis:</strong> Use full detail (e.g., "Ischemic stroke, left MCA, secondary to atrial fibrillation, status post EVT")</li>
+                    <li>• This Visit + Chronic: Stroke, comorbidities, issues needing follow-up</li>
+                    <li>• This Visit Only: Significant complications</li>
+                    <li>• Chronic Only: Past history not relevant to admission</li>
+                  </ul>
+                </div>
+
+                {/* Care Planning */}
+                <div className="p-3 bg-white dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                    <span className="w-6 h-6 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-bold">3</span>
+                    Care Planning
+                  </h5>
+                  <ul className="text-xs text-emerald-600 dark:text-emerald-500 space-y-1">
+                    <li>• Advance care planning</li>
+                    <li>• Goals of care</li>
+                    <li>• Code status</li>
+                  </ul>
+                </div>
+
+                {/* Interventions */}
+                <div className="p-3 bg-white dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                    <span className="w-6 h-6 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-bold">4</span>
+                    Interventions
+                  </h5>
+                  <ul className="text-xs text-emerald-600 dark:text-emerald-500 space-y-1">
+                    <li>• Operative: Surgeries, EVT, stenting</li>
+                    <li>• Other: Thrombolysis, mechanical ventilation</li>
+                  </ul>
+                </div>
+
+                {/* Medications & Allergies */}
+                <div className="p-3 bg-white dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                    <span className="w-6 h-6 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-bold">5</span>
+                    Medications & Allergies
+                  </h5>
+                  <ul className="text-xs text-emerald-600 dark:text-emerald-500 space-y-1">
+                    <li>• Allergies (correct any errors)</li>
+                    <li>• Discharge medications (from reconciliation)</li>
+                    <li>• Immunizations administered</li>
+                  </ul>
+                </div>
+
+                {/* Clinical Details */}
+                <div className="p-3 bg-white dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                    <span className="w-6 h-6 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-bold">6</span>
+                    Clinical Details
+                  </h5>
+                  <ul className="text-xs text-emerald-600 dark:text-emerald-500 space-y-1">
+                    <li>• Relevant lab results</li>
+                    <li>• Functional history (pre-admission and at discharge)</li>
+                    <li>• Hospital course (temporal, by diagnosis)</li>
+                    <li>• Significant findings (synthesized imaging, echo, etc.)</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Discharge Disposition */}
+              <div className="mt-4 p-3 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
+                <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Discharge Disposition Options</h4>
+                <div className="flex flex-wrap gap-2">
+                  {["Home", "Home with supports", "Home with outpatient rehab", "Inpatient rehabilitation", "Long Term Care", "Repatriation", "CAMU"].map((option) => (
+                    <span key={option} className="px-2 py-1 bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-200 rounded text-xs">
+                      {option}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Reference Link */}
+              <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-700 rounded-lg">
+                <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                  <strong>Reference:</strong> Adapted from VGH Neurology Discharge Summary Guide. 
+                  <a href="https://vghneuro.ca/docs/discharge-summary/" target="_blank" rel="noopener noreferrer" className="ml-1 underline hover:text-emerald-800 dark:hover:text-emerald-300">
+                    View full documentation →
+                  </a>
+                </p>
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
       <div className="text-center text-sm text-muted-foreground border-t pt-4">
         <p>Clinical investigation checklist - Always correlate with clinical presentation</p>
       </div>
