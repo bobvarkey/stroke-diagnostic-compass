@@ -442,6 +442,91 @@ export default function StrokeWorkupChecklist() {
                 )}
                 {category === "HMOD Evaluation" && (
                   <div className="mb-4 space-y-4">
+                    {/* ESC HMOD Diagnostic Criteria */}
+                    <div className="p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-700 rounded-lg">
+                      <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-3 flex items-center gap-2">
+                        <Activity className="h-4 w-4" />
+                        ESC Criteria for Diagnosing HMOD
+                      </h4>
+                      
+                      {/* Kidney */}
+                      <div className="mb-4">
+                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Kidney</span>
+                          eGFR & ACR
+                        </h5>
+                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
+                          <li>eGFR {"<"}60 mL/min/1.73 m² (irrespective of albuminuria)</li>
+                          <li>Albuminuria ≥30 mg/g (irrespective of eGFR)</li>
+                        </ul>
+                      </div>
+                      
+                      {/* Heart - ECG */}
+                      <div className="mb-4">
+                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Heart</span>
+                          ECG - LVH Criteria
+                        </h5>
+                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
+                          <li>Sokolow-Lyon: SV1+RV5 {">"}35 mm</li>
+                          <li>RaVL ≥11 mm</li>
+                          <li>Cornell voltage: SV3+RaVL {">"}28 mm (men), {">"}20 mm (women)</li>
+                        </ul>
+                      </div>
+                      
+                      {/* Heart - Echo */}
+                      <div className="mb-4">
+                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Heart</span>
+                          Echocardiography
+                        </h5>
+                        <div className="grid gap-3 md:grid-cols-2 ml-2">
+                          <div>
+                            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 mb-1">LVH:</p>
+                            <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1">
+                              <li>LV mass/height²˙⁷: {">"}50 g/m²˙⁷ (men), {">"}47 (women)</li>
+                              <li>LV mass/BSA: {">"}115 g/m² (men), {">"}95 (women)</li>
+                              <li>LV concentric geometry: RWT ≥0.43</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 mb-1">Diastolic Dysfunction:</p>
+                            <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1">
+                              <li>LA volume/height²: {">"}18.5 mL/m² (men), {">"}16.5 (women)</li>
+                              <li>LA volume index: 34 mL/m²</li>
+                              <li>{"e'"} {"<"}7 cm/s; E/{"e'"} {">"}14</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Cardiac Biomarkers */}
+                      <div className="mb-4">
+                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Heart</span>
+                          Cardiac Biomarkers
+                        </h5>
+                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
+                          <li>hs-cTnT or I {">"}99th percentile upper reference limit</li>
+                          <li>NT-proBNP {">"}125 pg/mL (age {"<"}75) or {">"}450 pg/mL (age ≥75)</li>
+                        </ul>
+                      </div>
+                      
+                      {/* Arteries */}
+                      <div>
+                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Arteries</span>
+                          Vascular Assessment
+                        </h5>
+                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
+                          <li>Carotid/femoral ultrasound: Plaque (focal wall thickening {">"}1.5 mm)</li>
+                          <li>Carotid-femoral PWV {">"}10 m/s</li>
+                          <li>Brachial-ankle PWV {">"}14 m/s</li>
+                          <li>Coronary artery calcium score {">"}100 Agatston units</li>
+                        </ul>
+                      </div>
+                    </div>
+                    
                     {/* STRIVE Criteria */}
                     <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-700 rounded-lg">
                       <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center gap-2">
