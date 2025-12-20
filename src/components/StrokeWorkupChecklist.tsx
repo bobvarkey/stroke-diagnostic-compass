@@ -187,6 +187,19 @@ const strokeTests: TestItem[] = [
   { id: "hmod_microbleeds", name: "Cerebral Microbleeds on MRI (lobar vs. deep)", category: "HMOD Evaluation" },
   { id: "hmod_pvs", name: "Enlarged Perivascular Spaces (centrum semiovale, basal ganglia)", category: "HMOD Evaluation" },
   { id: "hmod_atrophy", name: "Brain Atrophy Assessment", category: "HMOD Evaluation" },
+  
+  // Anthropometric Assessment
+  { id: "anthro_height", name: "Height (cm/m)", category: "Anthropometric Assessment" },
+  { id: "anthro_weight", name: "Weight (kg)", category: "Anthropometric Assessment" },
+  { id: "anthro_bmi", name: "BMI - <18.5: Underweight | 18.5-24.9: Normal | 25-29.9: Overweight | 30-34.9: Obese I | 35-39.9: Obese II | ≥40: Obese III", category: "Anthropometric Assessment" },
+  { id: "anthro_waist", name: "Waist Circumference - Men: >102cm high risk | Women: >88cm high risk (WHO cutoffs)", category: "Anthropometric Assessment" },
+  { id: "anthro_waist_asian", name: "Waist Circumference (Asian) - Men: >90cm | Women: >80cm", category: "Anthropometric Assessment" },
+  
+  // Insulin Resistance Markers
+  { id: "ir_homa", name: "HOMA-IR = (Fasting Insulin × Fasting Glucose) ÷ 405 | <1.0: Optimal | 1.0-1.9: Normal | 2.0-2.9: Early IR | ≥3.0: Significant IR", category: "Insulin Resistance" },
+  { id: "ir_tg_hdl", name: "TG:HDL Ratio | <2: Optimal | 2-3: Borderline | >3: High IR risk | >4: Very high risk (metabolic syndrome marker)", category: "Insulin Resistance" },
+  { id: "ir_glucose_insulin", name: "Fasting Glucose:Insulin Ratio | >6: Normal insulin sensitivity | <6: Insulin resistance likely", category: "Insulin Resistance" },
+  { id: "ir_quicki", name: "QUICKI = 1 ÷ (log Insulin + log Glucose) | >0.45: Normal | 0.35-0.45: Borderline | <0.35: Insulin resistant", category: "Insulin Resistance" },
 ];
 
 // AF Burden Clinical Note
@@ -222,6 +235,8 @@ const categoryIcons: Record<string, any> = {
   "Stroke Phenotypes": Droplets,
   "Cardioembolism Aetiologies": Heart,
   "HMOD Evaluation": Eye,
+  "Anthropometric Assessment": Activity,
+  "Insulin Resistance": TestTube,
 };
 
 // ISPS25 Flowchart Component
