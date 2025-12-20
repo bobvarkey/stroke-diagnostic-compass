@@ -351,6 +351,106 @@ function ISPS25Flowchart() {
   );
 }
 
+// NIHSS Scale Reference Component
+function NIHSSScaleReference() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const nihssItems = [
+    { item: "1a", name: "Level of Consciousness", scores: "0 = Alert; 1 = Drowsy; 2 = Obtunded; 3 = Coma/Unresponsive" },
+    { item: "1b", name: "LOC Questions (month, age)", scores: "0 = Both correct; 1 = One correct; 2 = Neither correct" },
+    { item: "1c", name: "LOC Commands (open/close eyes, grip)", scores: "0 = Both correct; 1 = One correct; 2 = Neither correct" },
+    { item: "2", name: "Best Gaze (horizontal eye movement)", scores: "0 = Normal; 1 = Partial gaze palsy; 2 = Forced deviation" },
+    { item: "3", name: "Visual Fields", scores: "0 = No loss; 1 = Partial hemianopia; 2 = Complete hemianopia; 3 = Bilateral blindness" },
+    { item: "4", name: "Facial Palsy", scores: "0 = Normal; 1 = Minor paralysis; 2 = Partial paralysis; 3 = Complete paralysis" },
+    { item: "5a", name: "Left Arm Motor", scores: "0 = No drift; 1 = Drift before 10s; 2 = Falls before 10s; 3 = No effort against gravity; 4 = No movement" },
+    { item: "5b", name: "Right Arm Motor", scores: "0 = No drift; 1 = Drift before 10s; 2 = Falls before 10s; 3 = No effort against gravity; 4 = No movement" },
+    { item: "6a", name: "Left Leg Motor", scores: "0 = No drift; 1 = Drift before 5s; 2 = Falls before 5s; 3 = No effort against gravity; 4 = No movement" },
+    { item: "6b", name: "Right Leg Motor", scores: "0 = No drift; 1 = Drift before 5s; 2 = Falls before 5s; 3 = No effort against gravity; 4 = No movement" },
+    { item: "7", name: "Limb Ataxia", scores: "0 = Absent; 1 = One limb; 2 = Two or more limbs" },
+    { item: "8", name: "Sensory", scores: "0 = Normal; 1 = Mild-moderate loss; 2 = Severe/total loss" },
+    { item: "9", name: "Best Language (Aphasia)", scores: "0 = Normal; 1 = Mild-moderate aphasia; 2 = Severe aphasia; 3 = Mute/global aphasia" },
+    { item: "10", name: "Dysarthria", scores: "0 = Normal; 1 = Mild-moderate; 2 = Severe/unintelligible" },
+    { item: "11", name: "Extinction/Inattention", scores: "0 = Normal; 1 = One modality; 2 = Profound (two modalities)" },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-rose-300 dark:border-rose-700 bg-gradient-to-br from-rose-50 dark:from-rose-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-rose-100/50 dark:bg-rose-900/30">
+            <CardTitle className="flex items-center justify-between text-rose-800 dark:text-rose-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                NIHSS - National Institutes of Health Stroke Scale (0-42)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Severity Interpretation */}
+            <div className="mb-6 p-4 bg-rose-100 dark:bg-rose-900/40 rounded-lg">
+              <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3">Stroke Severity Interpretation</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-green-100 dark:bg-green-900/40 border border-green-300 dark:border-green-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-green-800 dark:text-green-300">0-4</div>
+                  <div className="text-sm text-green-700 dark:text-green-400">Minor Stroke</div>
+                </div>
+                <div className="bg-yellow-100 dark:bg-yellow-900/40 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-yellow-800 dark:text-yellow-300">5-15</div>
+                  <div className="text-sm text-yellow-700 dark:text-yellow-400">Moderate Stroke</div>
+                </div>
+                <div className="bg-orange-100 dark:bg-orange-900/40 border border-orange-300 dark:border-orange-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-orange-800 dark:text-orange-300">16-20</div>
+                  <div className="text-sm text-orange-700 dark:text-orange-400">Moderate-Severe</div>
+                </div>
+                <div className="bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-red-800 dark:text-red-300">21-42</div>
+                  <div className="text-sm text-red-700 dark:text-red-400">Severe Stroke</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Scale Items */}
+            <div className="space-y-2">
+              <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3">Scale Components</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-rose-200 dark:border-rose-700">
+                      <th className="text-left py-2 px-3 text-rose-800 dark:text-rose-300 font-semibold w-16">Item</th>
+                      <th className="text-left py-2 px-3 text-rose-800 dark:text-rose-300 font-semibold w-48">Domain</th>
+                      <th className="text-left py-2 px-3 text-rose-800 dark:text-rose-300 font-semibold">Scoring</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {nihssItems.map((item, index) => (
+                      <tr key={item.item} className={`border-b border-rose-100 dark:border-rose-800 ${index % 2 === 0 ? 'bg-rose-50/50 dark:bg-rose-950/20' : ''}`}>
+                        <td className="py-2 px-3 font-medium text-rose-700 dark:text-rose-400">{item.item}</td>
+                        <td className="py-2 px-3 text-rose-700 dark:text-rose-400">{item.name}</td>
+                        <td className="py-2 px-3 text-rose-600 dark:text-rose-500 text-xs">{item.scores}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-700 rounded-lg">
+              <p className="text-xs text-rose-600 dark:text-rose-400">
+                <strong>Clinical Notes:</strong> NIHSS should be performed at baseline, 24h post-treatment, at discharge, and during follow-up. 
+                A change of ≥4 points is considered clinically significant. UN = Untestable (e.g., amputation, fusion) - do not add to score.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
@@ -380,6 +480,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* ISPS25 Flowchart */}
       <ISPS25Flowchart />
+
+      {/* NIHSS Scale Reference */}
+      <NIHSSScaleReference />
 
       <Card className="bg-medical-section border-medical-header/20">
         <CardHeader>
