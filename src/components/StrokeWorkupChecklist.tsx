@@ -524,6 +524,63 @@ export default function StrokeWorkupChecklist() {
                         <span className="font-medium">Mixed pattern:</span> Both lobar and deep microbleeds may indicate mixed pathology or advanced hypertensive disease. Count and distribution guide anticoagulation decisions.
                       </div>
                     </div>
+                    
+                    {/* Boston Criteria for CAA */}
+                    <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-700 rounded-lg">
+                      <h4 className="font-semibold text-indigo-800 dark:text-indigo-300 mb-3 flex items-center gap-2">
+                        <Brain className="h-4 w-4" />
+                        Boston Criteria v2.0 for CAA Diagnosis
+                      </h4>
+                      <div className="grid gap-4 md:grid-cols-3">
+                        {/* Definite CAA */}
+                        <div className="p-3 bg-indigo-100/50 dark:bg-indigo-900/30 rounded-lg border-t-4 border-indigo-700">
+                          <div className="font-semibold text-indigo-800 dark:text-indigo-300 mb-2 text-center">Definite CAA</div>
+                          <div className="text-sm text-indigo-700 dark:text-indigo-400">
+                            <p>Full postmortem examination demonstrating:</p>
+                            <ul className="list-disc list-inside mt-1 space-y-1">
+                              <li>Lobar, cortical, or cortical-subcortical hemorrhage</li>
+                              <li>Severe CAA with vasculopathy</li>
+                              <li>Absence of other diagnostic lesion</li>
+                            </ul>
+                          </div>
+                        </div>
+                        
+                        {/* Probable CAA */}
+                        <div className="p-3 bg-indigo-100/50 dark:bg-indigo-900/30 rounded-lg border-t-4 border-indigo-500">
+                          <div className="font-semibold text-indigo-800 dark:text-indigo-300 mb-2 text-center">Probable CAA</div>
+                          <div className="text-sm text-indigo-700 dark:text-indigo-400">
+                            <p className="font-medium mb-1">Age ≥50 years with:</p>
+                            <ul className="list-disc list-inside space-y-1">
+                              <li>≥2 strictly lobar hemorrhagic lesions (ICH, microbleeds, or cSS)</li>
+                              <li>OR 1 lobar hemorrhagic lesion + 1 white matter feature (severe WMH or ≥20 centrum semiovale PVS)</li>
+                            </ul>
+                            <p className="mt-2 text-xs italic">Excludes other causes</p>
+                          </div>
+                        </div>
+                        
+                        {/* Possible CAA */}
+                        <div className="p-3 bg-indigo-100/50 dark:bg-indigo-900/30 rounded-lg border-t-4 border-indigo-300">
+                          <div className="font-semibold text-indigo-800 dark:text-indigo-300 mb-2 text-center">Possible CAA</div>
+                          <div className="text-sm text-indigo-700 dark:text-indigo-400">
+                            <p className="font-medium mb-1">Age ≥50 years with:</p>
+                            <ul className="list-disc list-inside space-y-1">
+                              <li>Single lobar ICH, OR</li>
+                              <li>Single lobar microbleed, OR</li>
+                              <li>Focal or disseminated cSS</li>
+                            </ul>
+                            <p className="mt-2 text-xs italic">Excludes other causes</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 grid gap-2 text-xs text-indigo-600 dark:text-indigo-400">
+                        <div className="p-2 bg-indigo-100/70 dark:bg-indigo-900/50 rounded">
+                          <span className="font-medium">Key hemorrhagic markers:</span> Lobar ICH, lobar microbleeds, cortical superficial siderosis (cSS)
+                        </div>
+                        <div className="p-2 bg-indigo-100/70 dark:bg-indigo-900/50 rounded">
+                          <span className="font-medium">Exclusions:</span> Deep hemorrhage, anticoagulant-associated ICH (INR &gt;3), other identified cause
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
