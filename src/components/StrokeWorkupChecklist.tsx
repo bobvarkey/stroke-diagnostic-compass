@@ -833,6 +833,164 @@ function PcASPECTSScoreReference() {
   );
 }
 
+// CHA2DS2-VASc Score Calculator Component
+function CHA2DS2VAScCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [criteria, setCriteria] = useState<Set<string>>(new Set());
+
+  const toggleCriteria = (id: string) => {
+    const newSet = new Set(criteria);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      // Handle mutually exclusive age groups
+      if (id === "age_75" && newSet.has("age_65_74")) {
+        newSet.delete("age_65_74");
+      } else if (id === "age_65_74" && newSet.has("age_75")) {
+        newSet.delete("age_75");
+      }
+      newSet.add(id);
+    }
+    setCriteria(newSet);
+  };
+
+  const criteriaItems = [
+    { id: "chf", letter: "C", name: "Congestive Heart Failure", desc: "Heart failure or LVEF ≤40%", points: 1 },
+    { id: "htn", letter: "H", name: "Hypertension", desc: "BP >140/90 or on antihypertensive therapy", points: 1 },
+    { id: "age_75", letter: "A₂", name: "Age ≥75 years", desc: "Age 75 years or older", points: 2 },
+    { id: "dm", letter: "D", name: "Diabetes Mellitus", desc: "Fasting glucose >125 mg/dL or on treatment", points: 1 },
+    { id: "stroke", letter: "S₂", name: "Stroke/TIA/Thromboembolism", desc: "Prior stroke, TIA, or systemic embolism", points: 2 },
+    { id: "vascular", letter: "V", name: "Vascular Disease", desc: "Prior MI, PAD, or aortic plaque", points: 1 },
+    { id: "age_65_74", letter: "A", name: "Age 65-74 years", desc: "Age between 65 and 74 years", points: 1 },
+    { id: "female", letter: "Sc", name: "Sex Category (Female)", desc: "Female sex", points: 1 },
+  ];
+
+  const totalScore = criteriaItems.reduce((sum, item) => {
+    return sum + (criteria.has(item.id) ? item.points : 0);
+  }, 0);
+
+  const getRiskLevel = (score: number) => {
+    if (score === 0) return { level: "Low", color: "bg-green-500", annualRisk: "0.2%", recommendation: "No antithrombotic therapy or aspirin" };
+    if (score === 1) return { level: "Low-Moderate", color: "bg-yellow-500", annualRisk: "0.6-2.8%", recommendation: "Consider oral anticoagulant (OAC) or aspirin" };
+    if (score === 2) return { level: "Moderate", color: "bg-orange-500", annualRisk: "2.2-4.0%", recommendation: "Oral anticoagulant recommended" };
+    if (score <= 4) return { level: "Moderate-High", color: "bg-orange-600", annualRisk: "4.0-6.7%", recommendation: "Oral anticoagulant recommended" };
+    return { level: "High", color: "bg-red-500", annualRisk: "6.7-15.2%", recommendation: "Oral anticoagulant strongly recommended" };
+  };
+
+  const risk = getRiskLevel(totalScore);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-indigo-300 dark:border-indigo-700 bg-gradient-to-br from-indigo-50 dark:from-indigo-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-indigo-100/50 dark:bg-indigo-900/30">
+            <CardTitle className="flex items-center justify-between text-indigo-800 dark:text-indigo-300">
+              <div className="flex items-center gap-2">
+                <Heart className="h-5 w-5" />
+                CHA₂DS₂-VASc Score Calculator (0-9)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Score Display */}
+            <div className="mb-6 p-4 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className={`w-20 h-20 ${risk.color} rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg`}>
+                    {totalScore}
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-indigo-800 dark:text-indigo-300">{risk.level} Risk</div>
+                    <div className="text-sm text-indigo-600 dark:text-indigo-400">Annual Stroke Risk: {risk.annualRisk}</div>
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-indigo-950/50 rounded-lg p-3 border border-indigo-200 dark:border-indigo-700">
+                  <div className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-1">Recommendation</div>
+                  <div className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">{risk.recommendation}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Criteria Checklist */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-indigo-800 dark:text-indigo-300 mb-3">Risk Factors (Select all that apply)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {criteriaItems.map((item) => (
+                  <div 
+                    key={item.id} 
+                    className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      criteria.has(item.id) 
+                        ? 'bg-indigo-200 dark:bg-indigo-800/50 border border-indigo-400 dark:border-indigo-600' 
+                        : 'bg-white dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/30'
+                    }`}
+                    onClick={() => toggleCriteria(item.id)}
+                  >
+                    <Checkbox 
+                      checked={criteria.has(item.id)} 
+                      className="mt-0.5"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-8 h-8 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                          {item.letter}
+                        </span>
+                        <span className="font-medium text-sm text-indigo-800 dark:text-indigo-300">{item.name}</span>
+                        <span className={`ml-auto px-2 py-0.5 rounded text-xs font-bold ${item.points === 2 ? 'bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200' : 'bg-indigo-200 dark:bg-indigo-700 text-indigo-800 dark:text-indigo-200'}`}>
+                          +{item.points}
+                        </span>
+                      </div>
+                      <div className="text-xs text-indigo-600 dark:text-indigo-500 mt-1 ml-10">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Risk Stratification Table */}
+            <div className="mt-6 overflow-x-auto">
+              <h4 className="font-semibold text-indigo-800 dark:text-indigo-300 mb-3">Annual Stroke Risk by Score</h4>
+              <div className="grid grid-cols-5 gap-2 text-center text-xs">
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2">
+                  <div className="font-bold text-green-800 dark:text-green-300">0</div>
+                  <div className="text-green-600 dark:text-green-400">0.2%</div>
+                </div>
+                <div className="bg-yellow-100 dark:bg-yellow-900/40 rounded p-2">
+                  <div className="font-bold text-yellow-800 dark:text-yellow-300">1</div>
+                  <div className="text-yellow-600 dark:text-yellow-400">0.6%</div>
+                </div>
+                <div className="bg-orange-100 dark:bg-orange-900/40 rounded p-2">
+                  <div className="font-bold text-orange-800 dark:text-orange-300">2</div>
+                  <div className="text-orange-600 dark:text-orange-400">2.2%</div>
+                </div>
+                <div className="bg-orange-200 dark:bg-orange-900/50 rounded p-2">
+                  <div className="font-bold text-orange-800 dark:text-orange-300">3-4</div>
+                  <div className="text-orange-600 dark:text-orange-400">4.0-6.7%</div>
+                </div>
+                <div className="bg-red-100 dark:bg-red-900/40 rounded p-2">
+                  <div className="font-bold text-red-800 dark:text-red-300">≥5</div>
+                  <div className="text-red-600 dark:text-red-400">6.7-15%</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-700 rounded-lg">
+              <p className="text-xs text-indigo-600 dark:text-indigo-400">
+                <strong>Clinical Notes:</strong> CHA₂DS₂-VASc guides anticoagulation in non-valvular AF. Score ≥2 (men) or ≥3 (women) indicates OAC benefit. 
+                Female sex alone (score=1) does not warrant OAC. Consider bleeding risk (HAS-BLED) when deciding therapy. 
+                DOACs preferred over warfarin in most patients. LAA occlusion is an alternative for OAC-contraindicated patients.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Metabolic Syndrome Criteria Checker Component
 function MetabolicSyndromeChecker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -1026,6 +1184,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* pc-ASPECTS Score Reference */}
       <PcASPECTSScoreReference />
+
+      {/* CHA2DS2-VASc Calculator */}
+      <CHA2DS2VAScCalculator />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
