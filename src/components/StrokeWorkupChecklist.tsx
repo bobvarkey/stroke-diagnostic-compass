@@ -1548,6 +1548,220 @@ function ICHScoreCalculator() {
   );
 }
 
+// FUNC Score Calculator Component
+function FUNCScoreCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [criteria, setCriteria] = useState<Set<string>>(new Set());
+
+  const toggleCriteria = (id: string) => {
+    const newSet = new Set(criteria);
+    
+    // Handle mutually exclusive options
+    if (id.startsWith("volume_")) {
+      newSet.delete("volume_lt30");
+      newSet.delete("volume_30_60");
+      newSet.delete("volume_gt60");
+    }
+    if (id.startsWith("age_")) {
+      newSet.delete("age_lt70");
+      newSet.delete("age_70_79");
+      newSet.delete("age_gte80");
+    }
+    if (id.startsWith("location_")) {
+      newSet.delete("location_lobar");
+      newSet.delete("location_deep");
+      newSet.delete("location_infra");
+    }
+    if (id.startsWith("gcs_")) {
+      newSet.delete("gcs_gte9");
+      newSet.delete("gcs_lte8");
+    }
+    
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setCriteria(newSet);
+  };
+
+  const criteriaGroups = [
+    {
+      name: "ICH Volume",
+      items: [
+        { id: "volume_lt30", name: "<30 mL", points: 4 },
+        { id: "volume_30_60", name: "30-60 mL", points: 2 },
+        { id: "volume_gt60", name: ">60 mL", points: 0 },
+      ]
+    },
+    {
+      name: "Age",
+      items: [
+        { id: "age_lt70", name: "<70 years", points: 2 },
+        { id: "age_70_79", name: "70-79 years", points: 1 },
+        { id: "age_gte80", name: "≥80 years", points: 0 },
+      ]
+    },
+    {
+      name: "ICH Location",
+      items: [
+        { id: "location_lobar", name: "Lobar", points: 2 },
+        { id: "location_deep", name: "Deep", points: 1 },
+        { id: "location_infra", name: "Infratentorial", points: 0 },
+      ]
+    },
+    {
+      name: "GCS Score",
+      items: [
+        { id: "gcs_gte9", name: "GCS ≥9", points: 2 },
+        { id: "gcs_lte8", name: "GCS ≤8", points: 0 },
+      ]
+    },
+  ];
+
+  const cognitiveItem = { id: "no_cognitive", name: "No Pre-ICH Cognitive Impairment", desc: "No dementia or significant cognitive decline before ICH", points: 1 };
+
+  const allItems = [...criteriaGroups.flatMap(g => g.items), cognitiveItem];
+  
+  const totalScore = allItems.reduce((sum, item) => {
+    return sum + (criteria.has(item.id) ? item.points : 0);
+  }, 0);
+
+  const getFunctionalOutcome = (score: number) => {
+    if (score <= 4) return { outcome: "0%", color: "bg-red-600", desc: "No chance of functional independence" };
+    if (score === 5) return { outcome: "5%", color: "bg-red-500", desc: "Very low chance" };
+    if (score === 6) return { outcome: "10%", color: "bg-orange-600", desc: "Low chance" };
+    if (score === 7) return { outcome: "25%", color: "bg-orange-500", desc: "Low-moderate chance" };
+    if (score === 8) return { outcome: "45%", color: "bg-yellow-500", desc: "Moderate chance" };
+    if (score === 9) return { outcome: "65%", color: "bg-lime-500", desc: "Good chance" };
+    if (score === 10) return { outcome: "80%", color: "bg-green-500", desc: "High chance" };
+    return { outcome: "95%", color: "bg-green-600", desc: "Very high chance" };
+  };
+
+  const outcome = getFunctionalOutcome(totalScore);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-purple-300 dark:border-purple-700 bg-gradient-to-br from-purple-50 dark:from-purple-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-purple-100/50 dark:bg-purple-900/30">
+            <CardTitle className="flex items-center justify-between text-purple-800 dark:text-purple-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                FUNC Score - Functional Outcome After ICH (0-11)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Score Display */}
+            <div className="mb-6 p-4 bg-purple-100 dark:bg-purple-900/40 rounded-lg">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className={`w-20 h-20 ${outcome.color} rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg`}>
+                    {totalScore}
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-purple-800 dark:text-purple-300">Functional Independence at 90 Days</div>
+                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{outcome.outcome}</div>
+                    <div className="text-sm text-purple-500 dark:text-purple-500">{outcome.desc}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Criteria Groups */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-purple-800 dark:text-purple-300">Score Components (select one per category)</h4>
+              
+              {criteriaGroups.map((group) => (
+                <div key={group.name} className="p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <div className="text-sm font-medium text-purple-700 dark:text-purple-400 mb-2">{group.name}</div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {group.items.map((item) => (
+                      <div 
+                        key={item.id} 
+                        className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
+                          criteria.has(item.id) 
+                            ? 'bg-purple-200 dark:bg-purple-800/50 border border-purple-400' 
+                            : 'bg-white dark:bg-purple-950/30 border border-purple-100 dark:border-purple-800 hover:bg-purple-100'
+                        }`}
+                        onClick={() => toggleCriteria(item.id)}
+                      >
+                        <Checkbox checked={criteria.has(item.id)} />
+                        <span className="text-sm text-purple-800 dark:text-purple-300">{item.name}</span>
+                        <span className={`ml-auto px-1.5 py-0.5 rounded text-xs font-bold ${
+                          item.points >= 2 ? 'bg-green-200 text-green-800' : 
+                          item.points === 1 ? 'bg-yellow-200 text-yellow-800' : 
+                          'bg-gray-200 text-gray-800'
+                        }`}>
+                          +{item.points}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Cognitive Impairment */}
+              <div 
+                className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                  criteria.has(cognitiveItem.id) 
+                    ? 'bg-purple-200 dark:bg-purple-800/50 border border-purple-400 dark:border-purple-600' 
+                    : 'bg-white dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30'
+                }`}
+                onClick={() => toggleCriteria(cognitiveItem.id)}
+              >
+                <Checkbox checked={criteria.has(cognitiveItem.id)} className="mt-0.5" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-sm text-purple-800 dark:text-purple-300">{cognitiveItem.name}</span>
+                    <span className="ml-auto px-2 py-0.5 rounded text-xs font-bold bg-yellow-200 text-yellow-800">+{cognitiveItem.points}</span>
+                  </div>
+                  <div className="text-xs text-purple-600 dark:text-purple-500 mt-1">{cognitiveItem.desc}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Outcome Table */}
+            <div className="mt-6 overflow-x-auto">
+              <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-3">Functional Independence by FUNC Score</h4>
+              <div className="grid grid-cols-6 gap-1 text-center text-xs">
+                {[
+                  { score: "0-4", pct: "0%", color: "bg-red-600" },
+                  { score: "5", pct: "5%", color: "bg-red-500" },
+                  { score: "6", pct: "10%", color: "bg-orange-500" },
+                  { score: "7", pct: "25%", color: "bg-yellow-500" },
+                  { score: "8-9", pct: "45-65%", color: "bg-lime-500" },
+                  { score: "10-11", pct: "80-95%", color: "bg-green-500" },
+                ].map((item) => (
+                  <div key={item.score} className={`${item.color} text-white rounded p-2`}>
+                    <div className="font-bold">{item.score}</div>
+                    <div>{item.pct}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-700 rounded-lg">
+              <p className="text-xs text-purple-600 dark:text-purple-400">
+                <strong>Clinical Notes:</strong> FUNC Score predicts functional independence (mRS 0-2) at 90 days after ICH. 
+                Complements ICH Score (mortality) with functional outcome prediction. 
+                Higher scores indicate better prognosis. Use alongside ICH Score for comprehensive prognostication. 
+                Score should inform goals-of-care discussions but not determine care limitations alone. 
+                Derived from Rost et al., Stroke 2008.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Metabolic Syndrome Criteria Checker Component
 function MetabolicSyndromeChecker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -1753,6 +1967,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* ICH Score Calculator */}
       <ICHScoreCalculator />
+
+      {/* FUNC Score Calculator */}
+      <FUNCScoreCalculator />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
