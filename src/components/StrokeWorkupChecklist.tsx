@@ -1357,6 +1357,197 @@ function ABCD2Calculator() {
   );
 }
 
+// ICH Score Calculator Component
+function ICHScoreCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [criteria, setCriteria] = useState<Set<string>>(new Set());
+
+  const toggleCriteria = (id: string) => {
+    const newSet = new Set(criteria);
+    
+    // Handle mutually exclusive GCS options
+    if (id.startsWith("gcs_")) {
+      newSet.delete("gcs_3_4");
+      newSet.delete("gcs_5_12");
+      newSet.delete("gcs_13_15");
+    }
+    
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setCriteria(newSet);
+  };
+
+  const criteriaItems = [
+    { id: "gcs_3_4", name: "GCS Score 3-4", desc: "Glasgow Coma Scale 3-4", points: 2, group: "gcs" },
+    { id: "gcs_5_12", name: "GCS Score 5-12", desc: "Glasgow Coma Scale 5-12", points: 1, group: "gcs" },
+    { id: "gcs_13_15", name: "GCS Score 13-15", desc: "Glasgow Coma Scale 13-15 (select if applicable)", points: 0, group: "gcs" },
+    { id: "volume", name: "ICH Volume ≥30 mL", desc: "Hemorrhage volume ≥30 cm³ on CT (ABC/2 method)", points: 1 },
+    { id: "ivh", name: "Intraventricular Hemorrhage", desc: "Blood present in ventricles on CT", points: 1 },
+    { id: "infratentorial", name: "Infratentorial Origin", desc: "Hemorrhage origin in brainstem or cerebellum", points: 1 },
+    { id: "age", name: "Age ≥80 years", desc: "Patient is 80 years old or older", points: 1 },
+  ];
+
+  const totalScore = criteriaItems.reduce((sum, item) => {
+    return sum + (criteria.has(item.id) ? item.points : 0);
+  }, 0);
+
+  const getMortalityRisk = (score: number) => {
+    const risks = [
+      { score: 0, mortality: "0%", color: "bg-green-500" },
+      { score: 1, mortality: "13%", color: "bg-yellow-500" },
+      { score: 2, mortality: "26%", color: "bg-orange-400" },
+      { score: 3, mortality: "72%", color: "bg-orange-600" },
+      { score: 4, mortality: "97%", color: "bg-red-500" },
+      { score: 5, mortality: "100%", color: "bg-red-700" },
+      { score: 6, mortality: "100%", color: "bg-red-900" },
+    ];
+    return risks[Math.min(score, 6)];
+  };
+
+  const risk = getMortalityRisk(totalScore);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-red-300 dark:border-red-700 bg-gradient-to-br from-red-50 dark:from-red-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-red-100/50 dark:bg-red-900/30">
+            <CardTitle className="flex items-center justify-between text-red-800 dark:text-red-300">
+              <div className="flex items-center gap-2">
+                <Droplets className="h-5 w-5" />
+                ICH Score - Hemorrhage Prognosis (0-6)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Score Display */}
+            <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/40 rounded-lg">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className={`w-20 h-20 ${risk.color} rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg`}>
+                    {totalScore}
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-red-800 dark:text-red-300">30-Day Mortality</div>
+                    <div className="text-2xl font-bold text-red-600 dark:text-red-400">{risk.mortality}</div>
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-red-950/50 rounded-lg p-3 border border-red-200 dark:border-red-700">
+                  <div className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">Important Note</div>
+                  <div className="text-sm text-red-800 dark:text-red-300">Score should not be used alone to limit care</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Criteria Checklist */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-red-800 dark:text-red-300 mb-3">Clinical & Imaging Criteria</h4>
+              
+              {/* GCS Group */}
+              <div className="p-3 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
+                <div className="text-sm font-medium text-red-700 dark:text-red-400 mb-2">Glasgow Coma Scale (select one)</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                  {criteriaItems.filter(i => i.group === "gcs").map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
+                        criteria.has(item.id) 
+                          ? 'bg-red-200 dark:bg-red-800/50 border border-red-400' 
+                          : 'bg-white dark:bg-red-950/30 border border-red-100 dark:border-red-800 hover:bg-red-100'
+                      }`}
+                      onClick={() => toggleCriteria(item.id)}
+                    >
+                      <Checkbox checked={criteria.has(item.id)} />
+                      <div className="flex-1">
+                        <span className="text-sm font-medium text-red-800 dark:text-red-300">{item.name}</span>
+                        <span className={`ml-2 px-1.5 py-0.5 rounded text-xs font-bold ${item.points === 2 ? 'bg-red-500 text-white' : item.points === 1 ? 'bg-orange-200 text-orange-800' : 'bg-green-200 text-green-800'}`}>
+                          +{item.points}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Other Criteria */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {criteriaItems.filter(i => !i.group).map((item) => (
+                  <div 
+                    key={item.id} 
+                    className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      criteria.has(item.id) 
+                        ? 'bg-red-200 dark:bg-red-800/50 border border-red-400 dark:border-red-600' 
+                        : 'bg-white dark:bg-red-950/30 border border-red-100 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/30'
+                    }`}
+                    onClick={() => toggleCriteria(item.id)}
+                  >
+                    <Checkbox 
+                      checked={criteria.has(item.id)} 
+                      className="mt-0.5"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm text-red-800 dark:text-red-300">{item.name}</span>
+                        <span className="ml-auto px-2 py-0.5 rounded text-xs font-bold bg-red-200 dark:bg-red-700 text-red-800 dark:text-red-200">
+                          +{item.points}
+                        </span>
+                      </div>
+                      <div className="text-xs text-red-600 dark:text-red-500 mt-1">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mortality Table */}
+            <div className="mt-6 overflow-x-auto">
+              <h4 className="font-semibold text-red-800 dark:text-red-300 mb-3">30-Day Mortality by ICH Score</h4>
+              <div className="grid grid-cols-7 gap-1 text-center text-xs">
+                {[0, 1, 2, 3, 4, 5, 6].map((score) => {
+                  const r = getMortalityRisk(score);
+                  return (
+                    <div key={score} className={`${r.color} text-white rounded p-2`}>
+                      <div className="font-bold text-lg">{score}</div>
+                      <div>{r.mortality}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ABC/2 Formula */}
+            <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+              <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-2">ICH Volume Calculation (ABC/2)</h4>
+              <p className="text-xs text-amber-700 dark:text-amber-400">
+                <strong>Volume (mL) = (A × B × C) / 2</strong><br/>
+                A = largest diameter on axial CT (cm)<br/>
+                B = diameter perpendicular to A (cm)<br/>
+                C = number of CT slices with hemorrhage × slice thickness (cm)
+              </p>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-700 rounded-lg">
+              <p className="text-xs text-red-600 dark:text-red-400">
+                <strong>Clinical Notes:</strong> ICH Score predicts 30-day mortality but should NOT be used alone to withdraw care. 
+                Self-fulfilling prophecy concerns exist if used to limit treatment. 
+                Early aggressive care improves outcomes in many patients. 
+                Consider patient preferences, premorbid function, and reversible factors. 
+                Score derived from Hemphill et al., Stroke 2001.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Metabolic Syndrome Criteria Checker Component
 function MetabolicSyndromeChecker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -1559,6 +1750,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* ABCD2 Calculator */}
       <ABCD2Calculator />
+
+      {/* ICH Score Calculator */}
+      <ICHScoreCalculator />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
