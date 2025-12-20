@@ -52,6 +52,7 @@ const strokeTests: TestItem[] = [
   { id: "homocysteine", name: "Homocysteine", category: "Specialized Blood" },
   { id: "ace", name: "ACE Levels", category: "Specialized Blood" },
   { id: "lipoprotein", name: "Lipoprotein (A)", category: "Specialized Blood" },
+  { id: "apob_spec", name: "Apolipoprotein B (ApoB)", category: "Specialized Blood" },
   { id: "hscrp", name: "High-Sensitivity CRP", category: "Specialized Blood" },
   { id: "clinicalexome", name: "Clinical Exome Testing", category: "Specialized Blood" },
   
