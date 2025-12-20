@@ -1762,6 +1762,152 @@ function FUNCScoreCalculator() {
   );
 }
 
+// SAH Grading Scales Component (Hunt & Hess / WFNS)
+function SAHGradingScales() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const huntHessGrades = [
+    { grade: 1, description: "Asymptomatic or mild headache, slight nuchal rigidity", mortality: "1%", color: "bg-green-500" },
+    { grade: 2, description: "Moderate to severe headache, nuchal rigidity, no deficit except CN palsy", mortality: "5%", color: "bg-lime-500" },
+    { grade: 3, description: "Drowsiness, confusion, or mild focal deficit", mortality: "19%", color: "bg-yellow-500" },
+    { grade: 4, description: "Stupor, moderate to severe hemiparesis, early decerebrate rigidity", mortality: "42%", color: "bg-orange-500" },
+    { grade: 5, description: "Deep coma, decerebrate rigidity, moribund appearance", mortality: "77%", color: "bg-red-600" },
+  ];
+
+  const wfnsGrades = [
+    { grade: "I", gcs: "15", motor: "Absent", mortality: "5%", color: "bg-green-500" },
+    { grade: "II", gcs: "13-14", motor: "Absent", mortality: "9%", color: "bg-lime-500" },
+    { grade: "III", gcs: "13-14", motor: "Present", mortality: "20%", color: "bg-yellow-500" },
+    { grade: "IV", gcs: "7-12", motor: "Present or Absent", mortality: "33%", color: "bg-orange-500" },
+    { grade: "V", gcs: "3-6", motor: "Present or Absent", mortality: "76%", color: "bg-red-600" },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-pink-300 dark:border-pink-700 bg-gradient-to-br from-pink-50 dark:from-pink-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-pink-100/50 dark:bg-pink-900/30">
+            <CardTitle className="flex items-center justify-between text-pink-800 dark:text-pink-300">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                SAH Grading Scales (Hunt & Hess / WFNS)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Hunt and Hess Scale */}
+              <div className="p-4 bg-pink-50/50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-800 rounded-lg">
+                <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-3 flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-pink-200 dark:bg-pink-800 rounded text-xs">Clinical</span>
+                  Hunt & Hess Scale
+                </h4>
+                <div className="space-y-2">
+                  {huntHessGrades.map((item) => (
+                    <div key={item.grade} className="flex items-start gap-3 p-2 bg-white dark:bg-pink-950/30 rounded border border-pink-100 dark:border-pink-800">
+                      <div className={`w-10 h-10 ${item.color} text-white rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0`}>
+                        {item.grade}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-pink-800 dark:text-pink-300">{item.description}</p>
+                        <p className="text-xs text-pink-600 dark:text-pink-500 mt-1">Mortality: {item.mortality}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* WFNS Scale */}
+              <div className="p-4 bg-pink-50/50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-800 rounded-lg">
+                <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-3 flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-pink-200 dark:bg-pink-800 rounded text-xs">GCS-Based</span>
+                  WFNS Scale
+                </h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-pink-200 dark:border-pink-700">
+                        <th className="text-left py-2 px-2 text-pink-800 dark:text-pink-300 font-semibold">Grade</th>
+                        <th className="text-center py-2 px-2 text-pink-800 dark:text-pink-300 font-semibold">GCS</th>
+                        <th className="text-center py-2 px-2 text-pink-800 dark:text-pink-300 font-semibold">Motor Deficit</th>
+                        <th className="text-center py-2 px-2 text-pink-800 dark:text-pink-300 font-semibold">Mortality</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {wfnsGrades.map((item) => (
+                        <tr key={item.grade} className="border-b border-pink-100 dark:border-pink-800">
+                          <td className="py-2 px-2">
+                            <span className={`inline-flex w-8 h-8 ${item.color} text-white rounded-full items-center justify-center font-bold`}>
+                              {item.grade}
+                            </span>
+                          </td>
+                          <td className="py-2 px-2 text-center text-pink-700 dark:text-pink-400">{item.gcs}</td>
+                          <td className="py-2 px-2 text-center text-pink-700 dark:text-pink-400">{item.motor}</td>
+                          <td className="py-2 px-2 text-center text-pink-700 dark:text-pink-400">{item.mortality}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Fisher / Modified Fisher Scale */}
+            <div className="mt-6 p-4 bg-pink-100 dark:bg-pink-900/40 rounded-lg">
+              <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-3">Modified Fisher Scale (Vasospasm Risk)</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2 text-center">
+                  <div className="font-bold text-green-800 dark:text-green-300">Grade 0</div>
+                  <div className="text-xs text-green-700 dark:text-green-400">No SAH/IVH</div>
+                  <div className="text-xs text-green-600 dark:text-green-500 mt-1">0% vasospasm</div>
+                </div>
+                <div className="bg-lime-100 dark:bg-lime-900/40 rounded p-2 text-center">
+                  <div className="font-bold text-lime-800 dark:text-lime-300">Grade 1</div>
+                  <div className="text-xs text-lime-700 dark:text-lime-400">Thin SAH, no IVH</div>
+                  <div className="text-xs text-lime-600 dark:text-lime-500 mt-1">24% vasospasm</div>
+                </div>
+                <div className="bg-yellow-100 dark:bg-yellow-900/40 rounded p-2 text-center">
+                  <div className="font-bold text-yellow-800 dark:text-yellow-300">Grade 2</div>
+                  <div className="text-xs text-yellow-700 dark:text-yellow-400">Thin SAH + IVH</div>
+                  <div className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">33% vasospasm</div>
+                </div>
+                <div className="bg-orange-100 dark:bg-orange-900/40 rounded p-2 text-center">
+                  <div className="font-bold text-orange-800 dark:text-orange-300">Grade 3</div>
+                  <div className="text-xs text-orange-700 dark:text-orange-400">Thick SAH, no IVH</div>
+                  <div className="text-xs text-orange-600 dark:text-orange-500 mt-1">33% vasospasm</div>
+                </div>
+              </div>
+              <div className="mt-2 flex justify-center">
+                <div className="bg-red-100 dark:bg-red-900/40 rounded p-2 text-center w-full md:w-1/2">
+                  <div className="font-bold text-red-800 dark:text-red-300">Grade 4</div>
+                  <div className="text-xs text-red-700 dark:text-red-400">Thick SAH + IVH</div>
+                  <div className="text-xs text-red-600 dark:text-red-500 mt-1">40% vasospasm</div>
+                </div>
+              </div>
+              <p className="text-xs text-pink-600 dark:text-pink-400 mt-2 text-center">
+                Thin SAH: &lt;1mm; Thick SAH: ≥1mm or clot; IVH: Intraventricular hemorrhage
+              </p>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-pink-50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-700 rounded-lg">
+              <p className="text-xs text-pink-600 dark:text-pink-400">
+                <strong>Clinical Notes:</strong> Hunt & Hess is the traditional clinical grading system. WFNS uses GCS for more objective assessment. 
+                Both predict outcome and guide surgical timing. Grades I-III ("good grade") typically undergo early aneurysm treatment. 
+                Modified Fisher predicts symptomatic vasospasm risk (days 3-14). 
+                All patients need nimodipine, euvolemia, and close monitoring for delayed cerebral ischemia (DCI).
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Metabolic Syndrome Criteria Checker Component
 function MetabolicSyndromeChecker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -1970,6 +2116,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* FUNC Score Calculator */}
       <FUNCScoreCalculator />
+
+      {/* SAH Grading Scales */}
+      <SAHGradingScales />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
