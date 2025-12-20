@@ -550,6 +550,127 @@ function MRSScaleReference() {
   );
 }
 
+// ASPECTS Score Component
+function ASPECTSScoreReference() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const aspectsRegions = [
+    { region: "C", name: "Caudate", level: "Ganglionic" },
+    { region: "L", name: "Lentiform nucleus", level: "Ganglionic" },
+    { region: "IC", name: "Internal Capsule", level: "Ganglionic" },
+    { region: "I", name: "Insular ribbon", level: "Ganglionic" },
+    { region: "M1", name: "Anterior MCA cortex", level: "Ganglionic" },
+    { region: "M2", name: "MCA cortex lateral to insular ribbon", level: "Ganglionic" },
+    { region: "M3", name: "Posterior MCA cortex", level: "Ganglionic" },
+    { region: "M4", name: "Anterior MCA territory (above M1)", level: "Supraganglionic" },
+    { region: "M5", name: "Lateral MCA territory (above M2)", level: "Supraganglionic" },
+    { region: "M6", name: "Posterior MCA territory (above M3)", level: "Supraganglionic" },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-cyan-300 dark:border-cyan-700 bg-gradient-to-br from-cyan-50 dark:from-cyan-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-cyan-100/50 dark:bg-cyan-900/30">
+            <CardTitle className="flex items-center justify-between text-cyan-800 dark:text-cyan-300">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                ASPECTS - Alberta Stroke Program Early CT Score (0-10)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Score Interpretation */}
+            <div className="mb-6 p-4 bg-cyan-100 dark:bg-cyan-900/40 rounded-lg">
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-3">Score Interpretation</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-green-100 dark:bg-green-900/40 border border-green-300 dark:border-green-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-green-800 dark:text-green-300">ASPECTS 8-10</div>
+                  <div className="text-sm text-green-700 dark:text-green-400">Small infarct core</div>
+                  <div className="text-xs text-green-600 dark:text-green-500 mt-1">Favorable for reperfusion therapy</div>
+                </div>
+                <div className="bg-yellow-100 dark:bg-yellow-900/40 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-yellow-800 dark:text-yellow-300">ASPECTS 6-7</div>
+                  <div className="text-sm text-yellow-700 dark:text-yellow-400">Moderate infarct</div>
+                  <div className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">Consider risks/benefits carefully</div>
+                </div>
+                <div className="bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-red-800 dark:text-red-300">ASPECTS 0-5</div>
+                  <div className="text-sm text-red-700 dark:text-red-400">Large infarct core</div>
+                  <div className="text-xs text-red-600 dark:text-red-500 mt-1">Higher risk of hemorrhagic transformation</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Scoring Method */}
+            <div className="mb-4 p-3 bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700 rounded-lg">
+              <p className="text-sm text-cyan-700 dark:text-cyan-400">
+                <strong>Scoring:</strong> Start with 10 points. Subtract 1 point for each region showing early ischemic changes 
+                (loss of gray-white differentiation, swelling, hypoattenuation). Assess at two axial CT levels: ganglionic (basal ganglia visible) 
+                and supraganglionic (above basal ganglia).
+              </p>
+            </div>
+
+            {/* Regions Table */}
+            <div className="space-y-2">
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-3">MCA Territory Regions (10 regions)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Ganglionic Level */}
+                <div className="bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-800 rounded-lg p-4">
+                  <h5 className="font-medium text-cyan-700 dark:text-cyan-400 mb-3 flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-cyan-200 dark:bg-cyan-800 rounded text-xs">Ganglionic Level</span>
+                    Basal Ganglia Visible
+                  </h5>
+                  <div className="space-y-2">
+                    {aspectsRegions.filter(r => r.level === "Ganglionic").map((region) => (
+                      <div key={region.region} className="flex items-center gap-2">
+                        <span className="w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                          {region.region}
+                        </span>
+                        <span className="text-sm text-cyan-700 dark:text-cyan-400">{region.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Supraganglionic Level */}
+                <div className="bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-800 rounded-lg p-4">
+                  <h5 className="font-medium text-cyan-700 dark:text-cyan-400 mb-3 flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-cyan-200 dark:bg-cyan-800 rounded text-xs">Supraganglionic Level</span>
+                    Above Basal Ganglia
+                  </h5>
+                  <div className="space-y-2">
+                    {aspectsRegions.filter(r => r.level === "Supraganglionic").map((region) => (
+                      <div key={region.region} className="flex items-center gap-2">
+                        <span className="w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                          {region.region}
+                        </span>
+                        <span className="text-sm text-cyan-700 dark:text-cyan-400">{region.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="mt-4 p-3 bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700 rounded-lg">
+              <p className="text-xs text-cyan-600 dark:text-cyan-400">
+                <strong>Clinical Notes:</strong> ASPECTS ≥6 is generally the threshold for IV thrombolysis eligibility. 
+                For mechanical thrombectomy, recent trials (DAWN, DEFUSE 3) use perfusion imaging. 
+                CT-ASPECTS and DWI-ASPECTS show good correlation. Inter-rater reliability improves with training.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
@@ -585,6 +706,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* mRS Scale Reference */}
       <MRSScaleReference />
+
+      {/* ASPECTS Score Reference */}
+      <ASPECTSScoreReference />
 
       <Card className="bg-medical-section border-medical-header/20">
         <CardHeader>
