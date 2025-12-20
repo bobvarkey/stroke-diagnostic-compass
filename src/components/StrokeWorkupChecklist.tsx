@@ -490,6 +490,40 @@ export default function StrokeWorkupChecklist() {
                         Score periventricular and deep white matter separately. Higher grades indicate greater SVD burden.
                       </p>
                     </div>
+                    
+                    {/* Microbleed Distribution Patterns */}
+                    <div className="p-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-700 rounded-lg">
+                      <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3 flex items-center gap-2">
+                        <Droplets className="h-4 w-4" />
+                        Cerebral Microbleed Distribution Patterns
+                      </h4>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {/* Lobar Pattern - CAA */}
+                        <div className="p-3 bg-rose-100/50 dark:bg-rose-900/30 rounded-lg border-l-4 border-rose-500">
+                          <div className="font-semibold text-rose-800 dark:text-rose-300 mb-2">Lobar (Cortical-Subcortical)</div>
+                          <div className="text-sm text-rose-700 dark:text-rose-400 space-y-1">
+                            <p><span className="font-medium">Location:</span> Cortex, grey-white junction, subcortical white matter</p>
+                            <p><span className="font-medium">Suggests:</span> Cerebral Amyloid Angiopathy (CAA)</p>
+                            <p><span className="font-medium">Clinical:</span> Higher ICH recurrence risk, cognitive decline, transient focal neurological episodes</p>
+                            <p><span className="font-medium">Note:</span> Strictly lobar pattern supports probable CAA (Boston criteria)</p>
+                          </div>
+                        </div>
+                        
+                        {/* Deep Pattern - Hypertensive */}
+                        <div className="p-3 bg-rose-100/50 dark:bg-rose-900/30 rounded-lg border-l-4 border-rose-500">
+                          <div className="font-semibold text-rose-800 dark:text-rose-300 mb-2">Deep (Basal Ganglia/Infratentorial)</div>
+                          <div className="text-sm text-rose-700 dark:text-rose-400 space-y-1">
+                            <p><span className="font-medium">Location:</span> Basal ganglia, thalamus, brainstem, cerebellum</p>
+                            <p><span className="font-medium">Suggests:</span> Hypertensive Arteriopathy</p>
+                            <p><span className="font-medium">Clinical:</span> Associated with lacunar infarcts, WMH, and hypertensive SVD</p>
+                            <p><span className="font-medium">Note:</span> Often coexists with other HMOD markers</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 p-2 bg-rose-100/70 dark:bg-rose-900/50 rounded text-xs text-rose-700 dark:text-rose-400">
+                        <span className="font-medium">Mixed pattern:</span> Both lobar and deep microbleeds may indicate mixed pathology or advanced hypertensive disease. Count and distribution guide anticoagulation decisions.
+                      </div>
+                    </div>
                   </div>
                 )}
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
