@@ -169,6 +169,17 @@ const strokeTests: TestItem[] = [
   { id: "ce_pfo", name: "PFO (if PASCAL classification is definite, probable, or possible)", category: "Cardioembolism Aetiologies" },
   { id: "ce_lv_aneurysm", name: "Left ventricular apical aneurysm", category: "Cardioembolism Aetiologies" },
   { id: "ce_lvnc", name: "Left ventricular noncompaction", category: "Cardioembolism Aetiologies" },
+  
+  // HMOD (Hypertension-Mediated Organ Damage) Evaluation
+  { id: "hmod_fundus", name: "Optic Fundus Assessment (hypertensive retinopathy grading)", category: "HMOD Evaluation" },
+  { id: "hmod_lv_mass", name: "LV Mass Index / LV Hypertrophy (Echo or CMR)", category: "HMOD Evaluation" },
+  { id: "hmod_egfr", name: "eGFR (chronic kidney disease assessment)", category: "HMOD Evaluation" },
+  { id: "hmod_acr", name: "Urine Albumin-to-Creatinine Ratio (microalbuminuria)", category: "HMOD Evaluation" },
+  { id: "hmod_pwv", name: "Pulse Wave Velocity / Arterial Stiffness", category: "HMOD Evaluation" },
+  { id: "hmod_abi", name: "Ankle-Brachial Index (peripheral artery disease)", category: "HMOD Evaluation" },
+  { id: "hmod_wmh", name: "White Matter Hyperintensities on MRI (cerebral small vessel disease)", category: "HMOD Evaluation" },
+  { id: "hmod_carotid_imt", name: "Carotid Intima-Media Thickness", category: "HMOD Evaluation" },
+  { id: "hmod_ecg_strain", name: "ECG LV Strain Pattern", category: "HMOD Evaluation" },
 ];
 
 // AF Burden Clinical Note
@@ -192,6 +203,7 @@ const categoryIcons: Record<string, any> = {
   "Lipid Assessment": TestTube,
   "Stroke Phenotypes": Droplets,
   "Cardioembolism Aetiologies": Heart,
+  "HMOD Evaluation": Eye,
 };
 
 // ISPS25 Flowchart Component
