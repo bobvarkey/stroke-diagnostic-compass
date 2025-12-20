@@ -441,18 +441,54 @@ export default function StrokeWorkupChecklist() {
                   </div>
                 )}
                 {category === "HMOD Evaluation" && (
-                  <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-700 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center gap-2">
-                      <Brain className="h-4 w-4" />
-                      STRIVE-2 Criteria (STandards for ReportIng Vascular changes on nEuroimaging)
-                    </h4>
-                    <div className="grid gap-2 md:grid-cols-2">
-                      {striveMarkers.map((marker, idx) => (
-                        <div key={idx} className="text-sm">
-                          <span className="font-medium text-blue-800 dark:text-blue-300">{marker.name}:</span>
-                          <span className="text-blue-700 dark:text-blue-400 ml-1">{marker.desc}</span>
+                  <div className="mb-4 space-y-4">
+                    {/* STRIVE Criteria */}
+                    <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-700 rounded-lg">
+                      <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center gap-2">
+                        <Brain className="h-4 w-4" />
+                        STRIVE-2 Criteria (STandards for ReportIng Vascular changes on nEuroimaging)
+                      </h4>
+                      <div className="grid gap-2 md:grid-cols-2">
+                        {striveMarkers.map((marker, idx) => (
+                          <div key={idx} className="text-sm">
+                            <span className="font-medium text-blue-800 dark:text-blue-300">{marker.name}:</span>
+                            <span className="text-blue-700 dark:text-blue-400 ml-1">{marker.desc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Fazekas Scale */}
+                    <div className="p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-700 rounded-lg">
+                      <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-3 flex items-center gap-2">
+                        <Brain className="h-4 w-4" />
+                        Fazekas Scale for White Matter Hyperintensities
+                      </h4>
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
+                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">0</div>
+                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">None</div>
+                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">No WMH</div>
                         </div>
-                      ))}
+                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
+                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">1</div>
+                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">Punctate</div>
+                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">Punctate foci</div>
+                        </div>
+                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
+                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">2</div>
+                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">Early Confluent</div>
+                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">Beginning to merge</div>
+                        </div>
+                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
+                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">3</div>
+                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">Confluent</div>
+                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">Large confluent areas</div>
+                        </div>
+                      </div>
+                      <p className="text-xs text-purple-600 dark:text-purple-400 mt-3 italic">
+                        Score periventricular and deep white matter separately. Higher grades indicate greater SVD burden.
+                      </p>
                     </div>
                   </div>
                 )}
