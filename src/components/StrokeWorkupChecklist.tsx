@@ -177,9 +177,15 @@ const strokeTests: TestItem[] = [
   { id: "hmod_acr", name: "Urine Albumin-to-Creatinine Ratio (microalbuminuria)", category: "HMOD Evaluation" },
   { id: "hmod_pwv", name: "Pulse Wave Velocity / Arterial Stiffness", category: "HMOD Evaluation" },
   { id: "hmod_abi", name: "Ankle-Brachial Index (peripheral artery disease)", category: "HMOD Evaluation" },
-  { id: "hmod_wmh", name: "White Matter Hyperintensities on MRI (cerebral small vessel disease)", category: "HMOD Evaluation" },
   { id: "hmod_carotid_imt", name: "Carotid Intima-Media Thickness", category: "HMOD Evaluation" },
   { id: "hmod_ecg_strain", name: "ECG LV Strain Pattern", category: "HMOD Evaluation" },
+  
+  // Brain/CNS HMOD
+  { id: "hmod_lacunar", name: "Lacunar Infarcts on MRI (silent or symptomatic)", category: "HMOD Evaluation" },
+  { id: "hmod_wmh", name: "White Matter Hyperintensities on MRI (Fazekas grading)", category: "HMOD Evaluation" },
+  { id: "hmod_microbleeds", name: "Cerebral Microbleeds on MRI (lobar vs. deep)", category: "HMOD Evaluation" },
+  { id: "hmod_pvs", name: "Enlarged Perivascular Spaces (centrum semiovale, basal ganglia)", category: "HMOD Evaluation" },
+  { id: "hmod_atrophy", name: "Brain Atrophy Assessment", category: "HMOD Evaluation" },
 ];
 
 // AF Burden Clinical Note
