@@ -530,6 +530,445 @@ function AcuteStrokeAlgorithm() {
   );
 }
 
+// Acute ICH Management Component
+function AcuteICHManagement() {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-orange-400 dark:border-orange-600 bg-gradient-to-br from-orange-50 dark:from-orange-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-orange-100/50 dark:bg-orange-900/30">
+            <CardTitle className="flex items-center justify-between text-orange-800 dark:text-orange-300">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Acute Intracerebral Hemorrhage (ICH) Management
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            
+            {/* ICH Care Bundle Timeline */}
+            <div className="p-4 bg-orange-100 dark:bg-orange-900/40 rounded-lg">
+              <h4 className="font-semibold text-orange-800 dark:text-orange-300 mb-4">ICH Care Bundle - Time-Based Targets</h4>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 p-3 bg-white dark:bg-orange-950/30 rounded border-l-4 border-orange-500">
+                  <span className="px-2 py-1 bg-orange-600 text-white text-xs font-bold rounded">Door</span>
+                  <div className="text-sm text-orange-700 dark:text-orange-400">
+                    <p>• Stabilize patient, rapid imaging (CT)</p>
+                    <p>• Coagulation tests (PT/INR, aPTT, platelets, fibrinogen)</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-white dark:bg-orange-950/30 rounded border-l-4 border-amber-500">
+                  <span className="px-2 py-1 bg-amber-600 text-white text-xs font-bold rounded">&lt;30 min</span>
+                  <div className="text-sm text-amber-700 dark:text-amber-400">
+                    <p>• Reverse anticoagulant (if applicable)</p>
+                    <p>• Start intensive BP lowering</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-white dark:bg-orange-950/30 rounded border-l-4 border-yellow-500">
+                  <span className="px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded">&lt;60 min</span>
+                  <div className="text-sm text-yellow-700 dark:text-yellow-400">
+                    <p>• Achieve SBP &lt;140 mmHg</p>
+                    <p>• Consult Neurosurgery</p>
+                    <p>• Achieve Temperature &lt;37.5°C</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-white dark:bg-orange-950/30 rounded border-l-4 border-green-500">
+                  <span className="px-2 py-1 bg-green-600 text-white text-xs font-bold rounded">7 days</span>
+                  <div className="text-sm text-green-700 dark:text-green-400">
+                    <p>• Maintain SBP &lt;140 mmHg; Temperature &lt;37.5°C</p>
+                    <p>• Maintain normoglycemia</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Initial Evaluation */}
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3">Initial Evaluation (ED)</h4>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium text-blue-700 dark:text-blue-400 mb-2">Brain Attack Activation</h5>
+                  <ul className="text-sm text-blue-600 dark:text-blue-400 space-y-1">
+                    <li>• Single alpha page: stroke team, CT technician, Neuro ICU charge nurse</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium text-blue-700 dark:text-blue-400 mb-2">ABCs</h5>
+                  <ul className="text-sm text-blue-600 dark:text-blue-400 space-y-1">
+                    <li>• Airway, Breathing, Circulation</li>
+                    <li>• Peripheral IV placement</li>
+                    <li>• Blood draw: Coag, CBC, CMP</li>
+                    <li>• O₂ sat &gt;92%</li>
+                    <li>• Continuous pulse oximetry and cardiac monitor</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-blue-100 dark:bg-blue-900/50 rounded">
+                <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Non-contrast head CT: Target door-to-CT time ≤20 minutes of ED arrival</p>
+              </div>
+            </div>
+
+            {/* CT Evidence of ICH - Immediate Actions */}
+            <div className="p-4 bg-red-50 dark:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-700">
+              <h4 className="font-semibold text-red-800 dark:text-red-300 mb-3">CT Evidence of ICH - Immediate Actions</h4>
+              <ul className="text-sm text-red-700 dark:text-red-400 space-y-2">
+                <li>• <strong>BP Control:</strong> Labetalol 10 mg and/or Hydralazine 10 mg IV prn to keep SBP ≤140 mmHg</li>
+                <li>• <strong>BP Infusion:</strong> Start Nicardipine infusion 5-15 mg/hr as needed</li>
+                <li>• <strong>Coagulopathy:</strong> Emergent reversal (see anticoagulation reversal algorithm)</li>
+                <li>• <strong>ICP Management:</strong> Mannitol 0.5-1 gm IV bolus or hypertonic saline for mass effect or herniation</li>
+              </ul>
+            </div>
+
+            {/* Blood Pressure Management */}
+            <div className="p-4 bg-rose-50 dark:bg-rose-900/30 rounded-lg border border-rose-200 dark:border-rose-700">
+              <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3">Blood Pressure Management (Class 1)</h4>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-3 bg-white dark:bg-rose-950/30 rounded border border-rose-200 dark:border-rose-700">
+                  <h5 className="font-medium text-rose-700 dark:text-rose-400 mb-2">Key Principles</h5>
+                  <ul className="text-sm text-rose-600 dark:text-rose-400 space-y-1">
+                    <li>• BP control is CRITICAL to reduce hematoma expansion</li>
+                    <li>• Avoid BP variability - ensure careful titration</li>
+                    <li>• Initiate BP lowering within 2 hours of ICH onset</li>
+                    <li>• Goal: reach target BP in ≤1 hour</li>
+                  </ul>
+                </div>
+                <div className="p-3 bg-white dark:bg-rose-950/30 rounded border border-rose-200 dark:border-rose-700">
+                  <h5 className="font-medium text-rose-700 dark:text-rose-400 mb-2">Targets</h5>
+                  <ul className="text-sm text-rose-600 dark:text-rose-400 space-y-1">
+                    <li>• Goal SBP &lt;140 mmHg (range 130-150 mmHg)</li>
+                    <li>• AVOID SBP &lt;130 if initial SBP was ≥150 mmHg</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Anticoagulation Reversal Algorithm */}
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-200 dark:border-amber-700">
+              <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-3">Anticoagulation Reversal - Class 1 Recommendation</h4>
+              <p className="text-sm text-amber-700 dark:text-amber-400 mb-4 font-medium">Discontinue anticoagulation therapy immediately. Rapid reversal should be performed as soon as possible.</p>
+              
+              <div className="grid md:grid-cols-4 gap-3">
+                {/* VKA */}
+                <div className="p-3 bg-white dark:bg-amber-950/30 rounded border border-amber-300 dark:border-amber-700">
+                  <h5 className="font-bold text-amber-800 dark:text-amber-300 mb-2 text-sm">Vitamin K Antagonists (Warfarin)</h5>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded">
+                      <p className="font-medium text-amber-700 dark:text-amber-400">INR 1.3-1.9:</p>
+                      <p className="text-amber-600 dark:text-amber-500">4-F PCC 10-20 IU/kg (Class 2b)</p>
+                    </div>
+                    <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded">
+                      <p className="font-medium text-amber-700 dark:text-amber-400">INR ≥2.0:</p>
+                      <p className="text-amber-600 dark:text-amber-500">4-F PCC 25-50 IU/kg (Class 1)</p>
+                    </div>
+                    <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded">
+                      <p className="text-green-700 dark:text-green-400 font-medium">+ IV Vitamin K (Class 1)</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dabigatran */}
+                <div className="p-3 bg-white dark:bg-amber-950/30 rounded border border-amber-300 dark:border-amber-700">
+                  <h5 className="font-bold text-amber-800 dark:text-amber-300 mb-2 text-sm">Dabigatran</h5>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded">
+                      <p className="text-amber-600 dark:text-amber-500">Activated charcoal if DOAC &lt;2 hrs (potential efficacy up to 8 hrs) - Class 2b</p>
+                    </div>
+                    <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded">
+                      <p className="font-medium text-green-700 dark:text-green-400">If Idarucizumab available:</p>
+                      <p className="text-green-600 dark:text-green-500">Idarucizumab (Class 2a)</p>
+                    </div>
+                    <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded">
+                      <p className="font-medium text-orange-700 dark:text-orange-400">If NOT available:</p>
+                      <p className="text-orange-600 dark:text-orange-500">PCCs or aPCC and/or renal replacement therapy (Class 2b)</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Factor Xa Inhibitors */}
+                <div className="p-3 bg-white dark:bg-amber-950/30 rounded border border-amber-300 dark:border-amber-700">
+                  <h5 className="font-bold text-amber-800 dark:text-amber-300 mb-2 text-sm">Factor Xa Inhibitors</h5>
+                  <p className="text-xs text-amber-600 dark:text-amber-500 mb-2">(Rivaroxaban, Apixaban, Edoxaban)</p>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded">
+                      <p className="text-amber-600 dark:text-amber-500">History: When last dose taken</p>
+                    </div>
+                    <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded">
+                      <p className="font-medium text-green-700 dark:text-green-400">If Andexanet alfa available:</p>
+                      <p className="text-green-600 dark:text-green-500">Andexanet alpha (Class 2a)</p>
+                    </div>
+                    <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded">
+                      <p className="font-medium text-orange-700 dark:text-orange-400">If NOT available:</p>
+                      <p className="text-orange-600 dark:text-orange-500">4 Factor PCC or aPCC (Class 2b)</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Heparins */}
+                <div className="p-3 bg-white dark:bg-amber-950/30 rounded border border-amber-300 dark:border-amber-700">
+                  <h5 className="font-bold text-amber-800 dark:text-amber-300 mb-2 text-sm">Heparins</h5>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded">
+                      <p className="font-medium text-blue-700 dark:text-blue-400">Unfractionated Heparin:</p>
+                      <p className="text-blue-600 dark:text-blue-500">Protamine (Class 2a)</p>
+                    </div>
+                    <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded">
+                      <p className="font-medium text-orange-700 dark:text-orange-400">Low Molecular Weight Heparin:</p>
+                      <p className="text-orange-600 dark:text-orange-500">Protamine (Class 2b)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-3 p-2 bg-amber-100 dark:bg-amber-900/50 rounded text-xs text-amber-700 dark:text-amber-400">
+                <strong>DOACs:</strong> Thorough medication history is key. Assess dose and timing of last DOAC dose; may consider activated charcoal if ingested ≤2 hours
+              </div>
+            </div>
+
+            {/* Antiplatelet Reversal */}
+            <div className="p-4 bg-pink-50 dark:bg-pink-900/30 rounded-lg border border-pink-200 dark:border-pink-700">
+              <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-3">Antiplatelet Reversal</h4>
+              <p className="text-sm text-pink-700 dark:text-pink-400 mb-3">Discontinue antiplatelet therapy</p>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-3 bg-white dark:bg-pink-950/30 rounded border border-pink-200 dark:border-pink-700">
+                  <h5 className="font-medium text-pink-700 dark:text-pink-400 mb-2">Aspirin / Desmopressin</h5>
+                  <p className="text-sm text-pink-600 dark:text-pink-400">Is patient proceeding to emergent neurosurgical intervention?</p>
+                  <div className="mt-2 flex gap-2 text-xs">
+                    <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded flex-1">
+                      <p className="font-medium text-green-700 dark:text-green-400">Yes:</p>
+                      <p className="text-green-600 dark:text-green-500">Platelet transfusion & desmopressin if hemorrhage expansion or post-operative potential harm</p>
+                    </div>
+                    <div className="p-2 bg-pink-100 dark:bg-pink-900/40 rounded flex-1">
+                      <p className="font-medium text-pink-700 dark:text-pink-400">No:</p>
+                      <p className="text-pink-600 dark:text-pink-500">Uncertain (avoid routine platelet transfusion)</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-3 bg-white dark:bg-pink-950/30 rounded border border-pink-200 dark:border-pink-700">
+                  <h5 className="font-medium text-pink-700 dark:text-pink-400 mb-2">P2Y12 Inhibitors</h5>
+                  <p className="text-sm text-pink-600 dark:text-pink-400">Efficacy of hemostatic agents remain uncertain</p>
+                  <p className="text-xs text-pink-500 dark:text-pink-500 mt-2">Critical Point: REVERSE trial: P2Y12 + platelet transfusion harmful (avoid routine platelet transfusion)</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Glucose & Temperature Control */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 bg-cyan-50 dark:bg-cyan-900/30 rounded-lg border border-cyan-200 dark:border-cyan-700">
+                <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-3">Glucose Control</h4>
+                <ul className="text-sm text-cyan-700 dark:text-cyan-400 space-y-1">
+                  <li>• Avoid hypoglycemia (BG &lt;60 mg/dL)</li>
+                  <li>• Avoid hyperglycemia (&gt;180 mg/dL)</li>
+                  <li>• Target: 80-180 mg/dL remains unclear</li>
+                </ul>
+              </div>
+              <div className="p-4 bg-teal-50 dark:bg-teal-900/30 rounded-lg border border-teal-200 dark:border-teal-700">
+                <h4 className="font-semibold text-teal-800 dark:text-teal-300 mb-3">Temperature Control (Thermoregulation)</h4>
+                <ul className="text-sm text-teal-700 dark:text-teal-400 space-y-1">
+                  <li>• Maintain normothermia (&lt;37.5°C)</li>
+                  <li>• Consider acetaminophen if medications are needed</li>
+                  <li>• Utility of hypothermia remains unclear</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Risk Stratification for Macrovascular Cause */}
+            <div className="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-700">
+              <h4 className="font-semibold text-indigo-800 dark:text-indigo-300 mb-3">Risk Stratification for Macrovascular Cause (Spontaneous ICH)</h4>
+              <p className="text-sm text-indigo-600 dark:text-indigo-400 mb-4">After history and non-contrast head CT, assess risk of macrovascular cause</p>
+              
+              <div className="grid md:grid-cols-3 gap-4 mb-4">
+                <div className="p-3 bg-green-100 dark:bg-green-900/40 rounded border border-green-300 dark:border-green-700">
+                  <h5 className="font-bold text-green-800 dark:text-green-300 mb-2">Low Risk (1-5%) - ALL OF:</h5>
+                  <ul className="text-xs text-green-700 dark:text-green-400 space-y-1">
+                    <li>• Older age (&gt;50 yrs)</li>
+                    <li>• History of hypertension</li>
+                    <li>• Deep location</li>
+                    <li>• CT signs of small vessel disease</li>
+                  </ul>
+                  <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/40 rounded">
+                    <p className="text-xs font-medium text-red-700 dark:text-red-400">→ No urgent indication for further imaging</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded border border-yellow-300 dark:border-yellow-700">
+                  <h5 className="font-bold text-yellow-800 dark:text-yellow-300 mb-2">Intermediate Risk (6-25%)</h5>
+                  <p className="text-xs text-yellow-700 dark:text-yellow-400">Combination of low risk and high risk features</p>
+                  <div className="mt-2 p-2 bg-yellow-200 dark:bg-yellow-900/60 rounded">
+                    <p className="text-xs font-medium text-yellow-800 dark:text-yellow-300">→ Acute CTA recommended</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded border border-red-300 dark:border-red-700">
+                  <h5 className="font-bold text-red-800 dark:text-red-300 mb-2">High Risk (&gt;25%)</h5>
+                  <ul className="text-xs text-red-700 dark:text-red-400 space-y-1">
+                    <li>• Younger age (&lt;50 yrs)</li>
+                    <li>• No history of hypertension</li>
+                    <li>• Lobar location</li>
+                    <li>• No CT signs of small vessel disease</li>
+                    <li>• Primary intraventricular hemorrhage</li>
+                  </ul>
+                  <div className="mt-2 p-2 bg-red-200 dark:bg-red-900/60 rounded">
+                    <p className="text-xs font-medium text-red-800 dark:text-red-300">→ Acute CTA recommended</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Results Pathway */}
+              <div className="p-3 bg-indigo-100 dark:bg-indigo-900/40 rounded">
+                <h5 className="font-medium text-indigo-800 dark:text-indigo-300 mb-2">After CTA (for Intermediate/High Risk)</h5>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="text-sm">
+                    <p className="font-medium text-indigo-700 dark:text-indigo-400">CTA Positive → High yield of intra-arterial DSA (&gt;50%)</p>
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-medium text-indigo-700 dark:text-indigo-400">CTA Negative:</p>
+                    <ul className="text-xs text-indigo-600 dark:text-indigo-500 mt-1">
+                      <li>• Evidence of SVD + Hx HTN → Low yield DSA (&lt;2%)</li>
+                      <li>• Evidence of SVD + No Hx HTN → Intermediate yield DSA (2-50%)</li>
+                      <li>• No evidence of SVD → Intermediate yield DSA (2-50%)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Surgical Indications */}
+            <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-700">
+              <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-3">Surgical Indications</h4>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-3 bg-purple-100 dark:bg-purple-900/40 rounded">
+                  <h5 className="font-medium text-purple-700 dark:text-purple-400 mb-2">Consider Neurosurgery Consult for:</h5>
+                  <ul className="text-sm text-purple-600 dark:text-purple-400 space-y-1">
+                    <li>• Ventriculostomy for severe IVH ± hydrocephalus</li>
+                    <li>• Craniotomy for large cerebellar or temporal ICH</li>
+                    <li>• EVD placement</li>
+                  </ul>
+                </div>
+                <div className="p-3 bg-purple-100 dark:bg-purple-900/40 rounded">
+                  <h5 className="font-medium text-purple-700 dark:text-purple-400 mb-2">No Surgical Indications:</h5>
+                  <ul className="text-sm text-purple-600 dark:text-purple-400 space-y-1">
+                    <li>• Admit to Neuro ICU</li>
+                    <li>• ICH order set</li>
+                    <li>• Medical management</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* ICU Care */}
+            <div className="p-4 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-700">
+              <h4 className="font-semibold text-slate-800 dark:text-slate-300 mb-3">ICU Management</h4>
+              <div className="grid md:grid-cols-4 gap-3">
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Mechanical ventilation</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Sedation</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Further BP control</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Fever control</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Glycemic control</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">ICP monitoring</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Fluid resuscitation</p>
+                </div>
+                <div className="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-center">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Nutrition</p>
+                </div>
+              </div>
+            </div>
+
+            {/* VTE Prophylaxis & Seizures */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 bg-violet-50 dark:bg-violet-900/30 rounded-lg border border-violet-200 dark:border-violet-700">
+                <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">VTE Prophylaxis</h4>
+                <ul className="text-sm text-violet-700 dark:text-violet-400 space-y-1">
+                  <li>• Initiate pneumatic compression on date of ICH diagnosis</li>
+                  <li>• Not a candidate for anticoagulation? Consider retrievable IVC filter</li>
+                  <li>• Delaying therapeutic anticoagulation for 1-2 weeks after ICH onset may be considered</li>
+                </ul>
+                <div className="mt-3 p-2 bg-violet-100 dark:bg-violet-900/40 rounded text-xs">
+                  <p className="text-violet-600 dark:text-violet-400"><strong>What if ICH patient develops acute VTE?</strong> Temporary use of retrievable IVC filter + AC can be started</p>
+                </div>
+              </div>
+              <div className="p-4 bg-fuchsia-50 dark:bg-fuchsia-900/30 rounded-lg border border-fuchsia-200 dark:border-fuchsia-700">
+                <h4 className="font-semibold text-fuchsia-800 dark:text-fuchsia-300 mb-3">Seizure Management</h4>
+                <ul className="text-sm text-fuchsia-700 dark:text-fuchsia-400 space-y-1">
+                  <li><strong>Confirmed seizures:</strong> AED recommended to reduce morbidity</li>
+                  <li><strong>Suspicion of seizures:</strong> cEEG (1-24 hours) reasonable to diagnose electrographic seizures or epileptiform discharges</li>
+                  <li><strong>NO evidence of seizure prophylaxis:</strong> Prophylactic AED is NOT beneficial and not recommended</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* ICH with Atrial Fibrillation - Anticoagulation Decision */}
+            <div className="p-4 bg-sky-50 dark:bg-sky-900/30 rounded-lg border border-sky-200 dark:border-sky-700">
+              <h4 className="font-semibold text-sky-800 dark:text-sky-300 mb-3">ICH with Atrial Fibrillation - Anticoagulation Resumption</h4>
+              <p className="text-sm text-sky-600 dark:text-sky-400 mb-4">
+                1. Intensive risk factor management (BP control, alcohol use, concomitant antithrombotic medication)<br/>
+                2. Assess cause of ICH (MRI and at least non-invasive angiography) and risk of recurrent ICH
+              </p>
+              
+              <div className="grid md:grid-cols-3 gap-3">
+                <div className="p-3 bg-green-100 dark:bg-green-900/40 rounded border border-green-300 dark:border-green-700">
+                  <h5 className="font-bold text-green-800 dark:text-green-300 mb-2 text-sm">Low Recurrence Risk</h5>
+                  <p className="text-xs text-green-700 dark:text-green-400 mb-2">Cryptogenic ICH, arteriolosclerosis without lobar microbleeds</p>
+                  <div className="p-2 bg-green-200 dark:bg-green-900/60 rounded">
+                    <p className="text-xs font-medium text-green-800 dark:text-green-300">→ Reinitiate anticoagulation in the post-acute phase</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded border border-yellow-300 dark:border-yellow-700">
+                  <h5 className="font-bold text-yellow-800 dark:text-yellow-300 mb-2 text-sm">Moderate Recurrence Risk</h5>
+                  <p className="text-xs text-yellow-700 dark:text-yellow-400 mb-2">CAA without cortical superficial siderosis, mixed SVD phenotype with high number of lobar microbleeds</p>
+                  <div className="p-2 bg-yellow-200 dark:bg-yellow-900/60 rounded">
+                    <p className="text-xs font-medium text-yellow-800 dark:text-yellow-300">→ Individual risk/benefit assessment considering: severity of cSVD, thromboembolic risk, risk factor management. Options: no AC, LAAO, or AC</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded border border-red-300 dark:border-red-700">
+                  <h5 className="font-bold text-red-800 dark:text-red-300 mb-2 text-sm">High Recurrence Risk</h5>
+                  <p className="text-xs text-red-700 dark:text-red-400 mb-2">CAA with disseminated cortical superficial siderosis, recurrent ICH</p>
+                  <div className="p-2 bg-red-200 dark:bg-red-900/60 rounded">
+                    <p className="text-xs font-medium text-red-800 dark:text-red-300">→ Do NOT initiate AC outside RCT. Evaluate left atrial appendage occlusion (LAAO) considering procedural risk, general health, frailty, comorbidities</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Rehabilitation */}
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-200 dark:border-emerald-700">
+              <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-3">Rehabilitation</h4>
+              <ul className="text-sm text-emerald-700 dark:text-emerald-400 space-y-1">
+                <li>• Early mobilization when medically stable</li>
+                <li>• Physical therapy</li>
+                <li>• Occupational therapy</li>
+                <li>• Speech therapy as needed</li>
+              </ul>
+            </div>
+
+            {/* References */}
+            <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-700 rounded-lg">
+              <p className="text-xs text-orange-600 dark:text-orange-400">
+                <strong>References:</strong> AHA/ASA 2022 Guideline for Management of Intracerebral Hemorrhage | Parry-Jones A, et al. European Stroke Journal 2023 (ICH Care Bundles Consensus Statement) | Greenberg SM, et al. Lancet Neurol 2022 (Boston Criteria v2.0)
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // ISPS25 Flowchart Component
 function ISPS25Flowchart() {
   const [isOpen, setIsOpen] = useState(true);
@@ -2868,6 +3307,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* Acute Stroke Management Algorithm */}
       <AcuteStrokeAlgorithm />
+
+      {/* Acute ICH Management */}
+      <AcuteICHManagement />
 
       {/* ISPS25 Flowchart */}
       <ISPS25Flowchart />
