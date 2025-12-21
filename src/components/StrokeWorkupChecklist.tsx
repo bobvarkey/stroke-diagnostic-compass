@@ -271,6 +271,265 @@ const categoryIcons: Record<string, any> = {
   "Pharmacogenomics": TestTube,
 };
 
+// Acute Stroke Management Algorithm Component
+function AcuteStrokeAlgorithm() {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-red-400 dark:border-red-600 bg-gradient-to-br from-red-50 dark:from-red-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-red-100/50 dark:bg-red-900/30">
+            <CardTitle className="flex items-center justify-between text-red-800 dark:text-red-300">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Acute Stroke Management Algorithm
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Information Needed Section */}
+            <div className="mb-6 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Information Needed</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-3 border-2 border-red-500 rounded-lg text-center">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Last known well time</span>
+                </div>
+                <div className="p-3 border-2 border-red-500 rounded-lg text-center">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">NIH Stroke Scale score</span>
+                </div>
+                <div className="p-3 border-2 border-red-500 rounded-lg text-center">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pre-stroke disability mRS score</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Flowchart */}
+            <div className="space-y-4">
+              {/* Starting Point */}
+              <div className="flex justify-center">
+                <div className="px-6 py-3 border-2 border-gray-400 dark:border-gray-500 rounded-lg bg-white dark:bg-gray-800">
+                  <span className="font-semibold text-gray-800 dark:text-gray-200">Last known well time to presentation</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <ArrowRight className="h-6 w-6 rotate-90 text-gray-500" />
+              </div>
+
+              {/* Time Windows */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* < 5.5 hours pathway */}
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
+                  <div className="text-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600">
+                    <span className="font-semibold text-gray-800 dark:text-gray-200">&lt; 5.5 hours</span>
+                  </div>
+                  
+                  <div className="flex justify-center">
+                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                  </div>
+
+                  <div className="text-center px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-700">
+                    <span className="text-sm text-blue-800 dark:text-blue-300">CT head, CTA head and neck</span>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                  </div>
+
+                  <div className="text-center px-3 py-2 bg-amber-50 dark:bg-amber-900/30 rounded border border-amber-200 dark:border-amber-700">
+                    <span className="text-sm text-amber-800 dark:text-amber-300">If &lt; 4.5 hours, check criteria for tPA</span>
+                  </div>
+
+                  <div className="flex justify-center gap-8">
+                    <div className="text-center">
+                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Yes</span>
+                      </div>
+                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
+                      <div className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
+                        Give tPA STAT
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">No</span>
+                      </div>
+                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
+                      <div className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
+                        Admit acute stroke protocol
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* EVT consideration for 4.5-6 hours */}
+                  <div className="mt-4 pt-4 border-t border-dashed border-gray-300 dark:border-gray-600">
+                    <div className="text-center px-3 py-2 bg-purple-50 dark:bg-purple-900/30 rounded border border-purple-200 dark:border-purple-700 mb-3">
+                      <span className="text-sm text-purple-800 dark:text-purple-300">If &gt; 4.5 and &lt; 6 hours</span>
+                    </div>
+                    <div className="text-center px-3 py-2 bg-purple-100 dark:bg-purple-900/40 rounded border border-purple-300 dark:border-purple-600 text-xs">
+                      <p className="text-purple-800 dark:text-purple-300">NIH Stroke Scale ≥ 6</p>
+                      <p className="text-purple-800 dark:text-purple-300">AND prestroke disability mRS ≤2</p>
+                      <p className="text-purple-800 dark:text-purple-300">AND large vessel occlusion</p>
+                    </div>
+                    <div className="flex justify-center mt-2">
+                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                    </div>
+                    <div className="flex justify-center gap-4 mt-2">
+                      <div className="text-center">
+                        <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">Yes</div>
+                        <div className="px-3 py-2 bg-red-600 text-white rounded-lg font-bold text-xs">
+                          Call/send EVT
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">No</div>
+                        <div className="px-3 py-2 bg-red-600 text-white rounded-lg font-bold text-xs">
+                          Admit protocol
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5.5-24 hours pathway */}
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
+                  <div className="text-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600">
+                    <span className="font-semibold text-gray-800 dark:text-gray-200">&gt; 5.5 hours and &lt; 24 hours</span>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                  </div>
+
+                  <div className="text-center px-3 py-2 bg-orange-50 dark:bg-orange-900/30 rounded border border-orange-200 dark:border-orange-700">
+                    <p className="text-sm text-orange-800 dark:text-orange-300">NIH Stroke Scale ≥ 6</p>
+                    <p className="text-sm text-orange-800 dark:text-orange-300">AND prestroke disability mRS ≤2</p>
+                  </div>
+
+                  <div className="flex justify-center gap-8">
+                    <div className="text-center">
+                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Yes</span>
+                      </div>
+                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
+                    </div>
+                    <div className="text-center">
+                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">No</span>
+                      </div>
+                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
+                      <div className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
+                        Admit acute stroke protocol
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-center px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-700">
+                    <span className="text-sm text-blue-800 dark:text-blue-300 font-medium">CT head/CTA RAPID protocol</span>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                  </div>
+
+                  <div className="text-center px-3 py-2 bg-teal-50 dark:bg-teal-900/30 rounded border border-teal-200 dark:border-teal-700 text-xs">
+                    <p className="text-teal-800 dark:text-teal-300">Check if CTA shows LVO and:</p>
+                    <p className="text-teal-800 dark:text-teal-300">• Ischemic core &lt; 70 mL</p>
+                    <p className="text-teal-800 dark:text-teal-300">• Mismatch ratio &gt; 1.8</p>
+                    <p className="text-teal-800 dark:text-teal-300">• Penumbra volume &gt; 15 mL</p>
+                  </div>
+
+                  <div className="flex justify-center gap-4 mt-2">
+                    <div className="text-center">
+                      <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">Yes</div>
+                      <div className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
+                        Call/send endovascular treatment
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">No</div>
+                      <div className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
+                        Admit acute stroke protocol
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* > 24 hours pathway */}
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
+                  <div className="text-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600">
+                    <span className="font-semibold text-gray-800 dark:text-gray-200">&gt; 24 hours</span>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                  </div>
+
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="px-6 py-4 bg-red-600 text-white rounded-lg font-bold text-center">
+                      CT head and admit<br />acute stroke protocol
+                    </div>
+                  </div>
+
+                  <div className="mt-8 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    <h5 className="font-medium text-gray-800 dark:text-gray-200 mb-2 text-sm">Standard Acute Stroke Protocol:</h5>
+                    <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                      <li>• Stroke unit admission</li>
+                      <li>• BP management per guidelines</li>
+                      <li>• Glycemic control</li>
+                      <li>• DVT prophylaxis</li>
+                      <li>• Dysphagia screen before PO</li>
+                      <li>• Early rehabilitation</li>
+                      <li>• Secondary prevention workup</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Points */}
+              <div className="mt-6 grid md:grid-cols-2 gap-4">
+                <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-700">
+                  <h5 className="font-semibold text-green-800 dark:text-green-300 mb-2">tPA Eligibility (IV Thrombolysis)</h5>
+                  <ul className="text-sm text-green-700 dark:text-green-400 space-y-1">
+                    <li>• Age ≥18 years</li>
+                    <li>• Clinical diagnosis of ischemic stroke</li>
+                    <li>• Measurable neurological deficit</li>
+                    <li>• Symptom onset &lt;4.5 hours (or wake-up stroke with favorable imaging)</li>
+                    <li>• No hemorrhage on CT</li>
+                    <li>• Check absolute and relative contraindications</li>
+                  </ul>
+                </div>
+                <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-700">
+                  <h5 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">EVT Eligibility (Mechanical Thrombectomy)</h5>
+                  <ul className="text-sm text-purple-700 dark:text-purple-400 space-y-1">
+                    <li>• Large vessel occlusion (ICA, M1, basilar)</li>
+                    <li>• NIHSS ≥6 (or disabling deficit)</li>
+                    <li>• Pre-stroke mRS ≤2</li>
+                    <li>• ASPECTS ≥6 (or favorable perfusion imaging)</li>
+                    <li>• Within 24 hours with favorable imaging profile</li>
+                    <li>• Consider for M2, M3, ACA, PCA in select cases</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Reference */}
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-700 rounded-lg">
+                <p className="text-xs text-red-600 dark:text-red-400">
+                  <strong>References:</strong> AHA/ASA Guidelines for Early Management of Acute Ischemic Stroke (2019, 2024 update) | DAWN Trial | DEFUSE 3 Trial | EXTEND Trial
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // ISPS25 Flowchart Component
 function ISPS25Flowchart() {
   const [isOpen, setIsOpen] = useState(true);
@@ -2606,6 +2865,9 @@ export default function StrokeWorkupChecklist() {
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
       </div>
+
+      {/* Acute Stroke Management Algorithm */}
+      <AcuteStrokeAlgorithm />
 
       {/* ISPS25 Flowchart */}
       <ISPS25Flowchart />
