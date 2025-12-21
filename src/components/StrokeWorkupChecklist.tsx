@@ -67,6 +67,8 @@ const strokeTests: TestItem[] = [
   { id: "pg20210a", name: "Prothrombin G20210A Mutation", category: "Hypercoagulable" },
   { id: "mthfr", name: "MTHFR Mutation", category: "Hypercoagulable" },
   { id: "ddimer", name: "D-dimer", category: "Hypercoagulable" },
+  { id: "cyp2c19_hypercoag", name: "CYP2C19 Genotyping (Clopidogrel Resistance) ⚠️ 30-50% of Indians are resistant", category: "Hypercoagulable" },
+  { id: "pru_hypercoag", name: "P2Y12 Reaction Units (PRU) - Platelet Function Test", category: "Hypercoagulable" },
   
   // Autoimmune/Inflammatory
   { id: "ana", name: "ANA", category: "Autoimmune" },
