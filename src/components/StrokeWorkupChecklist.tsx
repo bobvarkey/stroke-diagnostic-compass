@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 
@@ -3280,6 +3281,7 @@ function MetabolicSyndromeChecker() {
 
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState("ischemic");
 
   const handleCheck = (testId: string) => {
     const newChecked = new Set(checkedItems);
@@ -3305,655 +3307,157 @@ export default function StrokeWorkupChecklist() {
         </p>
       </div>
 
-      {/* Acute Stroke Management Algorithm */}
-      <AcuteStrokeAlgorithm />
+      {/* Main Category Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 h-14 mb-6">
+          <TabsTrigger 
+            value="ischemic" 
+            className="flex items-center gap-2 text-base font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+          >
+            <Zap className="h-5 w-5" />
+            Ischemic Stroke
+          </TabsTrigger>
+          <TabsTrigger 
+            value="hemorrhagic" 
+            className="flex items-center gap-2 text-base font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white"
+          >
+            <Droplets className="h-5 w-5" />
+            Intracerebral Hemorrhage
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Acute ICH Management */}
-      <AcuteICHManagement />
+        {/* Ischemic Stroke Tab Content */}
+        <TabsContent value="ischemic" className="space-y-6">
+          {/* Acute Stroke Management Algorithm */}
+          <AcuteStrokeAlgorithm />
 
-      {/* ISPS25 Flowchart */}
-      <ISPS25Flowchart />
+          {/* ISPS25 Flowchart */}
+          <ISPS25Flowchart />
 
-      {/* NIHSS Scale Reference */}
-      <NIHSSScaleReference />
+          {/* NIHSS Scale Reference */}
+          <NIHSSScaleReference />
 
-      {/* mRS Scale Reference */}
-      <MRSScaleReference />
+          {/* mRS Scale Reference */}
+          <MRSScaleReference />
 
-      {/* ASPECTS Score Reference */}
-      <ASPECTSScoreReference />
+          {/* ASPECTS Score Reference */}
+          <ASPECTSScoreReference />
 
-      {/* pc-ASPECTS Score Reference */}
-      <PcASPECTSScoreReference />
+          {/* pc-ASPECTS Score Reference */}
+          <PcASPECTSScoreReference />
 
-      {/* CHA2DS2-VASc Calculator */}
-      <CHA2DS2VAScCalculator />
+          {/* CHA2DS2-VASc Calculator */}
+          <CHA2DS2VAScCalculator />
 
-      {/* HAS-BLED Calculator */}
-      <HASBLEDCalculator />
+          {/* HAS-BLED Calculator */}
+          <HASBLEDCalculator />
 
-      {/* ABCD2 Calculator */}
-      <ABCD2Calculator />
+          {/* ABCD2 Calculator */}
+          <ABCD2Calculator />
 
-      {/* ICH Score Calculator */}
-      <ICHScoreCalculator />
+          {/* Functional Outcome Scales */}
+          <FunctionalOutcomeScales />
 
-      {/* FUNC Score Calculator */}
-      <FUNCScoreCalculator />
+          {/* ADL Assessment Scales */}
+          <ADLAssessmentScales />
 
-      {/* SAH Grading Scales */}
-      <SAHGradingScales />
+          {/* Metabolic Syndrome Checker */}
+          <MetabolicSyndromeChecker />
 
-      {/* Functional Outcome Scales */}
-      <FunctionalOutcomeScales />
-
-      {/* ADL Assessment Scales */}
-      <ADLAssessmentScales />
-
-      {/* Metabolic Syndrome Checker */}
-      <MetabolicSyndromeChecker />
-
-      <Card className="bg-medical-section border-medical-header/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-medical-header">
-            <Activity className="h-5 w-5" />
-            Progress Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">
-                {checkedItems.size} of {strokeTests.length} tests completed
-              </span>
-              <Badge variant={completionPercentage === 100 ? "default" : "secondary"}>
-                {Math.round(completionPercentage)}%
-              </Badge>
-            </div>
-            <Progress value={completionPercentage} className="h-2" />
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-6">
-        {categories.map((category) => {
-          const categoryTests = strokeTests.filter(test => test.category === category);
-          const categoryCompleted = categoryTests.filter(test => checkedItems.has(test.id)).length;
-          const categoryProgress = (categoryCompleted / categoryTests.length) * 100;
-          const IconComponent = categoryIcons[category] || TestTube;
-
-          return (
-            <Card key={category} className="border-border">
-              <CardHeader className="bg-medical-section/50">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-medical-header">
-                    <IconComponent className="h-5 w-5" />
-                    {category}
-                  </CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline">
-                      {categoryCompleted}/{categoryTests.length}
-                    </Badge>
-                    <div className="text-sm text-muted-foreground">
-                      {Math.round(categoryProgress)}%
-                    </div>
-                  </div>
-                </div>
-                <Progress value={categoryProgress} className="h-1" />
-              </CardHeader>
-              <CardContent className="pt-6">
-                {category === "Cardioembolism Aetiologies" && (
-                  <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-700 rounded-lg">
-                    <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-2">
-                      <Activity className="h-4 w-4" />
-                      AF Burden Management Note
-                    </h4>
-                    <p className="text-sm text-amber-700 dark:text-amber-400">
-                      {afBurdenNote}
-                    </p>
-                  </div>
-                )}
-                {category === "HMOD Evaluation" && (
-                  <div className="mb-4 space-y-4">
-                    {/* ESC HMOD Diagnostic Criteria */}
-                    <div className="p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-700 rounded-lg">
-                      <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-3 flex items-center gap-2">
-                        <Activity className="h-4 w-4" />
-                        ESC Criteria for Diagnosing HMOD
-                      </h4>
-                      
-                      {/* Kidney */}
-                      <div className="mb-4">
-                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Kidney</span>
-                          eGFR & ACR
-                        </h5>
-                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
-                          <li>eGFR {"<"}60 mL/min/1.73 m² (irrespective of albuminuria)</li>
-                          <li>Albuminuria ≥30 mg/g (irrespective of eGFR)</li>
-                        </ul>
-                      </div>
-                      
-                      {/* Heart - ECG */}
-                      <div className="mb-4">
-                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Heart</span>
-                          ECG - LVH Criteria
-                        </h5>
-                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
-                          <li>Sokolow-Lyon: SV1+RV5 {">"}35 mm</li>
-                          <li>RaVL ≥11 mm</li>
-                          <li>Cornell voltage: SV3+RaVL {">"}28 mm (men), {">"}20 mm (women)</li>
-                        </ul>
-                      </div>
-                      
-                      {/* Heart - Echo */}
-                      <div className="mb-4">
-                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Heart</span>
-                          Echocardiography
-                        </h5>
-                        <div className="grid gap-3 md:grid-cols-2 ml-2">
-                          <div>
-                            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 mb-1">LVH:</p>
-                            <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1">
-                              <li>LV mass/height²˙⁷: {">"}50 g/m²˙⁷ (men), {">"}47 (women)</li>
-                              <li>LV mass/BSA: {">"}115 g/m² (men), {">"}95 (women)</li>
-                              <li>LV concentric geometry: RWT ≥0.43</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 mb-1">Diastolic Dysfunction:</p>
-                            <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1">
-                              <li>LA volume/height²: {">"}18.5 mL/m² (men), {">"}16.5 (women)</li>
-                              <li>LA volume index: 34 mL/m²</li>
-                              <li>{"e'"} {"<"}7 cm/s; E/{"e'"} {">"}14</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Cardiac Biomarkers */}
-                      <div className="mb-4">
-                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Heart</span>
-                          Cardiac Biomarkers
-                        </h5>
-                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
-                          <li>hs-cTnT or I {">"}99th percentile upper reference limit</li>
-                          <li>NT-proBNP {">"}125 pg/mL (age {"<"}75) or {">"}450 pg/mL (age ≥75)</li>
-                        </ul>
-                      </div>
-                      
-                      {/* Arteries */}
-                      <div>
-                        <h5 className="font-medium text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-emerald-200 dark:bg-emerald-800 rounded text-xs">Arteries</span>
-                          Vascular Assessment
-                        </h5>
-                        <ul className="text-sm text-emerald-700 dark:text-emerald-400 list-disc list-inside space-y-1 ml-2">
-                          <li>Carotid/femoral ultrasound: Plaque (focal wall thickening {">"}1.5 mm)</li>
-                          <li>Carotid-femoral PWV {">"}10 m/s</li>
-                          <li>Brachial-ankle PWV {">"}14 m/s</li>
-                          <li>Coronary artery calcium score {">"}100 Agatston units</li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    {/* STRIVE Criteria */}
-                    <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-700 rounded-lg">
-                      <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center gap-2">
-                        <Brain className="h-4 w-4" />
-                        STRIVE-2 Criteria (STandards for ReportIng Vascular changes on nEuroimaging)
-                      </h4>
-                      <div className="grid gap-2 md:grid-cols-2">
-                        {striveMarkers.map((marker, idx) => (
-                          <div key={idx} className="text-sm">
-                            <span className="font-medium text-blue-800 dark:text-blue-300">{marker.name}:</span>
-                            <span className="text-blue-700 dark:text-blue-400 ml-1">{marker.desc}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Fazekas Scale */}
-                    <div className="p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-700 rounded-lg">
-                      <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-3 flex items-center gap-2">
-                        <Brain className="h-4 w-4" />
-                        Fazekas Scale for White Matter Hyperintensities
-                      </h4>
-                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
-                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">0</div>
-                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">None</div>
-                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">No WMH</div>
-                        </div>
-                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
-                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">1</div>
-                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">Punctate</div>
-                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">Punctate foci</div>
-                        </div>
-                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
-                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">2</div>
-                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">Early Confluent</div>
-                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">Beginning to merge</div>
-                        </div>
-                        <div className="p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg text-center">
-                          <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">3</div>
-                          <div className="text-sm font-medium text-purple-800 dark:text-purple-300">Confluent</div>
-                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">Large confluent areas</div>
-                        </div>
-                      </div>
-                      <p className="text-xs text-purple-600 dark:text-purple-400 mt-3 italic">
-                        Score periventricular and deep white matter separately. Higher grades indicate greater SVD burden.
-                      </p>
-                    </div>
-                    
-                    {/* Microbleed Distribution Patterns */}
-                    <div className="p-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-700 rounded-lg">
-                      <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3 flex items-center gap-2">
-                        <Droplets className="h-4 w-4" />
-                        Cerebral Microbleed Distribution Patterns
-                      </h4>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        {/* Lobar Pattern - CAA */}
-                        <div className="p-3 bg-rose-100/50 dark:bg-rose-900/30 rounded-lg border-l-4 border-rose-500">
-                          <div className="font-semibold text-rose-800 dark:text-rose-300 mb-2">Lobar (Cortical-Subcortical)</div>
-                          <div className="text-sm text-rose-700 dark:text-rose-400 space-y-1">
-                            <p><span className="font-medium">Location:</span> Cortex, grey-white junction, subcortical white matter</p>
-                            <p><span className="font-medium">Suggests:</span> Cerebral Amyloid Angiopathy (CAA)</p>
-                            <p><span className="font-medium">Clinical:</span> Higher ICH recurrence risk, cognitive decline, transient focal neurological episodes</p>
-                            <p><span className="font-medium">Note:</span> Strictly lobar pattern supports probable CAA (Boston criteria)</p>
-                          </div>
-                        </div>
-                        
-                        {/* Deep Pattern - Hypertensive */}
-                        <div className="p-3 bg-rose-100/50 dark:bg-rose-900/30 rounded-lg border-l-4 border-rose-500">
-                          <div className="font-semibold text-rose-800 dark:text-rose-300 mb-2">Deep (Basal Ganglia/Infratentorial)</div>
-                          <div className="text-sm text-rose-700 dark:text-rose-400 space-y-1">
-                            <p><span className="font-medium">Location:</span> Basal ganglia, thalamus, brainstem, cerebellum</p>
-                            <p><span className="font-medium">Suggests:</span> Hypertensive Arteriopathy</p>
-                            <p><span className="font-medium">Clinical:</span> Associated with lacunar infarcts, WMH, and hypertensive SVD</p>
-                            <p><span className="font-medium">Note:</span> Often coexists with other HMOD markers</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-3 p-2 bg-rose-100/70 dark:bg-rose-900/50 rounded text-xs text-rose-700 dark:text-rose-400">
-                        <span className="font-medium">Mixed pattern:</span> Both lobar and deep microbleeds may indicate mixed pathology or advanced hypertensive disease. Count and distribution guide anticoagulation decisions.
-                      </div>
-                    </div>
-                    
-                    {/* Boston Criteria for CAA */}
-                    <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-700 rounded-lg">
-                      <h4 className="font-semibold text-indigo-800 dark:text-indigo-300 mb-3 flex items-center gap-2">
-                        <Brain className="h-4 w-4" />
-                        Boston Criteria v2.0 for CAA Diagnosis
-                      </h4>
-                      <div className="grid gap-4 md:grid-cols-3">
-                        {/* Definite CAA */}
-                        <div className="p-3 bg-indigo-100/50 dark:bg-indigo-900/30 rounded-lg border-t-4 border-indigo-700">
-                          <div className="font-semibold text-indigo-800 dark:text-indigo-300 mb-2 text-center">Definite CAA</div>
-                          <div className="text-sm text-indigo-700 dark:text-indigo-400">
-                            <p>Full postmortem examination demonstrating:</p>
-                            <ul className="list-disc list-inside mt-1 space-y-1">
-                              <li>Lobar, cortical, or cortical-subcortical hemorrhage</li>
-                              <li>Severe CAA with vasculopathy</li>
-                              <li>Absence of other diagnostic lesion</li>
-                            </ul>
-                          </div>
-                        </div>
-                        
-                        {/* Probable CAA */}
-                        <div className="p-3 bg-indigo-100/50 dark:bg-indigo-900/30 rounded-lg border-t-4 border-indigo-500">
-                          <div className="font-semibold text-indigo-800 dark:text-indigo-300 mb-2 text-center">Probable CAA</div>
-                          <div className="text-sm text-indigo-700 dark:text-indigo-400">
-                            <p className="font-medium mb-1">Age ≥50 years with:</p>
-                            <ul className="list-disc list-inside space-y-1">
-                              <li>≥2 strictly lobar hemorrhagic lesions (ICH, microbleeds, or cSS)</li>
-                              <li>OR 1 lobar hemorrhagic lesion + 1 white matter feature (severe WMH or ≥20 centrum semiovale PVS)</li>
-                            </ul>
-                            <p className="mt-2 text-xs italic">Excludes other causes</p>
-                          </div>
-                        </div>
-                        
-                        {/* Possible CAA */}
-                        <div className="p-3 bg-indigo-100/50 dark:bg-indigo-900/30 rounded-lg border-t-4 border-indigo-300">
-                          <div className="font-semibold text-indigo-800 dark:text-indigo-300 mb-2 text-center">Possible CAA</div>
-                          <div className="text-sm text-indigo-700 dark:text-indigo-400">
-                            <p className="font-medium mb-1">Age ≥50 years with:</p>
-                            <ul className="list-disc list-inside space-y-1">
-                              <li>Single lobar ICH, OR</li>
-                              <li>Single lobar microbleed, OR</li>
-                              <li>Focal or disseminated cSS</li>
-                            </ul>
-                            <p className="mt-2 text-xs italic">Excludes other causes</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-3 grid gap-2 text-xs text-indigo-600 dark:text-indigo-400">
-                        <div className="p-2 bg-indigo-100/70 dark:bg-indigo-900/50 rounded">
-                          <span className="font-medium">Key hemorrhagic markers:</span> Lobar ICH, lobar microbleeds, cortical superficial siderosis (cSS)
-                        </div>
-                        <div className="p-2 bg-indigo-100/70 dark:bg-indigo-900/50 rounded">
-                          <span className="font-medium">Exclusions:</span> Deep hemorrhage, anticoagulant-associated ICH (INR &gt;3), other identified cause
-                        </div>
-                      </div>
-                      
-                      {/* Boston Criteria Flowchart Image */}
-                      <div className="mt-4">
-                        <img 
-                          src={bostonCriteriaFlowchart} 
-                          alt="Boston Criteria v2.0 Flowchart for CAA Diagnosis showing clinical/radiologic criteria and pathology-based classification" 
-                          className="w-full rounded-lg border border-indigo-200 dark:border-indigo-700 shadow-md"
-                        />
-                        <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-2 text-center">
-                          TFNE: Transient focal neurologic event; ICH: Intracerebral hemorrhage; CSS: Cortical superficial siderosis; 
-                          cSAH: Convexity subarachnoid hemorrhage; DPS: Dilated perivascular spaces; WMH: White matter hyperintensities
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                  {categoryTests.map((test) => (
-                    <div
-                      key={test.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-medical-section/30 transition-colors"
-                    >
-                      <Checkbox
-                        id={test.id}
-                        checked={checkedItems.has(test.id)}
-                        onCheckedChange={() => handleCheck(test.id)}
-                        className="data-[state=checked]:bg-medical-complete data-[state=checked]:border-medical-complete"
-                      />
-                      <label
-                        htmlFor={test.id}
-                        className={`text-sm font-medium cursor-pointer flex-1 ${
-                          checkedItems.has(test.id)
-                            ? "line-through text-muted-foreground"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {test.name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Pharmacogenomics Reference Card */}
-      <Collapsible>
-        <Card className="border-violet-300 dark:border-violet-700 bg-gradient-to-br from-violet-50 dark:from-violet-950/30 to-background">
-          <CollapsibleTrigger className="w-full">
-            <CardHeader className="bg-violet-100/50 dark:bg-violet-900/30">
-              <CardTitle className="flex items-center justify-between text-violet-800 dark:text-violet-300">
-                <div className="flex items-center gap-2">
-                  <TestTube className="h-5 w-5" />
-                  Pharmacogenomics - CYP2C19 & Antiplatelet Therapy Guide
-                </div>
-                <ChevronDown className="h-5 w-5" />
+          {/* Progress Overview */}
+          <Card className="bg-medical-section border-medical-header/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-medical-header">
+                <Activity className="h-5 w-5" />
+                Progress Overview
               </CardTitle>
             </CardHeader>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <CardContent className="pt-6 space-y-6">
-              {/* Warning Banner */}
-              <div className="p-4 bg-amber-100 dark:bg-amber-900/40 border border-amber-300 dark:border-amber-700 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-bold text-amber-800 dark:text-amber-300">High Prevalence in Indian Population</h4>
-                    <p className="text-sm text-amber-700 dark:text-amber-400 mt-1">
-                      <strong>30-50% of the Indian population</strong> carries CYP2C19 loss-of-function alleles (*2, *3), making clopidogrel resistance highly prevalent in this demographic. Consider pharmacogenomic testing or alternative antiplatelet agents.
-                    </p>
-                  </div>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">
+                    {checkedItems.size} of {strokeTests.length} tests completed
+                  </span>
+                  <Badge variant={completionPercentage === 100 ? "default" : "secondary"}>
+                    {Math.round(completionPercentage)}%
+                  </Badge>
                 </div>
-              </div>
-
-              {/* CYP2C19 Overview */}
-              <div className="p-4 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
-                <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">CYP2C19 & Clopidogrel Metabolism</h4>
-                <p className="text-sm text-violet-700 dark:text-violet-400 mb-3">
-                  Clopidogrel is a prodrug requiring hepatic CYP2C19 enzyme for conversion to its active metabolite. Genetic polymorphisms in CYP2C19 significantly affect drug efficacy.
-                </p>
-                <div className="grid gap-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-violet-800 dark:text-violet-300">Key Alleles:</span>
-                  </div>
-                  <ul className="list-disc list-inside text-violet-700 dark:text-violet-400 space-y-1 ml-2">
-                    <li><strong>*1</strong> - Normal function (wild-type)</li>
-                    <li><strong>*2</strong> - Loss-of-function (most common in South Asians)</li>
-                    <li><strong>*3</strong> - Loss-of-function</li>
-                    <li><strong>*17</strong> - Gain-of-function (ultrarapid metabolism)</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Metabolizer Phenotypes Table */}
-              <div>
-                <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">CYP2C19 Metabolizer Phenotypes</h4>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm border-collapse">
-                    <thead>
-                      <tr className="bg-violet-200 dark:bg-violet-800">
-                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Phenotype</th>
-                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Genotype Examples</th>
-                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Enzyme Activity</th>
-                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Clinical Implication</th>
-                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Recommendation</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-violet-700 dark:text-violet-400">
-                      <tr className="bg-blue-50 dark:bg-blue-950/30">
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Ultrarapid</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*17/*17</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Increased</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Enhanced platelet inhibition</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-blue-700 dark:text-blue-400">Standard dose; monitor for bleeding</td>
-                      </tr>
-                      <tr className="bg-green-50 dark:bg-green-950/30">
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Normal (Extensive)</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*1/*1, *1/*17</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Normal</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Expected response</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-green-700 dark:text-green-400">Clopidogrel effective at standard dose</td>
-                      </tr>
-                      <tr className="bg-amber-50 dark:bg-amber-950/30">
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Intermediate</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*1/*2, *1/*3, *2/*17</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Reduced</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Diminished antiplatelet effect</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-amber-700 dark:text-amber-400">Consider alternative or double dose*</td>
-                      </tr>
-                      <tr className="bg-red-50 dark:bg-red-950/30">
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Poor</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*2/*2, *2/*3, *3/*3</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Minimal/Absent</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Clopidogrel ineffective</td>
-                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-red-700 dark:text-red-400 font-medium">Use alternative antiplatelet</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">*Double loading dose (600mg) followed by 150mg daily may partially overcome intermediate metabolizer status, though efficacy is variable.</p>
-              </div>
-
-              {/* PRU Testing */}
-              <div className="p-4 bg-slate-100 dark:bg-slate-900/40 rounded-lg">
-                <h4 className="font-semibold text-slate-800 dark:text-slate-300 mb-3">P2Y12 Reaction Units (PRU) - Platelet Function Testing</h4>
-                <p className="text-sm text-slate-700 dark:text-slate-400 mb-3">
-                  PRU testing (VerifyNow P2Y12 assay) measures actual platelet inhibition regardless of genotype. Useful for phenotypic confirmation.
-                </p>
-                <div className="grid gap-2 md:grid-cols-3">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/40 rounded border border-blue-200 dark:border-blue-700">
-                    <div className="font-bold text-blue-800 dark:text-blue-300">PRU &lt; 85</div>
-                    <div className="text-xs text-blue-700 dark:text-blue-400">Adequate inhibition</div>
-                    <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">↑ Bleeding risk</div>
-                  </div>
-                  <div className="p-3 bg-green-100 dark:bg-green-900/40 rounded border border-green-200 dark:border-green-700">
-                    <div className="font-bold text-green-800 dark:text-green-300">PRU 85-208</div>
-                    <div className="text-xs text-green-700 dark:text-green-400">Therapeutic range</div>
-                    <div className="text-xs text-green-600 dark:text-green-500 mt-1">Optimal balance</div>
-                  </div>
-                  <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded border border-red-200 dark:border-red-700">
-                    <div className="font-bold text-red-800 dark:text-red-300">PRU &gt; 208</div>
-                    <div className="text-xs text-red-700 dark:text-red-400">High platelet reactivity</div>
-                    <div className="text-xs text-red-600 dark:text-red-500 mt-1">Clopidogrel resistance</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Aspirin Resistance Testing */}
-              <div className="p-4 bg-rose-100 dark:bg-rose-900/40 rounded-lg border border-rose-200 dark:border-rose-700">
-                <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3">Aspirin Resistance Testing (VerifyNow Aspirin / ARU)</h4>
-                <p className="text-sm text-rose-700 dark:text-rose-400 mb-3">
-                  Aspirin Reaction Units (ARU) measure platelet inhibition by aspirin. True aspirin resistance is rare (&lt;5%), but "laboratory" resistance (high ARU despite compliance) occurs in 5-40% of patients.
-                </p>
-                
-                <div className="grid gap-2 md:grid-cols-3 mb-4">
-                  <div className="p-3 bg-green-100 dark:bg-green-900/40 rounded border border-green-200 dark:border-green-700">
-                    <div className="font-bold text-green-800 dark:text-green-300">ARU &lt; 550</div>
-                    <div className="text-xs text-green-700 dark:text-green-400">Aspirin sensitive</div>
-                    <div className="text-xs text-green-600 dark:text-green-500 mt-1">Good COX-1 inhibition</div>
-                  </div>
-                  <div className="p-3 bg-amber-100 dark:bg-amber-900/40 rounded border border-amber-200 dark:border-amber-700">
-                    <div className="font-bold text-amber-800 dark:text-amber-300">ARU 550-620</div>
-                    <div className="text-xs text-amber-700 dark:text-amber-400">Borderline response</div>
-                    <div className="text-xs text-amber-600 dark:text-amber-500 mt-1">Verify compliance</div>
-                  </div>
-                  <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded border border-red-200 dark:border-red-700">
-                    <div className="font-bold text-red-800 dark:text-red-300">ARU ≥ 550</div>
-                    <div className="text-xs text-red-700 dark:text-red-400">Aspirin resistant</div>
-                    <div className="text-xs text-red-600 dark:text-red-500 mt-1">Consider alternative</div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <h5 className="font-medium text-rose-800 dark:text-rose-300 mb-2">Causes of Apparent Aspirin Resistance</h5>
-                    <div className="grid gap-2 md:grid-cols-2 text-sm">
-                      <div className="p-2 bg-rose-50 dark:bg-rose-950/30 rounded">
-                        <span className="font-medium text-rose-700 dark:text-rose-400">Pseudo-resistance (most common):</span>
-                        <ul className="list-disc list-inside text-rose-600 dark:text-rose-500 text-xs mt-1">
-                          <li>Non-compliance (most frequent cause)</li>
-                          <li>Inadequate dosing</li>
-                          <li>Drug interactions (NSAIDs, PPIs)</li>
-                          <li>Enteric coating malabsorption</li>
-                        </ul>
-                      </div>
-                      <div className="p-2 bg-rose-50 dark:bg-rose-950/30 rounded">
-                        <span className="font-medium text-rose-700 dark:text-rose-400">True resistance (rare):</span>
-                        <ul className="list-disc list-inside text-rose-600 dark:text-rose-500 text-xs mt-1">
-                          <li>COX-1 polymorphisms</li>
-                          <li>Increased platelet turnover</li>
-                          <li>COX-2 upregulation</li>
-                          <li>Alternative activation pathways</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h5 className="font-medium text-rose-800 dark:text-rose-300 mb-2">Management of Aspirin Resistance</h5>
-                    <ul className="text-sm text-rose-700 dark:text-rose-400 space-y-1">
-                      <li><strong>1. Confirm compliance</strong> - most important first step</li>
-                      <li><strong>2. Increase aspirin dose</strong> - 150-325mg may overcome partial resistance</li>
-                      <li><strong>3. Switch to non-enteric coated</strong> - better bioavailability</li>
-                      <li><strong>4. Avoid concurrent NSAIDs</strong> - ibuprofen blocks aspirin binding</li>
-                      <li><strong>5. Add P2Y12 inhibitor</strong> - dual antiplatelet therapy</li>
-                      <li><strong>6. Consider alternative</strong> - cilostazol for aspirin-intolerant patients</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Alternative Antiplatelet Agents */}
-              <div>
-                <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">Alternative Antiplatelet Agents for Poor/Intermediate Metabolizers</h4>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="p-4 bg-teal-100 dark:bg-teal-900/40 rounded-lg border border-teal-200 dark:border-teal-700">
-                    <h5 className="font-bold text-teal-800 dark:text-teal-300 mb-2">Ticagrelor (Brilinta)</h5>
-                    <ul className="text-sm text-teal-700 dark:text-teal-400 space-y-1">
-                      <li>• <strong>Not CYP2C19 dependent</strong></li>
-                      <li>• Direct-acting, reversible P2Y12 inhibitor</li>
-                      <li>• Loading: 180mg; Maintenance: 90mg BID</li>
-                      <li>• Faster onset/offset than clopidogrel</li>
-                      <li>• Side effects: Dyspnea, bleeding, bradyarrhythmias</li>
-                      <li>• Avoid with strong CYP3A4 inhibitors</li>
-                    </ul>
-                  </div>
-                  <div className="p-4 bg-orange-100 dark:bg-orange-900/40 rounded-lg border border-orange-200 dark:border-orange-700">
-                    <h5 className="font-bold text-orange-800 dark:text-orange-300 mb-2">Prasugrel (Effient)</h5>
-                    <ul className="text-sm text-orange-700 dark:text-orange-400 space-y-1">
-                      <li>• <strong>Less affected by CYP2C19 variants</strong></li>
-                      <li>• Irreversible P2Y12 inhibitor</li>
-                      <li>• Loading: 60mg; Maintenance: 10mg daily</li>
-                      <li>• More potent than clopidogrel</li>
-                      <li>• <strong>Contraindicated:</strong> Prior stroke/TIA, age ≥75, weight &lt;60kg</li>
-                      <li>• Higher bleeding risk</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dosing Recommendations Summary */}
-              <div className="p-4 bg-violet-200 dark:bg-violet-800/40 rounded-lg">
-                <h4 className="font-semibold text-violet-900 dark:text-violet-200 mb-3">Clinical Decision Algorithm</h4>
-                <div className="space-y-2 text-sm text-violet-800 dark:text-violet-300">
-                  <div className="flex items-start gap-2">
-                    <span className="font-bold text-violet-900 dark:text-violet-100">1.</span>
-                    <span>Consider CYP2C19 genotyping in high-risk patients (ACS, PCI, stroke) especially in South Asian populations</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="font-bold text-violet-900 dark:text-violet-100">2.</span>
-                    <span>If genotyping unavailable, consider empiric use of ticagrelor in Indian patients given high prevalence of LOF alleles</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="font-bold text-violet-900 dark:text-violet-100">3.</span>
-                    <span>PRU testing can confirm phenotypic response when genotype is uncertain</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="font-bold text-violet-900 dark:text-violet-100">4.</span>
-                    <span>Poor metabolizers: Switch to ticagrelor (preferred) or prasugrel (if no contraindications)</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="font-bold text-violet-900 dark:text-violet-100">5.</span>
-                    <span>Intermediate metabolizers: Consider double-dose clopidogrel or switch to alternative</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* References */}
-              <div className="p-3 bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700 rounded-lg">
-                <p className="text-xs text-violet-600 dark:text-violet-400">
-                  <strong>References:</strong> CPIC Guidelines for Clopidogrel and CYP2C19 (2022); Scott SA et al. <em>Clin Pharmacol Ther</em>. 2013;94(3):317-323.
-                </p>
+                <Progress value={completionPercentage} className="h-2" />
               </div>
             </CardContent>
-          </CollapsibleContent>
-        </Card>
-      </Collapsible>
+          </Card>
 
-      {/* Discharge Summary Template */}
-      <Collapsible>
-        <Card className="border-emerald-300 dark:border-emerald-700 bg-gradient-to-br from-emerald-50 dark:from-emerald-950/30 to-background">
-          <CollapsibleTrigger className="w-full">
-            <CardHeader className="bg-emerald-100/50 dark:bg-emerald-900/30">
-              <CardTitle className="flex items-center justify-between text-emerald-800 dark:text-emerald-300">
-                <div className="flex items-center gap-2">
-                  <Stethoscope className="h-5 w-5" />
-                  Stroke Discharge Summary Template
-                </div>
-                <ChevronDown className="h-5 w-5" />
-              </CardTitle>
-            </CardHeader>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <CardContent className="pt-6">
+          <div className="grid gap-6">
+            {categories.map((category) => {
+              const categoryTests = strokeTests.filter(test => test.category === category);
+              const categoryCompleted = categoryTests.filter(test => checkedItems.has(test.id)).length;
+              const categoryProgress = (categoryCompleted / categoryTests.length) * 100;
+              const IconComponent = categoryIcons[category] || TestTube;
+
+              return (
+                <Card key={category} className="border-border">
+                  <CardHeader className="bg-medical-section/50">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2 text-medical-header">
+                        <IconComponent className="h-5 w-5" />
+                        {category}
+                      </CardTitle>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">
+                          {categoryCompleted}/{categoryTests.length}
+                        </Badge>
+                        <div className="text-sm text-muted-foreground">
+                          {Math.round(categoryProgress)}%
+                        </div>
+                      </div>
+                    </div>
+                    <Progress value={categoryProgress} className="h-1" />
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="space-y-2">
+                      {categoryTests.map((test) => (
+                        <div
+                          key={test.id}
+                          className="flex items-center space-x-3 p-2 rounded hover:bg-accent/50 transition-colors"
+                        >
+                          <Checkbox
+                            id={test.id}
+                            checked={checkedItems.has(test.id)}
+                            onCheckedChange={() => handleCheck(test.id)}
+                          />
+                          <label
+                            htmlFor={test.id}
+                            className={`text-sm cursor-pointer flex-1 ${
+                              checkedItems.has(test.id) ? 'line-through text-muted-foreground' : ''
+                            }`}
+                          >
+                            {test.name}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Discharge Summary Template */}
+          <Collapsible>
+            <Card className="border-emerald-300 dark:border-emerald-700 bg-gradient-to-br from-emerald-50 dark:from-emerald-950/30 to-background">
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="bg-emerald-100/50 dark:bg-emerald-900/30">
+                  <CardTitle className="flex items-center justify-between text-emerald-800 dark:text-emerald-300">
+                    <div className="flex items-center gap-2">
+                      <Stethoscope className="h-5 w-5" />
+                      Stroke Discharge Summary Template
+                    </div>
+                    <ChevronDown className="h-5 w-5" />
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-6">
               {/* Overview */}
               <div className="mb-4 p-3 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
                 <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Overview</h4>
@@ -4073,9 +3577,42 @@ export default function StrokeWorkupChecklist() {
         </Card>
       </Collapsible>
 
-      <div className="text-center text-sm text-muted-foreground border-t pt-4">
-        <p>Clinical investigation checklist - Always correlate with clinical presentation</p>
-      </div>
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>Ischemic stroke investigation checklist - Always correlate with clinical presentation</p>
+          </div>
+        </TabsContent>
+
+        {/* Intracerebral Hemorrhage Tab Content */}
+        <TabsContent value="hemorrhagic" className="space-y-6">
+          {/* Acute ICH Management */}
+          <AcuteICHManagement />
+
+          {/* ICH Score Calculator */}
+          <ICHScoreCalculator />
+
+          {/* FUNC Score Calculator */}
+          <FUNCScoreCalculator />
+
+          {/* SAH Grading Scales */}
+          <SAHGradingScales />
+
+          {/* NIHSS Scale Reference - also relevant for ICH */}
+          <NIHSSScaleReference />
+
+          {/* mRS Scale Reference */}
+          <MRSScaleReference />
+
+          {/* Functional Outcome Scales */}
+          <FunctionalOutcomeScales />
+
+          {/* ADL Assessment Scales */}
+          <ADLAssessmentScales />
+
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>Intracerebral hemorrhage investigation checklist - Always correlate with clinical presentation</p>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
