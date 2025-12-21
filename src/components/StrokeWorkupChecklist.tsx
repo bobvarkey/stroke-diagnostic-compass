@@ -1999,6 +1999,289 @@ function FunctionalOutcomeScales() {
   );
 }
 
+// ADL Assessment Scales Component (Barthel Index & FIM)
+function ADLAssessmentScales() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const barthelItems = [
+    { activity: "Feeding", independent: 10, dependent: 0, description: "Independent: able to eat from a tray, use utensils" },
+    { activity: "Bathing", independent: 5, dependent: 0, description: "Independent: able to bathe self without assistance" },
+    { activity: "Grooming", independent: 5, dependent: 0, description: "Independent: face, hair, teeth, shaving" },
+    { activity: "Dressing", independent: 10, dependent: 0, description: "Independent: including buttons, zips, laces" },
+    { activity: "Bowel Control", independent: 10, dependent: 0, description: "No accidents; able to manage suppository/enema" },
+    { activity: "Bladder Control", independent: 10, dependent: 0, description: "No accidents; able to manage catheter if needed" },
+    { activity: "Toilet Use", independent: 10, dependent: 0, description: "Independent: on/off, dressing, wiping" },
+    { activity: "Transfers", independent: 15, dependent: 0, description: "Bed to chair and back; independent" },
+    { activity: "Mobility", independent: 15, dependent: 0, description: "Walking 50 yards independently (or wheelchair)" },
+    { activity: "Stairs", independent: 10, dependent: 0, description: "Up and down one flight without help" },
+  ];
+
+  const barthelInterpretation = [
+    { range: "0-20", level: "Total Dependence", color: "bg-red-500" },
+    { range: "21-60", level: "Severe Dependence", color: "bg-orange-500" },
+    { range: "61-90", level: "Moderate Dependence", color: "bg-yellow-500" },
+    { range: "91-99", level: "Slight Dependence", color: "bg-lime-500" },
+    { range: "100", level: "Independent", color: "bg-green-500" },
+  ];
+
+  const fimDomains = [
+    {
+      category: "Self-Care",
+      items: [
+        { name: "Eating", maxScore: 7 },
+        { name: "Grooming", maxScore: 7 },
+        { name: "Bathing", maxScore: 7 },
+        { name: "Dressing - Upper Body", maxScore: 7 },
+        { name: "Dressing - Lower Body", maxScore: 7 },
+        { name: "Toileting", maxScore: 7 },
+      ],
+      maxTotal: 42,
+    },
+    {
+      category: "Sphincter Control",
+      items: [
+        { name: "Bladder Management", maxScore: 7 },
+        { name: "Bowel Management", maxScore: 7 },
+      ],
+      maxTotal: 14,
+    },
+    {
+      category: "Transfers",
+      items: [
+        { name: "Bed/Chair/Wheelchair", maxScore: 7 },
+        { name: "Toilet", maxScore: 7 },
+        { name: "Tub/Shower", maxScore: 7 },
+      ],
+      maxTotal: 21,
+    },
+    {
+      category: "Locomotion",
+      items: [
+        { name: "Walk/Wheelchair", maxScore: 7 },
+        { name: "Stairs", maxScore: 7 },
+      ],
+      maxTotal: 14,
+    },
+    {
+      category: "Communication",
+      items: [
+        { name: "Comprehension", maxScore: 7 },
+        { name: "Expression", maxScore: 7 },
+      ],
+      maxTotal: 14,
+    },
+    {
+      category: "Social Cognition",
+      items: [
+        { name: "Social Interaction", maxScore: 7 },
+        { name: "Problem Solving", maxScore: 7 },
+        { name: "Memory", maxScore: 7 },
+      ],
+      maxTotal: 21,
+    },
+  ];
+
+  const fimLevels = [
+    { score: 7, level: "Complete Independence", description: "No helper, no extra time" },
+    { score: 6, level: "Modified Independence", description: "Device or extra time needed" },
+    { score: 5, level: "Supervision/Setup", description: "Standby assistance, cueing, or coaxing" },
+    { score: 4, level: "Minimal Assistance", description: "Performs 75%+ of task" },
+    { score: 3, level: "Moderate Assistance", description: "Performs 50-74% of task" },
+    { score: 2, level: "Maximal Assistance", description: "Performs 25-49% of task" },
+    { score: 1, level: "Total Assistance", description: "Performs <25% of task" },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-pink-300 dark:border-pink-700 bg-gradient-to-br from-pink-50 dark:from-pink-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-pink-100/50 dark:bg-pink-900/30">
+            <CardTitle className="flex items-center justify-between text-pink-800 dark:text-pink-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                ADL Assessment Scales (Barthel Index & FIM)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            {/* Barthel Index */}
+            <div>
+              <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-3 flex items-center gap-2">
+                <span className="px-2 py-1 bg-pink-200 dark:bg-pink-800 rounded text-sm">BI</span>
+                Barthel Index (Modified)
+              </h4>
+              <p className="text-sm text-pink-700 dark:text-pink-400 mb-3">
+                Measures performance in 10 basic activities of daily living. Total score: 0-100. Higher = more independent.
+              </p>
+              
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-pink-200 dark:bg-pink-800">
+                      <th className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-left text-pink-900 dark:text-pink-100">Activity</th>
+                      <th className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-center text-pink-900 dark:text-pink-100 w-24">Independent</th>
+                      <th className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-center text-pink-900 dark:text-pink-100 w-24">Dependent</th>
+                      <th className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-left text-pink-900 dark:text-pink-100">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-pink-700 dark:text-pink-400">
+                    {barthelItems.map((item) => (
+                      <tr key={item.activity} className="hover:bg-pink-50 dark:hover:bg-pink-900/20">
+                        <td className="border border-pink-300 dark:border-pink-600 px-3 py-2 font-medium">{item.activity}</td>
+                        <td className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-center text-green-600 dark:text-green-400 font-bold">{item.independent}</td>
+                        <td className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-center text-red-600 dark:text-red-400">{item.dependent}</td>
+                        <td className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-xs">{item.description}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-pink-100 dark:bg-pink-900/40 font-bold">
+                      <td className="border border-pink-300 dark:border-pink-600 px-3 py-2">TOTAL</td>
+                      <td className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-center text-green-700 dark:text-green-300">100</td>
+                      <td className="border border-pink-300 dark:border-pink-600 px-3 py-2 text-center text-red-700 dark:text-red-300">0</td>
+                      <td className="border border-pink-300 dark:border-pink-600 px-3 py-2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Barthel Interpretation */}
+              <div className="grid grid-cols-5 gap-2">
+                {barthelInterpretation.map((item) => (
+                  <div key={item.range} className="p-2 rounded text-center">
+                    <div className={`${item.color} text-white px-2 py-1 rounded text-xs font-bold mb-1`}>
+                      {item.range}
+                    </div>
+                    <div className="text-xs text-pink-700 dark:text-pink-400">{item.level}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* FIM */}
+            <div>
+              <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-3 flex items-center gap-2">
+                <span className="px-2 py-1 bg-pink-200 dark:bg-pink-800 rounded text-sm">FIM</span>
+                Functional Independence Measure
+              </h4>
+              <p className="text-sm text-pink-700 dark:text-pink-400 mb-3">
+                18-item scale measuring physical and cognitive disability. Each item scored 1-7. Total score: 18-126. Motor subscale: 13-91, Cognitive subscale: 5-35.
+              </p>
+
+              {/* FIM Scoring Levels */}
+              <div className="mb-4 p-3 bg-pink-100 dark:bg-pink-900/40 rounded-lg">
+                <h5 className="font-medium text-pink-800 dark:text-pink-300 mb-2">FIM Scoring Levels (1-7)</h5>
+                <div className="grid gap-1">
+                  {fimLevels.map((level) => (
+                    <div key={level.score} className="flex items-center gap-2 text-sm">
+                      <span className={`w-6 h-6 rounded flex items-center justify-center text-white text-xs font-bold ${
+                        level.score >= 6 ? 'bg-green-500' :
+                        level.score >= 4 ? 'bg-yellow-500' :
+                        level.score >= 2 ? 'bg-orange-500' :
+                        'bg-red-500'
+                      }`}>
+                        {level.score}
+                      </span>
+                      <span className="font-medium text-pink-800 dark:text-pink-300 w-40">{level.level}</span>
+                      <span className="text-pink-600 dark:text-pink-500 text-xs">{level.description}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* FIM Domains */}
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {fimDomains.map((domain) => (
+                  <div key={domain.category} className="p-3 bg-white dark:bg-pink-950/30 border border-pink-200 dark:border-pink-700 rounded-lg">
+                    <h5 className="font-medium text-pink-800 dark:text-pink-300 mb-2 flex items-center justify-between">
+                      {domain.category}
+                      <span className="text-xs bg-pink-200 dark:bg-pink-800 px-2 py-0.5 rounded">Max: {domain.maxTotal}</span>
+                    </h5>
+                    <ul className="text-xs text-pink-600 dark:text-pink-500 space-y-1">
+                      {domain.items.map((item) => (
+                        <li key={item.name} className="flex justify-between">
+                          <span>{item.name}</span>
+                          <span className="text-pink-400">({item.maxScore})</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              {/* FIM Interpretation */}
+              <div className="mt-4 grid gap-2 md:grid-cols-3">
+                <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded border border-red-200 dark:border-red-700">
+                  <div className="font-bold text-red-800 dark:text-red-300">18-35</div>
+                  <div className="text-xs text-red-700 dark:text-red-400">Complete Dependence</div>
+                  <div className="text-xs text-red-600 dark:text-red-500 mt-1">Needs 24-hour assistance</div>
+                </div>
+                <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded border border-yellow-200 dark:border-yellow-700">
+                  <div className="font-bold text-yellow-800 dark:text-yellow-300">36-89</div>
+                  <div className="text-xs text-yellow-700 dark:text-yellow-400">Modified Dependence</div>
+                  <div className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">Needs some assistance</div>
+                </div>
+                <div className="p-3 bg-green-100 dark:bg-green-900/40 rounded border border-green-200 dark:border-green-700">
+                  <div className="font-bold text-green-800 dark:text-green-300">90-126</div>
+                  <div className="text-xs text-green-700 dark:text-green-400">Independent</div>
+                  <div className="text-xs text-green-600 dark:text-green-500 mt-1">Minimal to no assistance</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Comparison */}
+            <div className="p-4 bg-pink-100 dark:bg-pink-900/40 rounded-lg">
+              <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-2">Barthel Index vs FIM Comparison</h4>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h5 className="font-medium text-pink-700 dark:text-pink-400 mb-1">Barthel Index</h5>
+                  <ul className="text-xs text-pink-600 dark:text-pink-500 space-y-1">
+                    <li>• Simpler, quicker to administer (5-10 min)</li>
+                    <li>• Focuses on basic ADLs only</li>
+                    <li>• Ceiling effect in mild disability</li>
+                    <li>• Free to use; no training required</li>
+                    <li>• Good for screening and general monitoring</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium text-pink-700 dark:text-pink-400 mb-1">FIM</h5>
+                  <ul className="text-xs text-pink-600 dark:text-pink-500 space-y-1">
+                    <li>• More comprehensive (30-45 min)</li>
+                    <li>• Includes cognitive/communication domains</li>
+                    <li>• Greater sensitivity to change</li>
+                    <li>• Requires training and certification</li>
+                    <li>• Standard in rehabilitation settings</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="p-4 bg-pink-200 dark:bg-pink-800/40 rounded-lg">
+              <h4 className="font-semibold text-pink-900 dark:text-pink-200 mb-2">Clinical Considerations</h4>
+              <ul className="text-sm text-pink-800 dark:text-pink-300 space-y-1">
+                <li>• Assess at admission, weekly during rehabilitation, and at discharge</li>
+                <li>• FIM gain = Discharge FIM - Admission FIM (predicts functional trajectory)</li>
+                <li>• FIM efficiency = FIM gain ÷ Length of stay (measure of rehabilitation effectiveness)</li>
+                <li>• Barthel Index ≥60 often used as threshold for discharge home</li>
+                <li>• Both scales validated for stroke, TBI, and other neurological conditions</li>
+              </ul>
+            </div>
+
+            {/* References */}
+            <div className="p-3 bg-pink-50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-700 rounded-lg">
+              <p className="text-xs text-pink-600 dark:text-pink-400">
+                <strong>References:</strong> Mahoney FI, Barthel DW. <em>Md State Med J</em>. 1965;14:61-65 (Barthel Index) | Keith RA et al. <em>Arch Phys Med Rehabil</em>. 1987;68:387-391 (FIM)
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // SAH Grading Scales Component (Hunt & Hess / WFNS)
 function SAHGradingScales() {
   const [isOpen, setIsOpen] = useState(false);
@@ -2359,6 +2642,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* Functional Outcome Scales */}
       <FunctionalOutcomeScales />
+
+      {/* ADL Assessment Scales */}
+      <ADLAssessmentScales />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
