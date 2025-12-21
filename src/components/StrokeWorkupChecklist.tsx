@@ -202,7 +202,31 @@ const strokeTests: TestItem[] = [
   { id: "ir_tg_hdl", name: "TG:HDL Ratio | <2: Optimal | 2-3: Borderline | >3: High IR risk | >4: Very high risk (metabolic syndrome marker)", category: "Insulin Resistance" },
   { id: "ir_glucose_insulin", name: "Fasting Glucose:Insulin Ratio | >6: Normal insulin sensitivity | <6: Insulin resistance likely", category: "Insulin Resistance" },
   { id: "ir_quicki", name: "QUICKI = 1 ÷ (log Insulin + log Glucose) | >0.45: Normal | 0.35-0.45: Borderline | <0.35: Insulin resistant", category: "Insulin Resistance" },
+  
+  // Pharmacogenomics - Clopidogrel Resistance
+  { id: "cyp2c19_genotype", name: "CYP2C19 Genotyping (Clopidogrel Resistance Test)", category: "Pharmacogenomics" },
+  { id: "pru_test", name: "P2Y12 Reaction Units (PRU) - Platelet Function Test", category: "Pharmacogenomics" },
 ];
+
+// Clopidogrel Resistance Clinical Note
+const clopidogrelResistanceNote = `CYP2C19 Loss-of-Function Alleles: Clopidogrel is a prodrug requiring CYP2C19 for activation. Patients with loss-of-function alleles (*2, *3) have reduced or absent enzyme activity, leading to diminished antiplatelet effect.
+
+⚠️ IMPORTANT: 30-50% of the Indian population carries CYP2C19 loss-of-function alleles, making clopidogrel resistance highly prevalent in this demographic.
+
+Metabolizer Phenotypes:
+• Ultrarapid (*17/*17): Enhanced response - may have increased bleeding risk
+• Normal (*1/*1): Standard response - clopidogrel effective
+• Intermediate (*1/*2, *1/*3): Reduced response - consider alternative or higher dose
+• Poor (*2/*2, *2/*3, *3/*3): Minimal response - alternative antiplatelet recommended
+
+PRU Testing Interpretation:
+• PRU <85: Adequate platelet inhibition (increased bleeding risk)
+• PRU 85-208: Therapeutic range
+• PRU >208: High platelet reactivity (clopidogrel resistance)
+
+Alternative Agents for Poor Metabolizers:
+• Ticagrelor (Brilinta) - not CYP2C19 dependent
+• Prasugrel (Effient) - less affected by CYP2C19 variants`;
 
 // AF Burden Clinical Note
 const afBurdenNote = `The type and burden of device-detected AF are paramount to appropriate management. High-burden AF (longest episode >24 hours) significantly elevates stroke risk - anticoagulation or LAA occlusion should be considered. Low-burden AF (6 min–24 hours) management is less clear. AF detected within 12 months of continuous cardiac monitoring, particularly episodes >24 hours, is more likely causal for ESUS. Although prolonged monitoring increases AF detection, further research is needed for low-burden AF management, especially when detected beyond 12 months.`;
@@ -239,6 +263,7 @@ const categoryIcons: Record<string, any> = {
   "HMOD Evaluation": Eye,
   "Anthropometric Assessment": Activity,
   "Insulin Resistance": TestTube,
+  "Pharmacogenomics": TestTube,
 };
 
 // ISPS25 Flowchart Component
