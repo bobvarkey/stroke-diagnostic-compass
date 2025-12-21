@@ -1792,6 +1792,213 @@ function FUNCScoreCalculator() {
   );
 }
 
+// Functional Outcome Scales Component (mRS & GOS)
+function FunctionalOutcomeScales() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const mrsGrades = [
+    { score: 0, description: "No symptoms at all", category: "Excellent", color: "bg-green-500" },
+    { score: 1, description: "No significant disability despite symptoms; able to carry out all usual duties and activities", category: "Good", color: "bg-green-400" },
+    { score: 2, description: "Slight disability; unable to carry out all previous activities but able to look after own affairs without assistance", category: "Good", color: "bg-lime-500" },
+    { score: 3, description: "Moderate disability; requiring some help, but able to walk without assistance", category: "Moderate", color: "bg-yellow-500" },
+    { score: 4, description: "Moderately severe disability; unable to walk without assistance and unable to attend to own bodily needs without assistance", category: "Poor", color: "bg-orange-500" },
+    { score: 5, description: "Severe disability; bedridden, incontinent, and requiring constant nursing care and attention", category: "Poor", color: "bg-red-500" },
+    { score: 6, description: "Dead", category: "Dead", color: "bg-gray-800" },
+  ];
+
+  const gosGrades = [
+    { score: 1, description: "Death", outcome: "Dead", color: "bg-gray-800" },
+    { score: 2, description: "Persistent vegetative state - Patient exhibits no obvious cortical function", outcome: "Unfavorable", color: "bg-red-600" },
+    { score: 3, description: "Severe disability - Conscious but disabled; patient depends upon others for daily support due to mental or physical disability or both", outcome: "Unfavorable", color: "bg-orange-500" },
+    { score: 4, description: "Moderate disability - Disabled but independent; patient is independent as far as daily life is concerned. Disabilities include varying degrees of dysphasia, hemiparesis, or ataxia, as well as intellectual and memory deficits and personality changes", outcome: "Favorable", color: "bg-yellow-500" },
+    { score: 5, description: "Good recovery - Resumption of normal activities even though there may be minor neurological or psychological deficits", outcome: "Favorable", color: "bg-green-500" },
+  ];
+
+  const gosEGrades = [
+    { score: 1, description: "Death", category: "Dead" },
+    { score: 2, description: "Vegetative state - Unable to interact with environment; unresponsive", category: "VS" },
+    { score: 3, description: "Lower severe disability - Dependent on others for care, needs assistance with most activities", category: "SD-" },
+    { score: 4, description: "Upper severe disability - Dependent, but can be left alone for 8+ hours", category: "SD+" },
+    { score: 5, description: "Lower moderate disability - Independent at home, but unable to return to work/school or participate in social activities", category: "MD-" },
+    { score: 6, description: "Upper moderate disability - Some disability, but can return to work (reduced capacity) or participate in social activities", category: "MD+" },
+    { score: 7, description: "Lower good recovery - Good recovery with minor physical or mental deficits affecting daily life", category: "GR-" },
+    { score: 8, description: "Upper good recovery - Full recovery or minor symptoms not affecting daily life", category: "GR+" },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-cyan-300 dark:border-cyan-700 bg-gradient-to-br from-cyan-50 dark:from-cyan-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-cyan-100/50 dark:bg-cyan-900/30">
+            <CardTitle className="flex items-center justify-between text-cyan-800 dark:text-cyan-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Functional Outcome Scales (mRS & GOS)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            {/* Modified Rankin Scale */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-3 flex items-center gap-2">
+                <span className="px-2 py-1 bg-cyan-200 dark:bg-cyan-800 rounded text-sm">mRS</span>
+                Modified Rankin Scale
+              </h4>
+              <p className="text-sm text-cyan-700 dark:text-cyan-400 mb-3">
+                Most widely used outcome measure in stroke trials. Assesses degree of disability/dependence in daily activities.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-cyan-200 dark:bg-cyan-800">
+                      <th className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-left text-cyan-900 dark:text-cyan-100 w-16">Score</th>
+                      <th className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-left text-cyan-900 dark:text-cyan-100">Description</th>
+                      <th className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-center text-cyan-900 dark:text-cyan-100 w-24">Outcome</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {mrsGrades.map((grade) => (
+                      <tr key={grade.score} className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20">
+                        <td className="border border-cyan-300 dark:border-cyan-600 px-3 py-2">
+                          <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-bold ${grade.color}`}>
+                            {grade.score}
+                          </span>
+                        </td>
+                        <td className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-cyan-700 dark:text-cyan-400">
+                          {grade.description}
+                        </td>
+                        <td className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-center">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            grade.category === 'Excellent' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                            grade.category === 'Good' ? 'bg-lime-100 text-lime-800 dark:bg-lime-900 dark:text-lime-300' :
+                            grade.category === 'Moderate' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' :
+                            grade.category === 'Poor' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
+                            'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                          }`}>
+                            {grade.category}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mt-3 p-3 bg-cyan-100 dark:bg-cyan-900/40 rounded-lg">
+                <p className="text-xs text-cyan-700 dark:text-cyan-400">
+                  <strong>Clinical Use:</strong> mRS 0-2 = Favorable outcome (functional independence) | mRS 3-5 = Unfavorable outcome (disability/dependence) | mRS 6 = Death
+                </p>
+              </div>
+            </div>
+
+            {/* Glasgow Outcome Scale */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-3 flex items-center gap-2">
+                <span className="px-2 py-1 bg-cyan-200 dark:bg-cyan-800 rounded text-sm">GOS</span>
+                Glasgow Outcome Scale
+              </h4>
+              <p className="text-sm text-cyan-700 dark:text-cyan-400 mb-3">
+                Standard outcome measure for traumatic brain injury and other acute brain injuries. Simple 5-point scale.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-cyan-200 dark:bg-cyan-800">
+                      <th className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-left text-cyan-900 dark:text-cyan-100 w-16">Score</th>
+                      <th className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-left text-cyan-900 dark:text-cyan-100">Description</th>
+                      <th className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-center text-cyan-900 dark:text-cyan-100 w-28">Outcome</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gosGrades.map((grade) => (
+                      <tr key={grade.score} className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20">
+                        <td className="border border-cyan-300 dark:border-cyan-600 px-3 py-2">
+                          <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-bold ${grade.color}`}>
+                            {grade.score}
+                          </span>
+                        </td>
+                        <td className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-cyan-700 dark:text-cyan-400">
+                          {grade.description}
+                        </td>
+                        <td className="border border-cyan-300 dark:border-cyan-600 px-3 py-2 text-center">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            grade.outcome === 'Favorable' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                            grade.outcome === 'Unfavorable' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
+                            'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                          }`}>
+                            {grade.outcome}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Glasgow Outcome Scale - Extended */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-3 flex items-center gap-2">
+                <span className="px-2 py-1 bg-cyan-200 dark:bg-cyan-800 rounded text-sm">GOS-E</span>
+                Glasgow Outcome Scale - Extended
+              </h4>
+              <p className="text-sm text-cyan-700 dark:text-cyan-400 mb-3">
+                Extended 8-point version providing greater sensitivity to detect differences in outcome, especially in the upper range.
+              </p>
+              <div className="grid gap-2 md:grid-cols-2">
+                {gosEGrades.map((grade) => (
+                  <div key={grade.score} className={`p-3 rounded-lg border ${
+                    grade.score === 1 ? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' :
+                    grade.score === 2 ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800' :
+                    grade.score <= 4 ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800' :
+                    grade.score <= 6 ? 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800' :
+                    'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                        grade.score === 1 ? 'bg-gray-800' :
+                        grade.score === 2 ? 'bg-red-600' :
+                        grade.score <= 4 ? 'bg-orange-500' :
+                        grade.score <= 6 ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`}>
+                        {grade.score}
+                      </span>
+                      <span className="font-medium text-cyan-800 dark:text-cyan-300">{grade.category}</span>
+                    </div>
+                    <p className="text-xs text-cyan-600 dark:text-cyan-500">{grade.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="p-4 bg-cyan-100 dark:bg-cyan-900/40 rounded-lg">
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-2">Clinical Considerations</h4>
+              <ul className="text-sm text-cyan-700 dark:text-cyan-400 space-y-1">
+                <li>• <strong>mRS</strong> is preferred for stroke outcomes; typically assessed at 90 days post-stroke</li>
+                <li>• <strong>GOS/GOS-E</strong> is standard for TBI outcomes; typically assessed at 6 months post-injury</li>
+                <li>• Shift analysis (ordinal) is increasingly used in trials vs. dichotomized outcomes</li>
+                <li>• Pre-morbid mRS should be documented to assess change from baseline</li>
+                <li>• Telephone administration validated for both scales when in-person assessment not possible</li>
+              </ul>
+            </div>
+
+            {/* References */}
+            <div className="p-3 bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700 rounded-lg">
+              <p className="text-xs text-cyan-600 dark:text-cyan-400">
+                <strong>References:</strong> van Swieten JC et al. <em>Stroke</em>. 1988;19:604-607 (mRS) | Jennett B, Bond M. <em>Lancet</em>. 1975;1:480-484 (GOS) | Wilson JT et al. <em>J Neurotrauma</em>. 1998;15:573-585 (GOS-E)
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // SAH Grading Scales Component (Hunt & Hess / WFNS)
 function SAHGradingScales() {
   const [isOpen, setIsOpen] = useState(false);
@@ -2149,6 +2356,9 @@ export default function StrokeWorkupChecklist() {
 
       {/* SAH Grading Scales */}
       <SAHGradingScales />
+
+      {/* Functional Outcome Scales */}
+      <FunctionalOutcomeScales />
 
       {/* Metabolic Syndrome Checker */}
       <MetabolicSyndromeChecker />
