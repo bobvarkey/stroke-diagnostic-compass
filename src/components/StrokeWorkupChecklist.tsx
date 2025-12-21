@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 
@@ -2481,6 +2481,195 @@ export default function StrokeWorkupChecklist() {
           );
         })}
       </div>
+
+      {/* Pharmacogenomics Reference Card */}
+      <Collapsible>
+        <Card className="border-violet-300 dark:border-violet-700 bg-gradient-to-br from-violet-50 dark:from-violet-950/30 to-background">
+          <CollapsibleTrigger className="w-full">
+            <CardHeader className="bg-violet-100/50 dark:bg-violet-900/30">
+              <CardTitle className="flex items-center justify-between text-violet-800 dark:text-violet-300">
+                <div className="flex items-center gap-2">
+                  <TestTube className="h-5 w-5" />
+                  Pharmacogenomics - CYP2C19 & Antiplatelet Therapy Guide
+                </div>
+                <ChevronDown className="h-5 w-5" />
+              </CardTitle>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="pt-6 space-y-6">
+              {/* Warning Banner */}
+              <div className="p-4 bg-amber-100 dark:bg-amber-900/40 border border-amber-300 dark:border-amber-700 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-bold text-amber-800 dark:text-amber-300">High Prevalence in Indian Population</h4>
+                    <p className="text-sm text-amber-700 dark:text-amber-400 mt-1">
+                      <strong>30-50% of the Indian population</strong> carries CYP2C19 loss-of-function alleles (*2, *3), making clopidogrel resistance highly prevalent in this demographic. Consider pharmacogenomic testing or alternative antiplatelet agents.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CYP2C19 Overview */}
+              <div className="p-4 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
+                <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">CYP2C19 & Clopidogrel Metabolism</h4>
+                <p className="text-sm text-violet-700 dark:text-violet-400 mb-3">
+                  Clopidogrel is a prodrug requiring hepatic CYP2C19 enzyme for conversion to its active metabolite. Genetic polymorphisms in CYP2C19 significantly affect drug efficacy.
+                </p>
+                <div className="grid gap-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-violet-800 dark:text-violet-300">Key Alleles:</span>
+                  </div>
+                  <ul className="list-disc list-inside text-violet-700 dark:text-violet-400 space-y-1 ml-2">
+                    <li><strong>*1</strong> - Normal function (wild-type)</li>
+                    <li><strong>*2</strong> - Loss-of-function (most common in South Asians)</li>
+                    <li><strong>*3</strong> - Loss-of-function</li>
+                    <li><strong>*17</strong> - Gain-of-function (ultrarapid metabolism)</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Metabolizer Phenotypes Table */}
+              <div>
+                <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">CYP2C19 Metabolizer Phenotypes</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-violet-200 dark:bg-violet-800">
+                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Phenotype</th>
+                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Genotype Examples</th>
+                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Enzyme Activity</th>
+                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Clinical Implication</th>
+                        <th className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-left text-violet-900 dark:text-violet-100">Recommendation</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-violet-700 dark:text-violet-400">
+                      <tr className="bg-blue-50 dark:bg-blue-950/30">
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Ultrarapid</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*17/*17</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Increased</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Enhanced platelet inhibition</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-blue-700 dark:text-blue-400">Standard dose; monitor for bleeding</td>
+                      </tr>
+                      <tr className="bg-green-50 dark:bg-green-950/30">
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Normal (Extensive)</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*1/*1, *1/*17</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Normal</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Expected response</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-green-700 dark:text-green-400">Clopidogrel effective at standard dose</td>
+                      </tr>
+                      <tr className="bg-amber-50 dark:bg-amber-950/30">
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Intermediate</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*1/*2, *1/*3, *2/*17</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Reduced</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Diminished antiplatelet effect</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-amber-700 dark:text-amber-400">Consider alternative or double dose*</td>
+                      </tr>
+                      <tr className="bg-red-50 dark:bg-red-950/30">
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 font-medium">Poor</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">*2/*2, *2/*3, *3/*3</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Minimal/Absent</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2">Clopidogrel ineffective</td>
+                        <td className="border border-violet-300 dark:border-violet-600 px-3 py-2 text-red-700 dark:text-red-400 font-medium">Use alternative antiplatelet</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">*Double loading dose (600mg) followed by 150mg daily may partially overcome intermediate metabolizer status, though efficacy is variable.</p>
+              </div>
+
+              {/* PRU Testing */}
+              <div className="p-4 bg-slate-100 dark:bg-slate-900/40 rounded-lg">
+                <h4 className="font-semibold text-slate-800 dark:text-slate-300 mb-3">P2Y12 Reaction Units (PRU) - Platelet Function Testing</h4>
+                <p className="text-sm text-slate-700 dark:text-slate-400 mb-3">
+                  PRU testing (VerifyNow P2Y12 assay) measures actual platelet inhibition regardless of genotype. Useful for phenotypic confirmation.
+                </p>
+                <div className="grid gap-2 md:grid-cols-3">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/40 rounded border border-blue-200 dark:border-blue-700">
+                    <div className="font-bold text-blue-800 dark:text-blue-300">PRU &lt; 85</div>
+                    <div className="text-xs text-blue-700 dark:text-blue-400">Adequate inhibition</div>
+                    <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">↑ Bleeding risk</div>
+                  </div>
+                  <div className="p-3 bg-green-100 dark:bg-green-900/40 rounded border border-green-200 dark:border-green-700">
+                    <div className="font-bold text-green-800 dark:text-green-300">PRU 85-208</div>
+                    <div className="text-xs text-green-700 dark:text-green-400">Therapeutic range</div>
+                    <div className="text-xs text-green-600 dark:text-green-500 mt-1">Optimal balance</div>
+                  </div>
+                  <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded border border-red-200 dark:border-red-700">
+                    <div className="font-bold text-red-800 dark:text-red-300">PRU &gt; 208</div>
+                    <div className="text-xs text-red-700 dark:text-red-400">High platelet reactivity</div>
+                    <div className="text-xs text-red-600 dark:text-red-500 mt-1">Clopidogrel resistance</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Alternative Antiplatelet Agents */}
+              <div>
+                <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">Alternative Antiplatelet Agents for Poor/Intermediate Metabolizers</h4>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="p-4 bg-teal-100 dark:bg-teal-900/40 rounded-lg border border-teal-200 dark:border-teal-700">
+                    <h5 className="font-bold text-teal-800 dark:text-teal-300 mb-2">Ticagrelor (Brilinta)</h5>
+                    <ul className="text-sm text-teal-700 dark:text-teal-400 space-y-1">
+                      <li>• <strong>Not CYP2C19 dependent</strong></li>
+                      <li>• Direct-acting, reversible P2Y12 inhibitor</li>
+                      <li>• Loading: 180mg; Maintenance: 90mg BID</li>
+                      <li>• Faster onset/offset than clopidogrel</li>
+                      <li>• Side effects: Dyspnea, bleeding, bradyarrhythmias</li>
+                      <li>• Avoid with strong CYP3A4 inhibitors</li>
+                    </ul>
+                  </div>
+                  <div className="p-4 bg-orange-100 dark:bg-orange-900/40 rounded-lg border border-orange-200 dark:border-orange-700">
+                    <h5 className="font-bold text-orange-800 dark:text-orange-300 mb-2">Prasugrel (Effient)</h5>
+                    <ul className="text-sm text-orange-700 dark:text-orange-400 space-y-1">
+                      <li>• <strong>Less affected by CYP2C19 variants</strong></li>
+                      <li>• Irreversible P2Y12 inhibitor</li>
+                      <li>• Loading: 60mg; Maintenance: 10mg daily</li>
+                      <li>• More potent than clopidogrel</li>
+                      <li>• <strong>Contraindicated:</strong> Prior stroke/TIA, age ≥75, weight &lt;60kg</li>
+                      <li>• Higher bleeding risk</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dosing Recommendations Summary */}
+              <div className="p-4 bg-violet-200 dark:bg-violet-800/40 rounded-lg">
+                <h4 className="font-semibold text-violet-900 dark:text-violet-200 mb-3">Clinical Decision Algorithm</h4>
+                <div className="space-y-2 text-sm text-violet-800 dark:text-violet-300">
+                  <div className="flex items-start gap-2">
+                    <span className="font-bold text-violet-900 dark:text-violet-100">1.</span>
+                    <span>Consider CYP2C19 genotyping in high-risk patients (ACS, PCI, stroke) especially in South Asian populations</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-bold text-violet-900 dark:text-violet-100">2.</span>
+                    <span>If genotyping unavailable, consider empiric use of ticagrelor in Indian patients given high prevalence of LOF alleles</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-bold text-violet-900 dark:text-violet-100">3.</span>
+                    <span>PRU testing can confirm phenotypic response when genotype is uncertain</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-bold text-violet-900 dark:text-violet-100">4.</span>
+                    <span>Poor metabolizers: Switch to ticagrelor (preferred) or prasugrel (if no contraindications)</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-bold text-violet-900 dark:text-violet-100">5.</span>
+                    <span>Intermediate metabolizers: Consider double-dose clopidogrel or switch to alternative</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* References */}
+              <div className="p-3 bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700 rounded-lg">
+                <p className="text-xs text-violet-600 dark:text-violet-400">
+                  <strong>References:</strong> CPIC Guidelines for Clopidogrel and CYP2C19 (2022); Scott SA et al. <em>Clin Pharmacol Ther</em>. 2013;94(3):317-323.
+                </p>
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       {/* Discharge Summary Template */}
       <Collapsible>
