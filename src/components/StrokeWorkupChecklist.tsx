@@ -208,6 +208,8 @@ const strokeTests: TestItem[] = [
   // Pharmacogenomics - Clopidogrel Resistance
   { id: "cyp2c19_genotype", name: "CYP2C19 Genotyping (Clopidogrel Resistance Test)", category: "Pharmacogenomics" },
   { id: "pru_test", name: "P2Y12 Reaction Units (PRU) - Platelet Function Test", category: "Pharmacogenomics" },
+  { id: "aru_test", name: "VerifyNow Aspirin (ARU) - Aspirin Resistance Test", category: "Pharmacogenomics" },
+  { id: "ltb4_test", name: "LTB4 Inhibition Assay - Aspirin Effect Confirmation", category: "Pharmacogenomics" },
 ];
 
 // Clopidogrel Resistance Clinical Note
@@ -2600,6 +2602,70 @@ export default function StrokeWorkupChecklist() {
                     <div className="font-bold text-red-800 dark:text-red-300">PRU &gt; 208</div>
                     <div className="text-xs text-red-700 dark:text-red-400">High platelet reactivity</div>
                     <div className="text-xs text-red-600 dark:text-red-500 mt-1">Clopidogrel resistance</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Aspirin Resistance Testing */}
+              <div className="p-4 bg-rose-100 dark:bg-rose-900/40 rounded-lg border border-rose-200 dark:border-rose-700">
+                <h4 className="font-semibold text-rose-800 dark:text-rose-300 mb-3">Aspirin Resistance Testing (VerifyNow Aspirin / ARU)</h4>
+                <p className="text-sm text-rose-700 dark:text-rose-400 mb-3">
+                  Aspirin Reaction Units (ARU) measure platelet inhibition by aspirin. True aspirin resistance is rare (&lt;5%), but "laboratory" resistance (high ARU despite compliance) occurs in 5-40% of patients.
+                </p>
+                
+                <div className="grid gap-2 md:grid-cols-3 mb-4">
+                  <div className="p-3 bg-green-100 dark:bg-green-900/40 rounded border border-green-200 dark:border-green-700">
+                    <div className="font-bold text-green-800 dark:text-green-300">ARU &lt; 550</div>
+                    <div className="text-xs text-green-700 dark:text-green-400">Aspirin sensitive</div>
+                    <div className="text-xs text-green-600 dark:text-green-500 mt-1">Good COX-1 inhibition</div>
+                  </div>
+                  <div className="p-3 bg-amber-100 dark:bg-amber-900/40 rounded border border-amber-200 dark:border-amber-700">
+                    <div className="font-bold text-amber-800 dark:text-amber-300">ARU 550-620</div>
+                    <div className="text-xs text-amber-700 dark:text-amber-400">Borderline response</div>
+                    <div className="text-xs text-amber-600 dark:text-amber-500 mt-1">Verify compliance</div>
+                  </div>
+                  <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded border border-red-200 dark:border-red-700">
+                    <div className="font-bold text-red-800 dark:text-red-300">ARU ≥ 550</div>
+                    <div className="text-xs text-red-700 dark:text-red-400">Aspirin resistant</div>
+                    <div className="text-xs text-red-600 dark:text-red-500 mt-1">Consider alternative</div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <h5 className="font-medium text-rose-800 dark:text-rose-300 mb-2">Causes of Apparent Aspirin Resistance</h5>
+                    <div className="grid gap-2 md:grid-cols-2 text-sm">
+                      <div className="p-2 bg-rose-50 dark:bg-rose-950/30 rounded">
+                        <span className="font-medium text-rose-700 dark:text-rose-400">Pseudo-resistance (most common):</span>
+                        <ul className="list-disc list-inside text-rose-600 dark:text-rose-500 text-xs mt-1">
+                          <li>Non-compliance (most frequent cause)</li>
+                          <li>Inadequate dosing</li>
+                          <li>Drug interactions (NSAIDs, PPIs)</li>
+                          <li>Enteric coating malabsorption</li>
+                        </ul>
+                      </div>
+                      <div className="p-2 bg-rose-50 dark:bg-rose-950/30 rounded">
+                        <span className="font-medium text-rose-700 dark:text-rose-400">True resistance (rare):</span>
+                        <ul className="list-disc list-inside text-rose-600 dark:text-rose-500 text-xs mt-1">
+                          <li>COX-1 polymorphisms</li>
+                          <li>Increased platelet turnover</li>
+                          <li>COX-2 upregulation</li>
+                          <li>Alternative activation pathways</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h5 className="font-medium text-rose-800 dark:text-rose-300 mb-2">Management of Aspirin Resistance</h5>
+                    <ul className="text-sm text-rose-700 dark:text-rose-400 space-y-1">
+                      <li><strong>1. Confirm compliance</strong> - most important first step</li>
+                      <li><strong>2. Increase aspirin dose</strong> - 150-325mg may overcome partial resistance</li>
+                      <li><strong>3. Switch to non-enteric coated</strong> - better bioavailability</li>
+                      <li><strong>4. Avoid concurrent NSAIDs</strong> - ibuprofen blocks aspirin binding</li>
+                      <li><strong>5. Add P2Y12 inhibitor</strong> - dual antiplatelet therapy</li>
+                      <li><strong>6. Consider alternative</strong> - cilostazol for aspirin-intolerant patients</li>
+                    </ul>
                   </div>
                 </div>
               </div>
