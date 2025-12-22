@@ -1974,6 +1974,217 @@ function VisualFOURScoreCalculator() {
   );
 }
 
+// Hunt and Hess Scale Calculator Component
+function HuntHessCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
+
+  const grades = [
+    {
+      grade: 1,
+      title: "Grade I",
+      description: "Asymptomatic or minimal headache and slight nuchal rigidity",
+      mortality: "~1%",
+      color: "green",
+      bgColor: "bg-green-100 dark:bg-green-900/40",
+      borderColor: "border-green-400 dark:border-green-600",
+      textColor: "text-green-800 dark:text-green-300"
+    },
+    {
+      grade: 2,
+      title: "Grade II",
+      description: "Moderate to severe headache, nuchal rigidity, no neurological deficit except cranial nerve palsy",
+      mortality: "~5%",
+      color: "lime",
+      bgColor: "bg-lime-100 dark:bg-lime-900/40",
+      borderColor: "border-lime-400 dark:border-lime-600",
+      textColor: "text-lime-800 dark:text-lime-300"
+    },
+    {
+      grade: 3,
+      title: "Grade III",
+      description: "Drowsiness, confusion, or mild focal deficit",
+      mortality: "~19%",
+      color: "yellow",
+      bgColor: "bg-yellow-100 dark:bg-yellow-900/40",
+      borderColor: "border-yellow-400 dark:border-yellow-600",
+      textColor: "text-yellow-800 dark:text-yellow-300"
+    },
+    {
+      grade: 4,
+      title: "Grade IV",
+      description: "Stupor, moderate to severe hemiparesis, possible early decerebrate rigidity, vegetative disturbances",
+      mortality: "~42%",
+      color: "orange",
+      bgColor: "bg-orange-100 dark:bg-orange-900/40",
+      borderColor: "border-orange-400 dark:border-orange-600",
+      textColor: "text-orange-800 dark:text-orange-300"
+    },
+    {
+      grade: 5,
+      title: "Grade V",
+      description: "Deep coma, decerebrate rigidity, moribund appearance",
+      mortality: "~77%",
+      color: "red",
+      bgColor: "bg-red-100 dark:bg-red-900/40",
+      borderColor: "border-red-400 dark:border-red-600",
+      textColor: "text-red-800 dark:text-red-300"
+    }
+  ];
+
+  const selectedGradeInfo = selectedGrade !== null ? grades.find(g => g.grade === selectedGrade) : null;
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-rose-400 dark:border-rose-600 bg-gradient-to-br from-rose-50 dark:from-rose-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-rose-100/50 dark:bg-rose-900/30">
+            <CardTitle className="flex items-center justify-between text-rose-800 dark:text-rose-300">
+              <div className="flex items-center gap-2">
+                <Droplets className="h-5 w-5" />
+                Hunt and Hess Scale (SAH)
+              </div>
+              <div className="flex items-center gap-3">
+                {selectedGrade !== null && (
+                  <Badge className={`${selectedGradeInfo?.bgColor} ${selectedGradeInfo?.textColor} font-bold px-3 py-1 border ${selectedGradeInfo?.borderColor}`}>
+                    Grade {selectedGrade}
+                  </Badge>
+                )}
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            {/* Grade Selection */}
+            <div className="space-y-3">
+              {grades.map((grade) => (
+                <button
+                  key={grade.grade}
+                  onClick={() => setSelectedGrade(grade.grade)}
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                    selectedGrade === grade.grade
+                      ? `${grade.bgColor} ${grade.borderColor} shadow-md`
+                      : 'bg-white dark:bg-rose-950/20 border-rose-200 dark:border-rose-800 hover:border-rose-400 dark:hover:border-rose-600'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg text-white ${
+                        grade.color === 'green' ? 'bg-green-500' :
+                        grade.color === 'lime' ? 'bg-lime-500' :
+                        grade.color === 'yellow' ? 'bg-yellow-500' :
+                        grade.color === 'orange' ? 'bg-orange-500' : 'bg-red-500'
+                      }`}>
+                        {grade.grade}
+                      </div>
+                      <div>
+                        <div className={`font-semibold ${selectedGrade === grade.grade ? grade.textColor : 'text-rose-800 dark:text-rose-300'}`}>
+                          {grade.title}
+                        </div>
+                        <div className={`text-sm ${selectedGrade === grade.grade ? grade.textColor : 'text-rose-600 dark:text-rose-400'}`}>
+                          {grade.description}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-xs ${selectedGrade === grade.grade ? grade.textColor : 'text-rose-500 dark:text-rose-400'}`}>
+                        Mortality
+                      </div>
+                      <div className={`font-bold ${selectedGrade === grade.grade ? grade.textColor : 'text-rose-700 dark:text-rose-300'}`}>
+                        {grade.mortality}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Result Display */}
+            {selectedGrade !== null && selectedGradeInfo && (
+              <div className={`p-4 rounded-lg ${selectedGradeInfo.bgColor} border ${selectedGradeInfo.borderColor}`}>
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <div className={`text-3xl font-bold ${selectedGradeInfo.textColor}`}>
+                      Hunt & Hess Grade {selectedGrade}
+                    </div>
+                    <div className={`text-sm ${selectedGradeInfo.textColor} mt-1`}>
+                      {selectedGradeInfo.description}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-2xl font-bold ${selectedGradeInfo.textColor}`}>
+                      {selectedGradeInfo.mortality}
+                    </div>
+                    <div className={`text-xs ${selectedGradeInfo.textColor}`}>
+                      Surgical Mortality
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Management Implications */}
+                <div className="mt-4 p-3 bg-white/50 dark:bg-black/20 rounded">
+                  <h5 className={`font-semibold ${selectedGradeInfo.textColor} mb-2 text-sm`}>Management Implications</h5>
+                  <ul className={`text-xs ${selectedGradeInfo.textColor} space-y-1`}>
+                    {selectedGrade <= 3 ? (
+                      <>
+                        <li>• Early surgical/endovascular intervention typically recommended</li>
+                        <li>• Good candidates for aneurysm repair within 72 hours</li>
+                        <li>• Better functional outcomes expected</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>• May benefit from stabilization before intervention</li>
+                        <li>• Consider EVD for hydrocephalus if present</li>
+                        <li>• Aggressive medical management to reduce ICP</li>
+                        <li>• Surgery timing controversial - often delayed until clinical improvement</li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Additional Information */}
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+                <h5 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 text-sm">Modified Hunt & Hess</h5>
+                <p className="text-xs text-amber-700 dark:text-amber-400">
+                  Add 1 grade for serious systemic disease (HTN, DM, severe atherosclerosis, COPD) or severe vasospasm on angiography.
+                </p>
+              </div>
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                <h5 className="font-semibold text-blue-800 dark:text-blue-300 mb-2 text-sm">Timing of Assessment</h5>
+                <p className="text-xs text-blue-700 dark:text-blue-400">
+                  Grade should be assessed at presentation and can change with clinical status. Serial assessments are important for monitoring.
+                </p>
+              </div>
+            </div>
+
+            {/* Reset and Notes */}
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setSelectedGrade(null)}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                Reset
+              </button>
+            </div>
+
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-700 rounded-lg">
+              <p className="text-xs text-rose-600 dark:text-rose-400">
+                <strong>Reference:</strong> Hunt WE, Hess RM. "Surgical risk as related to time of intervention in the repair of intracranial aneurysms." J Neurosurg 1968;28:14-20.
+                Mortality rates are historical surgical mortality and may vary with modern endovascular techniques.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Modified Rankin Scale (mRS) Component
 function MRSScaleReference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -4381,6 +4592,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* SAH Grading Scales */}
           <SAHGradingScales />
+
+          {/* Hunt and Hess Calculator */}
+          <HuntHessCalculator />
 
           {/* Visual NIHSS Calculator - also relevant for ICH */}
           <VisualNIHSSCalculator />
