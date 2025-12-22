@@ -1744,6 +1744,236 @@ function VisualGCSCalculator() {
   );
 }
 
+// Visual FOUR Score Calculator Component
+function VisualFOURScoreCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scores, setScores] = useState<Record<string, number>>({
+    eye: 4,
+    motor: 4,
+    brainstem: 4,
+    respiration: 4
+  });
+
+  const fourItems = [
+    {
+      key: "eye",
+      name: "Eye Response",
+      icon: "👁️",
+      color: "blue",
+      options: [
+        { score: 4, label: "E4: Eyelids open, tracking or blinking to command", desc: "Follows objects or blinks on command" },
+        { score: 3, label: "E3: Eyelids open but not tracking", desc: "Eyes open spontaneously, no tracking" },
+        { score: 2, label: "E2: Eyelids closed, open to loud voice", desc: "Opens to verbal stimulus" },
+        { score: 1, label: "E1: Eyelids closed, open to pain", desc: "Opens only to painful stimulus" },
+        { score: 0, label: "E0: Eyelids remain closed with pain", desc: "No eye opening" }
+      ]
+    },
+    {
+      key: "motor",
+      name: "Motor Response",
+      icon: "💪",
+      color: "green",
+      options: [
+        { score: 4, label: "M4: Thumbs-up, fist, or peace sign", desc: "Follows specific commands" },
+        { score: 3, label: "M3: Localizing to pain", desc: "Purposeful movement to stimulus" },
+        { score: 2, label: "M2: Flexion response to pain", desc: "Withdrawal or flexor posturing" },
+        { score: 1, label: "M1: Extension response to pain", desc: "Extensor posturing" },
+        { score: 0, label: "M0: No response to pain, or myoclonus", desc: "No motor response or status myoclonus" }
+      ]
+    },
+    {
+      key: "brainstem",
+      name: "Brainstem Reflexes",
+      icon: "🧠",
+      color: "purple",
+      options: [
+        { score: 4, label: "B4: Pupil AND corneal reflexes present", desc: "Both reflexes intact" },
+        { score: 3, label: "B3: One pupil wide and fixed", desc: "Unilateral pupil abnormality" },
+        { score: 2, label: "B2: Pupil OR corneal reflex absent", desc: "One reflex absent" },
+        { score: 1, label: "B1: Pupil AND corneal reflexes absent", desc: "Both reflexes absent" },
+        { score: 0, label: "B0: Absent pupil, corneal, AND cough reflex", desc: "All brainstem reflexes absent" }
+      ]
+    },
+    {
+      key: "respiration",
+      name: "Respiration",
+      icon: "🫁",
+      color: "teal",
+      options: [
+        { score: 4, label: "R4: Not intubated, regular breathing", desc: "Normal breathing pattern" },
+        { score: 3, label: "R3: Not intubated, Cheyne-Stokes pattern", desc: "Periodic breathing pattern" },
+        { score: 2, label: "R2: Not intubated, irregular breathing", desc: "Ataxic or irregular pattern" },
+        { score: 1, label: "R1: Intubated, breathes above ventilator rate", desc: "Triggers ventilator" },
+        { score: 0, label: "R0: Intubated, breathes at ventilator rate or apnea", desc: "No respiratory drive" }
+      ]
+    }
+  ];
+
+  const totalScore = scores.eye + scores.motor + scores.brainstem + scores.respiration;
+
+  const getSeverityInfo = (score: number) => {
+    if (score >= 13) return { label: "Good Prognosis", color: "bg-green-500", textColor: "text-green-800 dark:text-green-300", bgColor: "bg-green-100 dark:bg-green-900/40" };
+    if (score >= 9) return { label: "Moderate", color: "bg-yellow-500", textColor: "text-yellow-800 dark:text-yellow-300", bgColor: "bg-yellow-100 dark:bg-yellow-900/40" };
+    if (score >= 5) return { label: "Poor Prognosis", color: "bg-orange-500", textColor: "text-orange-800 dark:text-orange-300", bgColor: "bg-orange-100 dark:bg-orange-900/40" };
+    return { label: "Very Poor Prognosis", color: "bg-red-500", textColor: "text-red-800 dark:text-red-300", bgColor: "bg-red-100 dark:bg-red-900/40" };
+  };
+
+  const severity = getSeverityInfo(totalScore);
+
+  const resetScores = () => {
+    setScores({ eye: 4, motor: 4, brainstem: 4, respiration: 4 });
+  };
+
+  const getColorClasses = (color: string, isSelected: boolean) => {
+    const colors: Record<string, { selected: string; unselected: string }> = {
+      blue: {
+        selected: "bg-blue-600 text-white shadow-md",
+        unselected: "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+      },
+      purple: {
+        selected: "bg-purple-600 text-white shadow-md",
+        unselected: "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+      },
+      green: {
+        selected: "bg-green-600 text-white shadow-md",
+        unselected: "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40"
+      },
+      teal: {
+        selected: "bg-teal-600 text-white shadow-md",
+        unselected: "bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/40"
+      }
+    };
+    return isSelected ? colors[color].selected : colors[color].unselected;
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-cyan-400 dark:border-cyan-600 bg-gradient-to-br from-cyan-50 dark:from-cyan-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-cyan-100/50 dark:bg-cyan-900/30">
+            <CardTitle className="flex items-center justify-between text-cyan-800 dark:text-cyan-300">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                FOUR Score Calculator
+                <Badge variant="outline" className="ml-2 text-xs border-cyan-400">For Intubated Patients</Badge>
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge className={`${severity.color} text-white font-bold px-3 py-1`}>
+                  Score: {totalScore}/16
+                </Badge>
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            {/* Score Display and Severity */}
+            <div className={`p-4 rounded-lg ${severity.bgColor} border`}>
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <div className={`text-4xl font-bold ${severity.textColor}`}>{totalScore}</div>
+                  <div className={`text-lg font-semibold ${severity.textColor}`}>{severity.label}</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    E{scores.eye} M{scores.motor} B{scores.brainstem} R{scores.respiration}
+                  </div>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <div className="text-center px-3 py-2 bg-green-100 dark:bg-green-900/40 rounded-lg border border-green-300 dark:border-green-700">
+                    <div className="text-xs text-green-700 dark:text-green-400">Good</div>
+                    <div className="font-bold text-green-800 dark:text-green-300">13-16</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-yellow-100 dark:bg-yellow-900/40 rounded-lg border border-yellow-300 dark:border-yellow-700">
+                    <div className="text-xs text-yellow-700 dark:text-yellow-400">Moderate</div>
+                    <div className="font-bold text-yellow-800 dark:text-yellow-300">9-12</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-orange-100 dark:bg-orange-900/40 rounded-lg border border-orange-300 dark:border-orange-700">
+                    <div className="text-xs text-orange-700 dark:text-orange-400">Poor</div>
+                    <div className="font-bold text-orange-800 dark:text-orange-300">5-8</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-red-100 dark:bg-red-900/40 rounded-lg border border-red-300 dark:border-red-700">
+                    <div className="text-xs text-red-700 dark:text-red-400">Very Poor</div>
+                    <div className="font-bold text-red-800 dark:text-red-300">0-4</div>
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); resetScores(); }}
+                  className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
+              
+              {totalScore === 0 && (
+                <div className="mt-3 p-2 bg-red-200 dark:bg-red-900/50 rounded border border-red-400 dark:border-red-700">
+                  <p className="text-sm font-semibold text-red-800 dark:text-red-300 flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    FOUR Score of 0 may indicate brain death - consider further evaluation
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* FOUR Score Components */}
+            <div className="grid gap-4 md:grid-cols-2">
+              {fourItems.map((item) => (
+                <div
+                  key={item.key}
+                  className="p-4 bg-white dark:bg-cyan-950/30 rounded-lg border border-cyan-200 dark:border-cyan-800"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{item.icon}</span>
+                      <div className="font-semibold text-cyan-800 dark:text-cyan-300">
+                        {item.name}
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="border-cyan-400 text-cyan-700 dark:text-cyan-300 text-lg px-3">
+                      {scores[item.key]}
+                    </Badge>
+                  </div>
+                  <div className="grid gap-1">
+                    {item.options.map((option) => (
+                      <button
+                        key={option.score}
+                        onClick={() => setScores({ ...scores, [item.key]: option.score })}
+                        className={`w-full text-left px-3 py-2 rounded text-xs transition-all ${getColorClasses(item.color, scores[item.key] === option.score)}`}
+                      >
+                        <div className="font-medium">{option.label}</div>
+                        <div className="opacity-75 mt-0.5">{option.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Advantages over GCS */}
+            <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+              <h5 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 text-sm">Advantages over GCS</h5>
+              <ul className="text-xs text-amber-700 dark:text-amber-400 space-y-1">
+                <li>• <strong>Intubated patients:</strong> No verbal component - can fully assess intubated patients</li>
+                <li>• <strong>Brainstem reflexes:</strong> Includes pupil, corneal, and cough reflexes</li>
+                <li>• <strong>Respiration:</strong> Assesses respiratory pattern and ventilator dependence</li>
+                <li>• <strong>Brain death:</strong> Score of 0 may suggest brain death (E0, M0, B0, R0)</li>
+                <li>• <strong>Better discrimination:</strong> More granular assessment of severely impaired patients</li>
+              </ul>
+            </div>
+
+            {/* Notes */}
+            <div className="p-3 bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700 rounded-lg">
+              <p className="text-xs text-cyan-600 dark:text-cyan-400">
+                <strong>Reference:</strong> Wijdicks EFM, et al. "Validation of a new coma scale: The FOUR score." Ann Neurol 2005;58:585-593. 
+                The FOUR score was specifically designed for ICU patients and provides better prognostic information than GCS in intubated patients.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Modified Rankin Scale (mRS) Component
 function MRSScaleReference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -3887,6 +4117,9 @@ export default function StrokeWorkupChecklist() {
           {/* Visual GCS Calculator */}
           <VisualGCSCalculator />
 
+          {/* FOUR Score Calculator */}
+          <VisualFOURScoreCalculator />
+
           {/* NIHSS Scale Reference */}
           <NIHSSScaleReference />
 
@@ -4154,6 +4387,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Visual GCS Calculator - also relevant for ICH */}
           <VisualGCSCalculator />
+
+          {/* FOUR Score Calculator - also relevant for ICH */}
+          <VisualFOURScoreCalculator />
 
           {/* NIHSS Scale Reference - also relevant for ICH */}
           <NIHSSScaleReference />
