@@ -1197,6 +1197,326 @@ function NIHSSScaleReference() {
   );
 }
 
+// Visual NIHSS Calculator Component
+function VisualNIHSSCalculator() {
+  const [isOpen, setIsOpen] = useState(true);
+  const [scores, setScores] = useState<Record<string, number>>({
+    "1a": 0, "1b": 0, "1c": 0, "2": 0, "3": 0, "4": 0,
+    "5a": 0, "5b": 0, "6a": 0, "6b": 0, "7": 0, "8": 0,
+    "9": 0, "10": 0, "11": 0
+  });
+
+  const nihssItems = [
+    {
+      item: "1a",
+      name: "Level of Consciousness",
+      icon: "🧠",
+      options: [
+        { score: 0, label: "Alert", desc: "Keenly responsive" },
+        { score: 1, label: "Drowsy", desc: "Arousable by minor stimulation" },
+        { score: 2, label: "Obtunded", desc: "Requires repeated stimulation" },
+        { score: 3, label: "Coma", desc: "Unresponsive or reflex responses only" }
+      ]
+    },
+    {
+      item: "1b",
+      name: "LOC Questions",
+      icon: "❓",
+      hint: "Ask month and age",
+      options: [
+        { score: 0, label: "Both correct", desc: "Answers both correctly" },
+        { score: 1, label: "One correct", desc: "Answers one correctly" },
+        { score: 2, label: "Neither", desc: "Both incorrect or unable" }
+      ]
+    },
+    {
+      item: "1c",
+      name: "LOC Commands",
+      icon: "✋",
+      hint: "Open/close eyes, grip and release",
+      options: [
+        { score: 0, label: "Both correct", desc: "Performs both tasks" },
+        { score: 1, label: "One correct", desc: "Performs one task" },
+        { score: 2, label: "Neither", desc: "Neither task performed" }
+      ]
+    },
+    {
+      item: "2",
+      name: "Best Gaze",
+      icon: "👀",
+      hint: "Horizontal eye movements only",
+      options: [
+        { score: 0, label: "Normal", desc: "Full horizontal movements" },
+        { score: 1, label: "Partial palsy", desc: "Abnormal gaze, can overcome" },
+        { score: 2, label: "Forced deviation", desc: "Fixed deviation or total paresis" }
+      ]
+    },
+    {
+      item: "3",
+      name: "Visual Fields",
+      icon: "📐",
+      hint: "Test all 4 quadrants",
+      options: [
+        { score: 0, label: "No loss", desc: "No visual field loss" },
+        { score: 1, label: "Partial", desc: "Partial hemianopia" },
+        { score: 2, label: "Complete", desc: "Complete hemianopia" },
+        { score: 3, label: "Bilateral", desc: "Bilateral blindness including cortical" }
+      ]
+    },
+    {
+      item: "4",
+      name: "Facial Palsy",
+      icon: "😐",
+      hint: "Show teeth, raise eyebrows, close eyes",
+      options: [
+        { score: 0, label: "Normal", desc: "Symmetric movements" },
+        { score: 1, label: "Minor", desc: "Flattened nasolabial fold" },
+        { score: 2, label: "Partial", desc: "Near-total lower face paralysis" },
+        { score: 3, label: "Complete", desc: "Complete unilateral palsy" }
+      ]
+    },
+    {
+      item: "5a",
+      name: "Left Arm Motor",
+      icon: "💪",
+      hint: "Extend arm 90° (sitting) or 45° (supine) for 10 sec",
+      options: [
+        { score: 0, label: "No drift", desc: "Holds for full 10 seconds" },
+        { score: 1, label: "Drift", desc: "Drifts before 10 seconds" },
+        { score: 2, label: "Some effort", desc: "Falls before 10 seconds" },
+        { score: 3, label: "No gravity", desc: "No effort against gravity" },
+        { score: 4, label: "No movement", desc: "No movement at all" }
+      ]
+    },
+    {
+      item: "5b",
+      name: "Right Arm Motor",
+      icon: "💪",
+      hint: "Extend arm 90° (sitting) or 45° (supine) for 10 sec",
+      options: [
+        { score: 0, label: "No drift", desc: "Holds for full 10 seconds" },
+        { score: 1, label: "Drift", desc: "Drifts before 10 seconds" },
+        { score: 2, label: "Some effort", desc: "Falls before 10 seconds" },
+        { score: 3, label: "No gravity", desc: "No effort against gravity" },
+        { score: 4, label: "No movement", desc: "No movement at all" }
+      ]
+    },
+    {
+      item: "6a",
+      name: "Left Leg Motor",
+      icon: "🦵",
+      hint: "Raise leg 30° supine for 5 seconds",
+      options: [
+        { score: 0, label: "No drift", desc: "Holds for full 5 seconds" },
+        { score: 1, label: "Drift", desc: "Drifts before 5 seconds" },
+        { score: 2, label: "Some effort", desc: "Falls before 5 seconds" },
+        { score: 3, label: "No gravity", desc: "No effort against gravity" },
+        { score: 4, label: "No movement", desc: "No movement at all" }
+      ]
+    },
+    {
+      item: "6b",
+      name: "Right Leg Motor",
+      icon: "🦵",
+      hint: "Raise leg 30° supine for 5 seconds",
+      options: [
+        { score: 0, label: "No drift", desc: "Holds for full 5 seconds" },
+        { score: 1, label: "Drift", desc: "Drifts before 5 seconds" },
+        { score: 2, label: "Some effort", desc: "Falls before 5 seconds" },
+        { score: 3, label: "No gravity", desc: "No effort against gravity" },
+        { score: 4, label: "No movement", desc: "No movement at all" }
+      ]
+    },
+    {
+      item: "7",
+      name: "Limb Ataxia",
+      icon: "🎯",
+      hint: "Finger-to-nose and heel-to-shin",
+      options: [
+        { score: 0, label: "Absent", desc: "No ataxia" },
+        { score: 1, label: "One limb", desc: "Present in 1 limb" },
+        { score: 2, label: "Two+ limbs", desc: "Present in 2 or more limbs" }
+      ]
+    },
+    {
+      item: "8",
+      name: "Sensory",
+      icon: "🖐️",
+      hint: "Pinprick on face, arm, trunk, leg",
+      options: [
+        { score: 0, label: "Normal", desc: "No sensory loss" },
+        { score: 1, label: "Mild-mod", desc: "Mild-moderate loss, patient aware" },
+        { score: 2, label: "Severe", desc: "Severe or total sensory loss" }
+      ]
+    },
+    {
+      item: "9",
+      name: "Best Language",
+      icon: "💬",
+      hint: "Describe picture, name items, read sentences",
+      options: [
+        { score: 0, label: "Normal", desc: "No aphasia" },
+        { score: 1, label: "Mild-mod", desc: "Some loss, can follow conversation" },
+        { score: 2, label: "Severe", desc: "Fragmented expression, need inference" },
+        { score: 3, label: "Mute/Global", desc: "Mute or global aphasia" }
+      ]
+    },
+    {
+      item: "10",
+      name: "Dysarthria",
+      icon: "🗣️",
+      hint: "Evaluate speech clarity",
+      options: [
+        { score: 0, label: "Normal", desc: "Normal articulation" },
+        { score: 1, label: "Mild-mod", desc: "Slurred but understandable" },
+        { score: 2, label: "Severe", desc: "Unintelligible or mute" }
+      ]
+    },
+    {
+      item: "11",
+      name: "Extinction/Inattention",
+      icon: "🔍",
+      hint: "Double simultaneous stimulation",
+      options: [
+        { score: 0, label: "Normal", desc: "No abnormality" },
+        { score: 1, label: "One modality", desc: "Extinction to one modality" },
+        { score: 2, label: "Profound", desc: "Profound hemi-inattention" }
+      ]
+    }
+  ];
+
+  const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
+
+  const getSeverityInfo = (score: number) => {
+    if (score <= 4) return { label: "Minor Stroke", color: "bg-green-500", textColor: "text-green-800 dark:text-green-300", bgColor: "bg-green-100 dark:bg-green-900/40" };
+    if (score <= 15) return { label: "Moderate Stroke", color: "bg-yellow-500", textColor: "text-yellow-800 dark:text-yellow-300", bgColor: "bg-yellow-100 dark:bg-yellow-900/40" };
+    if (score <= 20) return { label: "Moderate-Severe", color: "bg-orange-500", textColor: "text-orange-800 dark:text-orange-300", bgColor: "bg-orange-100 dark:bg-orange-900/40" };
+    return { label: "Severe Stroke", color: "bg-red-500", textColor: "text-red-800 dark:text-red-300", bgColor: "bg-red-100 dark:bg-red-900/40" };
+  };
+
+  const severity = getSeverityInfo(totalScore);
+
+  const resetScores = () => {
+    setScores({
+      "1a": 0, "1b": 0, "1c": 0, "2": 0, "3": 0, "4": 0,
+      "5a": 0, "5b": 0, "6a": 0, "6b": 0, "7": 0, "8": 0,
+      "9": 0, "10": 0, "11": 0
+    });
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-indigo-400 dark:border-indigo-600 bg-gradient-to-br from-indigo-50 dark:from-indigo-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-indigo-100/50 dark:bg-indigo-900/30">
+            <CardTitle className="flex items-center justify-between text-indigo-800 dark:text-indigo-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Visual NIHSS Calculator
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge className={`${severity.color} text-white font-bold px-3 py-1`}>
+                  Score: {totalScore}/42
+                </Badge>
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            {/* Score Display and Severity */}
+            <div className={`p-4 rounded-lg ${severity.bgColor} border`}>
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <div className={`text-4xl font-bold ${severity.textColor}`}>{totalScore}</div>
+                  <div className={`text-lg font-semibold ${severity.textColor}`}>{severity.label}</div>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <div className="text-center px-3 py-2 bg-green-100 dark:bg-green-900/40 rounded-lg border border-green-300 dark:border-green-700">
+                    <div className="text-xs text-green-700 dark:text-green-400">Minor</div>
+                    <div className="font-bold text-green-800 dark:text-green-300">0-4</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-yellow-100 dark:bg-yellow-900/40 rounded-lg border border-yellow-300 dark:border-yellow-700">
+                    <div className="text-xs text-yellow-700 dark:text-yellow-400">Moderate</div>
+                    <div className="font-bold text-yellow-800 dark:text-yellow-300">5-15</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-orange-100 dark:bg-orange-900/40 rounded-lg border border-orange-300 dark:border-orange-700">
+                    <div className="text-xs text-orange-700 dark:text-orange-400">Mod-Severe</div>
+                    <div className="font-bold text-orange-800 dark:text-orange-300">16-20</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-red-100 dark:bg-red-900/40 rounded-lg border border-red-300 dark:border-red-700">
+                    <div className="text-xs text-red-700 dark:text-red-400">Severe</div>
+                    <div className="font-bold text-red-800 dark:text-red-300">21-42</div>
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); resetScores(); }}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  Reset All
+                </button>
+              </div>
+            </div>
+
+            {/* NIHSS Items Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {nihssItems.map((item) => (
+                <div
+                  key={item.item}
+                  className="p-4 bg-white dark:bg-indigo-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-2xl">{item.icon}</span>
+                    <div>
+                      <div className="font-semibold text-indigo-800 dark:text-indigo-300 text-sm">
+                        {item.item}. {item.name}
+                      </div>
+                      {item.hint && (
+                        <div className="text-xs text-indigo-500 dark:text-indigo-400">{item.hint}</div>
+                      )}
+                    </div>
+                    <div className="ml-auto">
+                      <Badge variant="outline" className="border-indigo-400 text-indigo-700 dark:text-indigo-300">
+                        {scores[item.item]}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="grid gap-1">
+                    {item.options.map((option) => (
+                      <button
+                        key={option.score}
+                        onClick={() => setScores({ ...scores, [item.item]: option.score })}
+                        className={`w-full text-left px-3 py-2 rounded text-xs transition-all ${
+                          scores[item.item] === option.score
+                            ? 'bg-indigo-600 text-white shadow-md'
+                            : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40'
+                        }`}
+                      >
+                        <span className="font-bold mr-1">{option.score}:</span>
+                        <span className="font-medium">{option.label}</span>
+                        <span className="text-xs opacity-75 ml-1">- {option.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="p-3 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-700 rounded-lg">
+              <p className="text-xs text-indigo-600 dark:text-indigo-400">
+                <strong>Clinical Notes:</strong> Perform NIHSS at baseline, 24h post-treatment, at discharge, and during follow-up. 
+                A change of ≥4 points is clinically significant. Use "UN" (Untestable) for items that cannot be assessed (e.g., amputation) - do not add to total score.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Modified Rankin Scale (mRS) Component
 function MRSScaleReference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -3334,6 +3654,9 @@ export default function StrokeWorkupChecklist() {
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
 
+          {/* Visual NIHSS Calculator */}
+          <VisualNIHSSCalculator />
+
           {/* NIHSS Scale Reference */}
           <NIHSSScaleReference />
 
@@ -3595,6 +3918,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* SAH Grading Scales */}
           <SAHGradingScales />
+
+          {/* Visual NIHSS Calculator - also relevant for ICH */}
+          <VisualNIHSSCalculator />
 
           {/* NIHSS Scale Reference - also relevant for ICH */}
           <NIHSSScaleReference />
