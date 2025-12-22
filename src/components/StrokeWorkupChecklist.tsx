@@ -1517,6 +1517,233 @@ function VisualNIHSSCalculator() {
   );
 }
 
+// Visual GCS Calculator Component
+function VisualGCSCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scores, setScores] = useState<Record<string, number>>({
+    eye: 4,
+    verbal: 5,
+    motor: 6
+  });
+
+  const gcsItems = [
+    {
+      key: "eye",
+      name: "Eye Opening",
+      icon: "👁️",
+      color: "blue",
+      options: [
+        { score: 4, label: "Spontaneous", desc: "Opens eyes without stimulation" },
+        { score: 3, label: "To Voice", desc: "Opens eyes to verbal command" },
+        { score: 2, label: "To Pain", desc: "Opens eyes to painful stimuli" },
+        { score: 1, label: "None", desc: "No eye opening" }
+      ]
+    },
+    {
+      key: "verbal",
+      name: "Verbal Response",
+      icon: "💬",
+      color: "purple",
+      options: [
+        { score: 5, label: "Oriented", desc: "Oriented to person, place, time" },
+        { score: 4, label: "Confused", desc: "Confused conversation" },
+        { score: 3, label: "Inappropriate", desc: "Inappropriate words" },
+        { score: 2, label: "Incomprehensible", desc: "Incomprehensible sounds" },
+        { score: 1, label: "None", desc: "No verbal response" }
+      ]
+    },
+    {
+      key: "motor",
+      name: "Motor Response",
+      icon: "💪",
+      color: "green",
+      options: [
+        { score: 6, label: "Obeys Commands", desc: "Follows simple commands" },
+        { score: 5, label: "Localizes Pain", desc: "Moves toward painful stimulus" },
+        { score: 4, label: "Withdraws", desc: "Withdraws from pain" },
+        { score: 3, label: "Abnormal Flexion", desc: "Decorticate posturing" },
+        { score: 2, label: "Extension", desc: "Decerebrate posturing" },
+        { score: 1, label: "None", desc: "No motor response" }
+      ]
+    }
+  ];
+
+  const totalScore = scores.eye + scores.verbal + scores.motor;
+
+  const getSeverityInfo = (score: number) => {
+    if (score >= 13) return { label: "Mild Brain Injury", color: "bg-green-500", textColor: "text-green-800 dark:text-green-300", bgColor: "bg-green-100 dark:bg-green-900/40" };
+    if (score >= 9) return { label: "Moderate Brain Injury", color: "bg-yellow-500", textColor: "text-yellow-800 dark:text-yellow-300", bgColor: "bg-yellow-100 dark:bg-yellow-900/40" };
+    return { label: "Severe Brain Injury", color: "bg-red-500", textColor: "text-red-800 dark:text-red-300", bgColor: "bg-red-100 dark:bg-red-900/40" };
+  };
+
+  const getIntubationNote = () => {
+    if (totalScore <= 8) return { show: true, text: "Consider intubation for airway protection (GCS ≤8)" };
+    return { show: false, text: "" };
+  };
+
+  const severity = getSeverityInfo(totalScore);
+  const intubationNote = getIntubationNote();
+
+  const resetScores = () => {
+    setScores({ eye: 4, verbal: 5, motor: 6 });
+  };
+
+  const getColorClasses = (color: string, isSelected: boolean) => {
+    const colors: Record<string, { selected: string; unselected: string }> = {
+      blue: {
+        selected: "bg-blue-600 text-white shadow-md",
+        unselected: "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+      },
+      purple: {
+        selected: "bg-purple-600 text-white shadow-md",
+        unselected: "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+      },
+      green: {
+        selected: "bg-green-600 text-white shadow-md",
+        unselected: "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40"
+      }
+    };
+    return isSelected ? colors[color].selected : colors[color].unselected;
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-emerald-400 dark:border-emerald-600 bg-gradient-to-br from-emerald-50 dark:from-emerald-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-emerald-100/50 dark:bg-emerald-900/30">
+            <CardTitle className="flex items-center justify-between text-emerald-800 dark:text-emerald-300">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                Visual GCS Calculator
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge className={`${severity.color} text-white font-bold px-3 py-1`}>
+                  GCS: {totalScore}/15
+                </Badge>
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            {/* Score Display and Severity */}
+            <div className={`p-4 rounded-lg ${severity.bgColor} border`}>
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <div className={`text-4xl font-bold ${severity.textColor}`}>{totalScore}</div>
+                  <div className={`text-lg font-semibold ${severity.textColor}`}>{severity.label}</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    E{scores.eye} V{scores.verbal} M{scores.motor}
+                  </div>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <div className="text-center px-3 py-2 bg-green-100 dark:bg-green-900/40 rounded-lg border border-green-300 dark:border-green-700">
+                    <div className="text-xs text-green-700 dark:text-green-400">Mild</div>
+                    <div className="font-bold text-green-800 dark:text-green-300">13-15</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-yellow-100 dark:bg-yellow-900/40 rounded-lg border border-yellow-300 dark:border-yellow-700">
+                    <div className="text-xs text-yellow-700 dark:text-yellow-400">Moderate</div>
+                    <div className="font-bold text-yellow-800 dark:text-yellow-300">9-12</div>
+                  </div>
+                  <div className="text-center px-3 py-2 bg-red-100 dark:bg-red-900/40 rounded-lg border border-red-300 dark:border-red-700">
+                    <div className="text-xs text-red-700 dark:text-red-400">Severe</div>
+                    <div className="font-bold text-red-800 dark:text-red-300">3-8</div>
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); resetScores(); }}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
+              
+              {intubationNote.show && (
+                <div className="mt-3 p-2 bg-red-200 dark:bg-red-900/50 rounded border border-red-400 dark:border-red-700">
+                  <p className="text-sm font-semibold text-red-800 dark:text-red-300 flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    {intubationNote.text}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* GCS Components */}
+            <div className="grid gap-4 md:grid-cols-3">
+              {gcsItems.map((item) => (
+                <div
+                  key={item.key}
+                  className="p-4 bg-white dark:bg-emerald-950/30 rounded-lg border border-emerald-200 dark:border-emerald-800"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{item.icon}</span>
+                      <div className="font-semibold text-emerald-800 dark:text-emerald-300">
+                        {item.name}
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="border-emerald-400 text-emerald-700 dark:text-emerald-300 text-lg px-3">
+                      {scores[item.key]}
+                    </Badge>
+                  </div>
+                  <div className="grid gap-2">
+                    {item.options.map((option) => (
+                      <button
+                        key={option.score}
+                        onClick={() => setScores({ ...scores, [item.key]: option.score })}
+                        className={`w-full text-left px-3 py-2 rounded transition-all ${getColorClasses(item.color, scores[item.key] === option.score)}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold">{option.score}</span>
+                          <span className="font-medium text-sm">{option.label}</span>
+                        </div>
+                        <div className="text-xs opacity-75 mt-0.5">{option.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Clinical Pearls */}
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+                <h5 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 text-sm">GCS-Pupils Score (GCS-P)</h5>
+                <p className="text-xs text-amber-700 dark:text-amber-400">
+                  GCS-P = GCS − Pupil Reactivity Score<br/>
+                  • Both reactive = 0<br/>
+                  • One reactive = 1<br/>
+                  • Neither reactive = 2<br/>
+                  Range: 1-15 (lower = worse prognosis)
+                </p>
+              </div>
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                <h5 className="font-semibold text-blue-800 dark:text-blue-300 mb-2 text-sm">Motor Score Importance</h5>
+                <p className="text-xs text-blue-700 dark:text-blue-400">
+                  The Motor component (M) is the most predictive of outcome.<br/>
+                  • M ≤4: Poor prognosis indicator<br/>
+                  • M6: Best motor response<br/>
+                  If only one component is available, Motor alone can estimate severity.
+                </p>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-700 rounded-lg">
+              <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                <strong>Clinical Notes:</strong> GCS should be documented as component scores (E_V_M_) in addition to total. 
+                For intubated patients, record as E_VT M_ (T = intubated). 
+                Serial GCS assessments are valuable for tracking neurological status.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // Modified Rankin Scale (mRS) Component
 function MRSScaleReference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -3657,6 +3884,9 @@ export default function StrokeWorkupChecklist() {
           {/* Visual NIHSS Calculator */}
           <VisualNIHSSCalculator />
 
+          {/* Visual GCS Calculator */}
+          <VisualGCSCalculator />
+
           {/* NIHSS Scale Reference */}
           <NIHSSScaleReference />
 
@@ -3921,6 +4151,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Visual NIHSS Calculator - also relevant for ICH */}
           <VisualNIHSSCalculator />
+
+          {/* Visual GCS Calculator - also relevant for ICH */}
+          <VisualGCSCalculator />
 
           {/* NIHSS Scale Reference - also relevant for ICH */}
           <NIHSSScaleReference />
