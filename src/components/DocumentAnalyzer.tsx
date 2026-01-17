@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Upload, FileText, Loader2, ChevronDown, AlertTriangle, CheckCircle, AlertCircle, Brain } from "lucide-react";
+import { Upload, FileText, Loader2, ChevronDown, AlertTriangle, CheckCircle, AlertCircle, Brain, Camera, Image, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -45,25 +45,55 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
   const [documentText, setDocumentText] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<DocumentAnalysisResult | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<{ file: File; preview: string }[]>([]);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-    if (file.type === "text/plain") {
-      const text = await file.text();
-      setDocumentText(text);
-      toast.success("Document loaded successfully");
-    } else if (file.type === "application/pdf") {
-      toast.info("PDF detected. Please paste the text content directly for now.");
-    } else {
-      toast.error("Please upload a text file or paste the document content directly");
+    for (const file of Array.from(files)) {
+      if (file.type === "text/plain") {
+        const text = await file.text();
+        setDocumentText(prev => prev + (prev ? "\n\n" : "") + text);
+        toast.success("Text document loaded");
+      } else if (file.type.startsWith("image/")) {
+        // Handle image files (jpeg, png, etc.)
+        const preview = URL.createObjectURL(file);
+        setUploadedImages(prev => [...prev, { file, preview }]);
+        toast.success("Image added - will be analyzed with AI");
+      } else if (file.type === "application/pdf") {
+        toast.info("PDF detected. Please paste the text content directly for now.");
+      } else {
+        toast.error("Unsupported file type. Please upload images or text files.");
+      }
     }
+    
+    // Reset input
+    if (e.target) e.target.value = "";
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => {
+      URL.revokeObjectURL(prev[index].preview);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
+  const convertImageToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
 
   const analyzeDocument = async () => {
-    if (!documentText.trim()) {
-      toast.error("Please enter or upload document content first");
+    if (!documentText.trim() && uploadedImages.length === 0) {
+      toast.error("Please enter text, upload a document, or add images first");
       return;
     }
 
@@ -71,9 +101,16 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
     setAnalysis(null);
 
     try {
+      // If we have images, convert the first one to base64 for analysis
+      let imageBase64: string | undefined;
+      if (uploadedImages.length > 0) {
+        imageBase64 = await convertImageToBase64(uploadedImages[0].file);
+      }
+
       const { data, error } = await supabase.functions.invoke("analyze-document", {
         body: {
-          documentText,
+          documentText: documentText || "Please analyze the uploaded image for clinical documentation.",
+          imageBase64,
           checkedTests,
           demographics,
           calculatedScores,
@@ -124,44 +161,118 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
           <CardContent className="pt-6 space-y-6">
             {/* Upload Section */}
             <div className="space-y-4">
-              <div className="p-4 border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg text-center">
+              {/* Upload Options */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* File Upload */}
                 <input
+                  ref={fileInputRef}
                   type="file"
-                  id="document-upload"
-                  accept=".txt,.doc,.docx"
+                  accept=".txt,.doc,.docx,.jpg,.jpeg,.png,.webp,.heic,image/*"
+                  onChange={handleFileUpload}
+                  multiple
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40"
+                >
+                  <Upload className="h-4 w-4" />
+                  Upload Files
+                </Button>
+
+                {/* Photo Library (mobile-friendly) */}
+                <input
+                  ref={cameraInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-                <label
-                  htmlFor="document-upload"
-                  className="flex flex-col items-center gap-2 cursor-pointer"
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    // For photo library, we need a separate input without capture
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.multiple = true;
+                    input.onchange = (e) => handleFileUpload(e as any);
+                    input.click();
+                  }}
+                  className="flex items-center gap-2 border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40"
                 >
-                  <Upload className="h-8 w-8 text-indigo-500" />
+                  <Image className="h-4 w-4" />
+                  Photo Library
+                </Button>
+
+                {/* Camera Capture */}
+                <Button
+                  variant="outline"
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="flex items-center gap-2 border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40"
+                >
+                  <Camera className="h-4 w-4" />
+                  Take Photo
+                </Button>
+              </div>
+
+              {/* Uploaded Images Preview */}
+              {uploadedImages.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-indigo-700 dark:text-indigo-400">
+                    Uploaded Images ({uploadedImages.length})
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {uploadedImages.map((img, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={img.preview}
+                          alt={`Uploaded ${index + 1}`}
+                          className="h-20 w-20 object-cover rounded-lg border-2 border-indigo-300 dark:border-indigo-600"
+                        />
+                        <button
+                          onClick={() => removeImage(index)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Drop zone for additional context */}
+              <div className="p-4 border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg text-center">
+                <div className="flex flex-col items-center gap-2">
+                  <FileText className="h-8 w-8 text-indigo-500" />
                   <span className="text-sm text-indigo-600 dark:text-indigo-400">
-                    Upload a text file or paste content below
+                    Drop files here or use the buttons above
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    Supports: TXT files. For PDFs, please paste content directly.
+                    Supports: Images (JPEG, PNG), Text files • Use camera for bedside documentation
                   </span>
-                </label>
+                </div>
               </div>
 
               <Textarea
-                placeholder="Paste patient documentation here (clinical notes, discharge summary, investigation reports, etc.)..."
+                placeholder="Paste patient documentation here (clinical notes, discharge summary, investigation reports, etc.) or upload images above..."
                 value={documentText}
                 onChange={(e) => setDocumentText(e.target.value)}
-                className="min-h-[200px] text-sm"
+                className="min-h-[150px] text-sm"
               />
 
               <Button
                 onClick={analyzeDocument}
-                disabled={isAnalyzing || !documentText.trim()}
+                disabled={isAnalyzing || (!documentText.trim() && uploadedImages.length === 0)}
                 className="w-full bg-indigo-600 hover:bg-indigo-700"
               >
                 {isAnalyzing ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Analyzing Document...
+                    Analyzing {uploadedImages.length > 0 ? "Images & Text" : "Document"}...
                   </>
                 ) : (
                   <>

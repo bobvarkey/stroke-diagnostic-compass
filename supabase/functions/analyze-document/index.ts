@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { documentText, checkedTests, demographics, calculatedScores } = await req.json();
+    const { documentText, imageBase64, checkedTests, demographics, calculatedScores } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -77,6 +77,22 @@ ${calculatedScores ? JSON.stringify(calculatedScores, null, 2) : "No scores calc
 
 Please provide a comprehensive analysis of what investigations are missing and whether the stated diagnosis is appropriate.`;
 
+    // Build the user content - if image is provided, use multimodal message
+    let userContent: any;
+    if (imageBase64) {
+      userContent = [
+        { type: "text", text: userPrompt },
+        {
+          type: "image_url",
+          image_url: {
+            url: imageBase64.startsWith("data:") ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`
+          }
+        }
+      ];
+    } else {
+      userContent = userPrompt;
+    }
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -84,10 +100,10 @@ Please provide a comprehensive analysis of what investigations are missing and w
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
+          { role: "user", content: userContent },
         ],
       }),
     });
