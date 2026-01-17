@@ -8,6 +8,9 @@ import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, A
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
+import DocumentAnalyzer from "./DocumentAnalyzer";
+import DemographicsForm from "./DemographicsForm";
+import PDFScoreSummary from "./PDFScoreSummary";
 
 interface TestItem {
   id: string;
@@ -4617,6 +4620,8 @@ export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("ischemic");
   const [showNav, setShowNav] = useState(false);
+  const [demographics, setDemographics] = useState<{ age?: string; sex?: string; race?: string }>({});
+  const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
 
   const handleCheck = (testId: string) => {
     const newChecked = new Set(checkedItems);
@@ -4628,6 +4633,7 @@ export default function StrokeWorkupChecklist() {
     setCheckedItems(newChecked);
   };
 
+  const checkedTestNames = strokeTests.filter(t => checkedItems.has(t.id)).map(t => t.name);
   const categories = Array.from(new Set(strokeTests.map(test => test.category)));
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
 
@@ -4762,6 +4768,15 @@ export default function StrokeWorkupChecklist() {
 
         {/* Ischemic Stroke Tab Content */}
         <TabsContent value="ischemic" className="space-y-6">
+          {/* Demographics Form */}
+          <DemographicsForm demographics={demographics} onDemographicsChange={setDemographics} />
+
+          {/* AI Document Analyzer */}
+          <DocumentAnalyzer checkedTests={checkedTestNames} calculatedScores={calculatedScores} demographics={demographics} />
+
+          {/* PDF Score Summary */}
+          <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />
+
           {/* Acute Stroke Management Algorithm */}
           <AcuteStrokeAlgorithm />
 
