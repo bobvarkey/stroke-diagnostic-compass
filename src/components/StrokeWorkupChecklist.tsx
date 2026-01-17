@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Menu, X } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
+import fourScoreDiagram from "@/assets/four-score-diagram.png";
 
 interface TestItem {
   id: string;
@@ -1948,6 +1949,19 @@ function VisualFOURScoreCalculator() {
               ))}
             </div>
 
+            {/* FOUR Score Visual Diagram */}
+            <div className="p-4 bg-white dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700 rounded-lg">
+              <h5 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-3 text-sm text-center">FOUR Score Visual Reference</h5>
+              <img 
+                src={fourScoreDiagram} 
+                alt="FOUR Score Visual Diagram showing Eye Response, Motor Response, Brainstem Reflexes, and Respiration scoring" 
+                className="w-full max-w-2xl mx-auto rounded-lg shadow-md"
+              />
+              <p className="text-xs text-center text-cyan-600 dark:text-cyan-400 mt-2">
+                © Mayo Foundation for Medical Education and Research
+              </p>
+            </div>
+
             {/* Advantages over GCS */}
             <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
               <h5 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 text-sm">Advantages over GCS</h5>
@@ -2176,6 +2190,338 @@ function HuntHessCalculator() {
               <p className="text-xs text-rose-600 dark:text-rose-400">
                 <strong>Reference:</strong> Hunt WE, Hess RM. "Surgical risk as related to time of intervention in the repair of intracranial aneurysms." J Neurosurg 1968;28:14-20.
                 Mortality rates are historical surgical mortality and may vary with modern endovascular techniques.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+// WFNS (World Federation of Neurological Surgeons) Scale Calculator
+function WFNSCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [gcs, setGcs] = useState<number | null>(null);
+  const [motorDeficit, setMotorDeficit] = useState<boolean | null>(null);
+
+  const getWFNSGrade = (): { grade: string; mortality: string; color: string; bgColor: string; borderColor: string; textColor: string; description: string } | null => {
+    if (gcs === null) return null;
+    
+    if (gcs === 15) {
+      return {
+        grade: "I",
+        mortality: "5%",
+        color: "green",
+        bgColor: "bg-green-100 dark:bg-green-900/40",
+        borderColor: "border-green-400 dark:border-green-600",
+        textColor: "text-green-800 dark:text-green-300",
+        description: "GCS 15, no motor deficit"
+      };
+    }
+    if (gcs >= 13 && gcs <= 14) {
+      if (motorDeficit === false) {
+        return {
+          grade: "II",
+          mortality: "9%",
+          color: "lime",
+          bgColor: "bg-lime-100 dark:bg-lime-900/40",
+          borderColor: "border-lime-400 dark:border-lime-600",
+          textColor: "text-lime-800 dark:text-lime-300",
+          description: "GCS 13-14, no motor deficit"
+        };
+      } else if (motorDeficit === true) {
+        return {
+          grade: "III",
+          mortality: "20%",
+          color: "yellow",
+          bgColor: "bg-yellow-100 dark:bg-yellow-900/40",
+          borderColor: "border-yellow-400 dark:border-yellow-600",
+          textColor: "text-yellow-800 dark:text-yellow-300",
+          description: "GCS 13-14, with motor deficit"
+        };
+      }
+      return null;
+    }
+    if (gcs >= 7 && gcs <= 12) {
+      return {
+        grade: "IV",
+        mortality: "33%",
+        color: "orange",
+        bgColor: "bg-orange-100 dark:bg-orange-900/40",
+        borderColor: "border-orange-400 dark:border-orange-600",
+        textColor: "text-orange-800 dark:text-orange-300",
+        description: "GCS 7-12, with or without motor deficit"
+      };
+    }
+    if (gcs >= 3 && gcs <= 6) {
+      return {
+        grade: "V",
+        mortality: "76%",
+        color: "red",
+        bgColor: "bg-red-100 dark:bg-red-900/40",
+        borderColor: "border-red-400 dark:border-red-600",
+        textColor: "text-red-800 dark:text-red-300",
+        description: "GCS 3-6, with or without motor deficit"
+      };
+    }
+    return null;
+  };
+
+  const wfnsResult = getWFNSGrade();
+  const needsMotorDeficit = gcs !== null && gcs >= 13 && gcs <= 14;
+
+  const gcsOptions = [
+    { value: 15, label: "15" },
+    { value: 14, label: "14" },
+    { value: 13, label: "13" },
+    { value: 12, label: "12" },
+    { value: 11, label: "11" },
+    { value: 10, label: "10" },
+    { value: 9, label: "9" },
+    { value: 8, label: "8" },
+    { value: 7, label: "7" },
+    { value: 6, label: "6" },
+    { value: 5, label: "5" },
+    { value: 4, label: "4" },
+    { value: 3, label: "3" },
+  ];
+
+  const resetScores = () => {
+    setGcs(null);
+    setMotorDeficit(null);
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-violet-400 dark:border-violet-600 bg-gradient-to-br from-violet-50 dark:from-violet-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-violet-100/50 dark:bg-violet-900/30">
+            <CardTitle className="flex items-center justify-between text-violet-800 dark:text-violet-300">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                WFNS Scale Calculator (SAH)
+                <Badge variant="outline" className="ml-2 text-xs border-violet-400">GCS-Based</Badge>
+              </div>
+              <div className="flex items-center gap-3">
+                {wfnsResult && (
+                  <Badge className={`${wfnsResult.bgColor} ${wfnsResult.textColor} font-bold px-3 py-1 border ${wfnsResult.borderColor}`}>
+                    Grade {wfnsResult.grade}
+                  </Badge>
+                )}
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-6">
+            {/* Input Section */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* GCS Selection */}
+              <div className="p-4 bg-white dark:bg-violet-950/30 rounded-lg border border-violet-200 dark:border-violet-800">
+                <h5 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">Glasgow Coma Scale (GCS)</h5>
+                <div className="grid grid-cols-5 gap-2">
+                  {gcsOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setGcs(option.value);
+                        // Reset motor deficit if not needed
+                        if (option.value < 13 || option.value > 14) {
+                          setMotorDeficit(null);
+                        }
+                      }}
+                      className={`p-3 rounded-lg font-bold text-lg transition-all ${
+                        gcs === option.value
+                          ? 'bg-violet-600 text-white shadow-md'
+                          : 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400 hover:bg-violet-100 dark:hover:bg-violet-900/40'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Motor Deficit Selection */}
+              <div className={`p-4 bg-white dark:bg-violet-950/30 rounded-lg border border-violet-200 dark:border-violet-800 ${!needsMotorDeficit ? 'opacity-50' : ''}`}>
+                <h5 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">
+                  Motor Deficit Present?
+                  {needsMotorDeficit && <span className="text-red-500 ml-1">*</span>}
+                </h5>
+                <p className="text-xs text-violet-600 dark:text-violet-400 mb-3">
+                  {needsMotorDeficit 
+                    ? "Required for GCS 13-14 to differentiate Grade II vs III" 
+                    : "Only applicable for GCS 13-14"
+                  }
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setMotorDeficit(false)}
+                    disabled={!needsMotorDeficit}
+                    className={`p-4 rounded-lg font-medium transition-all ${
+                      motorDeficit === false
+                        ? 'bg-green-600 text-white shadow-md'
+                        : 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40'
+                    } ${!needsMotorDeficit ? 'cursor-not-allowed' : ''}`}
+                  >
+                    <div className="text-lg">No</div>
+                    <div className="text-xs opacity-75">No motor deficit</div>
+                  </button>
+                  <button
+                    onClick={() => setMotorDeficit(true)}
+                    disabled={!needsMotorDeficit}
+                    className={`p-4 rounded-lg font-medium transition-all ${
+                      motorDeficit === true
+                        ? 'bg-red-600 text-white shadow-md'
+                        : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40'
+                    } ${!needsMotorDeficit ? 'cursor-not-allowed' : ''}`}
+                  >
+                    <div className="text-lg">Yes</div>
+                    <div className="text-xs opacity-75">Motor deficit present</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Result Display */}
+            {wfnsResult ? (
+              <div className={`p-4 rounded-lg ${wfnsResult.bgColor} border ${wfnsResult.borderColor}`}>
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <div className={`text-3xl font-bold ${wfnsResult.textColor}`}>
+                      WFNS Grade {wfnsResult.grade}
+                    </div>
+                    <div className={`text-sm ${wfnsResult.textColor} mt-1`}>
+                      {wfnsResult.description}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-2xl font-bold ${wfnsResult.textColor}`}>
+                      {wfnsResult.mortality}
+                    </div>
+                    <div className={`text-xs ${wfnsResult.textColor}`}>
+                      Mortality Rate
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Management Implications */}
+                <div className="mt-4 p-3 bg-white/50 dark:bg-black/20 rounded">
+                  <h5 className={`font-semibold ${wfnsResult.textColor} mb-2 text-sm`}>Management Implications</h5>
+                  <ul className={`text-xs ${wfnsResult.textColor} space-y-1`}>
+                    {wfnsResult.grade === "I" || wfnsResult.grade === "II" || wfnsResult.grade === "III" ? (
+                      <>
+                        <li>• "Good grade" SAH - early intervention typically recommended</li>
+                        <li>• Aneurysm treatment within 24-72 hours preferred</li>
+                        <li>• Better functional outcomes expected</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>• "Poor grade" SAH - stabilization may be needed before intervention</li>
+                        <li>• Consider EVD for hydrocephalus if present</li>
+                        <li>• Aggressive ICP management required</li>
+                        <li>• Timing of aneurysm treatment controversial</li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-lg bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700 text-center">
+                <p className="text-violet-600 dark:text-violet-400">
+                  {gcs === null 
+                    ? "Select GCS score to calculate WFNS grade" 
+                    : "Select motor deficit status to complete grading"
+                  }
+                </p>
+              </div>
+            )}
+
+            {/* WFNS Grade Reference Table */}
+            <div className="p-4 bg-violet-50/50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800 rounded-lg">
+              <h5 className="font-semibold text-violet-800 dark:text-violet-300 mb-3">WFNS Grading System Reference</h5>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-violet-200 dark:border-violet-700">
+                      <th className="text-left py-2 px-2 text-violet-800 dark:text-violet-300 font-semibold">Grade</th>
+                      <th className="text-center py-2 px-2 text-violet-800 dark:text-violet-300 font-semibold">GCS</th>
+                      <th className="text-center py-2 px-2 text-violet-800 dark:text-violet-300 font-semibold">Motor Deficit</th>
+                      <th className="text-center py-2 px-2 text-violet-800 dark:text-violet-300 font-semibold">Mortality</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-violet-100 dark:border-violet-800 bg-green-50 dark:bg-green-900/20">
+                      <td className="py-2 px-2 font-bold text-green-700 dark:text-green-300">I</td>
+                      <td className="py-2 px-2 text-center">15</td>
+                      <td className="py-2 px-2 text-center">Absent</td>
+                      <td className="py-2 px-2 text-center">5%</td>
+                    </tr>
+                    <tr className="border-b border-violet-100 dark:border-violet-800 bg-lime-50 dark:bg-lime-900/20">
+                      <td className="py-2 px-2 font-bold text-lime-700 dark:text-lime-300">II</td>
+                      <td className="py-2 px-2 text-center">13-14</td>
+                      <td className="py-2 px-2 text-center">Absent</td>
+                      <td className="py-2 px-2 text-center">9%</td>
+                    </tr>
+                    <tr className="border-b border-violet-100 dark:border-violet-800 bg-yellow-50 dark:bg-yellow-900/20">
+                      <td className="py-2 px-2 font-bold text-yellow-700 dark:text-yellow-300">III</td>
+                      <td className="py-2 px-2 text-center">13-14</td>
+                      <td className="py-2 px-2 text-center">Present</td>
+                      <td className="py-2 px-2 text-center">20%</td>
+                    </tr>
+                    <tr className="border-b border-violet-100 dark:border-violet-800 bg-orange-50 dark:bg-orange-900/20">
+                      <td className="py-2 px-2 font-bold text-orange-700 dark:text-orange-300">IV</td>
+                      <td className="py-2 px-2 text-center">7-12</td>
+                      <td className="py-2 px-2 text-center">Present or Absent</td>
+                      <td className="py-2 px-2 text-center">33%</td>
+                    </tr>
+                    <tr className="bg-red-50 dark:bg-red-900/20">
+                      <td className="py-2 px-2 font-bold text-red-700 dark:text-red-300">V</td>
+                      <td className="py-2 px-2 text-center">3-6</td>
+                      <td className="py-2 px-2 text-center">Present or Absent</td>
+                      <td className="py-2 px-2 text-center">76%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Comparison with Hunt & Hess */}
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+                <h5 className="font-semibold text-amber-800 dark:text-amber-300 mb-2 text-sm">WFNS vs Hunt & Hess</h5>
+                <p className="text-xs text-amber-700 dark:text-amber-400">
+                  WFNS uses objective GCS scoring, reducing inter-observer variability. 
+                  Hunt & Hess relies on clinical description which can be subjective.
+                  Both predict outcome similarly but WFNS is more reproducible.
+                </p>
+              </div>
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                <h5 className="font-semibold text-blue-800 dark:text-blue-300 mb-2 text-sm">"Good Grade" vs "Poor Grade"</h5>
+                <p className="text-xs text-blue-700 dark:text-blue-400">
+                  Grades I-III: "Good grade" - typically proceed with early treatment<br/>
+                  Grades IV-V: "Poor grade" - may need stabilization first, outcome less certain
+                </p>
+              </div>
+            </div>
+
+            {/* Reset Button */}
+            <div className="flex items-center justify-between">
+              <button
+                onClick={resetScores}
+                className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                Reset
+              </button>
+            </div>
+
+            {/* Reference */}
+            <div className="p-3 bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700 rounded-lg">
+              <p className="text-xs text-violet-600 dark:text-violet-400">
+                <strong>Reference:</strong> Report of World Federation of Neurological Surgeons Committee on a Universal Subarachnoid Hemorrhage Grading Scale. 
+                J Neurosurg 1988;68:985-986. Mortality rates based on ISAT and contemporary studies.
               </p>
             </div>
           </CardContent>
@@ -4270,6 +4616,7 @@ function MetabolicSyndromeChecker() {
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("ischemic");
+  const [showNav, setShowNav] = useState(false);
 
   const handleCheck = (testId: string) => {
     const newChecked = new Set(checkedItems);
@@ -4284,15 +4631,114 @@ export default function StrokeWorkupChecklist() {
   const categories = Array.from(new Set(strokeTests.map(test => test.category)));
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
 
+  // Quick navigation items for each tab
+  const ischemicNavItems = [
+    { label: "Acute Management", id: "acute-stroke" },
+    { label: "NIHSS Calculator", id: "nihss" },
+    { label: "GCS Calculator", id: "gcs" },
+    { label: "FOUR Score", id: "four" },
+    { label: "ASPECTS", id: "aspects" },
+    { label: "CHA₂DS₂-VASc", id: "cha2ds2" },
+    { label: "HAS-BLED", id: "hasbled" },
+    { label: "ABCD²", id: "abcd2" },
+    { label: "Workup Checklist", id: "checklist" },
+  ];
+
+  const hemorrhagicNavItems = [
+    { label: "Acute ICH Management", id: "ich-acute" },
+    { label: "ICH Score", id: "ich-score" },
+    { label: "FUNC Score", id: "func" },
+    { label: "SAH Grading", id: "sah" },
+    { label: "Hunt & Hess", id: "hh" },
+    { label: "WFNS Scale", id: "wfns" },
+    { label: "NIHSS", id: "nihss-ich" },
+    { label: "GCS/FOUR", id: "gcs-ich" },
+  ];
+
+  const scrollToSection = (id: string) => {
+    // Close nav on mobile after selection
+    setShowNav(false);
+    // Scroll functionality would need refs, for now just close the nav
+  };
+
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-medical-header mb-2">
+    <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
+      {/* Header */}
+      <div className="text-center mb-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-medical-header mb-2">
           Stroke Investigation Workup Checklist
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-sm md:text-base">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
+      </div>
+
+      {/* Quick Navigation Bar */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b pb-3">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setShowNav(!showNav)}
+            className="flex items-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg text-sm font-medium transition-colors"
+          >
+            {showNav ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            <span className="hidden sm:inline">Quick Navigation</span>
+            <span className="sm:hidden">Navigate</span>
+          </button>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="hidden sm:inline">Scroll down to explore sections</span>
+          </div>
+        </div>
+        
+        {/* Expandable Navigation */}
+        {showNav && (
+          <div className="mt-3 p-4 bg-card border rounded-lg shadow-lg animate-in slide-in-from-top-2">
+            <div className="grid gap-4 md:grid-cols-2">
+              {/* Ischemic Navigation */}
+              <div>
+                <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 flex items-center gap-2">
+                  <Zap className="h-4 w-4" />
+                  Ischemic Stroke
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {ischemicNavItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab("ischemic");
+                        scrollToSection(item.id);
+                      }}
+                      className="px-2.5 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Hemorrhagic Navigation */}
+              <div>
+                <h4 className="font-semibold text-orange-700 dark:text-orange-400 mb-2 flex items-center gap-2">
+                  <Droplets className="h-4 w-4" />
+                  Intracerebral Hemorrhage
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {hemorrhagicNavItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab("hemorrhagic");
+                        scrollToSection(item.id);
+                      }}
+                      className="px-2.5 py-1 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded hover:bg-orange-200 dark:hover:bg-orange-800/50 transition-colors"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Category Tabs */}
@@ -4595,6 +5041,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Hunt and Hess Calculator */}
           <HuntHessCalculator />
+
+          {/* WFNS Scale Calculator */}
+          <WFNSCalculator />
 
           {/* Visual NIHSS Calculator - also relevant for ICH */}
           <VisualNIHSSCalculator />
