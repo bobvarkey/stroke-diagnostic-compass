@@ -13,6 +13,7 @@ import DemographicsForm from "./DemographicsForm";
 import PDFScoreSummary from "./PDFScoreSummary";
 import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
 import InteractivePcASPECTSCalculator from "./InteractivePcASPECTSCalculator";
+import FisherScaleCalculator from "./FisherScaleCalculator";
 
 interface TestItem {
   id: string;
@@ -5070,7 +5071,16 @@ export default function StrokeWorkupChecklist() {
           {/* WFNS Scale Calculator */}
           <WFNSCalculator />
 
-          {/* Visual NIHSS Calculator - also relevant for ICH */}
+          {/* Fisher Scale Calculator */}
+          <FisherScaleCalculator 
+            onScoreChange={useCallback((scores) => {
+              setCalculatedScores(prev => ({ 
+                ...prev, 
+                fisher: scores.fisher,
+                modifiedFisher: scores.modifiedFisher 
+              }));
+            }, [])}
+          />
           <VisualNIHSSCalculator />
 
           {/* Visual GCS Calculator - also relevant for ICH */}
