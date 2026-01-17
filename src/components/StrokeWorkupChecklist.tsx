@@ -14,6 +14,7 @@ import PDFScoreSummary from "./PDFScoreSummary";
 import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
 import InteractivePcASPECTSCalculator from "./InteractivePcASPECTSCalculator";
 import FisherScaleCalculator from "./FisherScaleCalculator";
+import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 
 interface TestItem {
   id: string;
@@ -5056,8 +5057,12 @@ export default function StrokeWorkupChecklist() {
           {/* Acute ICH Management */}
           <AcuteICHManagement />
 
-          {/* ICH Score Calculator */}
-          <ICHScoreCalculator />
+          {/* ICH Score Calculator - Interactive Version */}
+          <InteractiveICHScoreCalculator 
+            onScoreChange={useCallback((score) => {
+              setCalculatedScores(prev => ({ ...prev, ichScore: score }));
+            }, [])}
+          />
 
           {/* FUNC Score Calculator */}
           <FUNCScoreCalculator />
