@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -11,6 +11,7 @@ import fourScoreDiagram from "@/assets/four-score-diagram.png";
 import DocumentAnalyzer from "./DocumentAnalyzer";
 import DemographicsForm from "./DemographicsForm";
 import PDFScoreSummary from "./PDFScoreSummary";
+import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
 
 interface TestItem {
   id: string;
@@ -4798,8 +4799,12 @@ export default function StrokeWorkupChecklist() {
           {/* mRS Scale Reference */}
           <MRSScaleReference />
 
-          {/* ASPECTS Score Reference */}
-          <ASPECTSScoreReference />
+          {/* Interactive ASPECTS Calculator */}
+          <InteractiveASPECTSCalculator 
+            onScoreChange={useCallback((score: number) => {
+              setCalculatedScores(prev => ({ ...prev, aspects: score }));
+            }, [])}
+          />
 
           {/* pc-ASPECTS Score Reference */}
           <PcASPECTSScoreReference />
