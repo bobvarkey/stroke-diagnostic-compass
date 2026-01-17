@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -15,6 +15,7 @@ import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
 import InteractivePcASPECTSCalculator from "./InteractivePcASPECTSCalculator";
 import FisherScaleCalculator from "./FisherScaleCalculator";
 import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
+import { nihssIconMap } from "./NIHSSIcons";
 
 interface TestItem {
   id: string;
@@ -1474,9 +1475,15 @@ function VisualNIHSSCalculator() {
                   key={item.item}
                   className="p-4 bg-white dark:bg-indigo-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">{item.icon}</span>
-                    <div>
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="flex-shrink-0">
+                      {nihssIconMap[item.item] ? (
+                        React.createElement(nihssIconMap[item.item], { size: 48, className: "drop-shadow-md" })
+                      ) : (
+                        <span className="text-2xl">{item.icon}</span>
+                      )}
+                    </div>
+                    <div className="flex-1">
                       <div className="font-semibold text-indigo-800 dark:text-indigo-300 text-sm">
                         {item.item}. {item.name}
                       </div>
