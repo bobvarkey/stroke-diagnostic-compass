@@ -12,6 +12,7 @@ import DocumentAnalyzer from "./DocumentAnalyzer";
 import DemographicsForm from "./DemographicsForm";
 import PDFScoreSummary from "./PDFScoreSummary";
 import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
+import InteractivePcASPECTSCalculator from "./InteractivePcASPECTSCalculator";
 
 interface TestItem {
   id: string;
@@ -4806,8 +4807,12 @@ export default function StrokeWorkupChecklist() {
             }, [])}
           />
 
-          {/* pc-ASPECTS Score Reference */}
-          <PcASPECTSScoreReference />
+          {/* Interactive pc-ASPECTS Calculator */}
+          <InteractivePcASPECTSCalculator 
+            onScoreChange={useCallback((score: number) => {
+              setCalculatedScores(prev => ({ ...prev, pcAspects: score }));
+            }, [])}
+          />
 
           {/* CHA2DS2-VASc Calculator */}
           <CHA2DS2VAScCalculator />
