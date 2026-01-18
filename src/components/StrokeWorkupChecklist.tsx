@@ -1524,8 +1524,61 @@ function VisualNIHSSCalculator() {
             <div className="p-3 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-700 rounded-lg">
               <p className="text-xs text-indigo-600 dark:text-indigo-400">
                 <strong>Clinical Notes:</strong> Perform NIHSS at baseline, 24h post-treatment, at discharge, and during follow-up. 
-                A change of ≥4 points is clinically significant. Use "UN" (Untestable) for items that cannot be assessed (e.g., amputation) - do not add to total score.
+                A change of ≥4 points is clinically significant.
               </p>
+            </div>
+
+            {/* Untestable Items Caveat */}
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-700 rounded-lg space-y-3">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-amber-800 dark:text-amber-300 text-sm">Handling "Untestable" Items (UN/X)</h4>
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+                    If a response is considered "untestable" due to physical limitations (e.g., amputation, fused joint, intubation), 
+                    mark as <strong>"UN"</strong> or <strong>"X"</strong> and document a detailed explanation on the form.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="grid gap-3 md:grid-cols-2">
+                {/* Items that CAN be marked UN */}
+                <div className="p-3 bg-white dark:bg-amber-950/30 rounded border border-amber-200 dark:border-amber-800">
+                  <h5 className="font-semibold text-amber-800 dark:text-amber-300 text-xs mb-2">Items That CAN Be Marked "UN":</h5>
+                  <ul className="text-xs text-amber-700 dark:text-amber-400 space-y-1">
+                    <li>• <strong>Motor Arm (5a/5b):</strong> Amputation or joint fusion (shoulder)</li>
+                    <li>• <strong>Motor Leg (6a/6b):</strong> Amputation or joint fusion (hip)</li>
+                    <li>• <strong>Limb Ataxia (7):</strong> ONLY if amputation or joint fusion exists. If paralyzed or comatose → score 0, NOT "UN"</li>
+                    <li>• <strong>Dysarthria (10):</strong> Intubated or physical barrier to producing speech</li>
+                  </ul>
+                </div>
+
+                {/* Items that are NEVER untestable */}
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded border border-red-200 dark:border-red-800">
+                  <h5 className="font-semibold text-red-800 dark:text-red-300 text-xs mb-2">Items NEVER Untestable:</h5>
+                  <ul className="text-xs text-red-700 dark:text-red-400 space-y-1">
+                    <li>• <strong>Sensory (8):</strong> If comatose or severely obtunded → score 2</li>
+                    <li>• <strong>Extinction/Inattention (11):</strong> NEVER untestable. Score 0 if cannot be tested, or based on other findings</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Comatose Patients */}
+              <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded border border-purple-200 dark:border-purple-800">
+                <h5 className="font-semibold text-purple-800 dark:text-purple-300 text-xs mb-2">⚠️ Comatose Patients (LOC 1a = 3):</h5>
+                <p className="text-xs text-purple-700 dark:text-purple-400">
+                  Most items receive the <strong>highest score (maximum deficit)</strong>. Exceptions: Sensory (8) = 2; Extinction (11) = scored 0 or based on findings.
+                </p>
+              </div>
+
+              {/* Important Tip */}
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-200 dark:border-blue-800">
+                <h5 className="font-semibold text-blue-800 dark:text-blue-300 text-xs mb-2">💡 Key Principle:</h5>
+                <p className="text-xs text-blue-700 dark:text-blue-400">
+                  <strong>"Score what you see"</strong> — not what you think the patient can do. "UN" means the item could NOT be evaluated, 
+                  not that it is normal. If paralyzed, score 4 for motor deficit, NOT "untestable."
+                </p>
+              </div>
             </div>
           </CardContent>
         </CollapsibleContent>
