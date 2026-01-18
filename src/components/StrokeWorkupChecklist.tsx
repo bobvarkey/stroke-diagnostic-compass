@@ -21,6 +21,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import HeadsUpTest from "./HeadsUpTest";
+import CTACollateralGrading from "./CTACollateralGrading";
 
 interface TestItem {
   id: string;
@@ -6068,6 +6069,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Heads Up Test for LVO with Low NIHSS */}
           <HeadsUpTest />
+
+          {/* CTA Collateral Grading */}
+          <CTACollateralGrading />
 
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
