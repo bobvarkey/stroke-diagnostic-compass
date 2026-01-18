@@ -43,6 +43,7 @@ interface Props {
 export default function DocumentAnalyzer({ checkedTests, calculatedScores, demographics }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [documentText, setDocumentText] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<DocumentAnalysisResult | null>(null);
   const [uploadedImages, setUploadedImages] = useState<{ file: File; preview: string }[]>([]);
@@ -110,6 +111,7 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
       const { data, error } = await supabase.functions.invoke("analyze-document", {
         body: {
           documentText: documentText || "Please analyze the uploaded image for clinical documentation.",
+          additionalNotes: additionalNotes.trim() || undefined,
           imageBase64,
           checkedTests,
           demographics,
@@ -263,6 +265,23 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
                 onChange={(e) => setDocumentText(e.target.value)}
                 className="min-h-[150px] text-sm"
               />
+
+              {/* Optional Additional Notes */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-indigo-700 dark:text-indigo-400 flex items-center gap-2">
+                  <span>Additional Notes / Clinical Context (Optional)</span>
+                  <Badge variant="outline" className="text-xs">Optional</Badge>
+                </label>
+                <Textarea
+                  placeholder="Add any specific questions, clinical concerns, or additional context you want the AI to consider during analysis..."
+                  value={additionalNotes}
+                  onChange={(e) => setAdditionalNotes(e.target.value)}
+                  className="min-h-[80px] text-sm border-indigo-200 dark:border-indigo-700 focus:border-indigo-400"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Examples: "Focus on cardiac workup", "Patient has history of TIA", "Check for hypercoagulable state"
+                </p>
+              </div>
 
               <Button
                 onClick={analyzeDocument}

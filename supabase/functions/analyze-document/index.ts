@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { documentText, imageBase64, checkedTests, demographics, calculatedScores } = await req.json();
+    const { documentText, additionalNotes, imageBase64, checkedTests, demographics, calculatedScores } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -66,7 +66,10 @@ Respond in JSON format with the following structure:
 DOCUMENT CONTENT:
 ${documentText}
 
-ALREADY CHECKED TESTS IN APP:
+${additionalNotes ? `ADDITIONAL CLINICAL NOTES/CONTEXT FROM USER:
+${additionalNotes}
+
+` : ""}ALREADY CHECKED TESTS IN APP:
 ${checkedTests.length > 0 ? checkedTests.join(", ") : "None marked as completed"}
 
 PATIENT DEMOGRAPHICS:
@@ -75,7 +78,7 @@ ${demographics ? `Age: ${demographics.age || "Not specified"}, Sex: ${demographi
 CALCULATED SCORES:
 ${calculatedScores ? JSON.stringify(calculatedScores, null, 2) : "No scores calculated yet"}
 
-Please provide a comprehensive analysis of what investigations are missing and whether the stated diagnosis is appropriate.`;
+Please provide a comprehensive analysis of what investigations are missing and whether the stated diagnosis is appropriate.${additionalNotes ? " Pay special attention to the additional notes/context provided by the clinician." : ""}`;
 
     // Build the user content - if image is provided, use multimodal message
     let userContent: any;
