@@ -20,6 +20,7 @@ import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
+import HeadsUpTest from "./HeadsUpTest";
 
 interface TestItem {
   id: string;
@@ -6064,6 +6065,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Treatment Choice Consequence Matrix */}
           <TreatmentDecisionAid />
+
+          {/* Heads Up Test for LVO with Low NIHSS */}
+          <HeadsUpTest />
 
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
