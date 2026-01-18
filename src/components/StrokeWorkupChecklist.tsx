@@ -19,6 +19,7 @@ import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
+import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 
 interface TestItem {
   id: string;
@@ -6057,6 +6058,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Acute Stroke Management Algorithm */}
           <AcuteStrokeAlgorithm />
+
+          {/* tPA Eligibility Checklist */}
+          <TPAEligibilityChecklist />
 
           {/* Treatment Choice Consequence Matrix */}
           <TreatmentDecisionAid />
