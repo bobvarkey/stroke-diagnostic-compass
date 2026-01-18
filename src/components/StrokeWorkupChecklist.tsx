@@ -1211,11 +1211,18 @@ function NIHSSScaleReference() {
 // Visual NIHSS Calculator Component
 function VisualNIHSSCalculator() {
   const [isOpen, setIsOpen] = useState(true);
-  const [scores, setScores] = useState<Record<string, number>>({
+  const [showPrintSheet, setShowPrintSheet] = useState(false);
+  const [scores, setScores] = useState<Record<string, number | "UN">>({
     "1a": 0, "1b": 0, "1c": 0, "2": 0, "3": 0, "4": 0,
     "5a": 0, "5b": 0, "6a": 0, "6b": 0, "7": 0, "8": 0,
     "9": 0, "10": 0, "11": 0
   });
+  const [untestableReasons, setUntestableReasons] = useState<Record<string, string>>({
+    "5a": "", "5b": "", "6a": "", "6b": "", "7": "", "10": ""
+  });
+
+  // Items that can be marked as untestable
+  const untestableItems = ["5a", "5b", "6a", "6b", "7", "10"];
 
   const nihssItems = [
     {
@@ -1291,6 +1298,8 @@ function VisualNIHSSCalculator() {
       name: "Left Arm Motor",
       icon: "💪",
       hint: "Extend arm 90° (sitting) or 45° (supine) for 10 sec",
+      canBeUntestable: true,
+      untestableReason: "Amputation or joint fusion (shoulder)",
       options: [
         { score: 0, label: "No drift", desc: "Holds for full 10 seconds" },
         { score: 1, label: "Drift", desc: "Drifts before 10 seconds" },
@@ -1304,6 +1313,8 @@ function VisualNIHSSCalculator() {
       name: "Right Arm Motor",
       icon: "💪",
       hint: "Extend arm 90° (sitting) or 45° (supine) for 10 sec",
+      canBeUntestable: true,
+      untestableReason: "Amputation or joint fusion (shoulder)",
       options: [
         { score: 0, label: "No drift", desc: "Holds for full 10 seconds" },
         { score: 1, label: "Drift", desc: "Drifts before 10 seconds" },
@@ -1317,6 +1328,8 @@ function VisualNIHSSCalculator() {
       name: "Left Leg Motor",
       icon: "🦵",
       hint: "Raise leg 30° supine for 5 seconds",
+      canBeUntestable: true,
+      untestableReason: "Amputation or joint fusion (hip)",
       options: [
         { score: 0, label: "No drift", desc: "Holds for full 5 seconds" },
         { score: 1, label: "Drift", desc: "Drifts before 5 seconds" },
@@ -1330,6 +1343,8 @@ function VisualNIHSSCalculator() {
       name: "Right Leg Motor",
       icon: "🦵",
       hint: "Raise leg 30° supine for 5 seconds",
+      canBeUntestable: true,
+      untestableReason: "Amputation or joint fusion (hip)",
       options: [
         { score: 0, label: "No drift", desc: "Holds for full 5 seconds" },
         { score: 1, label: "Drift", desc: "Drifts before 5 seconds" },
@@ -1343,6 +1358,8 @@ function VisualNIHSSCalculator() {
       name: "Limb Ataxia",
       icon: "🎯",
       hint: "Finger-to-nose and heel-to-shin",
+      canBeUntestable: true,
+      untestableReason: "Amputation or joint fusion ONLY (if paralyzed → score 0)",
       options: [
         { score: 0, label: "Absent", desc: "No ataxia" },
         { score: 1, label: "One limb", desc: "Present in 1 limb" },
@@ -1354,6 +1371,7 @@ function VisualNIHSSCalculator() {
       name: "Sensory",
       icon: "🖐️",
       hint: "Pinprick on face, arm, trunk, leg",
+      neverUntestable: true,
       options: [
         { score: 0, label: "Normal", desc: "No sensory loss" },
         { score: 1, label: "Mild-mod", desc: "Mild-moderate loss, patient aware" },
@@ -1377,6 +1395,8 @@ function VisualNIHSSCalculator() {
       name: "Dysarthria",
       icon: "🗣️",
       hint: "Evaluate speech clarity",
+      canBeUntestable: true,
+      untestableReason: "Intubated or physical barrier to speech",
       options: [
         { score: 0, label: "Normal", desc: "Normal articulation" },
         { score: 1, label: "Mild-mod", desc: "Slurred but understandable" },
@@ -1388,6 +1408,7 @@ function VisualNIHSSCalculator() {
       name: "Extinction/Inattention",
       icon: "🔍",
       hint: "Double simultaneous stimulation",
+      neverUntestable: true,
       options: [
         { score: 0, label: "Normal", desc: "No abnormality" },
         { score: 1, label: "One modality", desc: "Extinction to one modality" },
@@ -1396,7 +1417,14 @@ function VisualNIHSSCalculator() {
     }
   ];
 
-  const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
+  // Calculate total score (excluding UN items)
+  const totalScore = Object.entries(scores).reduce((sum, [key, score]) => {
+    if (score === "UN") return sum;
+    return sum + score;
+  }, 0);
+
+  // Count untestable items
+  const untestableCount = Object.values(scores).filter(s => s === "UN").length;
 
   const getSeverityInfo = (score: number) => {
     if (score <= 4) return { label: "Minor Stroke", color: "bg-green-500", textColor: "text-green-800 dark:text-green-300", bgColor: "bg-green-100 dark:bg-green-900/40" };
@@ -1413,6 +1441,25 @@ function VisualNIHSSCalculator() {
       "5a": 0, "5b": 0, "6a": 0, "6b": 0, "7": 0, "8": 0,
       "9": 0, "10": 0, "11": 0
     });
+    setUntestableReasons({
+      "5a": "", "5b": "", "6a": "", "6b": "", "7": "", "10": ""
+    });
+  };
+
+  const handleSetUntestable = (itemId: string) => {
+    setScores({ ...scores, [itemId]: "UN" });
+  };
+
+  const handleClearUntestable = (itemId: string) => {
+    setScores({ ...scores, [itemId]: 0 });
+    setUntestableReasons({ ...untestableReasons, [itemId]: "" });
+  };
+
+  const handlePrint = () => {
+    setShowPrintSheet(true);
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
 
   return (
@@ -1427,7 +1474,7 @@ function VisualNIHSSCalculator() {
               </div>
               <div className="flex items-center gap-3">
                 <Badge className={`${severity.color} text-white font-bold px-3 py-1`}>
-                  Score: {totalScore}/42
+                  Score: {totalScore}/42{untestableCount > 0 && ` (${untestableCount} UN)`}
                 </Badge>
                 <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
               </div>
@@ -1440,7 +1487,14 @@ function VisualNIHSSCalculator() {
             <div className={`p-4 rounded-lg ${severity.bgColor} border`}>
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
-                  <div className={`text-4xl font-bold ${severity.textColor}`}>{totalScore}</div>
+                  <div className={`text-4xl font-bold ${severity.textColor}`}>
+                    {totalScore}
+                    {untestableCount > 0 && (
+                      <span className="text-lg ml-2 text-amber-600 dark:text-amber-400">
+                        ({untestableCount} UN)
+                      </span>
+                    )}
+                  </div>
                   <div className={`text-lg font-semibold ${severity.textColor}`}>{severity.label}</div>
                 </div>
                 <div className="flex gap-2 flex-wrap">
@@ -1461,64 +1515,153 @@ function VisualNIHSSCalculator() {
                     <div className="font-bold text-red-800 dark:text-red-300">21-42</div>
                   </div>
                 </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); resetScores(); }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  Reset All
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handlePrint(); }}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                    Print Sheet
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); resetScores(); }}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Reset All
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* NIHSS Items Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {nihssItems.map((item) => (
-                <div
-                  key={item.item}
-                  className="p-4 bg-white dark:bg-indigo-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800"
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="flex-shrink-0">
-                      {nihssIconMap[item.item] ? (
-                        React.createElement(nihssIconMap[item.item], { size: 48, className: "drop-shadow-md" })
-                      ) : (
-                        <span className="text-2xl">{item.icon}</span>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-indigo-800 dark:text-indigo-300 text-sm">
-                        {item.item}. {item.name}
+              {nihssItems.map((item) => {
+                const isUntestable = scores[item.item] === "UN";
+                const canBeUntestable = (item as any).canBeUntestable;
+                const neverUntestable = (item as any).neverUntestable;
+                
+                return (
+                  <div
+                    key={item.item}
+                    className={`p-4 rounded-lg border ${
+                      isUntestable 
+                        ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700' 
+                        : 'bg-white dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="flex-shrink-0">
+                        {nihssIconMap[item.item] ? (
+                          React.createElement(nihssIconMap[item.item], { size: 48, className: "drop-shadow-md" })
+                        ) : (
+                          <span className="text-2xl">{item.icon}</span>
+                        )}
                       </div>
-                      {item.hint && (
-                        <div className="text-xs text-indigo-500 dark:text-indigo-400">{item.hint}</div>
-                      )}
+                      <div className="flex-1">
+                        <div className="font-semibold text-indigo-800 dark:text-indigo-300 text-sm">
+                          {item.item}. {item.name}
+                        </div>
+                        {item.hint && (
+                          <div className="text-xs text-indigo-500 dark:text-indigo-400">{item.hint}</div>
+                        )}
+                        {neverUntestable && (
+                          <div className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">⚠️ Never untestable</div>
+                        )}
+                      </div>
+                      <div className="ml-auto">
+                        <Badge 
+                          variant="outline" 
+                          className={isUntestable 
+                            ? "border-amber-500 text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50" 
+                            : "border-indigo-400 text-indigo-700 dark:text-indigo-300"
+                          }
+                        >
+                          {isUntestable ? "UN" : scores[item.item]}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="ml-auto">
-                      <Badge variant="outline" className="border-indigo-400 text-indigo-700 dark:text-indigo-300">
-                        {scores[item.item]}
-                      </Badge>
-                    </div>
+
+                    {isUntestable ? (
+                      <div className="space-y-2">
+                        <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded text-xs text-amber-800 dark:text-amber-300">
+                          <strong>Marked as Untestable</strong>
+                          <p className="text-amber-700 dark:text-amber-400 mt-1">
+                            Reason: {(item as any).untestableReason}
+                          </p>
+                        </div>
+                        <textarea
+                          placeholder="Document specific reason (required)..."
+                          value={untestableReasons[item.item] || ""}
+                          onChange={(e) => setUntestableReasons({ ...untestableReasons, [item.item]: e.target.value })}
+                          className="w-full p-2 text-xs border border-amber-300 dark:border-amber-700 rounded bg-white dark:bg-amber-950/30 text-amber-800 dark:text-amber-200 placeholder:text-amber-500"
+                          rows={2}
+                        />
+                        <button
+                          onClick={() => handleClearUntestable(item.item)}
+                          className="w-full px-3 py-1.5 text-xs bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 rounded hover:bg-amber-300 dark:hover:bg-amber-700 transition-colors"
+                        >
+                          Clear UN & Score Normally
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid gap-1">
+                          {item.options.map((option) => (
+                            <button
+                              key={option.score}
+                              onClick={() => setScores({ ...scores, [item.item]: option.score })}
+                              className={`w-full text-left px-3 py-2 rounded text-xs transition-all ${
+                                scores[item.item] === option.score
+                                  ? 'bg-indigo-600 text-white shadow-md'
+                                  : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40'
+                              }`}
+                            >
+                              <span className="font-bold mr-1">{option.score}:</span>
+                              <span className="font-medium">{option.label}</span>
+                              <span className="text-xs opacity-75 ml-1">- {option.desc}</span>
+                            </button>
+                          ))}
+                        </div>
+                        {canBeUntestable && (
+                          <button
+                            onClick={() => handleSetUntestable(item.item)}
+                            className="w-full mt-2 px-3 py-2 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded border border-amber-300 dark:border-amber-700 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors flex items-center justify-center gap-1"
+                          >
+                            <AlertTriangle className="h-3 w-3" />
+                            Mark as UN (Untestable)
+                          </button>
+                        )}
+                      </>
+                    )}
                   </div>
-                  <div className="grid gap-1">
-                    {item.options.map((option) => (
-                      <button
-                        key={option.score}
-                        onClick={() => setScores({ ...scores, [item.item]: option.score })}
-                        className={`w-full text-left px-3 py-2 rounded text-xs transition-all ${
-                          scores[item.item] === option.score
-                            ? 'bg-indigo-600 text-white shadow-md'
-                            : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40'
-                        }`}
-                      >
-                        <span className="font-bold mr-1">{option.score}:</span>
-                        <span className="font-medium">{option.label}</span>
-                        <span className="text-xs opacity-75 ml-1">- {option.desc}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
+
+            {/* Untestable Items Summary */}
+            {untestableCount > 0 && (
+              <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-700 rounded-lg">
+                <h4 className="font-semibold text-amber-800 dark:text-amber-300 text-sm mb-3 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4" />
+                  Untestable Items Documentation ({untestableCount} items)
+                </h4>
+                <div className="space-y-2">
+                  {Object.entries(scores).filter(([_, score]) => score === "UN").map(([itemId]) => {
+                    const item = nihssItems.find(i => i.item === itemId);
+                    return (
+                      <div key={itemId} className="p-2 bg-white dark:bg-amber-950/30 rounded border border-amber-200 dark:border-amber-800">
+                        <div className="font-medium text-amber-800 dark:text-amber-300 text-xs">
+                          {itemId}. {item?.name}
+                        </div>
+                        <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                          {untestableReasons[itemId] || (item as any)?.untestableReason || "No reason documented"}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Clinical Notes */}
             <div className="p-3 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-700 rounded-lg">
@@ -1579,6 +1722,210 @@ function VisualNIHSSCalculator() {
                   not that it is normal. If paralyzed, score 4 for motor deficit, NOT "untestable."
                 </p>
               </div>
+            </div>
+
+            {/* Printable NIHSS Scoring Sheet */}
+            {showPrintSheet && (
+              <div className="print:block hidden">
+                <style>{`
+                  @media print {
+                    body * { visibility: hidden; }
+                    .nihss-print-sheet, .nihss-print-sheet * { visibility: visible; }
+                    .nihss-print-sheet { position: absolute; left: 0; top: 0; width: 100%; }
+                  }
+                `}</style>
+                <div className="nihss-print-sheet bg-white p-8 text-black">
+                  <div className="border-2 border-black p-6">
+                    <div className="text-center mb-6">
+                      <h1 className="text-2xl font-bold">NIH STROKE SCALE SCORING SHEET</h1>
+                      <p className="text-sm mt-2">National Institutes of Health Stroke Scale</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 mb-6 border-b pb-4">
+                      <div><strong>Patient Name:</strong> _________________________</div>
+                      <div><strong>MRN:</strong> _________________________</div>
+                      <div><strong>Date of Birth:</strong> _________________________</div>
+                      <div><strong>Date/Time of Assessment:</strong> _________________________</div>
+                      <div><strong>Examiner Name:</strong> _________________________</div>
+                      <div><strong>Examiner Signature:</strong> _________________________</div>
+                    </div>
+
+                    <table className="w-full border-collapse text-sm">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border border-black p-2 text-left w-16">Item</th>
+                          <th className="border border-black p-2 text-left">Scale Definition</th>
+                          <th className="border border-black p-2 w-20 text-center">Score</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {nihssItems.map((item) => {
+                          const score = scores[item.item];
+                          const isUN = score === "UN";
+                          return (
+                            <tr key={item.item}>
+                              <td className="border border-black p-2 font-bold align-top">{item.item}</td>
+                              <td className="border border-black p-2">
+                                <div className="font-semibold">{item.name}</div>
+                                <div className="text-xs mt-1">
+                                  {item.options.map(opt => (
+                                    <span key={opt.score} className="mr-3">
+                                      {opt.score}={opt.label}
+                                    </span>
+                                  ))}
+                                </div>
+                              </td>
+                              <td className="border border-black p-2 text-center text-lg font-bold">
+                                {isUN ? "UN" : score}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                        <tr className="bg-gray-200">
+                          <td colSpan={2} className="border border-black p-2 font-bold text-right">TOTAL SCORE:</td>
+                          <td className="border border-black p-2 text-center text-xl font-bold">
+                            {totalScore}{untestableCount > 0 && ` (${untestableCount} UN)`}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* Untestable Documentation Section */}
+                    <div className="mt-6 border-t-2 border-black pt-4">
+                      <h3 className="font-bold text-lg mb-3">UNTESTABLE ITEMS DOCUMENTATION</h3>
+                      <p className="text-xs mb-4 italic">
+                        For each item marked "UN", document the specific reason below. Items marked UN are excluded from the total score.
+                      </p>
+                      
+                      <table className="w-full border-collapse text-sm">
+                        <thead>
+                          <tr className="bg-gray-100">
+                            <th className="border border-black p-2 w-24">Item</th>
+                            <th className="border border-black p-2">Reason for Untestable</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {["5a", "5b", "6a", "6b", "7", "10"].map((itemId) => {
+                            const item = nihssItems.find(i => i.item === itemId);
+                            const isUN = scores[itemId] === "UN";
+                            return (
+                              <tr key={itemId}>
+                                <td className="border border-black p-2 text-center">
+                                  <span className={isUN ? "font-bold" : ""}>{itemId}</span>
+                                  {isUN && <span className="ml-1 text-xs">(UN)</span>}
+                                </td>
+                                <td className="border border-black p-2">
+                                  {isUN ? (
+                                    <span>{untestableReasons[itemId] || (item as any)?.untestableReason || "____________________"}</span>
+                                  ) : (
+                                    <span className="text-gray-400">N/A - Tested normally</span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Scoring Guide */}
+                    <div className="mt-6 grid grid-cols-4 gap-2 text-xs">
+                      <div className="border p-2 text-center bg-green-100">
+                        <div className="font-bold">0-4</div>
+                        <div>Minor Stroke</div>
+                      </div>
+                      <div className="border p-2 text-center bg-yellow-100">
+                        <div className="font-bold">5-15</div>
+                        <div>Moderate Stroke</div>
+                      </div>
+                      <div className="border p-2 text-center bg-orange-100">
+                        <div className="font-bold">16-20</div>
+                        <div>Moderate-Severe</div>
+                      </div>
+                      <div className="border p-2 text-center bg-red-100">
+                        <div className="font-bold">21-42</div>
+                        <div>Severe Stroke</div>
+                      </div>
+                    </div>
+
+                    {/* Key Rules Footer */}
+                    <div className="mt-4 text-xs border-t pt-3">
+                      <p><strong>Key Rules:</strong> "UN" = Untestable (not scored). Sensory (8) & Extinction (11) are NEVER untestable. 
+                      Comatose patients (1a=3): give maximum scores; Sensory=2, Extinction=0. "Score what you see."</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Non-print Printable Sheet Preview Toggle */}
+            <div className="print:hidden">
+              <Collapsible>
+                <CollapsibleTrigger className="w-full">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-700 rounded-lg flex items-center justify-between cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-950/40 transition-colors">
+                    <span className="text-sm font-medium text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                      Preview Printable NIHSS Scoring Sheet
+                    </span>
+                    <ChevronDown className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="mt-3 p-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg shadow-inner overflow-auto max-h-[600px]">
+                    <div className="min-w-[600px] text-sm text-gray-800 dark:text-gray-200">
+                      <div className="text-center mb-4 pb-3 border-b">
+                        <h3 className="text-lg font-bold">NIH STROKE SCALE SCORING SHEET</h3>
+                        <p className="text-xs text-gray-500">Print Preview</p>
+                      </div>
+                      
+                      <div className="overflow-x-auto">
+                        <table className="w-full border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-gray-100 dark:bg-gray-800">
+                              <th className="border p-2 text-left">Item</th>
+                              <th className="border p-2 text-left">Assessment</th>
+                              <th className="border p-2 text-center w-16">Score</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {nihssItems.map((item) => {
+                              const score = scores[item.item];
+                              const isUN = score === "UN";
+                              return (
+                                <tr key={item.item} className={isUN ? "bg-amber-50 dark:bg-amber-950/30" : ""}>
+                                  <td className="border p-2 font-semibold">{item.item}</td>
+                                  <td className="border p-2">{item.name}</td>
+                                  <td className={`border p-2 text-center font-bold ${isUN ? "text-amber-600" : ""}`}>
+                                    {isUN ? "UN" : score}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                            <tr className="bg-indigo-100 dark:bg-indigo-900/30 font-bold">
+                              <td colSpan={2} className="border p-2 text-right">TOTAL:</td>
+                              <td className="border p-2 text-center text-lg">{totalScore}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {untestableCount > 0 && (
+                        <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 rounded border border-amber-200 dark:border-amber-700">
+                          <h4 className="font-semibold text-amber-800 dark:text-amber-300 text-xs mb-2">Untestable Items:</h4>
+                          {Object.entries(scores).filter(([_, score]) => score === "UN").map(([itemId]) => {
+                            const item = nihssItems.find(i => i.item === itemId);
+                            return (
+                              <div key={itemId} className="text-xs text-amber-700 dark:text-amber-400">
+                                <strong>{itemId}.</strong> {item?.name}: {untestableReasons[itemId] || (item as any)?.untestableReason || "Reason not documented"}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </CardContent>
         </CollapsibleContent>
