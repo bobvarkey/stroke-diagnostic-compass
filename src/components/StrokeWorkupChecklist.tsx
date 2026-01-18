@@ -18,6 +18,7 @@ import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
+import TreatmentDecisionAid from "./TreatmentDecisionAid";
 
 interface TestItem {
   id: string;
@@ -6056,6 +6057,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Acute Stroke Management Algorithm */}
           <AcuteStrokeAlgorithm />
+
+          {/* Treatment Choice Consequence Matrix */}
+          <TreatmentDecisionAid />
 
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
