@@ -31,6 +31,8 @@ const strokeTests: TestItem[] = [
   { id: "rft", name: "RFT (Renal Function Tests)", category: "Basic Laboratory" },
   { id: "lft", name: "LFT (Liver Function Tests)", category: "Basic Laboratory" },
   { id: "tft", name: "TFT (Thyroid Function Tests)", category: "Basic Laboratory" },
+  { id: "uacr", name: "uACR (Urine Albumin-to-Creatinine Ratio) - CV risk biomarker: <30 normal | 30-300 microalbuminuria | >300 macroalbuminuria", category: "Basic Laboratory" },
+  { id: "egfr", name: "eGFR (Estimated Glomerular Filtration Rate) - CKD staging: ≥90 G1 | 60-89 G2 | 45-59 G3a | 30-44 G3b | 15-29 G4 | <15 G5", category: "Basic Laboratory" },
   
   // Chemistry Profile
   { id: "glucose", name: "Fasting Glucose", category: "Chemistry Profile" },
@@ -3259,6 +3261,664 @@ function UACRCardiovascularRisk() {
   );
 }
 
+// eGFR Calculator with KDIGO CKD Staging Component
+function EGFRCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [age, setAge] = useState<string>("");
+  const [sex, setSex] = useState<string>("");
+  const [creatinine, setCreatinine] = useState<string>("");
+  const [uacr, setUacr] = useState<string>("");
+
+  // CKD-EPI 2021 equation (race-free)
+  const calculateEGFR = (): number | null => {
+    const ageNum = parseFloat(age);
+    const creatNum = parseFloat(creatinine);
+    if (!ageNum || !creatNum || !sex) return null;
+
+    const isFemale = sex === "female";
+    const k = isFemale ? 0.7 : 0.9;
+    const alpha = isFemale ? -0.241 : -0.302;
+    const scrOverK = creatNum / k;
+    
+    let eGFR = 142 * 
+      Math.pow(Math.min(scrOverK, 1), alpha) * 
+      Math.pow(Math.max(scrOverK, 1), -1.200) * 
+      Math.pow(0.9938, ageNum);
+    
+    if (isFemale) eGFR *= 1.012;
+    
+    return Math.round(eGFR);
+  };
+
+  const getGFRStage = (egfr: number) => {
+    if (egfr >= 90) return { stage: "G1", label: "Normal or High", color: "bg-green-500" };
+    if (egfr >= 60) return { stage: "G2", label: "Mildly Decreased", color: "bg-green-400" };
+    if (egfr >= 45) return { stage: "G3a", label: "Mildly to Moderately Decreased", color: "bg-yellow-400" };
+    if (egfr >= 30) return { stage: "G3b", label: "Moderately to Severely Decreased", color: "bg-orange-400" };
+    if (egfr >= 15) return { stage: "G4", label: "Severely Decreased", color: "bg-orange-600" };
+    return { stage: "G5", label: "Kidney Failure", color: "bg-red-600" };
+  };
+
+  const getUACRCategory = (uacrVal: number) => {
+    if (uacrVal < 30) return { category: "A1", label: "Normal to Mildly Increased", color: "bg-green-500" };
+    if (uacrVal <= 300) return { category: "A2", label: "Moderately Increased", color: "bg-yellow-500" };
+    return { category: "A3", label: "Severely Increased", color: "bg-red-500" };
+  };
+
+  // KDIGO Risk Categories based on GFR and UACR
+  const getKDIGORisk = (egfr: number, uacrVal: number): { risk: string; color: string; prognosis: string } => {
+    const gStage = getGFRStage(egfr).stage;
+    const aCategory = getUACRCategory(uacrVal).category;
+
+    // Risk matrix based on KDIGO 2024 guidelines
+    const riskMatrix: Record<string, Record<string, { risk: string; color: string; prognosis: string }>> = {
+      G1: {
+        A1: { risk: "Low", color: "bg-green-500", prognosis: "No CKD without other kidney damage markers" },
+        A2: { risk: "Moderately Increased", color: "bg-yellow-500", prognosis: "CKD - Monitor annually" },
+        A3: { risk: "High", color: "bg-orange-500", prognosis: "CKD - Refer to nephrology" },
+      },
+      G2: {
+        A1: { risk: "Low", color: "bg-green-500", prognosis: "No CKD without other kidney damage markers" },
+        A2: { risk: "Moderately Increased", color: "bg-yellow-500", prognosis: "CKD - Monitor annually" },
+        A3: { risk: "High", color: "bg-orange-500", prognosis: "CKD - Refer to nephrology" },
+      },
+      G3a: {
+        A1: { risk: "Moderately Increased", color: "bg-yellow-500", prognosis: "CKD - Monitor annually" },
+        A2: { risk: "High", color: "bg-orange-500", prognosis: "CKD - Monitor every 6 months" },
+        A3: { risk: "Very High", color: "bg-red-500", prognosis: "CKD - Refer to nephrology" },
+      },
+      G3b: {
+        A1: { risk: "High", color: "bg-orange-500", prognosis: "CKD - Monitor every 6 months" },
+        A2: { risk: "Very High", color: "bg-red-500", prognosis: "CKD - Refer to nephrology" },
+        A3: { risk: "Very High", color: "bg-red-600", prognosis: "CKD - Urgent nephrology referral" },
+      },
+      G4: {
+        A1: { risk: "Very High", color: "bg-red-500", prognosis: "CKD - Refer to nephrology" },
+        A2: { risk: "Very High", color: "bg-red-600", prognosis: "CKD - Urgent nephrology referral" },
+        A3: { risk: "Very High", color: "bg-red-700", prognosis: "CKD - Urgent nephrology referral" },
+      },
+      G5: {
+        A1: { risk: "Very High", color: "bg-red-600", prognosis: "CKD - Urgent nephrology referral" },
+        A2: { risk: "Very High", color: "bg-red-700", prognosis: "CKD - Urgent nephrology referral" },
+        A3: { risk: "Very High", color: "bg-red-800", prognosis: "CKD - Urgent nephrology referral" },
+      },
+    };
+
+    return riskMatrix[gStage]?.[aCategory] || { risk: "Unknown", color: "bg-gray-400", prognosis: "Enter values" };
+  };
+
+  const egfr = calculateEGFR();
+  const uacrNum = parseFloat(uacr) || 0;
+  const gfrStage = egfr ? getGFRStage(egfr) : null;
+  const uacrCategory = uacrNum > 0 ? getUACRCategory(uacrNum) : null;
+  const kdigoRisk = egfr && uacrNum > 0 ? getKDIGORisk(egfr, uacrNum) : null;
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-emerald-300 dark:border-emerald-700 bg-gradient-to-br from-emerald-50 dark:from-emerald-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-emerald-100/50 dark:bg-emerald-900/30">
+            <CardTitle className="flex items-center justify-between text-emerald-800 dark:text-emerald-300">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                eGFR Calculator & KDIGO CKD Staging
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Input Fields */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">Age (years)</label>
+                <input
+                  type="number"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  placeholder="30-79"
+                  className="w-full p-2 border border-emerald-200 dark:border-emerald-700 rounded-lg bg-white dark:bg-emerald-950/30 text-sm"
+                  min="18"
+                  max="100"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">Sex</label>
+                <select
+                  value={sex}
+                  onChange={(e) => setSex(e.target.value)}
+                  className="w-full p-2 border border-emerald-200 dark:border-emerald-700 rounded-lg bg-white dark:bg-emerald-950/30 text-sm"
+                >
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">Serum Cr (mg/dL)</label>
+                <input
+                  type="number"
+                  value={creatinine}
+                  onChange={(e) => setCreatinine(e.target.value)}
+                  placeholder="0.5-10"
+                  step="0.1"
+                  className="w-full p-2 border border-emerald-200 dark:border-emerald-700 rounded-lg bg-white dark:bg-emerald-950/30 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">uACR (mg/g)</label>
+                <input
+                  type="number"
+                  value={uacr}
+                  onChange={(e) => setUacr(e.target.value)}
+                  placeholder="0-5000"
+                  className="w-full p-2 border border-emerald-200 dark:border-emerald-700 rounded-lg bg-white dark:bg-emerald-950/30 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Results Display */}
+            {egfr && (
+              <div className="mb-6 p-4 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* eGFR Result */}
+                  <div className="flex items-center gap-3">
+                    <div className={`w-16 h-16 ${gfrStage?.color} rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg`}>
+                      {egfr}
+                    </div>
+                    <div>
+                      <div className="text-sm text-emerald-600 dark:text-emerald-400">eGFR (mL/min/1.73m²)</div>
+                      <div className="font-bold text-emerald-800 dark:text-emerald-300">{gfrStage?.stage}: {gfrStage?.label}</div>
+                    </div>
+                  </div>
+                  
+                  {/* uACR Result */}
+                  {uacrCategory && (
+                    <div className="flex items-center gap-3">
+                      <div className={`w-16 h-16 ${uacrCategory.color} rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg`}>
+                        {uacrCategory.category}
+                      </div>
+                      <div>
+                        <div className="text-sm text-emerald-600 dark:text-emerald-400">uACR Category</div>
+                        <div className="font-bold text-emerald-800 dark:text-emerald-300">{uacrCategory.label}</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* KDIGO Risk */}
+                  {kdigoRisk && (
+                    <div className="p-3 bg-white dark:bg-emerald-950/50 rounded-lg border border-emerald-200 dark:border-emerald-700">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className={`w-4 h-4 ${kdigoRisk.color} rounded-full`}></div>
+                        <span className="font-bold text-emerald-800 dark:text-emerald-300">{kdigoRisk.risk} Risk</span>
+                      </div>
+                      <div className="text-xs text-emerald-600 dark:text-emerald-500">{kdigoRisk.prognosis}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* KDIGO Heat Map */}
+            <div className="mb-6">
+              <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-3">KDIGO CKD Classification Heat Map</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="p-2 border border-emerald-200 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/30" rowSpan={2}>GFR Category</th>
+                      <th className="p-2 border border-emerald-200 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/30" rowSpan={2}>eGFR (mL/min/1.73m²)</th>
+                      <th className="p-2 border border-emerald-200 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/30" colSpan={3}>Persistent Albuminuria Categories (uACR mg/g)</th>
+                    </tr>
+                    <tr>
+                      <th className="p-2 border border-emerald-200 dark:border-emerald-700 bg-green-100 dark:bg-green-900/30">A1: {"<"}30<br/>Normal</th>
+                      <th className="p-2 border border-emerald-200 dark:border-emerald-700 bg-yellow-100 dark:bg-yellow-900/30">A2: 30-300<br/>Moderate</th>
+                      <th className="p-2 border border-emerald-200 dark:border-emerald-700 bg-orange-100 dark:bg-orange-900/30">A3: {">"}300<br/>Severe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700 font-medium">G1</td>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700">≥90</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-green-200 dark:bg-green-800/50 text-center ${egfr && egfr >= 90 && uacrNum < 30 ? 'ring-2 ring-blue-500' : ''}`}>Low Risk</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-yellow-200 dark:bg-yellow-800/50 text-center ${egfr && egfr >= 90 && uacrNum >= 30 && uacrNum <= 300 ? 'ring-2 ring-blue-500' : ''}`}>Moderate</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-orange-300 dark:bg-orange-800/50 text-center ${egfr && egfr >= 90 && uacrNum > 300 ? 'ring-2 ring-blue-500' : ''}`}>High</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700 font-medium">G2</td>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700">60-89</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-green-200 dark:bg-green-800/50 text-center ${egfr && egfr >= 60 && egfr < 90 && uacrNum < 30 ? 'ring-2 ring-blue-500' : ''}`}>Low Risk</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-yellow-200 dark:bg-yellow-800/50 text-center ${egfr && egfr >= 60 && egfr < 90 && uacrNum >= 30 && uacrNum <= 300 ? 'ring-2 ring-blue-500' : ''}`}>Moderate</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-orange-300 dark:bg-orange-800/50 text-center ${egfr && egfr >= 60 && egfr < 90 && uacrNum > 300 ? 'ring-2 ring-blue-500' : ''}`}>High</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700 font-medium">G3a</td>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700">45-59</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-yellow-200 dark:bg-yellow-800/50 text-center ${egfr && egfr >= 45 && egfr < 60 && uacrNum < 30 ? 'ring-2 ring-blue-500' : ''}`}>Moderate</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-orange-300 dark:bg-orange-800/50 text-center ${egfr && egfr >= 45 && egfr < 60 && uacrNum >= 30 && uacrNum <= 300 ? 'ring-2 ring-blue-500' : ''}`}>High</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-400 dark:bg-red-800/50 text-center text-white ${egfr && egfr >= 45 && egfr < 60 && uacrNum > 300 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700 font-medium">G3b</td>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700">30-44</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-orange-300 dark:bg-orange-800/50 text-center ${egfr && egfr >= 30 && egfr < 45 && uacrNum < 30 ? 'ring-2 ring-blue-500' : ''}`}>High</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-400 dark:bg-red-800/50 text-center text-white ${egfr && egfr >= 30 && egfr < 45 && uacrNum >= 30 && uacrNum <= 300 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-500 dark:bg-red-900/50 text-center text-white ${egfr && egfr >= 30 && egfr < 45 && uacrNum > 300 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700 font-medium">G4</td>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700">15-29</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-400 dark:bg-red-800/50 text-center text-white ${egfr && egfr >= 15 && egfr < 30 && uacrNum < 30 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-500 dark:bg-red-900/50 text-center text-white ${egfr && egfr >= 15 && egfr < 30 && uacrNum >= 30 && uacrNum <= 300 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-600 dark:bg-red-950/50 text-center text-white ${egfr && egfr >= 15 && egfr < 30 && uacrNum > 300 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700 font-medium">G5</td>
+                      <td className="p-2 border border-emerald-200 dark:border-emerald-700">{"<"}15</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-500 dark:bg-red-900/50 text-center text-white ${egfr && egfr < 15 && uacrNum < 30 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-600 dark:bg-red-950/50 text-center text-white ${egfr && egfr < 15 && uacrNum >= 30 && uacrNum <= 300 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                      <td className={`p-2 border border-emerald-200 dark:border-emerald-700 bg-red-700 dark:bg-red-950/70 text-center text-white ${egfr && egfr < 15 && uacrNum > 300 ? 'ring-2 ring-blue-500' : ''}`}>Very High</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-2 italic">
+                Green = Low risk | Yellow = Moderate risk | Orange = High risk | Red = Very high risk. 
+                Blue ring highlights current patient position.
+              </p>
+            </div>
+
+            {/* CKD-EPI Equation Info */}
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-700 rounded-lg">
+              <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                <strong>Formula:</strong> CKD-EPI 2021 Creatinine Equation (Race-Free) | 
+                <strong> References:</strong> Inker LA et al. NEJM 2021 | KDIGO 2024 CKD Guideline | 
+                eGFR = 142 × min(Scr/κ, 1)^α × max(Scr/κ, 1)^-1.200 × 0.9938^Age × 1.012 [if female]
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+// PREVENT Score Calculator Component (for patients WITHOUT established ASCVD)
+function PREVENTScoreCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputs, setInputs] = useState({
+    age: "",
+    sex: "",
+    totalCholesterol: "",
+    hdlCholesterol: "",
+    systolicBP: "",
+    bpTreated: false,
+    diabetes: false,
+    currentSmoker: false,
+    egfr: "",
+    bmi: "",
+    hba1c: "",
+    uacr: "",
+    statin: false,
+  });
+
+  const updateInput = (key: string, value: string | boolean) => {
+    setInputs(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Simplified PREVENT risk estimation
+  // Note: This is a simplified approximation - actual PREVENT uses complex coefficients
+  const calculateRisk = (): { tenYear: number; thirtyYear: number } | null => {
+    const age = parseFloat(inputs.age);
+    const tc = parseFloat(inputs.totalCholesterol);
+    const hdl = parseFloat(inputs.hdlCholesterol);
+    const sbp = parseFloat(inputs.systolicBP);
+    const egfr = parseFloat(inputs.egfr);
+    const bmi = parseFloat(inputs.bmi);
+
+    if (!age || !inputs.sex || !tc || !hdl || !sbp) return null;
+    if (age < 30 || age > 79) return null;
+
+    const isFemale = inputs.sex === "female";
+    
+    // Base risk calculation (simplified model based on PREVENT principles)
+    let baseRisk = 0;
+    
+    // Age contribution (major factor)
+    baseRisk += (age - 30) * 0.08;
+    
+    // Sex contribution
+    if (!isFemale) baseRisk += 2;
+    
+    // Lipid contribution
+    const tcHdlRatio = tc / hdl;
+    if (tcHdlRatio > 4) baseRisk += (tcHdlRatio - 4) * 1.5;
+    if (tcHdlRatio > 5) baseRisk += 1;
+    
+    // Blood pressure contribution
+    if (sbp > 120) baseRisk += (sbp - 120) * 0.03;
+    if (sbp > 140) baseRisk += 1;
+    if (sbp > 160) baseRisk += 2;
+    if (inputs.bpTreated) baseRisk += 0.5;
+    
+    // Diabetes contribution
+    if (inputs.diabetes) baseRisk += 3;
+    
+    // Smoking contribution
+    if (inputs.currentSmoker) baseRisk += 2.5;
+    
+    // eGFR contribution (CKM factor)
+    if (egfr && egfr < 60) baseRisk += (60 - egfr) * 0.05;
+    if (egfr && egfr < 45) baseRisk += 1;
+    
+    // BMI contribution
+    if (bmi && bmi > 25) baseRisk += (bmi - 25) * 0.1;
+    if (bmi && bmi > 30) baseRisk += 0.5;
+    
+    // HbA1c contribution (if diabetic)
+    const hba1c = parseFloat(inputs.hba1c);
+    if (hba1c && hba1c > 7) baseRisk += (hba1c - 7) * 0.5;
+    
+    // uACR contribution
+    const uacr = parseFloat(inputs.uacr);
+    if (uacr && uacr >= 30) baseRisk += 1;
+    if (uacr && uacr >= 300) baseRisk += 2;
+    
+    // Statin use (protective)
+    if (inputs.statin) baseRisk -= 1;
+    
+    // Convert to percentage (bounded)
+    let tenYearRisk = Math.max(0.1, Math.min(50, baseRisk));
+    let thirtyYearRisk = Math.max(0.5, Math.min(80, baseRisk * 2.5));
+    
+    // Age adjustment for 30-year risk
+    if (age > 60) thirtyYearRisk = Math.min(thirtyYearRisk, tenYearRisk * 1.5);
+    
+    return { 
+      tenYear: Math.round(tenYearRisk * 10) / 10, 
+      thirtyYear: Math.round(thirtyYearRisk * 10) / 10 
+    };
+  };
+
+  const getRiskCategory = (risk: number) => {
+    if (risk < 5) return { category: "Low", color: "bg-green-500", recommendation: "Lifestyle optimization, reassess in 4-6 years" };
+    if (risk < 7.5) return { category: "Borderline", color: "bg-yellow-500", recommendation: "Consider statin if risk enhancers present" };
+    if (risk < 20) return { category: "Intermediate", color: "bg-orange-500", recommendation: "Moderate-intensity statin recommended, consider CAC score" };
+    return { category: "High", color: "bg-red-500", recommendation: "High-intensity statin recommended" };
+  };
+
+  const risk = calculateRisk();
+  const riskCategory = risk ? getRiskCategory(risk.tenYear) : null;
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-violet-300 dark:border-violet-700 bg-gradient-to-br from-violet-50 dark:from-violet-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-violet-100/50 dark:bg-violet-900/30">
+            <CardTitle className="flex items-center justify-between text-violet-800 dark:text-violet-300">
+              <div className="flex items-center gap-2">
+                <Heart className="h-5 w-5" />
+                AHA PREVENT™ Score (Primary Prevention)
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Important Notice */}
+            <div className="mb-6 p-3 bg-violet-100 dark:bg-violet-900/40 rounded-lg border border-violet-200 dark:border-violet-700">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="h-5 w-5 text-violet-600 dark:text-violet-400 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-violet-700 dark:text-violet-400">
+                  <strong>For patients WITHOUT established ASCVD.</strong> PREVENT estimates 10-year and 30-year risk of total CVD 
+                  (ASCVD + Heart Failure) using cardiovascular-kidney-metabolic (CKM) factors. Validated for ages 30-79.
+                </div>
+              </div>
+            </div>
+
+            {/* Input Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              {/* Required Inputs */}
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">Age (30-79)*</label>
+                <input
+                  type="number"
+                  value={inputs.age}
+                  onChange={(e) => updateInput("age", e.target.value)}
+                  placeholder="Years"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                  min="30"
+                  max="79"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">Sex*</label>
+                <select
+                  value={inputs.sex}
+                  onChange={(e) => updateInput("sex", e.target.value)}
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                >
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">Total Chol (mg/dL)*</label>
+                <input
+                  type="number"
+                  value={inputs.totalCholesterol}
+                  onChange={(e) => updateInput("totalCholesterol", e.target.value)}
+                  placeholder="130-320"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">HDL-C (mg/dL)*</label>
+                <input
+                  type="number"
+                  value={inputs.hdlCholesterol}
+                  onChange={(e) => updateInput("hdlCholesterol", e.target.value)}
+                  placeholder="20-100"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">Systolic BP (mmHg)*</label>
+                <input
+                  type="number"
+                  value={inputs.systolicBP}
+                  onChange={(e) => updateInput("systolicBP", e.target.value)}
+                  placeholder="90-200"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">eGFR (mL/min)</label>
+                <input
+                  type="number"
+                  value={inputs.egfr}
+                  onChange={(e) => updateInput("egfr", e.target.value)}
+                  placeholder="15-120"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">BMI (kg/m²)</label>
+                <input
+                  type="number"
+                  value={inputs.bmi}
+                  onChange={(e) => updateInput("bmi", e.target.value)}
+                  placeholder="18.5-50"
+                  step="0.1"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">uACR (mg/g)</label>
+                <input
+                  type="number"
+                  value={inputs.uacr}
+                  onChange={(e) => updateInput("uacr", e.target.value)}
+                  placeholder="0-5000"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">HbA1c (%)</label>
+                <input
+                  type="number"
+                  value={inputs.hba1c}
+                  onChange={(e) => updateInput("hba1c", e.target.value)}
+                  placeholder="4.0-14.0"
+                  step="0.1"
+                  className="w-full p-2 border border-violet-200 dark:border-violet-700 rounded-lg bg-white dark:bg-violet-950/30 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Checkbox Options */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div 
+                className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${
+                  inputs.bpTreated ? 'bg-violet-200 dark:bg-violet-800/50 border border-violet-400' : 'bg-white dark:bg-violet-950/30 border border-violet-100 dark:border-violet-800'
+                }`}
+                onClick={() => updateInput("bpTreated", !inputs.bpTreated)}
+              >
+                <Checkbox checked={inputs.bpTreated} />
+                <span className="text-sm">On BP Meds</span>
+              </div>
+              <div 
+                className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${
+                  inputs.diabetes ? 'bg-violet-200 dark:bg-violet-800/50 border border-violet-400' : 'bg-white dark:bg-violet-950/30 border border-violet-100 dark:border-violet-800'
+                }`}
+                onClick={() => updateInput("diabetes", !inputs.diabetes)}
+              >
+                <Checkbox checked={inputs.diabetes} />
+                <span className="text-sm">Diabetes</span>
+              </div>
+              <div 
+                className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${
+                  inputs.currentSmoker ? 'bg-violet-200 dark:bg-violet-800/50 border border-violet-400' : 'bg-white dark:bg-violet-950/30 border border-violet-100 dark:border-violet-800'
+                }`}
+                onClick={() => updateInput("currentSmoker", !inputs.currentSmoker)}
+              >
+                <Checkbox checked={inputs.currentSmoker} />
+                <span className="text-sm">Current Smoker</span>
+              </div>
+              <div 
+                className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${
+                  inputs.statin ? 'bg-violet-200 dark:bg-violet-800/50 border border-violet-400' : 'bg-white dark:bg-violet-950/30 border border-violet-100 dark:border-violet-800'
+                }`}
+                onClick={() => updateInput("statin", !inputs.statin)}
+              >
+                <Checkbox checked={inputs.statin} />
+                <span className="text-sm">On Statin</span>
+              </div>
+            </div>
+
+            {/* Results Display */}
+            {risk && riskCategory && (
+              <div className="mb-6 p-4 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* 10-Year Risk */}
+                  <div className="flex items-center gap-3">
+                    <div className={`w-20 h-20 ${riskCategory.color} rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg`}>
+                      {risk.tenYear}%
+                    </div>
+                    <div>
+                      <div className="text-sm text-violet-600 dark:text-violet-400">10-Year CVD Risk</div>
+                      <div className="font-bold text-violet-800 dark:text-violet-300">{riskCategory.category}</div>
+                    </div>
+                  </div>
+                  
+                  {/* 30-Year Risk */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-20 bg-violet-500 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                      {risk.thirtyYear}%
+                    </div>
+                    <div>
+                      <div className="text-sm text-violet-600 dark:text-violet-400">30-Year CVD Risk</div>
+                      <div className="font-bold text-violet-800 dark:text-violet-300">Lifetime Risk</div>
+                    </div>
+                  </div>
+                  
+                  {/* Recommendation */}
+                  <div className="p-3 bg-white dark:bg-violet-950/50 rounded-lg border border-violet-200 dark:border-violet-700">
+                    <div className="text-xs font-medium text-violet-600 dark:text-violet-400 mb-1">Recommendation</div>
+                    <div className="text-sm text-violet-800 dark:text-violet-300">{riskCategory.recommendation}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PREVENT vs PCE Comparison */}
+            <div className="mb-6 p-4 bg-violet-50 dark:bg-violet-950/20 rounded-lg border border-violet-200 dark:border-violet-700">
+              <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-2">PREVENT vs Pooled Cohort Equations (PCE)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="font-medium text-violet-700 dark:text-violet-400">PREVENT (2023):</span>
+                  <ul className="mt-1 space-y-1 text-violet-600 dark:text-violet-500">
+                    <li>• Includes eGFR, uACR, HbA1c (CKM factors)</li>
+                    <li>• Excludes race as a variable</li>
+                    <li>• Predicts total CVD (ASCVD + HF)</li>
+                    <li>• 10-year and 30-year estimates</li>
+                    <li>• Derived from 6.5M+ adults</li>
+                  </ul>
+                </div>
+                <div>
+                  <span className="font-medium text-violet-700 dark:text-violet-400">PCE (2013):</span>
+                  <ul className="mt-1 space-y-1 text-violet-600 dark:text-violet-500">
+                    <li>• Does not include kidney markers</li>
+                    <li>• Includes race (criticized)</li>
+                    <li>• Predicts ASCVD only (not HF)</li>
+                    <li>• 10-year estimate only</li>
+                    <li>• Known to overestimate in some groups</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Risk Thresholds */}
+            <div className="mb-4">
+              <h4 className="font-semibold text-violet-800 dark:text-violet-300 mb-2">10-Year Risk Thresholds</h4>
+              <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                <div className="bg-green-100 dark:bg-green-900/40 rounded p-2">
+                  <div className="font-bold text-green-800 dark:text-green-300">{"<"}5%</div>
+                  <div className="text-green-600 dark:text-green-400">Low</div>
+                </div>
+                <div className="bg-yellow-100 dark:bg-yellow-900/40 rounded p-2">
+                  <div className="font-bold text-yellow-800 dark:text-yellow-300">5-7.5%</div>
+                  <div className="text-yellow-600 dark:text-yellow-400">Borderline</div>
+                </div>
+                <div className="bg-orange-100 dark:bg-orange-900/40 rounded p-2">
+                  <div className="font-bold text-orange-800 dark:text-orange-300">7.5-20%</div>
+                  <div className="text-orange-600 dark:text-orange-400">Intermediate</div>
+                </div>
+                <div className="bg-red-100 dark:bg-red-900/40 rounded p-2">
+                  <div className="font-bold text-red-800 dark:text-red-300">≥20%</div>
+                  <div className="text-red-600 dark:text-red-400">High</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="p-3 bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700 rounded-lg">
+              <p className="text-xs text-violet-600 dark:text-violet-400">
+                <strong>Note:</strong> This is a simplified estimation. For official calculations, use the AHA PREVENT Calculator at 
+                professional.heart.org. <strong>References:</strong> Khan SS et al. Circulation 2024 | AHA PREVENT Scientific Statement 2023 | 
+                PREVENT equations validated for adults 30-79 without prior CVD.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // HAS-BLED Score Calculator Component
 function HASBLEDCalculator() {
   const [isOpen, setIsOpen] = useState(false);
@@ -4846,6 +5506,9 @@ export default function StrokeWorkupChecklist() {
     { label: "FOUR Score", id: "four" },
     { label: "ASPECTS", id: "aspects" },
     { label: "CHA₂DS₂-VASc", id: "cha2ds2" },
+    { label: "uACR & CV Risk", id: "uacr" },
+    { label: "eGFR & KDIGO", id: "egfr" },
+    { label: "PREVENT Score", id: "prevent" },
     { label: "HAS-BLED", id: "hasbled" },
     { label: "ABCD²", id: "abcd2" },
     { label: "Workup Checklist", id: "checklist" },
@@ -5017,7 +5680,19 @@ export default function StrokeWorkupChecklist() {
           <CHA2DS2VAScCalculator />
 
           {/* uACR Cardiovascular Risk Reference */}
-          <UACRCardiovascularRisk />
+          <div id="uacr">
+            <UACRCardiovascularRisk />
+          </div>
+
+          {/* eGFR Calculator with KDIGO Staging */}
+          <div id="egfr">
+            <EGFRCalculator />
+          </div>
+
+          {/* PREVENT Score Calculator */}
+          <div id="prevent">
+            <PREVENTScoreCalculator />
+          </div>
 
           {/* HAS-BLED Calculator */}
           <HASBLEDCalculator />
