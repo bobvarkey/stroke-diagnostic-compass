@@ -3069,6 +3069,196 @@ function CHA2DS2VAScCalculator() {
   );
 }
 
+// uACR Cardiovascular Risk Reference Component
+function UACRCardiovascularRisk() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const uacrCategories = [
+    { range: "<30", label: "Normal to Mildly Increased", color: "bg-green-500", risk: "Baseline CV risk", category: "A1" },
+    { range: "30-300", label: "Moderately Increased (Microalbuminuria)", color: "bg-yellow-500", risk: "1.5-2x CV risk", category: "A2" },
+    { range: ">300", label: "Severely Increased (Macroalbuminuria)", color: "bg-red-500", risk: "3-4x CV risk", category: "A3" },
+  ];
+
+  const keyOutcomes = [
+    { outcome: "Heart Failure", icon: "❤️", description: "Strong dose-response relationship; even mild albuminuria increases risk" },
+    { outcome: "Myocardial Infarction", icon: "💔", description: "Independent predictor regardless of traditional risk factors" },
+    { outcome: "Stroke", icon: "🧠", description: "Significant association, especially in diabetic and hypertensive patients" },
+    { outcome: "CV Death", icon: "⚠️", description: "Graded relationship with mortality; no safe threshold identified" },
+    { outcome: "All-cause Hospitalization", icon: "🏥", description: "Elevated uACR predicts increased healthcare utilization" },
+  ];
+
+  const treatments = [
+    { name: "ACE Inhibitors / ARBs", mechanism: "RAAS blockade reduces intraglomerular pressure", evidence: "First-line for albuminuria reduction" },
+    { name: "SGLT2 Inhibitors", mechanism: "Nephroprotective beyond glucose control", evidence: "DAPA-CKD, CREDENCE, EMPA-KIDNEY trials" },
+    { name: "Non-steroidal MRAs", mechanism: "Finerenone reduces inflammation and fibrosis", evidence: "FIDELIO-DKD, FIGARO-DKD trials" },
+    { name: "BP Control", mechanism: "Target <130/80 mmHg", evidence: "Reduces albuminuria progression" },
+  ];
+
+  const screeningIndications = [
+    "Diabetes mellitus (annual screening)",
+    "Hypertension",
+    "Chronic kidney disease (all stages)",
+    "Heart failure",
+    "Atherosclerotic cardiovascular disease",
+    "Family history of kidney disease",
+    "Obesity / Metabolic syndrome",
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-teal-300 dark:border-teal-700 bg-gradient-to-br from-teal-50 dark:from-teal-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-teal-100/50 dark:bg-teal-900/30">
+            <CardTitle className="flex items-center justify-between text-teal-800 dark:text-teal-300">
+              <div className="flex items-center gap-2">
+                <Droplets className="h-5 w-5" />
+                uACR - Cardiovascular Risk Biomarker
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
+            {/* Key Message Banner */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-teal-100 to-cyan-100 dark:from-teal-900/40 dark:to-cyan-900/40 rounded-lg border border-teal-200 dark:border-teal-700">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="h-6 w-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-bold text-teal-800 dark:text-teal-300 mb-1">Key Takeaway</h4>
+                  <p className="text-sm text-teal-700 dark:text-teal-400">
+                    Albuminuria is an early, inexpensive, actionable "red flag" for cardiovascular risk, comparable to blood pressure or LDL cholesterol. 
+                    Routine measurement and treatment-guided monitoring of uACR can improve risk stratification, guide therapy, and help prevent future cardiovascular events.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* uACR Categories */}
+            <div className="mb-6">
+              <h4 className="font-semibold text-teal-800 dark:text-teal-300 mb-3">uACR Categories (mg/g or mg/mmol)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {uacrCategories.map((cat) => (
+                  <div key={cat.range} className={`p-4 rounded-lg border ${
+                    cat.category === "A1" ? "border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20" :
+                    cat.category === "A2" ? "border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20" :
+                    "border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20"
+                  }`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={`w-8 h-8 ${cat.color} rounded-full flex items-center justify-center text-white text-xs font-bold`}>
+                        {cat.category}
+                      </div>
+                      <span className="font-bold text-sm">{cat.range} mg/g</span>
+                    </div>
+                    <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">{cat.label}</div>
+                    <div className={`text-xs font-semibold ${
+                      cat.category === "A1" ? "text-green-600 dark:text-green-400" :
+                      cat.category === "A2" ? "text-yellow-600 dark:text-yellow-400" :
+                      "text-red-600 dark:text-red-400"
+                    }`}>{cat.risk}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-teal-600 dark:text-teal-500 mt-2 italic">
+                ⚠️ Large population studies ({">"}9 million individuals) demonstrate NO safe threshold - even low/mildly elevated levels increase CV risk
+              </p>
+            </div>
+
+            {/* Key Clinical Outcomes */}
+            <div className="mb-6">
+              <h4 className="font-semibold text-teal-800 dark:text-teal-300 mb-3">Associated Cardiovascular Outcomes</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {keyOutcomes.map((item) => (
+                  <div key={item.outcome} className="p-3 bg-white dark:bg-teal-950/30 rounded-lg border border-teal-100 dark:border-teal-800">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">{item.icon}</span>
+                      <span className="font-medium text-sm text-teal-800 dark:text-teal-300">{item.outcome}</span>
+                    </div>
+                    <p className="text-xs text-teal-600 dark:text-teal-500">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Important Clinical Points */}
+            <div className="mb-6 p-4 bg-cyan-50 dark:bg-cyan-950/20 rounded-lg border border-cyan-200 dark:border-cyan-700">
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 mb-2">Critical Clinical Points</h4>
+              <ul className="space-y-2 text-xs text-cyan-700 dark:text-cyan-400">
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-500 font-bold">•</span>
+                  <span><strong>Beyond Kidney Disease:</strong> Albuminuria is a marker of systemic vascular injury and endothelial dysfunction, not just renal pathology</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-500 font-bold">•</span>
+                  <span><strong>Preserved eGFR:</strong> Albuminuria adds prognostic value even when eGFR is normal (CKD stages 1-2)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-500 font-bold">•</span>
+                  <span><strong>PREVENT Score:</strong> AHA now includes uACR and eGFR in cardiovascular risk assessment tools</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-500 font-bold">•</span>
+                  <span><strong>Modifiable:</strong> Unlike many biomarkers, albuminuria responds to treatment and reduction correlates with improved outcomes</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Treatments That Reduce Albuminuria */}
+            <div className="mb-6">
+              <h4 className="font-semibold text-teal-800 dark:text-teal-300 mb-3">Evidence-Based Treatments to Reduce Albuminuria</h4>
+              <div className="space-y-2">
+                {treatments.map((tx) => (
+                  <div key={tx.name} className="p-3 bg-teal-50 dark:bg-teal-950/30 rounded-lg border border-teal-100 dark:border-teal-800">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1">
+                      <div>
+                        <span className="font-medium text-sm text-teal-800 dark:text-teal-300">{tx.name}</span>
+                        <span className="text-xs text-teal-600 dark:text-teal-500 ml-2">— {tx.mechanism}</span>
+                      </div>
+                      <span className="text-xs px-2 py-1 bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 rounded">{tx.evidence}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Who to Screen */}
+            <div className="mb-6">
+              <h4 className="font-semibold text-teal-800 dark:text-teal-300 mb-3">Who Should Be Screened for uACR?</h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {screeningIndications.map((indication) => (
+                  <div key={indication} className="p-2 bg-white dark:bg-teal-950/30 rounded border border-teal-100 dark:border-teal-800 text-xs text-teal-700 dark:text-teal-400 flex items-center gap-1">
+                    <span className="text-teal-500">✓</span>
+                    {indication}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Underutilization Warning */}
+            <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-amber-700 dark:text-amber-400">
+                  <strong>Clinical Practice Gap:</strong> Despite strong evidence, uACR remains underused because it has traditionally been viewed as a "kidney-only" test. 
+                  Experts emphasize making uACR routine, standardized, and embedded in clinical workflows for all high-risk patients.
+                </p>
+              </div>
+            </div>
+
+            {/* Clinical Notes */}
+            <div className="p-3 bg-teal-50 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-700 rounded-lg">
+              <p className="text-xs text-teal-600 dark:text-teal-400">
+                <strong>References:</strong> Kidney Disease: Improving Global Outcomes (KDIGO) 2024 Guidelines | AHA PREVENT Score (2023) | 
+                DAPA-CKD, CREDENCE, EMPA-KIDNEY, FIDELIO-DKD, FIGARO-DKD Trials | CKD Prognosis Consortium ({">"}9 million participants meta-analysis)
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // HAS-BLED Score Calculator Component
 function HASBLEDCalculator() {
   const [isOpen, setIsOpen] = useState(false);
@@ -4825,6 +5015,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* CHA2DS2-VASc Calculator */}
           <CHA2DS2VAScCalculator />
+
+          {/* uACR Cardiovascular Risk Reference */}
+          <UACRCardiovascularRisk />
 
           {/* HAS-BLED Calculator */}
           <HASBLEDCalculator />
