@@ -16,6 +16,7 @@ import InteractivePcASPECTSCalculator from "./InteractivePcASPECTSCalculator";
 import FisherScaleCalculator from "./FisherScaleCalculator";
 import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
+import SerialNIHSSTracker from "./SerialNIHSSTracker";
 
 interface TestItem {
   id: string;
@@ -1927,6 +1928,12 @@ function VisualNIHSSCalculator() {
                 </CollapsibleContent>
               </Collapsible>
             </div>
+
+            {/* Serial NIHSS Tracker */}
+            <SerialNIHSSTracker 
+              currentScores={scores} 
+              currentUntestableReasons={untestableReasons}
+            />
           </CardContent>
         </CollapsibleContent>
       </Card>
