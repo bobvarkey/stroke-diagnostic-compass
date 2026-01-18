@@ -17,6 +17,7 @@ import FisherScaleCalculator from "./FisherScaleCalculator";
 import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface TestItem {
   id: string;
@@ -5940,12 +5941,17 @@ export default function StrokeWorkupChecklist() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-      {/* Header */}
-      <div className="text-center mb-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-medical-header mb-2">
+      {/* Header with Theme Toggle */}
+      <div className="relative text-center mb-4">
+        {/* Theme Toggle - Fixed Position */}
+        <div className="absolute right-0 top-0">
+          <ThemeToggle />
+        </div>
+        
+        <h1 className="text-2xl md:text-3xl font-bold text-medical-header dark:text-blue-400 mb-2 leading-relaxed">
           Stroke Investigation Workup Checklist
         </h1>
-        <p className="text-muted-foreground text-sm md:text-base">
+        <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
       </div>
@@ -5961,7 +5967,7 @@ export default function StrokeWorkupChecklist() {
             <span className="hidden sm:inline">Quick Navigation</span>
             <span className="sm:hidden">Navigate</span>
           </button>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span className="hidden sm:inline">Scroll down to explore sections</span>
           </div>
         </div>
