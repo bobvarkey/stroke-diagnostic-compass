@@ -22,6 +22,7 @@ import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import HeadsUpTest from "./HeadsUpTest";
 import CTACollateralGrading from "./CTACollateralGrading";
+import LVODecisionDashboard from "./LVODecisionDashboard";
 
 interface TestItem {
   id: string;
@@ -6072,6 +6073,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* CTA Collateral Grading */}
           <CTACollateralGrading />
+
+          {/* LVO Decision Dashboard - Integrated Treatment Recommendation */}
+          <LVODecisionDashboard />
 
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
