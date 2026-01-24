@@ -23,6 +23,7 @@ import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import HeadsUpTest from "./HeadsUpTest";
 import CTACollateralGrading from "./CTACollateralGrading";
 import LVODecisionDashboard from "./LVODecisionDashboard";
+import LAILipidRiskClassification from "./LAILipidRiskClassification";
 
 interface TestItem {
   id: string;
@@ -6141,6 +6142,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Metabolic Syndrome Checker */}
           <MetabolicSyndromeChecker />
+
+          {/* LAI 2024 Lipid Risk Classification */}
+          <LAILipidRiskClassification />
 
           {/* Progress Overview */}
           <Card className="bg-medical-section border-medical-header/20">
