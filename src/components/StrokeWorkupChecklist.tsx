@@ -24,6 +24,9 @@ import HeadsUpTest from "./HeadsUpTest";
 import CTACollateralGrading from "./CTACollateralGrading";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
+import LipidTherapyIntensificationGuide from "./LipidTherapyIntensificationGuide";
+import ETICIScoreCalculator from "./ETICIScoreCalculator";
+import TALDefinitionGuide from "./TALDefinitionGuide";
 
 interface TestItem {
   id: string;
@@ -6078,6 +6081,12 @@ export default function StrokeWorkupChecklist() {
           {/* LVO Decision Dashboard - Integrated Treatment Recommendation */}
           <LVODecisionDashboard />
 
+          {/* eTICI Score Calculator */}
+          <ETICIScoreCalculator />
+
+          {/* Target Arterial Lesion (TAL) Definition */}
+          <TALDefinitionGuide />
+
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
 
@@ -6145,6 +6154,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* LAI 2024 Lipid Risk Classification */}
           <LAILipidRiskClassification />
+
+          {/* Lipid Therapy Intensification Guide */}
+          <LipidTherapyIntensificationGuide />
 
           {/* Progress Overview */}
           <Card className="bg-medical-section border-medical-header/20">
