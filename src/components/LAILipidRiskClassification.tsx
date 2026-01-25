@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { AlertTriangle, ChevronDown, Heart, Target, Info, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, ChevronDown, Heart, Target, Info, CheckCircle2, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import LipidRiskPDFReport from "./LipidRiskPDFReport";
 
 interface RiskFactor {
   id: string;
@@ -17,6 +19,8 @@ interface RiskCategory {
   name: string;
   ldlTarget: string;
   optionalTarget?: string;
+  nonHdlTarget?: string;
+  apoBTarget?: string;
   color: string;
   bgColor: string;
   borderColor: string;
@@ -26,6 +30,8 @@ const riskCategories: Record<string, RiskCategory> = {
   low: {
     name: "Low Risk",
     ldlTarget: "<100 mg/dL",
+    nonHdlTarget: "<130 mg/dL",
+    apoBTarget: "<100 mg/dL",
     color: "text-green-700 dark:text-green-400",
     bgColor: "bg-green-50 dark:bg-green-950/30",
     borderColor: "border-green-200 dark:border-green-800",
@@ -33,6 +39,8 @@ const riskCategories: Record<string, RiskCategory> = {
   moderate: {
     name: "Moderate Risk",
     ldlTarget: "<100 mg/dL",
+    nonHdlTarget: "<130 mg/dL",
+    apoBTarget: "<100 mg/dL",
     color: "text-yellow-700 dark:text-yellow-400",
     bgColor: "bg-yellow-50 dark:bg-yellow-950/30",
     borderColor: "border-yellow-200 dark:border-yellow-800",
@@ -40,6 +48,8 @@ const riskCategories: Record<string, RiskCategory> = {
   high: {
     name: "High Risk",
     ldlTarget: "<70 mg/dL",
+    nonHdlTarget: "<100 mg/dL",
+    apoBTarget: "<80 mg/dL",
     color: "text-orange-700 dark:text-orange-400",
     bgColor: "bg-orange-50 dark:bg-orange-950/30",
     borderColor: "border-orange-200 dark:border-orange-800",
@@ -47,6 +57,8 @@ const riskCategories: Record<string, RiskCategory> = {
   veryHigh: {
     name: "Very High Risk",
     ldlTarget: "<50 mg/dL",
+    nonHdlTarget: "<80 mg/dL",
+    apoBTarget: "<65 mg/dL",
     color: "text-red-600 dark:text-red-400",
     bgColor: "bg-red-50 dark:bg-red-950/30",
     borderColor: "border-red-200 dark:border-red-800",
@@ -55,6 +67,8 @@ const riskCategories: Record<string, RiskCategory> = {
     name: "Extreme Risk (Group A)",
     ldlTarget: "<50 mg/dL",
     optionalTarget: "≤30 mg/dL (optional)",
+    nonHdlTarget: "<80 mg/dL",
+    apoBTarget: "<65 mg/dL",
     color: "text-red-700 dark:text-red-300",
     bgColor: "bg-red-100 dark:bg-red-950/50",
     borderColor: "border-red-300 dark:border-red-700",
@@ -62,6 +76,8 @@ const riskCategories: Record<string, RiskCategory> = {
   extremeB: {
     name: "Extreme Risk (Group B)",
     ldlTarget: "≤30 mg/dL (mandatory)",
+    nonHdlTarget: "<60 mg/dL",
+    apoBTarget: "<55 mg/dL",
     color: "text-purple-700 dark:text-purple-300",
     bgColor: "bg-purple-100 dark:bg-purple-950/50",
     borderColor: "border-purple-300 dark:border-purple-700",
@@ -69,6 +85,8 @@ const riskCategories: Record<string, RiskCategory> = {
   extremeC: {
     name: "Extreme Risk (Group C)",
     ldlTarget: "10-15 mg/dL",
+    nonHdlTarget: "<40 mg/dL",
+    apoBTarget: "<40 mg/dL",
     color: "text-pink-700 dark:text-pink-300",
     bgColor: "bg-pink-100 dark:bg-pink-950/50",
     borderColor: "border-pink-300 dark:border-pink-700",
@@ -150,9 +168,38 @@ const extremeCFactors: RiskFactor[] = [
   { id: "ext_c_recurrent", label: "Recurrent ASCVD despite optimal holistic management", description: "LDL target 10-15 mg/dL", category: "Extreme Risk C" },
 ];
 
+// Factor labels for PDF report
+const allFactorLabels: Record<string, string> = {};
+[...highRiskFeatures, ...riskModifiers, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].forEach(f => {
+  allFactorLabels[f.id] = f.label;
+});
+
 const LAILipidRiskClassification: React.FC = () => {
   const [selectedFactors, setSelectedFactors] = useState<Set<string>>(new Set());
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["key-concepts"]));
+  
+  // Lipid panel values for automatic calculation
+  const [lipidValues, setLipidValues] = useState({
+    totalCholesterol: "" as string,
+    ldl: "" as string,
+    hdl: "" as string,
+    triglycerides: "" as string,
+    apoB: "" as string
+  });
+
+  // Calculate non-HDL-C automatically
+  const calculatedNonHdl = useMemo(() => {
+    const tc = parseFloat(lipidValues.totalCholesterol);
+    const hdl = parseFloat(lipidValues.hdl);
+    if (!isNaN(tc) && !isNaN(hdl) && tc > hdl) {
+      return tc - hdl;
+    }
+    return null;
+  }, [lipidValues.totalCholesterol, lipidValues.hdl]);
+
+  const updateLipidValue = (field: keyof typeof lipidValues, value: string) => {
+    setLipidValues(prev => ({ ...prev, [field]: value }));
+  };
 
   const toggleFactor = (id: string) => {
     setSelectedFactors((prev) => {
@@ -349,6 +396,87 @@ const LAILipidRiskClassification: React.FC = () => {
           </CollapsibleContent>
         </Collapsible>
 
+        {/* Lipid Panel Calculator */}
+        <Collapsible open={expandedSections.has("lipid-calc")} onOpenChange={() => toggleSection("lipid-calc")}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2">
+              <Calculator className="h-4 w-4 text-blue-600" />
+              <span className="font-medium text-sm">Lipid Panel Calculator (Non-HDL-C & ApoB)</span>
+            </div>
+            <ChevronDown
+              className={cn(
+                "h-4 w-4 transition-transform",
+                expandedSections.has("lipid-calc") && "rotate-180"
+              )}
+            />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2 p-4 bg-blue-50/50 dark:bg-blue-950/20 rounded-lg border border-blue-100 dark:border-blue-900">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div>
+                <Label className="text-xs">Total Cholesterol</Label>
+                <input
+                  type="number"
+                  value={lipidValues.totalCholesterol}
+                  onChange={(e) => updateLipidValue("totalCholesterol", e.target.value)}
+                  placeholder="mg/dL"
+                  className="mt-1 w-full px-2 py-1.5 text-sm border rounded-md bg-background border-input"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">LDL-C</Label>
+                <input
+                  type="number"
+                  value={lipidValues.ldl}
+                  onChange={(e) => updateLipidValue("ldl", e.target.value)}
+                  placeholder="mg/dL"
+                  className="mt-1 w-full px-2 py-1.5 text-sm border rounded-md bg-background border-input"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">HDL-C</Label>
+                <input
+                  type="number"
+                  value={lipidValues.hdl}
+                  onChange={(e) => updateLipidValue("hdl", e.target.value)}
+                  placeholder="mg/dL"
+                  className="mt-1 w-full px-2 py-1.5 text-sm border rounded-md bg-background border-input"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Triglycerides</Label>
+                <input
+                  type="number"
+                  value={lipidValues.triglycerides}
+                  onChange={(e) => updateLipidValue("triglycerides", e.target.value)}
+                  placeholder="mg/dL"
+                  className="mt-1 w-full px-2 py-1.5 text-sm border rounded-md bg-background border-input"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">ApoB</Label>
+                <input
+                  type="number"
+                  value={lipidValues.apoB}
+                  onChange={(e) => updateLipidValue("apoB", e.target.value)}
+                  placeholder="mg/dL"
+                  className="mt-1 w-full px-2 py-1.5 text-sm border rounded-md bg-background border-input"
+                />
+              </div>
+            </div>
+            
+            {/* Calculated Non-HDL-C */}
+            {calculatedNonHdl !== null && (
+              <div className="mt-3 p-2 bg-primary/10 rounded-md">
+                <p className="text-sm">
+                  <span className="font-medium">Calculated Non-HDL-C:</span>{" "}
+                  <span className="text-lg font-bold text-primary">{calculatedNonHdl} mg/dL</span>
+                  <span className="text-xs text-muted-foreground ml-2">(TC - HDL)</span>
+                </p>
+              </div>
+            )}
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* Current Risk Assessment Result */}
         <div
           className={cn(
@@ -357,30 +485,102 @@ const LAILipidRiskClassification: React.FC = () => {
             determinedRiskCategory.borderColor
           )}
         >
-          <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Current Risk Category</p>
               <p className={cn("text-xl font-bold", determinedRiskCategory.color)}>
                 {determinedRiskCategory.name}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">LDL-C Target</p>
-              <p className={cn("text-xl font-bold", determinedRiskCategory.color)}>
-                {determinedRiskCategory.ldlTarget}
-              </p>
-              {determinedRiskCategory.optionalTarget && (
-                <p className="text-sm text-muted-foreground">
-                  {determinedRiskCategory.optionalTarget}
+            
+            {/* All Targets Display */}
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">LDL-C Target</p>
+                <p className={cn("text-lg font-bold", determinedRiskCategory.color)}>
+                  {determinedRiskCategory.ldlTarget}
                 </p>
-              )}
+                <Badge variant="outline" className="text-[10px] mt-1">Primary</Badge>
+                {determinedRiskCategory.optionalTarget && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {determinedRiskCategory.optionalTarget}
+                  </p>
+                )}
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Non-HDL-C</p>
+                <p className={cn("text-lg font-bold", determinedRiskCategory.color)}>
+                  {determinedRiskCategory.nonHdlTarget}
+                </p>
+                <Badge variant="secondary" className="text-[10px] mt-1">Co-Primary</Badge>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">ApoB</p>
+                <p className={cn("text-lg font-bold", determinedRiskCategory.color)}>
+                  {determinedRiskCategory.apoBTarget}
+                </p>
+                <Badge variant="outline" className="text-[10px] mt-1">Secondary</Badge>
+              </div>
             </div>
           </div>
+
+          {/* Target Status Check */}
+          {(lipidValues.ldl || calculatedNonHdl || lipidValues.apoB) && (
+            <div className="mt-4 pt-3 border-t border-current/10 grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+              {lipidValues.ldl && (
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">LDL-C:</span>
+                  <span className="font-medium">{lipidValues.ldl} mg/dL</span>
+                  {parseFloat(lipidValues.ldl) <= parseInt(determinedRiskCategory.ldlTarget.replace(/[<≤]/g, "")) ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                  )}
+                </div>
+              )}
+              {calculatedNonHdl !== null && determinedRiskCategory.nonHdlTarget && (
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">Non-HDL:</span>
+                  <span className="font-medium">{calculatedNonHdl} mg/dL</span>
+                  {calculatedNonHdl <= parseInt(determinedRiskCategory.nonHdlTarget.replace(/[<≤]/g, "")) ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                  )}
+                </div>
+              )}
+              {lipidValues.apoB && determinedRiskCategory.apoBTarget && (
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">ApoB:</span>
+                  <span className="font-medium">{lipidValues.apoB} mg/dL</span>
+                  {parseFloat(lipidValues.apoB) <= parseInt(determinedRiskCategory.apoBTarget.replace(/[<≤]/g, "")) ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {selectedFactors.size > 0 && (
-            <div className="mt-3 pt-3 border-t border-current/10">
+            <div className="mt-3 pt-3 border-t border-current/10 flex items-center justify-between">
               <p className="text-xs text-muted-foreground">
-                Selected factors: {selectedFactors.size} | Achieve LDL-C target by Week 12
+                Selected factors: {selectedFactors.size} | Achieve targets by Week 12
               </p>
+              <LipidRiskPDFReport
+                riskCategory={determinedRiskCategory}
+                selectedFactors={Array.from(selectedFactors)}
+                factorLabels={allFactorLabels}
+                lipidValues={{
+                  totalCholesterol: lipidValues.totalCholesterol ? parseFloat(lipidValues.totalCholesterol) : undefined,
+                  ldl: lipidValues.ldl ? parseFloat(lipidValues.ldl) : undefined,
+                  hdl: lipidValues.hdl ? parseFloat(lipidValues.hdl) : undefined,
+                  triglycerides: lipidValues.triglycerides ? parseFloat(lipidValues.triglycerides) : undefined,
+                  nonHdl: calculatedNonHdl ?? undefined,
+                  apoB: lipidValues.apoB ? parseFloat(lipidValues.apoB) : undefined
+                }}
+              />
             </div>
           )}
         </div>

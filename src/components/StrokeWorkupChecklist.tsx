@@ -27,6 +27,8 @@ import LAILipidRiskClassification from "./LAILipidRiskClassification";
 import LipidTherapyIntensificationGuide from "./LipidTherapyIntensificationGuide";
 import ETICIScoreCalculator from "./ETICIScoreCalculator";
 import TALDefinitionGuide from "./TALDefinitionGuide";
+import VascularAnatomyDiagram from "./VascularAnatomyDiagram";
+import ThrombectomyOutcomeTracker from "./ThrombectomyOutcomeTracker";
 
 interface TestItem {
   id: string;
@@ -6086,6 +6088,12 @@ export default function StrokeWorkupChecklist() {
 
           {/* Target Arterial Lesion (TAL) Definition */}
           <TALDefinitionGuide />
+
+          {/* Interactive Vascular Anatomy Diagram */}
+          <VascularAnatomyDiagram />
+
+          {/* Thrombectomy Outcome Tracker */}
+          <ThrombectomyOutcomeTracker />
 
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
