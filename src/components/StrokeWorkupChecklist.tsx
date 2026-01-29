@@ -32,6 +32,7 @@ import ThrombectomyOutcomeTracker from "./ThrombectomyOutcomeTracker";
 import PREVENTScoreCalculator from "./PREVENTScoreCalculator";
 import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
+import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 
 interface TestItem {
   id: string;
@@ -5726,6 +5727,9 @@ export default function StrokeWorkupChecklist() {
 
           {/* Thrombectomy Outcome Tracker */}
           <ThrombectomyOutcomeTracker />
+
+          {/* Stroke History Template */}
+          <StrokeHistoryTemplate />
 
           {/* ISPS25 Stroke Phenotyping System */}
           <ISPS25StrokePhenotyping />
