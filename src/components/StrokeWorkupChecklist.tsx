@@ -33,6 +33,7 @@ import PREVENTScoreCalculator from "./PREVENTScoreCalculator";
 import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
 import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
+import KDIGOHeatMap from "./KDIGOHeatMap";
 
 interface TestItem {
   id: string;
@@ -300,7 +301,7 @@ const categoryIcons: Record<string, any> = {
   "Pharmacogenomics": TestTube,
 };
 
-// Acute Stroke Management Algorithm Component
+// Acute Stroke Management Algorithm Component - AHA 2026 Guidelines
 function AcuteStrokeAlgorithm() {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -313,6 +314,7 @@ function AcuteStrokeAlgorithm() {
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
                 Acute Stroke Management Algorithm
+                <span className="ml-2 px-2 py-0.5 bg-red-600 text-white text-xs rounded">AHA 2026</span>
               </div>
               <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </CardTitle>
@@ -320,10 +322,36 @@ function AcuteStrokeAlgorithm() {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="pt-6">
+            {/* 2026 Key Updates Banner */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40 border border-blue-300 dark:border-blue-700 rounded-lg">
+              <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
+                <Zap className="h-4 w-4" />
+                AHA 2026 Guideline Key Updates
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div className="p-2 bg-white/50 dark:bg-gray-800/50 rounded">
+                  <span className="font-semibold text-green-700 dark:text-green-400">✓ Tenecteplase</span>
+                  <span className="text-gray-700 dark:text-gray-300"> now endorsed equally with alteplase in 4.5h window</span>
+                </div>
+                <div className="p-2 bg-white/50 dark:bg-gray-800/50 rounded">
+                  <span className="font-semibold text-green-700 dark:text-green-400">✓ Large Core EVT</span>
+                  <span className="text-gray-700 dark:text-gray-300"> expanded eligibility for larger infarct cores</span>
+                </div>
+                <div className="p-2 bg-white/50 dark:bg-gray-800/50 rounded">
+                  <span className="font-semibold text-green-700 dark:text-green-400">✓ Basilar EVT</span>
+                  <span className="text-gray-700 dark:text-gray-300"> strong recommendation within 24h if NIHSS ≥10</span>
+                </div>
+                <div className="p-2 bg-white/50 dark:bg-gray-800/50 rounded">
+                  <span className="font-semibold text-amber-700 dark:text-amber-400">⚠ Non-disabling stroke</span>
+                  <span className="text-gray-700 dark:text-gray-300"> DAPT preferred over thrombolysis</span>
+                </div>
+              </div>
+            </div>
+
             {/* Information Needed Section */}
             <div className="mb-6 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Information Needed</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div className="p-3 border-2 border-red-500 rounded-lg text-center">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Last known well time</span>
                 </div>
@@ -331,7 +359,10 @@ function AcuteStrokeAlgorithm() {
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">NIH Stroke Scale score</span>
                 </div>
                 <div className="p-3 border-2 border-red-500 rounded-lg text-center">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pre-stroke disability mRS score</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Pre-stroke mRS</span>
+                </div>
+                <div className="p-3 border-2 border-orange-500 rounded-lg text-center">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Disabling vs Non-disabling</span>
                 </div>
               </div>
             </div>
@@ -349,12 +380,12 @@ function AcuteStrokeAlgorithm() {
                 <ArrowRight className="h-6 w-6 rotate-90 text-gray-500" />
               </div>
 
-              {/* Time Windows */}
+              {/* Time Windows - Updated for AHA 2026 */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* < 5.5 hours pathway */}
-                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
-                  <div className="text-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600">
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">&lt; 5.5 hours</span>
+                {/* < 4.5 hours pathway - IVT Window */}
+                <div className="border-2 border-dashed border-green-400 dark:border-green-600 rounded-lg p-4 space-y-3">
+                  <div className="text-center px-4 py-2 bg-green-100 dark:bg-green-800/40 rounded-lg border border-green-400 dark:border-green-600">
+                    <span className="font-semibold text-green-800 dark:text-green-200">&lt; 4.5 hours (IVT Window)</span>
                   </div>
                   
                   <div className="flex justify-center">
@@ -362,193 +393,176 @@ function AcuteStrokeAlgorithm() {
                   </div>
 
                   <div className="text-center px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-700">
-                    <span className="text-sm text-blue-800 dark:text-blue-300">CT head, CTA head and neck</span>
+                    <span className="text-sm text-blue-800 dark:text-blue-300">NCCT ± CTA ± CTP</span>
                   </div>
 
-                  <div className="flex justify-center">
-                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
-                  </div>
-
-                  <div className="text-center px-3 py-2 bg-amber-50 dark:bg-amber-900/30 rounded border border-amber-200 dark:border-amber-700">
-                    <span className="text-sm text-amber-800 dark:text-amber-300">If &lt; 4.5 hours, check criteria for tPA</span>
-                  </div>
-
-                  <div className="flex justify-center gap-8">
-                    <div className="text-center">
-                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Yes</span>
-                      </div>
-                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
-                      <div className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
-                        Give tPA STAT
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">No</span>
-                      </div>
-                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
-                      <div className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
-                        Admit acute stroke protocol
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* EVT consideration for 4.5-6 hours */}
-                  <div className="mt-4 pt-4 border-t border-dashed border-gray-300 dark:border-gray-600">
-                    <div className="text-center px-3 py-2 bg-purple-50 dark:bg-purple-900/30 rounded border border-purple-200 dark:border-purple-700 mb-3">
-                      <span className="text-sm text-purple-800 dark:text-purple-300">If &gt; 4.5 and &lt; 6 hours</span>
-                    </div>
-                    <div className="text-center px-3 py-2 bg-purple-100 dark:bg-purple-900/40 rounded border border-purple-300 dark:border-purple-600 text-xs">
-                      <p className="text-purple-800 dark:text-purple-300">NIH Stroke Scale ≥ 6</p>
-                      <p className="text-purple-800 dark:text-purple-300">AND prestroke disability mRS ≤2</p>
-                      <p className="text-purple-800 dark:text-purple-300">AND large vessel occlusion</p>
-                    </div>
-                    <div className="flex justify-center mt-2">
-                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
-                    </div>
-                    <div className="flex justify-center gap-4 mt-2">
+                  {/* Disabling Deficit Branch */}
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-300 dark:border-green-700">
+                    <p className="text-xs font-bold text-green-800 dark:text-green-300 mb-2 text-center">DISABLING Deficit?</p>
+                    <div className="flex justify-center gap-4">
                       <div className="text-center">
-                        <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">Yes</div>
-                        <div className="px-3 py-2 bg-red-600 text-white rounded-lg font-bold text-xs">
-                          Call/send EVT
+                        <div className="px-3 py-1 bg-green-200 dark:bg-green-700 rounded text-xs mb-2 font-medium">Yes</div>
+                        <div className="px-3 py-2 bg-green-600 text-white rounded-lg font-bold text-xs">
+                          Alteplase OR Tenecteplase
                         </div>
+                        <p className="text-xs text-green-700 dark:text-green-400 mt-1">No NIHSS threshold</p>
                       </div>
                       <div className="text-center">
-                        <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">No</div>
-                        <div className="px-3 py-2 bg-red-600 text-white rounded-lg font-bold text-xs">
-                          Admit protocol
+                        <div className="px-3 py-1 bg-amber-200 dark:bg-amber-700 rounded text-xs mb-2 font-medium">No (Non-disabling)</div>
+                        <div className="px-3 py-2 bg-amber-600 text-white rounded-lg font-bold text-xs">
+                          DAPT Preferred
                         </div>
+                        <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">Aspirin + Clopidogrel</p>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* LVO Check */}
+                  <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-300 dark:border-purple-700">
+                    <p className="text-xs font-bold text-purple-800 dark:text-purple-300 mb-2 text-center">LVO on CTA?</p>
+                    <div className="text-center">
+                      <div className="px-4 py-2 bg-purple-600 text-white rounded-lg font-bold text-sm">
+                        IVT + EVT (bridging therapy)
+                      </div>
+                      <p className="text-xs text-purple-700 dark:text-purple-400 mt-1">Do not delay EVT for IVT effect</p>
                     </div>
                   </div>
                 </div>
 
-                {/* 5.5-24 hours pathway */}
-                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
-                  <div className="text-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600">
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">&gt; 5.5 hours and &lt; 24 hours</span>
+                {/* 4.5-9 hours / Wake-up stroke - Extended IVT */}
+                <div className="border-2 border-dashed border-amber-400 dark:border-amber-600 rounded-lg p-4 space-y-3">
+                  <div className="text-center px-4 py-2 bg-amber-100 dark:bg-amber-800/40 rounded-lg border border-amber-400 dark:border-amber-600">
+                    <span className="font-semibold text-amber-800 dark:text-amber-200">4.5-9h / Wake-up Stroke</span>
                   </div>
 
                   <div className="flex justify-center">
                     <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
-                  </div>
-
-                  <div className="text-center px-3 py-2 bg-orange-50 dark:bg-orange-900/30 rounded border border-orange-200 dark:border-orange-700">
-                    <p className="text-sm text-orange-800 dark:text-orange-300">NIH Stroke Scale ≥ 6</p>
-                    <p className="text-sm text-orange-800 dark:text-orange-300">AND prestroke disability mRS ≤2</p>
-                  </div>
-
-                  <div className="flex justify-center gap-8">
-                    <div className="text-center">
-                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Yes</span>
-                      </div>
-                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
-                    </div>
-                    <div className="text-center">
-                      <div className="px-4 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 mb-2">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">No</span>
-                      </div>
-                      <ArrowRight className="h-5 w-5 rotate-90 text-gray-400 mx-auto" />
-                      <div className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
-                        Admit acute stroke protocol
-                      </div>
-                    </div>
                   </div>
 
                   <div className="text-center px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-700">
-                    <span className="text-sm text-blue-800 dark:text-blue-300 font-medium">CT head/CTA RAPID protocol</span>
+                    <span className="text-sm text-blue-800 dark:text-blue-300 font-medium">MRI DWI-FLAIR or CTP Mismatch</span>
                   </div>
 
-                  <div className="flex justify-center">
-                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-300 dark:border-amber-700 text-xs">
+                    <p className="font-bold text-amber-800 dark:text-amber-300 mb-1">Extended Window IVT Criteria:</p>
+                    <ul className="text-amber-700 dark:text-amber-400 space-y-0.5">
+                      <li>• DWI lesion with NO FLAIR change, OR</li>
+                      <li>• Perfusion mismatch ratio &gt;1.2</li>
+                      <li>• Ischemic core &lt;70mL</li>
+                      <li>• Mismatch volume &gt;10mL</li>
+                    </ul>
                   </div>
 
-                  <div className="text-center px-3 py-2 bg-teal-50 dark:bg-teal-900/30 rounded border border-teal-200 dark:border-teal-700 text-xs">
-                    <p className="text-teal-800 dark:text-teal-300">Check if CTA shows LVO and:</p>
-                    <p className="text-teal-800 dark:text-teal-300">• Ischemic core &lt; 70 mL</p>
-                    <p className="text-teal-800 dark:text-teal-300">• Mismatch ratio &gt; 1.8</p>
-                    <p className="text-teal-800 dark:text-teal-300">• Penumbra volume &gt; 15 mL</p>
-                  </div>
-
-                  <div className="flex justify-center gap-4 mt-2">
+                  <div className="flex justify-center gap-4">
                     <div className="text-center">
-                      <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">Yes</div>
-                      <div className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
-                        Call/send endovascular treatment
+                      <div className="px-3 py-1 bg-green-200 dark:bg-green-700 rounded text-xs mb-1">Criteria Met</div>
+                      <div className="px-4 py-2 bg-green-600 text-white rounded-lg font-bold text-sm">
+                        Alteplase or Tenecteplase
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs mb-1">No</div>
-                      <div className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm">
-                        Admit acute stroke protocol
+                      <div className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs mb-1">Not Met</div>
+                      <div className="px-4 py-2 bg-gray-600 text-white rounded-lg font-bold text-sm">
+                        Check EVT eligibility
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* > 24 hours pathway */}
-                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
-                  <div className="text-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600">
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">&gt; 24 hours</span>
+                {/* 6-24 hours - EVT Window */}
+                <div className="border-2 border-dashed border-purple-400 dark:border-purple-600 rounded-lg p-4 space-y-3">
+                  <div className="text-center px-4 py-2 bg-purple-100 dark:bg-purple-800/40 rounded-lg border border-purple-400 dark:border-purple-600">
+                    <span className="font-semibold text-purple-800 dark:text-purple-200">6-24 hours (EVT Window)</span>
                   </div>
 
                   <div className="flex justify-center">
                     <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
                   </div>
 
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="px-6 py-4 bg-red-600 text-white rounded-lg font-bold text-center">
-                      CT head and admit<br />acute stroke protocol
-                    </div>
+                  <div className="text-center px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-700">
+                    <span className="text-sm text-blue-800 dark:text-blue-300 font-medium">CTA + CTP (RAPID/Viz.ai)</span>
                   </div>
 
-                  <div className="mt-8 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                    <h5 className="font-medium text-gray-800 dark:text-gray-200 mb-2 text-sm">Standard Acute Stroke Protocol:</h5>
-                    <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                      <li>• Stroke unit admission</li>
-                      <li>• BP management per guidelines</li>
-                      <li>• Glycemic control</li>
-                      <li>• DVT prophylaxis</li>
-                      <li>• Dysphagia screen before PO</li>
-                      <li>• Early rehabilitation</li>
-                      <li>• Secondary prevention workup</li>
+                  {/* DAWN/DEFUSE Criteria */}
+                  <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-300 dark:border-purple-700 text-xs">
+                    <p className="font-bold text-purple-800 dark:text-purple-300 mb-1">Standard EVT (DAWN/DEFUSE-3):</p>
+                    <ul className="text-purple-700 dark:text-purple-400 space-y-0.5">
+                      <li>• Core &lt;70mL + Mismatch ≥1.8 + Penumbra ≥15mL</li>
+                      <li>• LVO: ICA, M1, or proximal M2</li>
                     </ul>
+                  </div>
+
+                  {/* Large Core - NEW 2026 */}
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded border border-red-300 dark:border-red-700 text-xs">
+                    <p className="font-bold text-red-800 dark:text-red-300 mb-1">🆕 Large Core EVT (2026):</p>
+                    <ul className="text-red-700 dark:text-red-400 space-y-0.5">
+                      <li>• Core 70-100mL may benefit from EVT</li>
+                      <li>• Shared decision-making</li>
+                      <li>• Consider age, baseline function</li>
+                    </ul>
+                  </div>
+
+                  {/* Basilar - NEW Strong Recommendation */}
+                  <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded border border-orange-300 dark:border-orange-700 text-xs">
+                    <p className="font-bold text-orange-800 dark:text-orange-300 mb-1">🆕 Basilar Occlusion (Strong):</p>
+                    <ul className="text-orange-700 dark:text-orange-400 space-y-0.5">
+                      <li>• NIHSS ≥10 within 24 hours</li>
+                      <li>• EVT recommended (Class I)</li>
+                      <li>• Consider up to 48h in select cases</li>
+                    </ul>
+                  </div>
+
+                  <div className="text-center px-4 py-2 bg-purple-600 text-white rounded-lg font-bold text-sm">
+                    EVT if criteria met
                   </div>
                 </div>
               </div>
 
-              {/* Key Points */}
-              <div className="mt-6 grid md:grid-cols-2 gap-4">
+              {/* Key Points - Updated for 2026 */}
+              <div className="mt-6 grid md:grid-cols-3 gap-4">
                 <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-700">
-                  <h5 className="font-semibold text-green-800 dark:text-green-300 mb-2">tPA Eligibility (IV Thrombolysis)</h5>
+                  <h5 className="font-semibold text-green-800 dark:text-green-300 mb-2">IVT (Alteplase/Tenecteplase)</h5>
                   <ul className="text-sm text-green-700 dark:text-green-400 space-y-1">
-                    <li>• Age ≥18 years</li>
-                    <li>• Clinical diagnosis of ischemic stroke</li>
-                    <li>• Measurable neurological deficit</li>
-                    <li>• Symptom onset &lt;4.5 hours (or wake-up stroke with favorable imaging)</li>
-                    <li>• No hemorrhage on CT</li>
-                    <li>• Check absolute and relative contraindications</li>
+                    <li>• <strong>Tenecteplase endorsed</strong> as equivalent</li>
+                    <li>• Disabling deficit: treat regardless of NIHSS</li>
+                    <li>• Non-disabling: DAPT preferred</li>
+                    <li>• 4.5h window (standard), 4.5-9h (imaging selection)</li>
+                    <li>• TNK dose: 0.25 mg/kg (max 25mg)</li>
                   </ul>
                 </div>
                 <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-700">
-                  <h5 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">EVT Eligibility (Mechanical Thrombectomy)</h5>
+                  <h5 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">EVT Eligibility (2026)</h5>
                   <ul className="text-sm text-purple-700 dark:text-purple-400 space-y-1">
-                    <li>• Large vessel occlusion (ICA, M1, basilar)</li>
-                    <li>• NIHSS ≥6 (or disabling deficit)</li>
-                    <li>• Pre-stroke mRS ≤2</li>
-                    <li>• ASPECTS ≥6 (or favorable perfusion imaging)</li>
-                    <li>• Within 24 hours with favorable imaging profile</li>
-                    <li>• Consider for M2, M3, ACA, PCA in select cases</li>
+                    <li>• LVO: ICA, M1, M2, basilar (strong)</li>
+                    <li>• Consider M3, ACA, PCA (select cases)</li>
+                    <li>• <strong>Large core (70-100mL)</strong> may benefit</li>
+                    <li>• <strong>Basilar: 24h window, NIHSS ≥10</strong></li>
+                    <li>• Direct transfer to EVT center encouraged</li>
+                  </ul>
+                </div>
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-200 dark:border-amber-700">
+                  <h5 className="font-semibold text-amber-800 dark:text-amber-300 mb-2">BP & Glucose (2026)</h5>
+                  <ul className="text-sm text-amber-700 dark:text-amber-400 space-y-1">
+                    <li>• Pre-IVT: maintain &lt;185/110 mmHg</li>
+                    <li>• Post-IVT: &lt;180/105 mmHg x 24h</li>
+                    <li>• <strong>Intensive SBP &lt;140 NOT recommended</strong></li>
+                    <li>• Avoid hypoglycemia (&lt;60 mg/dL)</li>
+                    <li>• Intensive glucose 80-130 NOT recommended</li>
                   </ul>
                 </div>
               </div>
 
-              {/* Reference */}
+              {/* Mobile Stroke Unit Note */}
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-400">
+                  <strong>🚑 Mobile Stroke Units (MSU):</strong> When available, MSUs enable faster diagnosis and treatment. Consider direct transport to EVT-capable center if systems allow rapid transfer.
+                </p>
+              </div>
+
+              {/* Reference - Updated */}
               <div className="mt-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-700 rounded-lg">
                 <p className="text-xs text-red-600 dark:text-red-400">
-                  <strong>References:</strong> AHA/ASA Guidelines for Early Management of Acute Ischemic Stroke (2019, 2024 update) | DAWN Trial | DEFUSE 3 Trial | EXTEND Trial
+                  <strong>Reference:</strong> Prabhakaran S, et al. 2026 Guideline for the Early Management of Patients With Acute Ischemic Stroke. Stroke. 2026. doi: 10.1161/STR.0000000000000513
                 </p>
               </div>
             </div>
@@ -558,6 +572,7 @@ function AcuteStrokeAlgorithm() {
     </Collapsible>
   );
 }
+
 
 // Acute ICH Management Component
 function AcuteICHManagement() {
@@ -5590,7 +5605,7 @@ export default function StrokeWorkupChecklist() {
         </div>
         
         <h1 className="text-2xl md:text-3xl font-bold text-medical-header dark:text-blue-400 mb-2 leading-relaxed">
-          Stroke Investigation Workup Checklist
+          Acute Stroke Workup Checklist
         </h1>
         <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
           Comprehensive clinical investigation checklist for stroke evaluation
@@ -5783,6 +5798,9 @@ export default function StrokeWorkupChecklist() {
           <div id="prevent">
             <PREVENTScoreCalculator />
           </div>
+
+          {/* KDIGO CKD Heat Map */}
+          <KDIGOHeatMap />
 
           {/* HAS-BLED Calculator */}
           <HASBLEDCalculator />
