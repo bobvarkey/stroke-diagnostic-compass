@@ -7,6 +7,7 @@ import { Scale, Clock, ArrowRightLeft, AlertTriangle, Printer, FileText, X } fro
 
 import tpaVsMedical from "@/assets/tpa-vs-medical-management.png";
 import tpa3hVs4h from "@/assets/tpa-3h-vs-4-5h.png";
+import lvoMedicalVsEvt from "@/assets/lvo-medical-vs-evt.png";
 import tpaVsTpaMtLvo from "@/assets/tpa-vs-tpa-mt-lvo.png";
 import lateThrombectomyLvo from "@/assets/late-thrombectomy-lvo.png";
 
@@ -26,8 +27,8 @@ interface DecisionScenario {
 
 const decisionScenarios: DecisionScenario[] = [
   {
-    id: "tpa-vs-medical",
-    title: "Medical Management vs IV tPA",
+    id: "no-tpa-vs-tpa",
+    title: "No tPA vs IV tPA",
     subtitle: "Acute Ischemic Stroke within 4.5 hours",
     image: tpaVsMedical,
     description: "Comparison of outcomes between supportive care (no IV tPA) versus IV tPA (clot-busting medication) in acute ischemic stroke.",
@@ -44,9 +45,9 @@ const decisionScenarios: DecisionScenario[] = [
     ]
   },
   {
-    id: "tpa-3h-vs-4-5h",
-    title: "IV tPA: <3 hours vs 3-4.5 hours",
-    subtitle: "Time-dependent efficacy of thrombolysis",
+    id: "early-vs-late-tpa",
+    title: "Early tPA vs Late tPA",
+    subtitle: "Time-dependent efficacy: <3 hours vs 3-4.5 hours",
     image: tpa3hVs4h,
     description: "Comparison of functional outcomes when IV tPA is administered within 3 hours (NINDS trial) versus 3-4.5 hours (ECASS III trial).",
     keyStats: "32 vs 16 patients with improved outcomes per 100 treated",
@@ -62,15 +63,33 @@ const decisionScenarios: DecisionScenario[] = [
     ]
   },
   {
-    id: "tpa-vs-tpa-mt",
-    title: "tPA Alone vs tPA + Mechanical Thrombectomy",
-    subtitle: "Large Vessel Occlusion (LVO)",
+    id: "lvo-medical-vs-evt",
+    title: "LVO: Medical Management vs EVT",
+    subtitle: "Large Vessel Occlusion Treatment Comparison",
+    image: lvoMedicalVsEvt,
+    description: "In patients with large vessel occlusion (LVO), comparison between best medical management alone versus endovascular thrombectomy (EVT).",
+    keyStats: "26 vs 46 patients achieving functional independence (mRS 0-2) per 100 treated",
+    clinicalContext: "EVT has revolutionized LVO stroke treatment. Landmark trials (MR CLEAN, ESCAPE, SWIFT PRIME, EXTEND-IA, REVASCAT) demonstrated that mechanical clot removal dramatically improves outcomes compared to medical therapy alone.",
+    evidenceSource: "Meta-analysis of HERMES collaborators (MR CLEAN, ESCAPE, SWIFT PRIME, EXTEND-IA, REVASCAT trials)",
+    patientFriendlyExplanation: "When a large blood vessel in the brain is blocked (Large Vessel Occlusion or LVO), doctors can use a procedure called Endovascular Thrombectomy (EVT) to physically remove the clot. A specialist threads a thin catheter through blood vessels to reach the clot and pull it out.",
+    whatThisMeans: "Out of every 100 people with a large vessel stroke:\n• With medical management only: About 26 will regain independence\n• With EVT treatment: About 46 will regain independence\n\nThis means 20 more people out of 100 can return to independent living with EVT - a nearly 2x improvement!",
+    questionsToAsk: [
+      "Do I have a large vessel occlusion (LVO)?",
+      "Is EVT available at this hospital or do I need transfer?",
+      "What is the expected time to treatment?",
+      "What are the procedural risks for my specific case?"
+    ]
+  },
+  {
+    id: "ivt-alone-vs-ivt-evt",
+    title: "LVO: IVT Alone vs IVT + EVT",
+    subtitle: "Bridging Therapy for Large Vessel Occlusion",
     image: tpaVsTpaMtLvo,
-    description: "In patients with large vessel occlusion, comparison between IV tPA alone versus combined IV tPA and mechanical thrombectomy.",
+    description: "In patients with large vessel occlusion, comparison between IV tPA alone versus combined IV tPA and mechanical thrombectomy (bridging therapy).",
     keyStats: "Significantly more patients achieve functional independence with combined therapy",
-    clinicalContext: "For LVO patients, mechanical thrombectomy combined with IV tPA dramatically improves outcomes compared to medical therapy alone.",
+    clinicalContext: "For LVO patients eligible for both treatments, bridging therapy (IVT followed by EVT) is superior to IVT alone. Don't delay EVT for IVT effect - proceed to angio suite while tPA infuses.",
     evidenceSource: "Based on MR CLEAN, EXTEND-IA, SWIFT PRIME, ESCAPE, REVASCAT trials",
-    patientFriendlyExplanation: "When a large blood vessel in the brain is blocked (Large Vessel Occlusion or LVO), doctors may recommend two treatments together:\n1. IV tPA: Clot-busting medication through an IV\n2. Mechanical Thrombectomy: A procedure where a specialist removes the clot using a thin tube (catheter) inserted through a blood vessel",
+    patientFriendlyExplanation: "When a large blood vessel in the brain is blocked, doctors may recommend two treatments together:\n1. IV tPA: Clot-busting medication through an IV\n2. Mechanical Thrombectomy: A procedure where a specialist removes the clot using a thin tube (catheter) inserted through a blood vessel",
     whatThisMeans: "For strokes caused by a blockage in a major brain artery:\n• IV tPA alone helps, but the clot may be too large to dissolve completely\n• Adding mechanical thrombectomy (physically removing the clot) significantly increases the chance of recovery\n\nMany more patients can return to independent living with combined treatment.",
     questionsToAsk: [
       "Do I have a large vessel occlusion (LVO)?",
@@ -80,14 +99,14 @@ const decisionScenarios: DecisionScenario[] = [
     ]
   },
   {
-    id: "late-thrombectomy",
-    title: "No Reperfusion vs Late Thrombectomy",
-    subtitle: "tPA-ineligible or late-presenting patients (6-24 hours)",
+    id: "late-lvo-medical-vs-evt",
+    title: "Late LVO: Medical vs Late EVT",
+    subtitle: "Extended Window (6-24 hours) Thrombectomy",
     image: lateThrombectomyLvo,
-    description: "For patients ineligible for IV tPA or presenting in extended window (6-24 hours), comparison between medical management alone versus late mechanical thrombectomy.",
+    description: "For patients with LVO presenting in extended window (6-24 hours), comparison between medical management alone versus late mechanical thrombectomy in selected patients with favorable imaging.",
     keyStats: "32 vs 43 patients living independently per 100 treated",
-    clinicalContext: "Late thrombectomy in selected LVO patients with favorable imaging extends the treatment window and improves outcomes.",
-    evidenceSource: "Based on DAWN and DEFUSE 3 trials for late thrombectomy in LVO",
+    clinicalContext: "DAWN and DEFUSE-3 trials established that selected LVO patients with favorable perfusion imaging can benefit from EVT even 6-24 hours after symptom onset. Patient selection based on clinical-imaging mismatch is critical.",
+    evidenceSource: "Based on DAWN (6-24h) and DEFUSE-3 (6-16h) trials for late thrombectomy in LVO",
     patientFriendlyExplanation: "Some patients arrive at the hospital after the time window for IV tPA (clot-busting medication) has passed, OR they may not be eligible for IV tPA. For these patients, if they have a large vessel blockage and brain imaging shows there is still brain tissue that can be saved, mechanical thrombectomy may still help even 6-24 hours after symptoms began.",
     whatThisMeans: "Out of every 100 people with a large vessel stroke who arrive late or can't receive IV tPA:\n• Without thrombectomy: About 32 will live independently\n• With late thrombectomy: About 43 will live independently\n\nThis means 11 more people out of 100 can live independently even when treated in this extended time window.",
     questionsToAsk: [
@@ -418,7 +437,7 @@ const PrintableHandout: React.FC<{
 };
 
 const TreatmentDecisionAid: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("tpa-vs-medical");
+  const [activeTab, setActiveTab] = useState("no-tpa-vs-tpa");
   const [showPrintPreview, setShowPrintPreview] = useState(false);
 
   const activeScenario = decisionScenarios.find(s => s.id === activeTab) || decisionScenarios[0];
@@ -450,38 +469,46 @@ const TreatmentDecisionAid: React.FC = () => {
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto gap-1 bg-purple-100 dark:bg-purple-900/30 p-1">
+          <TabsList className="grid w-full grid-cols-5 h-auto gap-1 bg-purple-100 dark:bg-purple-900/30 p-1">
             <TabsTrigger 
-              value="tpa-vs-medical" 
+              value="no-tpa-vs-tpa" 
               className="text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1"
             >
               <ArrowRightLeft className="h-3 w-3" />
-              <span className="hidden sm:inline">Medical vs tPA</span>
+              <span className="hidden sm:inline">No tPA vs tPA</span>
               <span className="sm:hidden">1</span>
             </TabsTrigger>
             <TabsTrigger 
-              value="tpa-3h-vs-4-5h"
+              value="early-vs-late-tpa"
               className="text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1"
             >
               <Clock className="h-3 w-3" />
-              <span className="hidden sm:inline">3h vs 4.5h</span>
+              <span className="hidden sm:inline">Early vs Late tPA</span>
               <span className="sm:hidden">2</span>
             </TabsTrigger>
             <TabsTrigger 
-              value="tpa-vs-tpa-mt"
+              value="lvo-medical-vs-evt"
               className="text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1"
             >
               <Scale className="h-3 w-3" />
-              <span className="hidden sm:inline">tPA vs tPA+MT</span>
+              <span className="hidden sm:inline">LVO: Med vs EVT</span>
               <span className="sm:hidden">3</span>
             </TabsTrigger>
             <TabsTrigger 
-              value="late-thrombectomy"
+              value="ivt-alone-vs-ivt-evt"
+              className="text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1"
+            >
+              <Scale className="h-3 w-3" />
+              <span className="hidden sm:inline">IVT vs IVT+EVT</span>
+              <span className="sm:hidden">4</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="late-lvo-medical-vs-evt"
               className="text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1"
             >
               <AlertTriangle className="h-3 w-3" />
-              <span className="hidden sm:inline">Late MT (6-24h)</span>
-              <span className="sm:hidden">4</span>
+              <span className="hidden sm:inline">Late LVO EVT</span>
+              <span className="sm:hidden">5</span>
             </TabsTrigger>
           </TabsList>
 

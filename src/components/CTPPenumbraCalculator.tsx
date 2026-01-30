@@ -389,6 +389,155 @@ const CTPPenumbraCalculator: React.FC = () => {
           </CollapsibleContent>
         </Collapsible>
 
+        {/* Territory Volume Reference */}
+        <Collapsible>
+          <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:underline">
+            <Info className="h-4 w-4" />
+            Vascular Territory Volumes (Normal Reference)
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2">
+            <div className="p-3 bg-muted/50 rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Territory</TableHead>
+                    <TableHead>Mean Volume (mL)</TableHead>
+                    <TableHead>Range (mL)</TableHead>
+                    <TableHead>~1/3 Rule*</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">MCA</TableCell>
+                    <TableCell>~350 mL</TableCell>
+                    <TableCell>322–396 mL</TableCell>
+                    <TableCell className="text-amber-600 dark:text-amber-400">100–120 mL</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">PCA</TableCell>
+                    <TableCell>~180 mL</TableCell>
+                    <TableCell>151–214 mL</TableCell>
+                    <TableCell className="text-amber-600 dark:text-amber-400">50–70 mL</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">ACA</TableCell>
+                    <TableCell>~154 mL</TableCell>
+                    <TableCell>125–193 mL</TableCell>
+                    <TableCell className="text-amber-600 dark:text-amber-400">40–65 mL</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <p className="text-xs text-muted-foreground mt-2">
+                *Pooled for both hemispheres. The 1/3 rule is a manual estimate used when advanced software is unavailable — 
+                an infarct should not exceed 1/3 of the territory to be considered for safe intervention.
+              </p>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Volume Thresholds for EVT Eligibility */}
+        <Collapsible>
+          <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:underline">
+            <AlertTriangle className="h-4 w-4" />
+            Core Volume Thresholds & EVT Eligibility
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2">
+            <div className="space-y-3">
+              <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
+                <h5 className="font-semibold text-green-800 dark:text-green-300 mb-2">Small Core Standard (&lt;70 mL)</h5>
+                <p className="text-sm text-green-700 dark:text-green-400">
+                  For years, a core volume of &lt;70 mL was the strict cutoff for MT eligibility in the late window (6–24 hours), 
+                  as established in the DEFUSE-3 trial. This remains the standard criterion.
+                </p>
+              </div>
+              
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+                <h5 className="font-semibold text-amber-800 dark:text-amber-300 mb-2">Large Core Evolution (70–150+ mL)</h5>
+                <p className="text-sm text-amber-700 dark:text-amber-400">
+                  Recent trials (SELECT2, ANGEL-ASPECT) have proven that patients with cores &gt;70 mL, or even up to 150 mL, 
+                  still benefit from MT compared to medical management alone. The AHA 2026 guidelines now endorse consideration 
+                  of EVT for cores 70-100 mL with shared decision-making.
+                </p>
+              </div>
+              
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h5 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Territory Proportions Rule</h5>
+                <p className="text-sm text-blue-700 dark:text-blue-400">
+                  A manual rule of thumb (in absence of advanced software): an infarct should not exceed 1/3 of the MCA territory 
+                  (roughly 100–120 mL) to be considered for safe intervention.
+                </p>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Mismatch Criteria */}
+        <Collapsible>
+          <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:underline">
+            <Activity className="h-4 w-4" />
+            Mismatch Ratios & DAWN Criteria
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2">
+            <div className="space-y-3">
+              <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <h5 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">Imaging Mismatch (DEFUSE-3)</h5>
+                <ul className="text-sm text-purple-700 dark:text-purple-400 space-y-1">
+                  <li><strong>Mismatch Ratio:</strong> ≥1.8 required (e.g., if core is 10 mL, hypoperfused area must be ≥18 mL)</li>
+                  <li><strong>Absolute Mismatch:</strong> ≥15 mL of salvageable tissue required to justify procedural risk</li>
+                  <li><strong>Core Volume:</strong> &lt;70 mL</li>
+                </ul>
+              </div>
+              
+              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                <h5 className="font-semibold text-indigo-800 dark:text-indigo-300 mb-2">Clinical-Imaging Mismatch (DAWN)</h5>
+                <p className="text-sm text-indigo-700 dark:text-indigo-400 mb-2">
+                  DAWN allows for smaller cores if the patient's symptoms are severe (clinical-imaging mismatch):
+                </p>
+                <ul className="text-sm text-indigo-700 dark:text-indigo-400 space-y-1">
+                  <li><strong>Group A (Age ≥80):</strong> Core &lt;21 mL + NIHSS ≥10</li>
+                  <li><strong>Group B (Age &lt;80):</strong> Core &lt;31 mL + NIHSS ≥10</li>
+                  <li><strong>Group C (Age &lt;80):</strong> Core 31–50 mL + NIHSS ≥20</li>
+                </ul>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Collateral Status */}
+        <Collapsible>
+          <CollapsibleTrigger className="flex items-center gap-2 text-sm text-primary hover:underline">
+            <Activity className="h-4 w-4" />
+            Collateral Status Impact
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/30 rounded-lg border border-rose-200 dark:border-rose-800">
+              <h5 className="font-semibold text-rose-800 dark:text-rose-300 mb-2">Collateral Blood Flow Assessment</h5>
+              <p className="text-sm text-rose-700 dark:text-rose-400 mb-3">
+                The health of "back-up" vessels (collaterals) determines how much of the MCA, ACA, or PCA territory remains salvageable.
+              </p>
+              <ul className="text-sm text-rose-700 dark:text-rose-400 space-y-2">
+                <li>
+                  <strong>Good Collaterals (&gt;50% filling):</strong> Slower core growth, better post-thrombectomy outcomes, 
+                  larger salvageable penumbra
+                </li>
+                <li>
+                  <strong>Moderate Collaterals (25-50%):</strong> Intermediate prognosis, careful patient selection
+                </li>
+                <li>
+                  <strong>Poor Collaterals (&lt;25%):</strong> Rapid core expansion, higher procedural risk, 
+                  less favorable outcomes even with successful reperfusion
+                </li>
+              </ul>
+              <div className="mt-3 p-2 bg-rose-100 dark:bg-rose-900/40 rounded">
+                <p className="text-xs text-rose-800 dark:text-rose-300">
+                  <strong>Clinical Pearl:</strong> Good collateral status often predicts a slower-growing core and better 
+                  outcome post-thrombectomy, allowing extended decision time in borderline cases.
+                </p>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
         <div className="text-xs text-muted-foreground p-2 bg-muted/30 rounded">
           <strong>Clinical Note:</strong> Final treatment decisions should integrate CTP findings with clinical assessment, 
           vessel status, and patient factors. Automated software (RAPID, Viz.ai) provides standardized measurements.

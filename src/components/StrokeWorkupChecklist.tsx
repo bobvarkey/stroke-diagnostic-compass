@@ -5564,18 +5564,22 @@ export default function StrokeWorkupChecklist() {
 
   // Quick navigation items for each tab
   const ischemicNavItems = [
-    { label: "Acute Management", id: "acute-stroke" },
-    { label: "NIHSS Calculator", id: "nihss" },
-    { label: "GCS Calculator", id: "gcs" },
-    { label: "FOUR Score", id: "four" },
-    { label: "ASPECTS", id: "aspects" },
-    { label: "CHA₂DS₂-VASc", id: "cha2ds2" },
-    { label: "uACR & CV Risk", id: "uacr" },
-    { label: "eGFR & KDIGO", id: "egfr" },
-    { label: "PREVENT Score", id: "prevent" },
-    { label: "HAS-BLED", id: "hasbled" },
-    { label: "ABCD²", id: "abcd2" },
-    { label: "Workup Checklist", id: "checklist" },
+    { label: "Acute Algorithm", id: "acute-algorithm" },
+    { label: "tPA Eligibility", id: "tpa-eligibility" },
+    { label: "Treatment Decisions", id: "treatment-decision" },
+    { label: "LVO Dashboard", id: "lvo-dashboard" },
+    { label: "CTP Penumbra", id: "ctp-penumbra" },
+    { label: "Stroke History", id: "stroke-history" },
+    { label: "Phenotyping", id: "stroke-phenotyping" },
+    { label: "NIHSS", id: "nihss-calculator" },
+    { label: "GCS", id: "gcs-calculator" },
+    { label: "ASPECTS", id: "aspects-calculator" },
+    { label: "Collaterals", id: "collateral-grading" },
+    { label: "Vascular Anatomy", id: "vascular-anatomy" },
+    { label: "PREVENT Score", id: "prevent-score" },
+    { label: "KDIGO Heat Map", id: "kdigo-heatmap" },
+    { label: "Lipid Risk", id: "lipid-risk" },
+    { label: "Workup Checklist", id: "workup-checklist" },
   ];
 
   const hemorrhagicNavItems = [
@@ -5590,9 +5594,11 @@ export default function StrokeWorkupChecklist() {
   ];
 
   const scrollToSection = (id: string) => {
-    // Close nav on mobile after selection
     setShowNav(false);
-    // Scroll functionality would need refs, for now just close the nav
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
@@ -5711,22 +5717,32 @@ export default function StrokeWorkupChecklist() {
           <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />
 
           {/* Acute Stroke Management Algorithm */}
-          <AcuteStrokeAlgorithm />
+          <div id="acute-algorithm">
+            <AcuteStrokeAlgorithm />
+          </div>
 
           {/* tPA Eligibility Checklist */}
-          <TPAEligibilityChecklist />
+          <div id="tpa-eligibility">
+            <TPAEligibilityChecklist />
+          </div>
 
           {/* Treatment Choice Consequence Matrix */}
-          <TreatmentDecisionAid />
+          <div id="treatment-decision">
+            <TreatmentDecisionAid />
+          </div>
 
           {/* Heads Up Test for LVO with Low NIHSS */}
           <HeadsUpTest />
 
           {/* CTA Collateral Grading */}
-          <CTACollateralGrading />
+          <div id="collateral-grading">
+            <CTACollateralGrading />
+          </div>
 
           {/* LVO Decision Dashboard - Integrated Treatment Recommendation */}
-          <LVODecisionDashboard />
+          <div id="lvo-dashboard">
+            <LVODecisionDashboard />
+          </div>
 
           {/* eTICI Score Calculator */}
           <ETICIScoreCalculator />
@@ -5735,28 +5751,40 @@ export default function StrokeWorkupChecklist() {
           <TALDefinitionGuide />
 
           {/* Interactive Vascular Anatomy Diagram */}
-          <VascularAnatomyDiagram />
+          <div id="vascular-anatomy">
+            <VascularAnatomyDiagram />
+          </div>
 
           {/* CTP Penumbra & Collateral Calculator */}
-          <CTPPenumbraCalculator />
+          <div id="ctp-penumbra">
+            <CTPPenumbraCalculator />
+          </div>
 
           {/* Thrombectomy Outcome Tracker */}
           <ThrombectomyOutcomeTracker />
 
           {/* Stroke History Template */}
-          <StrokeHistoryTemplate />
+          <div id="stroke-history">
+            <StrokeHistoryTemplate />
+          </div>
 
           {/* ISPS25 Stroke Phenotyping System */}
-          <ISPS25StrokePhenotyping />
+          <div id="stroke-phenotyping">
+            <ISPS25StrokePhenotyping />
+          </div>
 
           {/* ISPS25 Flowchart */}
           <ISPS25Flowchart />
 
           {/* Visual NIHSS Calculator */}
-          <VisualNIHSSCalculator />
+          <div id="nihss-calculator">
+            <VisualNIHSSCalculator />
+          </div>
 
           {/* Visual GCS Calculator */}
-          <VisualGCSCalculator />
+          <div id="gcs-calculator">
+            <VisualGCSCalculator />
+          </div>
 
           {/* FOUR Score Calculator */}
           <VisualFOURScoreCalculator />
@@ -5768,11 +5796,13 @@ export default function StrokeWorkupChecklist() {
           <MRSScaleReference />
 
           {/* Interactive ASPECTS Calculator */}
-          <InteractiveASPECTSCalculator 
-            onScoreChange={useCallback((score: number) => {
-              setCalculatedScores(prev => ({ ...prev, aspects: score }));
-            }, [])}
-          />
+          <div id="aspects-calculator">
+            <InteractiveASPECTSCalculator 
+              onScoreChange={useCallback((score: number) => {
+                setCalculatedScores(prev => ({ ...prev, aspects: score }));
+              }, [])}
+            />
+          </div>
 
           {/* Interactive pc-ASPECTS Calculator */}
           <InteractivePcASPECTSCalculator 
@@ -5795,12 +5825,14 @@ export default function StrokeWorkupChecklist() {
           </div>
 
           {/* PREVENT Score Calculator */}
-          <div id="prevent">
+          <div id="prevent-score">
             <PREVENTScoreCalculator />
           </div>
 
           {/* KDIGO CKD Heat Map */}
-          <KDIGOHeatMap />
+          <div id="kdigo-heatmap">
+            <KDIGOHeatMap />
+          </div>
 
           {/* HAS-BLED Calculator */}
           <HASBLEDCalculator />
@@ -5818,12 +5850,15 @@ export default function StrokeWorkupChecklist() {
           <MetabolicSyndromeChecker />
 
           {/* LAI 2024 Lipid Risk Classification */}
-          <LAILipidRiskClassification />
+          <div id="lipid-risk">
+            <LAILipidRiskClassification />
+          </div>
 
           {/* Lipid Therapy Intensification Guide */}
           <LipidTherapyIntensificationGuide />
 
-          {/* Progress Overview */}
+          {/* Progress Overview & Workup Checklist */}
+          <div id="workup-checklist">
           <Card className="bg-medical-section border-medical-header/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-medical-header">
@@ -5899,6 +5934,7 @@ export default function StrokeWorkupChecklist() {
                 </Card>
               );
             })}
+          </div>
           </div>
 
           {/* Discharge Summary Template */}
