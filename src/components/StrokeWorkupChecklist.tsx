@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Menu, X } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
@@ -5544,7 +5544,6 @@ function MetabolicSyndromeChecker() {
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("ischemic");
-  const [showNav, setShowNav] = useState(false);
   const [demographics, setDemographics] = useState<{ age?: string; sex?: string; race?: string }>({});
   const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
 
@@ -5562,45 +5561,6 @@ export default function StrokeWorkupChecklist() {
   const categories = Array.from(new Set(strokeTests.map(test => test.category)));
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
 
-  // Quick navigation items for each tab
-  const ischemicNavItems = [
-    { label: "Acute Algorithm", id: "acute-algorithm" },
-    { label: "tPA Eligibility", id: "tpa-eligibility" },
-    { label: "Treatment Decisions", id: "treatment-decision" },
-    { label: "LVO Dashboard", id: "lvo-dashboard" },
-    { label: "CTP Penumbra", id: "ctp-penumbra" },
-    { label: "Stroke History", id: "stroke-history" },
-    { label: "Phenotyping", id: "stroke-phenotyping" },
-    { label: "NIHSS", id: "nihss-calculator" },
-    { label: "GCS", id: "gcs-calculator" },
-    { label: "ASPECTS", id: "aspects-calculator" },
-    { label: "Collaterals", id: "collateral-grading" },
-    { label: "Vascular Anatomy", id: "vascular-anatomy" },
-    { label: "PREVENT Score", id: "prevent-score" },
-    { label: "KDIGO Heat Map", id: "kdigo-heatmap" },
-    { label: "Lipid Risk", id: "lipid-risk" },
-    { label: "Workup Checklist", id: "workup-checklist" },
-  ];
-
-  const hemorrhagicNavItems = [
-    { label: "Acute ICH Management", id: "ich-acute" },
-    { label: "ICH Score", id: "ich-score" },
-    { label: "FUNC Score", id: "func" },
-    { label: "SAH Grading", id: "sah" },
-    { label: "Hunt & Hess", id: "hh" },
-    { label: "WFNS Scale", id: "wfns" },
-    { label: "NIHSS", id: "nihss-ich" },
-    { label: "GCS/FOUR", id: "gcs-ich" },
-  ];
-
-  const scrollToSection = (id: string) => {
-    setShowNav(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
       {/* Header with Theme Toggle */}
@@ -5610,80 +5570,12 @@ export default function StrokeWorkupChecklist() {
           <ThemeToggle />
         </div>
         
-        <h1 className="text-2xl md:text-3xl font-bold text-medical-header dark:text-blue-400 mb-2 leading-relaxed">
+        <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2 leading-relaxed">
           Acute Stroke Workup Checklist
         </h1>
         <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
-      </div>
-
-      {/* Quick Navigation Bar */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b pb-3">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => setShowNav(!showNav)}
-            className="flex items-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg text-sm font-medium transition-colors"
-          >
-            {showNav ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            <span className="hidden sm:inline">Quick Navigation</span>
-            <span className="sm:hidden">Navigate</span>
-          </button>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="hidden sm:inline">Scroll down to explore sections</span>
-          </div>
-        </div>
-        
-        {/* Expandable Navigation */}
-        {showNav && (
-          <div className="mt-3 p-4 bg-card border rounded-lg shadow-lg animate-in slide-in-from-top-2">
-            <div className="grid gap-4 md:grid-cols-2">
-              {/* Ischemic Navigation */}
-              <div>
-                <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2 flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  Ischemic Stroke
-                </h4>
-                <div className="flex flex-wrap gap-1.5">
-                  {ischemicNavItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        setActiveTab("ischemic");
-                        scrollToSection(item.id);
-                      }}
-                      className="px-2.5 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors"
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Hemorrhagic Navigation */}
-              <div>
-                <h4 className="font-semibold text-orange-700 dark:text-orange-400 mb-2 flex items-center gap-2">
-                  <Droplets className="h-4 w-4" />
-                  Intracerebral Hemorrhage
-                </h4>
-                <div className="flex flex-wrap gap-1.5">
-                  {hemorrhagicNavItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        setActiveTab("hemorrhagic");
-                        scrollToSection(item.id);
-                      }}
-                      className="px-2.5 py-1 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded hover:bg-orange-200 dark:hover:bg-orange-800/50 transition-colors"
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Main Category Tabs */}
