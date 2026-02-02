@@ -58,6 +58,11 @@ const navGroups: NavGroup[] = [
     defaultOpen: true,
     items: [
       { 
+        id: "stroke-code", 
+        label: "⚡ STROKE CODE", 
+        icon: <Zap className="h-4 w-4 text-red-500 animate-pulse" /> 
+      },
+      { 
         id: "acute-algorithm", 
         label: "Acute Stroke Algorithm", 
         icon: <AlertTriangle className="h-4 w-4 text-red-500" /> 
