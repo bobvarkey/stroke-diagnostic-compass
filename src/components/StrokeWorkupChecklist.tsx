@@ -34,6 +34,7 @@ import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
 import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 import KDIGOHeatMap from "./KDIGOHeatMap";
+import PRIMEToolCalculator from "./PRIMEToolCalculator";
 
 interface TestItem {
   id: string;
@@ -5724,6 +5725,11 @@ export default function StrokeWorkupChecklist() {
           {/* KDIGO CKD Heat Map */}
           <div id="kdigo-heatmap">
             <KDIGOHeatMap />
+          </div>
+
+          {/* PRIME Tool - Cancer Stroke Risk */}
+          <div id="prime-tool">
+            <PRIMEToolCalculator />
           </div>
 
           {/* HAS-BLED Calculator */}
