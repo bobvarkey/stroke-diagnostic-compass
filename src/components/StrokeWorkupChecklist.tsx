@@ -35,6 +35,7 @@ import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
 import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 import KDIGOHeatMap from "./KDIGOHeatMap";
 import PRIMEToolCalculator from "./PRIMEToolCalculator";
+import StrokeCodeSystem from "./StrokeCodeSystem";
 
 interface TestItem {
   id: string;
@@ -5608,6 +5609,11 @@ export default function StrokeWorkupChecklist() {
 
           {/* PDF Score Summary */}
           <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />
+
+          {/* Stroke Code System */}
+          <div id="stroke-code">
+            <StrokeCodeSystem />
+          </div>
 
           {/* Acute Stroke Management Algorithm */}
           <div id="acute-algorithm">

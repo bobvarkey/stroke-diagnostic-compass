@@ -15,7 +15,7 @@ const Index = () => {
       
       // Track active section based on scroll position
       const sections = [
-        "acute-algorithm", "tpa-eligibility", "lvo-dashboard", "treatment-decision",
+        "stroke-code", "acute-algorithm", "tpa-eligibility", "lvo-dashboard", "treatment-decision",
         "ctp-penumbra", "aspects-calculator", "collateral-grading", "vascular-anatomy",
         "nihss-calculator", "gcs-calculator", "prevent-score", "kdigo-heatmap",
         "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "workup-checklist"

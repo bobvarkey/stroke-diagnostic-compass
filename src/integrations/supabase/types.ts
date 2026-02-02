@@ -14,7 +14,168 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      stroke_activations: {
+        Row: {
+          activated_by: string | null
+          code_level: Database["public"]["Enums"]["stroke_code_level"]
+          created_at: string
+          id: string
+          location: string
+          notes: string | null
+          nsa_notification_status: string | null
+          nsa_notified: boolean
+          patient_id: string
+        }
+        Insert: {
+          activated_by?: string | null
+          code_level: Database["public"]["Enums"]["stroke_code_level"]
+          created_at?: string
+          id?: string
+          location: string
+          notes?: string | null
+          nsa_notification_status?: string | null
+          nsa_notified?: boolean
+          patient_id: string
+        }
+        Update: {
+          activated_by?: string | null
+          code_level?: Database["public"]["Enums"]["stroke_code_level"]
+          created_at?: string
+          id?: string
+          location?: string
+          notes?: string | null
+          nsa_notification_status?: string | null
+          nsa_notified?: boolean
+          patient_id?: string
+        }
+        Relationships: []
+      }
+      stroke_call_logs: {
+        Row: {
+          activation_id: string
+          call_ended_at: string | null
+          call_started_at: string | null
+          call_status: Database["public"]["Enums"]["stroke_call_status"]
+          contact_id: string
+          contact_name: string
+          created_at: string
+          error_message: string | null
+          id: string
+          phone_number: string
+          role: Database["public"]["Enums"]["stroke_contact_role"]
+        }
+        Insert: {
+          activation_id: string
+          call_ended_at?: string | null
+          call_started_at?: string | null
+          call_status?: Database["public"]["Enums"]["stroke_call_status"]
+          contact_id: string
+          contact_name: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          phone_number: string
+          role: Database["public"]["Enums"]["stroke_contact_role"]
+        }
+        Update: {
+          activation_id?: string
+          call_ended_at?: string | null
+          call_started_at?: string | null
+          call_status?: Database["public"]["Enums"]["stroke_call_status"]
+          contact_id?: string
+          contact_name?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          phone_number?: string
+          role?: Database["public"]["Enums"]["stroke_contact_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stroke_call_logs_activation_id_fkey"
+            columns: ["activation_id"]
+            isOneToOne: false
+            referencedRelation: "stroke_activations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stroke_call_logs_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "stroke_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stroke_contacts: {
+        Row: {
+          code_level: Database["public"]["Enums"]["stroke_code_level"]
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          phone_number: string
+          priority_order: number
+          role: Database["public"]["Enums"]["stroke_contact_role"]
+          updated_at: string
+        }
+        Insert: {
+          code_level?: Database["public"]["Enums"]["stroke_code_level"]
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          phone_number: string
+          priority_order?: number
+          role: Database["public"]["Enums"]["stroke_contact_role"]
+          updated_at?: string
+        }
+        Update: {
+          code_level?: Database["public"]["Enums"]["stroke_code_level"]
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          phone_number?: string
+          priority_order?: number
+          role?: Database["public"]["Enums"]["stroke_contact_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stroke_settings: {
+        Row: {
+          created_at: string
+          facility_id: string
+          id: string
+          nsa_enabled: boolean
+          nsa_phone_number: string | null
+          updated_at: string
+          voice_message_code_1: string | null
+          voice_message_code_2: string | null
+        }
+        Insert: {
+          created_at?: string
+          facility_id?: string
+          id?: string
+          nsa_enabled?: boolean
+          nsa_phone_number?: string | null
+          updated_at?: string
+          voice_message_code_1?: string | null
+          voice_message_code_2?: string | null
+        }
+        Update: {
+          created_at?: string
+          facility_id?: string
+          id?: string
+          nsa_enabled?: boolean
+          nsa_phone_number?: string | null
+          updated_at?: string
+          voice_message_code_1?: string | null
+          voice_message_code_2?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +184,23 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      stroke_call_status:
+        | "pending"
+        | "calling"
+        | "success"
+        | "failed"
+        | "no_answer"
+      stroke_code_level: "code_1" | "code_2"
+      stroke_contact_role:
+        | "neurologist"
+        | "er_physician"
+        | "radiologist"
+        | "stroke_nurse"
+        | "ct_tech"
+        | "pharmacist"
+        | "neurosurgeon"
+        | "icu_physician"
+        | "lab_tech"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +327,26 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      stroke_call_status: [
+        "pending",
+        "calling",
+        "success",
+        "failed",
+        "no_answer",
+      ],
+      stroke_code_level: ["code_1", "code_2"],
+      stroke_contact_role: [
+        "neurologist",
+        "er_physician",
+        "radiologist",
+        "stroke_nurse",
+        "ct_tech",
+        "pharmacist",
+        "neurosurgeon",
+        "icu_physician",
+        "lab_tech",
+      ],
+    },
   },
 } as const
