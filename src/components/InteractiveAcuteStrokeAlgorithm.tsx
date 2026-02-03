@@ -26,6 +26,13 @@ interface AlgorithmInputs {
   // OAC timing inputs
   strokeSize: string;
   hemorrhagicTransformation: string;
+  // CYP2C19 genotyping
+  cyp2c19Genotype: string;
+  // Renal function for Ticagrelor
+  egfr: string;
+  // NOAC contraindications
+  valvularAF: string;
+  antiphospholipidSyndrome: string;
 }
 
 const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
@@ -48,6 +55,13 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     // OAC timing inputs
     strokeSize: "",
     hemorrhagicTransformation: "",
+    // CYP2C19 genotyping
+    cyp2c19Genotype: "",
+    // Renal function for Ticagrelor
+    egfr: "",
+    // NOAC contraindications
+    valvularAF: "",
+    antiphospholipidSyndrome: "",
   });
 
   const updateInput = (field: keyof AlgorithmInputs, value: string) => {
@@ -159,6 +173,34 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     // SAPT: Default for non-cardioembolic, not eligible for DAPT, or high bleeding risk
     const recommendSAPT = hasNoLVO && !hasCardioembolicSource && (!isMinorStroke || !isWithin24h || hasHighBleedingRisk);
 
+    // CYP2C19 Genotype Logic
+    const cyp2c19PoorMetabolizer = 
+      inputs.cyp2c19Genotype === "*2/*2" || 
+      inputs.cyp2c19Genotype === "*2/*3" || 
+      inputs.cyp2c19Genotype === "*3/*3";
+    const cyp2c19IntermediateMetabolizer = 
+      inputs.cyp2c19Genotype === "*1/*2" || 
+      inputs.cyp2c19Genotype === "*1/*3";
+    const cyp2c19NormalMetabolizer = 
+      inputs.cyp2c19Genotype === "*1/*1";
+    const cyp2c19RapidMetabolizer = 
+      inputs.cyp2c19Genotype === "*1/*17" || 
+      inputs.cyp2c19Genotype === "*17/*17";
+    
+    // Auto-recommend Ticagrelor for poor metabolizers
+    const recommendTicagrelor = recommendDAPT && cyp2c19PoorMetabolizer;
+    const considerTicagrelor = recommendDAPT && cyp2c19IntermediateMetabolizer;
+    
+    // eGFR parsing for Ticagrelor dosing
+    const egfrValue = inputs.egfr ? parseFloat(inputs.egfr) : null;
+    const hasRenalImpairment = egfrValue !== null && egfrValue < 60;
+    const severRenalImpairment = egfrValue !== null && egfrValue < 30;
+
+    // NOAC contraindications - Valvular AF and APLS
+    const hasValvularAF = inputs.valvularAF === "yes";
+    const hasAPLS = inputs.antiphospholipidSyndrome === "yes";
+    const noacContraindicated = hasValvularAF || hasAPLS;
+
     // 1-3-6-12 Day Rule for OAC timing based on stroke size
     const hasHemorrhagicTransformation = inputs.hemorrhagicTransformation === "yes";
     
@@ -239,6 +281,21 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
       isMinorStroke,
       isWithin24h,
       hasHighBleedingRisk,
+      // CYP2C19 genotype
+      cyp2c19PoorMetabolizer,
+      cyp2c19IntermediateMetabolizer,
+      cyp2c19NormalMetabolizer,
+      cyp2c19RapidMetabolizer,
+      recommendTicagrelor,
+      considerTicagrelor,
+      // Renal function
+      egfrValue,
+      hasRenalImpairment,
+      severRenalImpairment,
+      // NOAC contraindications
+      hasValvularAF,
+      hasAPLS,
+      noacContraindicated,
       // OAC timing
       oacTiming,
       hasHemorrhagicTransformation,
@@ -606,6 +663,169 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* CYP2C19 Genotype Testing Section - Show when DAPT is recommended */}
+                  {pathwayState.recommendDAPT && (
+                    <div className="mt-4 p-4 bg-orange-50 dark:bg-orange-900/30 border-2 border-orange-400 dark:border-orange-600 rounded-lg">
+                      <h5 className="font-semibold text-orange-800 dark:text-orange-200 mb-3 flex items-center gap-2">
+                        🧬 CYP2C19 Pharmacogenomics
+                        <Badge variant="outline" className="ml-2 text-orange-600 border-orange-400">For Clopidogrel Dosing</Badge>
+                      </h5>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        {/* CYP2C19 Genotype */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2 text-orange-700 dark:text-orange-300">
+                            CYP2C19 Genotype
+                          </Label>
+                          <Select value={inputs.cyp2c19Genotype} onValueChange={(v) => updateInput("cyp2c19Genotype", v)}>
+                            <SelectTrigger className={cn(getInputClass(inputs.cyp2c19Genotype), "border-orange-300")}>
+                              <SelectValue placeholder="Select genotype" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="unknown">Unknown / Not tested</SelectItem>
+                              <SelectItem value="*1/*1">*1/*1 (Normal Metabolizer)</SelectItem>
+                              <SelectItem value="*1/*17">*1/*17 (Rapid Metabolizer)</SelectItem>
+                              <SelectItem value="*17/*17">*17/*17 (Ultrarapid Metabolizer)</SelectItem>
+                              <SelectItem value="*1/*2">*1/*2 (Intermediate Metabolizer)</SelectItem>
+                              <SelectItem value="*1/*3">*1/*3 (Intermediate Metabolizer)</SelectItem>
+                              <SelectItem value="*2/*2">*2/*2 (Poor Metabolizer)</SelectItem>
+                              <SelectItem value="*2/*3">*2/*3 (Poor Metabolizer)</SelectItem>
+                              <SelectItem value="*3/*3">*3/*3 (Poor Metabolizer)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {pathwayState.cyp2c19PoorMetabolizer && (
+                            <Badge className="bg-red-500 text-white text-xs">⚠️ POOR METABOLIZER → Use Ticagrelor</Badge>
+                          )}
+                          {pathwayState.cyp2c19IntermediateMetabolizer && (
+                            <Badge className="bg-amber-500 text-white text-xs">⚡ Intermediate → Consider Ticagrelor</Badge>
+                          )}
+                          {pathwayState.cyp2c19NormalMetabolizer && (
+                            <Badge className="bg-green-500 text-white text-xs">✓ Normal → Clopidogrel OK</Badge>
+                          )}
+                          {pathwayState.cyp2c19RapidMetabolizer && (
+                            <Badge className="bg-blue-500 text-white text-xs">✓ Rapid/Ultra → Clopidogrel OK</Badge>
+                          )}
+                        </div>
+
+                        {/* eGFR for Ticagrelor dosing */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2 text-orange-700 dark:text-orange-300">
+                            eGFR (mL/min/1.73m²)
+                          </Label>
+                          <Input
+                            type="number"
+                            placeholder="e.g., 60"
+                            value={inputs.egfr}
+                            onChange={(e) => updateInput("egfr", e.target.value)}
+                            className={cn(getInputClass(inputs.egfr), "border-orange-300")}
+                          />
+                          {pathwayState.severRenalImpairment && (
+                            <Badge variant="destructive" className="text-xs">⚠️ eGFR &lt;30: Caution with Ticagrelor</Badge>
+                          )}
+                          {pathwayState.hasRenalImpairment && !pathwayState.severRenalImpairment && (
+                            <Badge variant="outline" className="text-xs border-amber-400 text-amber-600">eGFR 30-60: Monitor closely</Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Ticagrelor Recommendation Panel */}
+                      {(pathwayState.recommendTicagrelor || pathwayState.considerTicagrelor) && (
+                        <div className={cn(
+                          "p-4 rounded-lg border-2 mb-4",
+                          pathwayState.recommendTicagrelor 
+                            ? "bg-red-100 dark:bg-red-900/40 border-red-500"
+                            : "bg-amber-100 dark:bg-amber-900/40 border-amber-500"
+                        )}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">🧬</span>
+                            <span className={cn(
+                              "font-bold text-lg",
+                              pathwayState.recommendTicagrelor ? "text-red-800 dark:text-red-300" : "text-amber-800 dark:text-amber-300"
+                            )}>
+                              {pathwayState.recommendTicagrelor 
+                                ? "TICAGRELOR RECOMMENDED (Poor Metabolizer)" 
+                                : "Consider Ticagrelor (Intermediate Metabolizer)"}
+                            </span>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            {/* Dosing */}
+                            <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                              <p className="font-semibold text-gray-800 dark:text-gray-200 mb-2">📋 Ticagrelor Dosing:</p>
+                              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>• <strong>Standard:</strong> Ticagrelor 90mg BID + Aspirin 81mg daily</li>
+                                <li>• <strong>Duration:</strong> 21-30 days (minor stroke/TIA), then Aspirin alone</li>
+                                <li>• THALES trial regimen: Loading dose not required for stroke</li>
+                              </ul>
+                            </div>
+
+                            {/* Renal Adjustments */}
+                            {(pathwayState.hasRenalImpairment || pathwayState.severRenalImpairment) && (
+                              <div className={cn(
+                                "p-3 rounded border",
+                                pathwayState.severRenalImpairment 
+                                  ? "bg-red-50 dark:bg-red-900/30 border-red-400"
+                                  : "bg-amber-50 dark:bg-amber-900/30 border-amber-400"
+                              )}>
+                                <p className="font-semibold text-gray-800 dark:text-gray-200 mb-2">🔬 Renal Dosing Adjustments:</p>
+                                <ul className="text-sm space-y-1">
+                                  {pathwayState.severRenalImpairment ? (
+                                    <>
+                                      <li className="text-red-700 dark:text-red-400">• <strong>eGFR &lt;30:</strong> No dose adjustment needed but limited data</li>
+                                      <li className="text-red-700 dark:text-red-400">• Monitor closely for bleeding</li>
+                                      <li className="text-red-700 dark:text-red-400">• Not studied in dialysis patients</li>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <li className="text-amber-700 dark:text-amber-400">• <strong>eGFR 30-60:</strong> No dose adjustment required</li>
+                                      <li className="text-amber-700 dark:text-amber-400">• Monitor for bleeding signs</li>
+                                    </>
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* Drug Interactions */}
+                            <div className="p-3 bg-rose-50 dark:bg-rose-900/30 rounded border border-rose-400">
+                              <p className="font-semibold text-rose-800 dark:text-rose-300 mb-2">⚠️ Critical Drug Interactions:</p>
+                              <ul className="text-sm text-rose-700 dark:text-rose-400 space-y-1">
+                                <li>• <strong className="text-rose-800 dark:text-rose-300">AVOID with strong CYP3A4 inhibitors:</strong></li>
+                                <li className="ml-4">- Ketoconazole, Itraconazole, Voriconazole</li>
+                                <li className="ml-4">- Clarithromycin, Nefazodone</li>
+                                <li className="ml-4">- Ritonavir, Atazanavir, Indinavir</li>
+                                <li>• <strong className="text-rose-800 dark:text-rose-300">AVOID with strong CYP3A4 inducers:</strong></li>
+                                <li className="ml-4">- Rifampin, Phenytoin, Carbamazepine, Phenobarbital</li>
+                                <li>• <strong className="text-rose-800 dark:text-rose-300">Caution:</strong> Aspirin &gt;100mg/day reduces Ticagrelor efficacy</li>
+                                <li>• <strong>Digoxin:</strong> Monitor levels (Ticagrelor increases digoxin by ~30%)</li>
+                                <li>• <strong>Simvastatin/Lovastatin:</strong> Max 40mg/day (increased statin exposure)</li>
+                              </ul>
+                            </div>
+
+                            {/* Side Effects to Monitor */}
+                            <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-400">
+                              <p className="font-semibold text-blue-800 dark:text-blue-300 mb-2">👁️ Side Effects to Monitor:</p>
+                              <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
+                                <li>• <strong>Dyspnea:</strong> Common (10-15%), usually resolves, rarely requires discontinuation</li>
+                                <li>• <strong>Bradyarrhythmias:</strong> Ventricular pauses in first week - caution in sick sinus syndrome</li>
+                                <li>• <strong>Bleeding:</strong> Similar major bleeding to clopidogrel, more minor bleeding</li>
+                                <li>• <strong>Hyperuricemia:</strong> Monitor uric acid in gout-prone patients</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Population Alert */}
+                      <div className="p-3 bg-orange-100 dark:bg-orange-900/40 rounded border border-orange-400">
+                        <p className="text-sm text-orange-800 dark:text-orange-300">
+                          <strong>⚠️ High-Risk Populations:</strong> 30-50% of South Asian, 40-50% of East Asian, 
+                          and 25-30% of African populations carry CYP2C19 loss-of-function alleles (*2, *3). 
+                          Consider empiric Ticagrelor if genotyping unavailable in these populations.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   {/* OAC Timing Inputs - Show when OAC is recommended */}
                   {pathwayState.recommendOAC && (
                     <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/30 border-2 border-purple-400 dark:border-purple-600 rounded-lg">
@@ -652,7 +872,80 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                             <Badge variant="destructive" className="text-xs">⚠️ Delay OAC</Badge>
                           )}
                         </div>
+
+                        {/* Valvular AF */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                            Valvular AF
+                          </Label>
+                          <Select value={inputs.valvularAF} onValueChange={(v) => updateInput("valvularAF", v)}>
+                            <SelectTrigger className={cn(getInputClass(inputs.valvularAF), "border-purple-300")}>
+                              <SelectValue placeholder="Valvular?" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="no">Non-Valvular AF</SelectItem>
+                              <SelectItem value="yes">Valvular AF (MS, mechanical valve)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {pathwayState.hasValvularAF && (
+                            <Badge variant="destructive" className="text-xs">⚠️ Warfarin ONLY</Badge>
+                          )}
+                        </div>
+
+                        {/* Antiphospholipid Syndrome */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                            Antiphospholipid Syndrome
+                          </Label>
+                          <Select value={inputs.antiphospholipidSyndrome} onValueChange={(v) => updateInput("antiphospholipidSyndrome", v)}>
+                            <SelectTrigger className={cn(getInputClass(inputs.antiphospholipidSyndrome), "border-purple-300")}>
+                              <SelectValue placeholder="APLS?" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="no">No / Unknown</SelectItem>
+                              <SelectItem value="yes">Yes (APLS confirmed)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {pathwayState.hasAPLS && (
+                            <Badge variant="destructive" className="text-xs">⚠️ Warfarin ONLY</Badge>
+                          )}
+                        </div>
                       </div>
+
+                      {/* NOAC Contraindication Warning */}
+                      {pathwayState.noacContraindicated && (
+                        <div className="mb-4 p-4 bg-red-100 dark:bg-red-900/40 border-2 border-red-500 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertTriangle className="h-5 w-5 text-red-600" />
+                            <span className="font-bold text-red-800 dark:text-red-300 text-lg">
+                              🚫 NOAC CONTRAINDICATED - Use Warfarin
+                            </span>
+                          </div>
+                          <div className="space-y-2 text-sm text-red-700 dark:text-red-400">
+                            {pathwayState.hasValvularAF && (
+                              <div className="p-2 bg-red-50 dark:bg-red-900/30 rounded">
+                                <strong>Valvular AF (Mechanical valve or Moderate-Severe Mitral Stenosis):</strong>
+                                <ul className="mt-1 ml-4 list-disc">
+                                  <li>NOACs are NOT approved and are inferior to Warfarin</li>
+                                  <li>RE-ALIGN trial (Dabigatran): Stopped early due to excess thromboembolism & bleeding</li>
+                                  <li>Target INR 2.5-3.5 for mechanical valves (varies by valve position)</li>
+                                </ul>
+                              </div>
+                            )}
+                            {pathwayState.hasAPLS && (
+                              <div className="p-2 bg-red-50 dark:bg-red-900/30 rounded">
+                                <strong>Antiphospholipid Antibody Syndrome (APLS):</strong>
+                                <ul className="mt-1 ml-4 list-disc">
+                                  <li>TRAPS trial (Rivaroxaban): Increased arterial thrombosis vs Warfarin</li>
+                                  <li>ASTRO-APS trial (Apixaban): Inferior to Warfarin, excess thrombosis</li>
+                                  <li>Warfarin with target INR 2.5-3.0 (or 3.0-4.0 for triple-positive APLS)</li>
+                                  <li>NOACs should be switched to Warfarin in all APLS patients</li>
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
                       {/* 1-3-6-12 Visual Guide */}
                       <div className="grid grid-cols-4 gap-2 mb-4">
@@ -745,22 +1038,52 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                     <div className={cn(
                       "mt-4 p-3 rounded-lg border-2 transition-all",
                       pathwayState.recommendOAC 
-                        ? "bg-purple-100 dark:bg-purple-900/40 border-purple-500" 
+                        ? pathwayState.noacContraindicated 
+                          ? "bg-red-100 dark:bg-red-900/40 border-red-500"
+                          : "bg-purple-100 dark:bg-purple-900/40 border-purple-500" 
                         : pathwayState.recommendDAPT 
-                          ? "bg-amber-100 dark:bg-amber-900/40 border-amber-500"
+                          ? pathwayState.recommendTicagrelor
+                            ? "bg-orange-100 dark:bg-orange-900/40 border-orange-500"
+                            : "bg-amber-100 dark:bg-amber-900/40 border-amber-500"
                           : "bg-green-100 dark:bg-green-900/40 border-green-500"
                     )}>
                       <p className={cn(
                         "font-bold text-sm",
-                        pathwayState.recommendOAC ? "text-purple-800 dark:text-purple-300" :
-                        pathwayState.recommendDAPT ? "text-amber-800 dark:text-amber-300" :
-                        "text-green-800 dark:text-green-300"
+                        pathwayState.recommendOAC 
+                          ? pathwayState.noacContraindicated 
+                            ? "text-red-800 dark:text-red-300"
+                            : "text-purple-800 dark:text-purple-300" 
+                          : pathwayState.recommendDAPT 
+                            ? pathwayState.recommendTicagrelor
+                              ? "text-orange-800 dark:text-orange-300"
+                              : "text-amber-800 dark:text-amber-300"
+                            : "text-green-800 dark:text-green-300"
                       )}>
-                        ✓ Recommended: {pathwayState.recommendOAC ? "OAC/NOAC" : pathwayState.recommendDAPT ? "DAPT (21-90 days)" : "SAPT (long-term)"}
+                        ✓ Recommended: {
+                          pathwayState.recommendOAC 
+                            ? pathwayState.noacContraindicated 
+                              ? "WARFARIN (NOAC Contraindicated)" 
+                              : "OAC/NOAC" 
+                            : pathwayState.recommendDAPT 
+                              ? pathwayState.recommendTicagrelor
+                                ? "TICAGRELOR + ASA (CYP2C19 Poor Metabolizer)"
+                                : "DAPT (21-90 days)" 
+                              : "SAPT (long-term)"
+                        }
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {pathwayState.recommendOAC && `AF or cardioembolic source detected → Anticoagulation indicated. ${pathwayState.oacTiming ? `Start Day ${pathwayState.oacTiming.days} based on stroke size.` : 'Select stroke size above for timing.'}`}
-                        {pathwayState.recommendDAPT && "Minor stroke/TIA within 24h without cardioembolic source → DAPT for 21-90 days, then transition to SAPT."}
+                        {pathwayState.recommendOAC && (
+                          pathwayState.noacContraindicated 
+                            ? `${pathwayState.hasValvularAF ? 'Valvular AF' : ''}${pathwayState.hasValvularAF && pathwayState.hasAPLS ? ' + ' : ''}${pathwayState.hasAPLS ? 'APLS' : ''} detected → Warfarin ONLY (NOACs contraindicated). ${pathwayState.oacTiming ? `Start Day ${pathwayState.oacTiming.days}.` : 'Select stroke size above for timing.'}`
+                            : `AF or cardioembolic source detected → Anticoagulation indicated. ${pathwayState.oacTiming ? `Start Day ${pathwayState.oacTiming.days} based on stroke size.` : 'Select stroke size above for timing.'}`
+                        )}
+                        {pathwayState.recommendDAPT && (
+                          pathwayState.recommendTicagrelor
+                            ? `CYP2C19 poor metabolizer (${inputs.cyp2c19Genotype}) → Ticagrelor 90mg BID + Aspirin 81mg daily. Clopidogrel will NOT be effective.`
+                            : pathwayState.considerTicagrelor
+                              ? `Minor stroke/TIA within 24h → Consider Ticagrelor (intermediate metabolizer ${inputs.cyp2c19Genotype}). Standard: ASA + Clopidogrel.`
+                              : "Minor stroke/TIA within 24h without cardioembolic source → DAPT for 21-90 days, then transition to SAPT."
+                        )}
                         {pathwayState.recommendSAPT && "Non-cardioembolic stroke, not DAPT eligible → Long-term single antiplatelet therapy."}
                       </p>
                     </div>
@@ -1105,26 +1428,51 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                         )}
                       </div>
                       <ul className="text-amber-700 dark:text-amber-400 space-y-0.5">
-                        <li>• <strong>First-line:</strong> Aspirin + Clopidogrel</li>
+                        <li>• <strong>First-line:</strong> {pathwayState.recommendTicagrelor ? <span className="text-red-600 dark:text-red-400 font-bold">Ticagrelor + ASA (Poor metabolizer)</span> : "Aspirin + Clopidogrel"}</li>
                         <li>• 21-90 days (minor stroke/TIA)</li>
-                        <li>• ⚠️ Check CYP2C19 status</li>
+                        <li>• ⚠️ Check CYP2C19 status {pathwayState.cyp2c19PoorMetabolizer && <Badge className="bg-red-500 text-white text-xs ml-1">POOR</Badge>}</li>
                         {pathwayState.recommendDAPT && (
                           <li className="text-amber-800 dark:text-amber-300 font-medium">• Then transition to SAPT</li>
                         )}
                       </ul>
                       
-                      {/* CYP2C19 Poor Metabolizer Alternative */}
-                      <div className="mt-2 p-2 bg-orange-100 dark:bg-orange-900/40 rounded border border-orange-300 dark:border-orange-600">
-                        <p className="font-semibold text-orange-800 dark:text-orange-300 mb-1">
-                          🧬 CYP2C19 Poor Metabolizer Alternative:
-                        </p>
-                        <ul className="text-orange-700 dark:text-orange-400 space-y-0.5">
-                          <li>• <strong>Ticagrelor 90mg BID</strong> + Aspirin 81mg daily</li>
-                          <li>• Not affected by CYP2C19 polymorphisms</li>
-                          <li>• THALES trial: Ticagrelor + ASA in minor stroke/TIA</li>
-                          <li>• ⚠️ 30-50% of Indian population carries LOF alleles</li>
-                        </ul>
-                      </div>
+                      {/* CYP2C19 Genotype-Based Recommendation */}
+                      {pathwayState.recommendTicagrelor ? (
+                        <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/40 rounded border-2 border-red-500">
+                          <p className="font-semibold text-red-800 dark:text-red-300 mb-1">
+                            🧬 TICAGRELOR RECOMMENDED (Poor Metabolizer Detected):
+                          </p>
+                          <ul className="text-red-700 dark:text-red-400 space-y-0.5">
+                            <li>• <strong>Ticagrelor 90mg BID</strong> + Aspirin 81mg daily</li>
+                            <li>• CYP2C19 genotype: {inputs.cyp2c19Genotype}</li>
+                            <li>• Clopidogrel will NOT be effective in this patient</li>
+                            <li>• ⚠️ Check drug interactions above</li>
+                          </ul>
+                        </div>
+                      ) : pathwayState.considerTicagrelor ? (
+                        <div className="mt-2 p-2 bg-amber-100 dark:bg-amber-900/40 rounded border border-amber-400">
+                          <p className="font-semibold text-amber-800 dark:text-amber-300 mb-1">
+                            🧬 Consider Ticagrelor (Intermediate Metabolizer):
+                          </p>
+                          <ul className="text-amber-700 dark:text-amber-400 space-y-0.5">
+                            <li>• CYP2C19 genotype: {inputs.cyp2c19Genotype}</li>
+                            <li>• Reduced clopidogrel efficacy possible</li>
+                            <li>• <strong>Ticagrelor 90mg BID</strong> + Aspirin 81mg daily as alternative</li>
+                          </ul>
+                        </div>
+                      ) : (
+                        <div className="mt-2 p-2 bg-orange-100 dark:bg-orange-900/40 rounded border border-orange-300 dark:border-orange-600">
+                          <p className="font-semibold text-orange-800 dark:text-orange-300 mb-1">
+                            🧬 CYP2C19 Poor Metabolizer Alternative:
+                          </p>
+                          <ul className="text-orange-700 dark:text-orange-400 space-y-0.5">
+                            <li>• <strong>Ticagrelor 90mg BID</strong> + Aspirin 81mg daily</li>
+                            <li>• Not affected by CYP2C19 polymorphisms</li>
+                            <li>• THALES trial: Ticagrelor + ASA in minor stroke/TIA</li>
+                            <li>• ⚠️ 30-50% of Indian population carries LOF alleles</li>
+                          </ul>
+                        </div>
+                      )}
                       
                       {/* Prasugrel Contraindication Warning */}
                       <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/40 rounded border border-red-300 dark:border-red-600">
@@ -1158,12 +1506,29 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                       </div>
                       <ul className="text-purple-700 dark:text-purple-400 space-y-0.5">
                         <li>• If AF/cardioembolic source</li>
-                        <li>• NOAC preferred over Warfarin</li>
+                        <li>• {pathwayState.noacContraindicated ? <span className="text-red-600 dark:text-red-400 font-bold">NOAC contraindicated → Warfarin only</span> : "NOAC preferred over Warfarin"}</li>
                         <li>• Delay 4-14 days post-stroke</li>
                         {pathwayState.recommendOAC && pathwayState.hasAF && (
                           <li className="text-purple-800 dark:text-purple-300 font-medium">• AF detected → indefinite OAC</li>
                         )}
                       </ul>
+                      
+                      {/* NOAC Contraindication Warning in Flowchart */}
+                      {pathwayState.noacContraindicated && pathwayState.recommendOAC && (
+                        <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/40 rounded border border-red-400">
+                          <p className="font-semibold text-red-800 dark:text-red-300 text-xs mb-1">
+                            🚫 NOAC Contraindicated:
+                          </p>
+                          <ul className="text-red-700 dark:text-red-400 space-y-0.5">
+                            {pathwayState.hasValvularAF && (
+                              <li>• Valvular AF (MS/mechanical) → Warfarin INR 2.5-3.5</li>
+                            )}
+                            {pathwayState.hasAPLS && (
+                              <li>• APLS → Warfarin INR 2.5-3.0 (or 3.0-4.0 if triple+)</li>
+                            )}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </div>
 
