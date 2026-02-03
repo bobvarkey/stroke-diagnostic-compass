@@ -17,6 +17,12 @@ interface AlgorithmInputs {
   imagingType: string;
   coreVolume: string;
   mismatchRatio: string;
+  // Antithrombotic decision inputs
+  afStatus: string;
+  strokeClassification: string;
+  cardioembolicSource: string;
+  symptomOnsetToPresentation: string;
+  highBleedingRisk: string;
 }
 
 const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
@@ -30,6 +36,12 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     imagingType: "",
     coreVolume: "",
     mismatchRatio: "",
+    // Antithrombotic decision inputs
+    afStatus: "",
+    strokeClassification: "",
+    cardioembolicSource: "",
+    symptomOnsetToPresentation: "",
+    highBleedingRisk: "",
   });
 
   const updateInput = (field: keyof AlgorithmInputs, value: string) => {
@@ -123,6 +135,27 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     // No LVO - Medical Management pathway
     const noLVOMedicalManagement = hasNoLVO && hasTimeInput;
 
+    // Antithrombotic decision logic
+    const hasAF = inputs.afStatus === "af_confirmed" || inputs.afStatus === "af_paroxysmal";
+    const hasCardioembolicSource = inputs.cardioembolicSource === "yes" || hasAF;
+    const isMinorStroke = inputs.strokeClassification === "minor_stroke" || inputs.strokeClassification === "tia";
+    const isTIA = inputs.strokeClassification === "tia";
+    const isWithin24h = inputs.symptomOnsetToPresentation === "within_24h";
+    const hasHighBleedingRisk = inputs.highBleedingRisk === "yes";
+
+    // Antithrombotic recommendations
+    // OAC/NOAC: If AF or cardioembolic source confirmed
+    const recommendOAC = hasNoLVO && hasCardioembolicSource;
+    
+    // DAPT: Minor stroke (NIHSS ≤3-5) or TIA within 24h of onset, no AF
+    const recommendDAPT = hasNoLVO && isMinorStroke && isWithin24h && !hasCardioembolicSource && !hasHighBleedingRisk;
+    
+    // SAPT: Default for non-cardioembolic, not eligible for DAPT, or high bleeding risk
+    const recommendSAPT = hasNoLVO && !hasCardioembolicSource && (!isMinorStroke || !isWithin24h || hasHighBleedingRisk);
+
+    // Determine which antithrombotic input section to show
+    const showAntithromboticInputs = hasNoLVO;
+
     return {
       hasTimeInput,
       hasNIHSS,
@@ -145,6 +178,16 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
       bridgingTherapy,
       noLVOMedicalManagement,
       hasNoLVO,
+      // Antithrombotic recommendations
+      showAntithromboticInputs,
+      recommendOAC,
+      recommendDAPT,
+      recommendSAPT,
+      hasAF,
+      hasCardioembolicSource,
+      isMinorStroke,
+      isWithin24h,
+      hasHighBleedingRisk,
       isComplete: hasTimeInput && hasNIHSS && hasDisabling,
     };
   }, [timeFromOnset, nihss, mrs, inputs.disablingDeficit, inputs.lvoStatus, inputs.imagingType, coreVol, mismatchRat]);
@@ -399,6 +442,143 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                   )}
                 </div>
               </div>
+
+              {/* Antithrombotic Decision Inputs - Show when No LVO selected */}
+              {pathwayState.showAntithromboticInputs && (
+                <div className="mt-4 p-4 bg-teal-50 dark:bg-teal-900/20 border-2 border-teal-400 dark:border-teal-600 rounded-lg">
+                  <h4 className="font-semibold text-teal-800 dark:text-teal-200 mb-4 flex items-center gap-2">
+                    <Target className="h-5 w-5 text-teal-500" />
+                    Antithrombotic Selection Inputs
+                    <Badge variant="outline" className="ml-2 text-teal-600 border-teal-400">No LVO Pathway</Badge>
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {/* AF Status */}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-teal-700 dark:text-teal-300">
+                        Atrial Fibrillation
+                      </Label>
+                      <Select value={inputs.afStatus} onValueChange={(v) => updateInput("afStatus", v)}>
+                        <SelectTrigger className={cn(getInputClass(inputs.afStatus), "border-teal-300")}>
+                          <SelectValue placeholder="AF status?" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="af_confirmed">AF Confirmed</SelectItem>
+                          <SelectItem value="af_paroxysmal">Paroxysmal AF</SelectItem>
+                          <SelectItem value="no_af">No AF</SelectItem>
+                          <SelectItem value="af_pending">Pending Monitoring</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {pathwayState.hasAF && (
+                        <Badge variant="destructive" className="text-xs">→ OAC Indicated</Badge>
+                      )}
+                    </div>
+
+                    {/* Stroke Classification */}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-teal-700 dark:text-teal-300">
+                        Stroke Classification
+                      </Label>
+                      <Select value={inputs.strokeClassification} onValueChange={(v) => updateInput("strokeClassification", v)}>
+                        <SelectTrigger className={cn(getInputClass(inputs.strokeClassification), "border-teal-300")}>
+                          <SelectValue placeholder="Type?" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="tia">TIA (symptoms resolved)</SelectItem>
+                          <SelectItem value="minor_stroke">Minor Stroke (NIHSS ≤3)</SelectItem>
+                          <SelectItem value="moderate_stroke">Moderate Stroke (NIHSS 4-15)</SelectItem>
+                          <SelectItem value="severe_stroke">Severe Stroke (NIHSS &gt;15)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {pathwayState.isMinorStroke && (
+                        <Badge variant="secondary" className="text-xs">DAPT candidate</Badge>
+                      )}
+                    </div>
+
+                    {/* Symptom Onset */}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-teal-700 dark:text-teal-300">
+                        Symptom Onset
+                      </Label>
+                      <Select value={inputs.symptomOnsetToPresentation} onValueChange={(v) => updateInput("symptomOnsetToPresentation", v)}>
+                        <SelectTrigger className={cn(getInputClass(inputs.symptomOnsetToPresentation), "border-teal-300")}>
+                          <SelectValue placeholder="When?" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="within_24h">Within 24 hours</SelectItem>
+                          <SelectItem value="24_72h">24-72 hours</SelectItem>
+                          <SelectItem value="over_72h">&gt;72 hours</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {pathwayState.isWithin24h && pathwayState.isMinorStroke && !pathwayState.hasCardioembolicSource && (
+                        <Badge className="text-xs bg-amber-500">→ DAPT eligible</Badge>
+                      )}
+                    </div>
+
+                    {/* Cardioembolic Source */}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-teal-700 dark:text-teal-300">
+                        Other CE Source
+                      </Label>
+                      <Select value={inputs.cardioembolicSource} onValueChange={(v) => updateInput("cardioembolicSource", v)}>
+                        <SelectTrigger className={cn(getInputClass(inputs.cardioembolicSource), "border-teal-300")}>
+                          <SelectValue placeholder="CE source?" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes (PFO, valve, thrombus)</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                          <SelectItem value="pending">Pending workup</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Bleeding Risk */}
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-teal-700 dark:text-teal-300">
+                        Bleeding Risk
+                      </Label>
+                      <Select value={inputs.highBleedingRisk} onValueChange={(v) => updateInput("highBleedingRisk", v)}>
+                        <SelectTrigger className={cn(getInputClass(inputs.highBleedingRisk), "border-teal-300")}>
+                          <SelectValue placeholder="Risk?" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="no">Low/Moderate</SelectItem>
+                          <SelectItem value="yes">High (HAS-BLED ≥3)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {pathwayState.hasHighBleedingRisk && (
+                        <Badge variant="outline" className="text-xs border-red-400 text-red-600">Caution with DAPT</Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Recommendation Summary */}
+                  {(pathwayState.recommendOAC || pathwayState.recommendDAPT || pathwayState.recommendSAPT) && (
+                    <div className={cn(
+                      "mt-4 p-3 rounded-lg border-2 transition-all",
+                      pathwayState.recommendOAC 
+                        ? "bg-purple-100 dark:bg-purple-900/40 border-purple-500" 
+                        : pathwayState.recommendDAPT 
+                          ? "bg-amber-100 dark:bg-amber-900/40 border-amber-500"
+                          : "bg-green-100 dark:bg-green-900/40 border-green-500"
+                    )}>
+                      <p className={cn(
+                        "font-bold text-sm",
+                        pathwayState.recommendOAC ? "text-purple-800 dark:text-purple-300" :
+                        pathwayState.recommendDAPT ? "text-amber-800 dark:text-amber-300" :
+                        "text-green-800 dark:text-green-300"
+                      )}>
+                        ✓ Recommended: {pathwayState.recommendOAC ? "OAC/NOAC" : pathwayState.recommendDAPT ? "DAPT (21-90 days)" : "SAPT (long-term)"}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {pathwayState.recommendOAC && "AF or cardioembolic source detected → Anticoagulation indicated. Delay 4-14 days based on stroke size."}
+                        {pathwayState.recommendDAPT && "Minor stroke/TIA within 24h without cardioembolic source → DAPT for 21-90 days, then transition to SAPT."}
+                        {pathwayState.recommendSAPT && "Non-cardioembolic stroke, not DAPT eligible → Long-term single antiplatelet therapy."}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Status Summary */}
               {pathwayState.isComplete && (
@@ -687,50 +867,87 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                       ? "bg-teal-100 dark:bg-teal-900/40 border-teal-500"
                       : "bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-700"
                   )}>
-                    <p className="text-xs font-bold text-teal-800 dark:text-teal-300 mb-2 text-center">Secondary Prevention Strategy</p>
+                    <p className="text-xs font-bold text-teal-800 dark:text-teal-300 mb-2 text-center">
+                      Secondary Prevention Strategy
+                      {(pathwayState.recommendOAC || pathwayState.recommendDAPT || pathwayState.recommendSAPT) && (
+                        <span className="ml-2 text-xs font-normal text-teal-600 dark:text-teal-400">
+                          (fill inputs above for recommendation)
+                        </span>
+                      )}
+                    </p>
                     
                     {/* SAPT */}
                     <div className={cn(
                       "mb-2 p-2 rounded text-xs transition-all duration-500",
-                      pathwayState.noLVOMedicalManagement
-                        ? "bg-green-100 dark:bg-green-900/40 border border-green-400 ring-1 ring-green-300"
-                        : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700"
+                      pathwayState.recommendSAPT
+                        ? "bg-green-200 dark:bg-green-800/60 border-2 border-green-500 ring-2 ring-green-400 shadow-lg scale-[1.02] animate-pulse"
+                        : pathwayState.noLVOMedicalManagement
+                          ? "bg-green-100 dark:bg-green-900/40 border border-green-400"
+                          : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700"
                     )}>
-                      <p className="font-bold text-green-800 dark:text-green-300 mb-1">SAPT (Single Antiplatelet)</p>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-bold text-green-800 dark:text-green-300">SAPT (Single Antiplatelet)</p>
+                        {pathwayState.recommendSAPT && (
+                          <Badge className="bg-green-600 text-white text-xs">✓ RECOMMENDED</Badge>
+                        )}
+                      </div>
                       <ul className="text-green-700 dark:text-green-400 space-y-0.5">
                         <li>• Aspirin 75-100mg daily</li>
                         <li>• OR Clopidogrel 75mg daily</li>
                         <li>• Long-term maintenance</li>
+                        {pathwayState.hasHighBleedingRisk && pathwayState.recommendSAPT && (
+                          <li className="text-red-600 dark:text-red-400 font-medium">• ⚠️ Lower bleeding risk than DAPT</li>
+                        )}
                       </ul>
                     </div>
 
                     {/* DAPT */}
                     <div className={cn(
                       "mb-2 p-2 rounded text-xs transition-all duration-500",
-                      pathwayState.noLVOMedicalManagement
-                        ? "bg-amber-100 dark:bg-amber-900/40 border border-amber-400 ring-1 ring-amber-300"
-                        : "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700"
+                      pathwayState.recommendDAPT
+                        ? "bg-amber-200 dark:bg-amber-800/60 border-2 border-amber-500 ring-2 ring-amber-400 shadow-lg scale-[1.02] animate-pulse"
+                        : pathwayState.noLVOMedicalManagement
+                          ? "bg-amber-100 dark:bg-amber-900/40 border border-amber-400"
+                          : "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700"
                     )}>
-                      <p className="font-bold text-amber-800 dark:text-amber-300 mb-1">DAPT (Dual Antiplatelet)</p>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-bold text-amber-800 dark:text-amber-300">DAPT (Dual Antiplatelet)</p>
+                        {pathwayState.recommendDAPT && (
+                          <Badge className="bg-amber-600 text-white text-xs">✓ RECOMMENDED</Badge>
+                        )}
+                      </div>
                       <ul className="text-amber-700 dark:text-amber-400 space-y-0.5">
                         <li>• Aspirin + Clopidogrel</li>
                         <li>• 21-90 days (minor stroke/TIA)</li>
                         <li>• ⚠️ Check CYP2C19 status</li>
+                        {pathwayState.recommendDAPT && (
+                          <li className="text-amber-800 dark:text-amber-300 font-medium">• Then transition to SAPT</li>
+                        )}
                       </ul>
                     </div>
 
                     {/* OAC/NOAC */}
                     <div className={cn(
                       "p-2 rounded text-xs transition-all duration-500",
-                      pathwayState.noLVOMedicalManagement
-                        ? "bg-purple-100 dark:bg-purple-900/40 border border-purple-400 ring-1 ring-purple-300"
-                        : "bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700"
+                      pathwayState.recommendOAC
+                        ? "bg-purple-200 dark:bg-purple-800/60 border-2 border-purple-500 ring-2 ring-purple-400 shadow-lg scale-[1.02] animate-pulse"
+                        : pathwayState.noLVOMedicalManagement
+                          ? "bg-purple-100 dark:bg-purple-900/40 border border-purple-400"
+                          : "bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700"
                     )}>
-                      <p className="font-bold text-purple-800 dark:text-purple-300 mb-1">OAC / NOAC</p>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-bold text-purple-800 dark:text-purple-300">OAC / NOAC</p>
+                        {pathwayState.recommendOAC && (
+                          <Badge className="bg-purple-600 text-white text-xs">✓ RECOMMENDED</Badge>
+                        )}
+                      </div>
                       <ul className="text-purple-700 dark:text-purple-400 space-y-0.5">
                         <li>• If AF/cardioembolic source</li>
                         <li>• NOAC preferred over Warfarin</li>
                         <li>• Delay 4-14 days post-stroke</li>
+                        {pathwayState.recommendOAC && pathwayState.hasAF && (
+                          <li className="text-purple-800 dark:text-purple-300 font-medium">• AF detected → indefinite OAC</li>
+                        )}
                       </ul>
                     </div>
                   </div>
