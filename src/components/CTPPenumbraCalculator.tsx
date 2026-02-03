@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Brain, Clock, AlertTriangle, CheckCircle2, XCircle, Info, Activity } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import ModuleCommentBox from "./ModuleCommentBox";
 
 interface CTPInputs {
   // Volumes
@@ -42,6 +43,7 @@ const CTPPenumbraCalculator: React.FC = () => {
     coreDefinition: 'cbf30',
     collateralGrade: 'moderate'
   });
+  const [comment, setComment] = useState("");
 
   // Calculate mismatch automatically
   const calculatedMismatch = useMemo(() => {
@@ -542,6 +544,14 @@ const CTPPenumbraCalculator: React.FC = () => {
           <strong>Clinical Note:</strong> Final treatment decisions should integrate CTP findings with clinical assessment, 
           vessel status, and patient factors. Automated software (RAPID, Viz.ai) provides standardized measurements.
         </div>
+
+        {/* Comments Section */}
+        <ModuleCommentBox
+          value={comment}
+          onChange={setComment}
+          placeholder="Record perfusion imaging interpretation, core/penumbra volumes, and clinical implications..."
+          label="CTP Analysis Notes"
+        />
       </CardContent>
     </Card>
   );

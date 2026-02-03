@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Scale, Clock, ArrowRightLeft, AlertTriangle, Printer, FileText, X } from "lucide-react";
+import ModuleCommentBox from "./ModuleCommentBox";
 
 import tpaVsMedical from "@/assets/tpa-vs-medical-management.png";
 import tpa3hVs4h from "@/assets/tpa-3h-vs-4-5h.png";
@@ -439,6 +440,7 @@ const PrintableHandout: React.FC<{
 const TreatmentDecisionAid: React.FC = () => {
   const [activeTab, setActiveTab] = useState("no-tpa-vs-tpa");
   const [showPrintPreview, setShowPrintPreview] = useState(false);
+  const [comment, setComment] = useState("");
 
   const activeScenario = decisionScenarios.find(s => s.id === activeTab) || decisionScenarios[0];
 
@@ -600,6 +602,14 @@ const TreatmentDecisionAid: React.FC = () => {
             Individual patient factors and clinical judgment should guide treatment decisions.
           </p>
         </div>
+
+        {/* Comments Section */}
+        <ModuleCommentBox
+          value={comment}
+          onChange={setComment}
+          placeholder="Document family discussions, patient preferences, or treatment decision rationale..."
+          label="Treatment Decision Notes"
+        />
       </CardContent>
 
       {/* Printable Handout Modal */}
