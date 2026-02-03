@@ -5547,7 +5547,7 @@ function MetabolicSyndromeChecker() {
 export default function StrokeWorkupChecklist() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("ischemic");
-  const [demographics, setDemographics] = useState<{ age?: string; sex?: string; race?: string }>({});
+  const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({ patientId: "" });
   const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
 
   const handleCheck = (testId: string) => {
