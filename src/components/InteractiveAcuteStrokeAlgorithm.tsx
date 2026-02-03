@@ -98,6 +98,7 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     const isNonDisabling = inputs.disablingDeficit === "non-disabling";
     const hasLVOConfirmed = inputs.lvoStatus === "lvo_positive";
     const hasBasilar = inputs.lvoStatus === "basilar";
+    const hasNoLVO = inputs.lvoStatus === "lvo_negative";
 
     // IVT eligibility
     const ivtEligible = inIVTWindow && isDisabling && hasNIHSS;
@@ -119,6 +120,9 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     // Bridging therapy
     const bridgingTherapy = ivtEligible && hasLVOConfirmed;
 
+    // No LVO - Medical Management pathway
+    const noLVOMedicalManagement = hasNoLVO && hasTimeInput;
+
     return {
       hasTimeInput,
       hasNIHSS,
@@ -139,6 +143,8 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
       largeCoreEVT,
       basilarEVT,
       bridgingTherapy,
+      noLVOMedicalManagement,
+      hasNoLVO,
       isComplete: hasTimeInput && hasNIHSS && hasDisabling,
     };
   }, [timeFromOnset, nihss, mrs, inputs.disablingDeficit, inputs.lvoStatus, inputs.imagingType, coreVol, mismatchRat]);
@@ -430,7 +436,7 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
               </div>
 
               {/* Time Windows - Updated for AHA 2026 */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 {/* < 4.5 hours pathway - IVT Window */}
                 <div className={cn(
                   "border-2 border-dashed rounded-lg p-4 space-y-3 transition-all duration-500",
@@ -649,10 +655,115 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                     EVT if criteria met
                   </div>
                 </div>
+
+                {/* No LVO - Medical Management Pathway */}
+                <div className={cn(
+                  "border-2 border-dashed rounded-lg p-4 space-y-3 transition-all duration-500",
+                  pathwayState.noLVOMedicalManagement
+                    ? "border-teal-500 bg-teal-50/50 dark:bg-teal-900/20 ring-4 ring-teal-400/50 shadow-lg"
+                    : "border-teal-400 dark:border-teal-600 opacity-60"
+                )}>
+                  <div className={cn(
+                    "text-center px-4 py-2 rounded-lg border transition-all",
+                    pathwayState.noLVOMedicalManagement
+                      ? "bg-teal-200 dark:bg-teal-700 border-teal-500 ring-2 ring-teal-400"
+                      : "bg-teal-100 dark:bg-teal-800/40 border-teal-400 dark:border-teal-600"
+                  )}>
+                    <span className="font-semibold text-teal-800 dark:text-teal-200">No LVO - Medical Management</span>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <ArrowRight className="h-5 w-5 rotate-90 text-gray-400" />
+                  </div>
+
+                  <div className="text-center px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-700">
+                    <span className="text-sm text-blue-800 dark:text-blue-300">CTA confirms No LVO</span>
+                  </div>
+
+                  {/* Secondary Prevention Options */}
+                  <div className={cn(
+                    "p-3 rounded border transition-all duration-500",
+                    pathwayState.noLVOMedicalManagement
+                      ? "bg-teal-100 dark:bg-teal-900/40 border-teal-500"
+                      : "bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-700"
+                  )}>
+                    <p className="text-xs font-bold text-teal-800 dark:text-teal-300 mb-2 text-center">Secondary Prevention Strategy</p>
+                    
+                    {/* SAPT */}
+                    <div className={cn(
+                      "mb-2 p-2 rounded text-xs transition-all duration-500",
+                      pathwayState.noLVOMedicalManagement
+                        ? "bg-green-100 dark:bg-green-900/40 border border-green-400 ring-1 ring-green-300"
+                        : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700"
+                    )}>
+                      <p className="font-bold text-green-800 dark:text-green-300 mb-1">SAPT (Single Antiplatelet)</p>
+                      <ul className="text-green-700 dark:text-green-400 space-y-0.5">
+                        <li>• Aspirin 75-100mg daily</li>
+                        <li>• OR Clopidogrel 75mg daily</li>
+                        <li>• Long-term maintenance</li>
+                      </ul>
+                    </div>
+
+                    {/* DAPT */}
+                    <div className={cn(
+                      "mb-2 p-2 rounded text-xs transition-all duration-500",
+                      pathwayState.noLVOMedicalManagement
+                        ? "bg-amber-100 dark:bg-amber-900/40 border border-amber-400 ring-1 ring-amber-300"
+                        : "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700"
+                    )}>
+                      <p className="font-bold text-amber-800 dark:text-amber-300 mb-1">DAPT (Dual Antiplatelet)</p>
+                      <ul className="text-amber-700 dark:text-amber-400 space-y-0.5">
+                        <li>• Aspirin + Clopidogrel</li>
+                        <li>• 21-90 days (minor stroke/TIA)</li>
+                        <li>• ⚠️ Check CYP2C19 status</li>
+                      </ul>
+                    </div>
+
+                    {/* OAC/NOAC */}
+                    <div className={cn(
+                      "p-2 rounded text-xs transition-all duration-500",
+                      pathwayState.noLVOMedicalManagement
+                        ? "bg-purple-100 dark:bg-purple-900/40 border border-purple-400 ring-1 ring-purple-300"
+                        : "bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700"
+                    )}>
+                      <p className="font-bold text-purple-800 dark:text-purple-300 mb-1">OAC / NOAC</p>
+                      <ul className="text-purple-700 dark:text-purple-400 space-y-0.5">
+                        <li>• If AF/cardioembolic source</li>
+                        <li>• NOAC preferred over Warfarin</li>
+                        <li>• Delay 4-14 days post-stroke</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Risk Factor Management */}
+                  <div className={cn(
+                    "p-3 rounded border text-xs transition-all duration-500",
+                    pathwayState.noLVOMedicalManagement
+                      ? "bg-slate-100 dark:bg-slate-900/40 border-slate-400"
+                      : "bg-slate-50 dark:bg-slate-900/20 border-slate-300 dark:border-slate-700"
+                  )}>
+                    <p className="font-bold text-slate-800 dark:text-slate-300 mb-1">+ Aggressive Risk Factor Management</p>
+                    <ul className="text-slate-700 dark:text-slate-400 space-y-0.5">
+                      <li>• BP target: &lt;130/80 mmHg</li>
+                      <li>• LDL target: &lt;70 mg/dL (high-intensity statin)</li>
+                      <li>• Glucose control: HbA1c &lt;7%</li>
+                      <li>• Lifestyle modifications</li>
+                    </ul>
+                  </div>
+
+                  <div className={cn(
+                    "text-center px-4 py-2 rounded-lg font-bold text-sm transition-all duration-500",
+                    pathwayState.noLVOMedicalManagement
+                      ? "bg-teal-600 text-white ring-4 ring-teal-400 shadow-lg animate-pulse"
+                      : "bg-teal-600/50 text-white/70"
+                  )}>
+                    Medical Management
+                  </div>
+                </div>
               </div>
 
               {/* Key Points - Updated for 2026 */}
-              <div className="mt-6 grid md:grid-cols-3 gap-4">
+              <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-700">
                   <h5 className="font-semibold text-green-800 dark:text-green-300 mb-2">IVT (Alteplase/Tenecteplase)</h5>
                   <ul className="text-sm text-green-700 dark:text-green-400 space-y-1">
@@ -671,6 +782,16 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                     <li>• <strong>Large core (70-100mL)</strong> may benefit</li>
                     <li>• <strong>Basilar: 24h window, NIHSS ≥10</strong></li>
                     <li>• Direct transfer to EVT center encouraged</li>
+                  </ul>
+                </div>
+                <div className="p-4 bg-teal-50 dark:bg-teal-900/30 rounded-lg border border-teal-200 dark:border-teal-700">
+                  <h5 className="font-semibold text-teal-800 dark:text-teal-300 mb-2">No LVO - Medical Mgmt</h5>
+                  <ul className="text-sm text-teal-700 dark:text-teal-400 space-y-1">
+                    <li>• <strong>SAPT:</strong> Aspirin or Clopidogrel</li>
+                    <li>• <strong>DAPT:</strong> ASA + Clopi (21-90d)</li>
+                    <li>• <strong>OAC/NOAC:</strong> If AF present</li>
+                    <li>• High-intensity statin (LDL &lt;70)</li>
+                    <li>• BP target &lt;130/80 mmHg</li>
                   </ul>
                 </div>
                 <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-200 dark:border-amber-700">
