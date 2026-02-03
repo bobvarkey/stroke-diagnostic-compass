@@ -37,6 +37,7 @@ import KDIGOHeatMap from "./KDIGOHeatMap";
 import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
+import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 
 interface TestItem {
   id: string;
@@ -5626,15 +5627,17 @@ export default function StrokeWorkupChecklist() {
             <TPAEligibilityChecklist />
           </div>
 
+          {/* Thrombolytic Dose Calculator */}
+          <div id="thrombolytic-dose">
+            <ThrombolyticDoseCalculator />
+          </div>
+
           {/* Treatment Choice Consequence Matrix */}
           <div id="treatment-decision">
             <TreatmentDecisionAid />
           </div>
 
-          {/* Heads Up Test for LVO with Low NIHSS */}
-          <HeadsUpTest />
-
-          {/* CTA Collateral Grading */}
+          {/* CTA Collateral Grading - Moved into LVO Dashboard */}
           <div id="collateral-grading">
             <CTACollateralGrading />
           </div>
@@ -5644,56 +5647,15 @@ export default function StrokeWorkupChecklist() {
             <LVODecisionDashboard />
           </div>
 
-          {/* eTICI Score Calculator */}
-          <ETICIScoreCalculator />
-
-          {/* Target Arterial Lesion (TAL) Definition */}
-          <TALDefinitionGuide />
-
-          {/* Interactive Vascular Anatomy Diagram */}
-          <div id="vascular-anatomy">
-            <VascularAnatomyDiagram />
-          </div>
-
           {/* CTP Penumbra & Collateral Calculator */}
           <div id="ctp-penumbra">
             <CTPPenumbraCalculator />
           </div>
 
-          {/* Thrombectomy Outcome Tracker */}
-          <ThrombectomyOutcomeTracker />
-
-          {/* Stroke History Template */}
-          <div id="stroke-history">
-            <StrokeHistoryTemplate />
+          {/* Interactive Vascular Anatomy Diagram */}
+          <div id="vascular-anatomy">
+            <VascularAnatomyDiagram />
           </div>
-
-          {/* ISPS25 Stroke Phenotyping System */}
-          <div id="stroke-phenotyping">
-            <ISPS25StrokePhenotyping />
-          </div>
-
-          {/* ISPS25 Flowchart */}
-          <ISPS25Flowchart />
-
-          {/* Visual NIHSS Calculator */}
-          <div id="nihss-calculator">
-            <VisualNIHSSCalculator />
-          </div>
-
-          {/* Visual GCS Calculator */}
-          <div id="gcs-calculator">
-            <VisualGCSCalculator />
-          </div>
-
-          {/* FOUR Score Calculator */}
-          <VisualFOURScoreCalculator />
-
-          {/* NIHSS Scale Reference */}
-          <NIHSSScaleReference />
-
-          {/* mRS Scale Reference */}
-          <MRSScaleReference />
 
           {/* Interactive ASPECTS Calculator */}
           <div id="aspects-calculator">
@@ -5711,17 +5673,14 @@ export default function StrokeWorkupChecklist() {
             }, [])}
           />
 
-          {/* CHA2DS2-VASc Calculator */}
-          <CHA2DS2VAScCalculator />
-
-          {/* uACR Cardiovascular Risk Reference */}
-          <div id="uacr">
-            <UACRCardiovascularRisk />
+          {/* Visual NIHSS Calculator */}
+          <div id="nihss-calculator">
+            <VisualNIHSSCalculator />
           </div>
 
-          {/* eGFR Calculator with KDIGO Staging */}
-          <div id="egfr">
-            <EGFRCalculator />
+          {/* Visual GCS Calculator */}
+          <div id="gcs-calculator">
+            <VisualGCSCalculator />
           </div>
 
           {/* PREVENT Score Calculator */}
@@ -5739,28 +5698,20 @@ export default function StrokeWorkupChecklist() {
             <PRIMEToolCalculator />
           </div>
 
-          {/* HAS-BLED Calculator */}
-          <HASBLEDCalculator />
-
-          {/* ABCD2 Calculator */}
-          <ABCD2Calculator />
-
-          {/* Functional Outcome Scales */}
-          <FunctionalOutcomeScales />
-
-          {/* ADL Assessment Scales */}
-          <ADLAssessmentScales />
-
-          {/* Metabolic Syndrome Checker */}
-          <MetabolicSyndromeChecker />
-
           {/* LAI 2024 Lipid Risk Classification */}
           <div id="lipid-risk">
             <LAILipidRiskClassification />
           </div>
 
-          {/* Lipid Therapy Intensification Guide */}
-          <LipidTherapyIntensificationGuide />
+          {/* Stroke History Template */}
+          <div id="stroke-history">
+            <StrokeHistoryTemplate />
+          </div>
+
+          {/* ISPS25 Stroke Phenotyping System */}
+          <div id="stroke-phenotyping">
+            <ISPS25StrokePhenotyping />
+          </div>
 
           {/* Progress Overview & Workup Checklist */}
           <div id="workup-checklist">
