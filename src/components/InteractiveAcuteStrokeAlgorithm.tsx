@@ -23,6 +23,9 @@ interface AlgorithmInputs {
   cardioembolicSource: string;
   symptomOnsetToPresentation: string;
   highBleedingRisk: string;
+  // OAC timing inputs
+  strokeSize: string;
+  hemorrhagicTransformation: string;
 }
 
 const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
@@ -42,6 +45,9 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     cardioembolicSource: "",
     symptomOnsetToPresentation: "",
     highBleedingRisk: "",
+    // OAC timing inputs
+    strokeSize: "",
+    hemorrhagicTransformation: "",
   });
 
   const updateInput = (field: keyof AlgorithmInputs, value: string) => {
@@ -153,6 +159,51 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
     // SAPT: Default for non-cardioembolic, not eligible for DAPT, or high bleeding risk
     const recommendSAPT = hasNoLVO && !hasCardioembolicSource && (!isMinorStroke || !isWithin24h || hasHighBleedingRisk);
 
+    // 1-3-6-12 Day Rule for OAC timing based on stroke size
+    const hasHemorrhagicTransformation = inputs.hemorrhagicTransformation === "yes";
+    
+    // Calculate OAC start timing based on stroke size (1-3-6-12 rule)
+    const getOACTiming = () => {
+      if (!inputs.strokeSize) return null;
+      if (hasHemorrhagicTransformation) {
+        return {
+          days: "14+",
+          recommendation: "Delay OAC until hemorrhage stabilized. Repeat imaging before starting.",
+          severity: "high_risk"
+        };
+      }
+      switch (inputs.strokeSize) {
+        case "tia":
+          return {
+            days: "1",
+            recommendation: "Start OAC within 24 hours (Day 1). TIA has minimal bleeding risk.",
+            severity: "low_risk"
+          };
+        case "small":
+          return {
+            days: "3",
+            recommendation: "Start OAC at Day 3. Small infarct (<1.5cm) has low HT risk.",
+            severity: "low_risk"
+          };
+        case "medium":
+          return {
+            days: "6",
+            recommendation: "Start OAC at Day 6. Moderate infarct (1.5-3cm) requires monitoring.",
+            severity: "moderate_risk"
+          };
+        case "large":
+          return {
+            days: "12-14",
+            recommendation: "Start OAC at Day 12-14. Large infarct (>3cm or >1/3 MCA) has high HT risk.",
+            severity: "high_risk"
+          };
+        default:
+          return null;
+      }
+    };
+    
+    const oacTiming = getOACTiming();
+
     // Determine which antithrombotic input section to show
     const showAntithromboticInputs = hasNoLVO;
 
@@ -188,9 +239,12 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
       isMinorStroke,
       isWithin24h,
       hasHighBleedingRisk,
+      // OAC timing
+      oacTiming,
+      hasHemorrhagicTransformation,
       isComplete: hasTimeInput && hasNIHSS && hasDisabling,
     };
-  }, [timeFromOnset, nihss, mrs, inputs.disablingDeficit, inputs.lvoStatus, inputs.imagingType, coreVol, mismatchRat]);
+  }, [timeFromOnset, nihss, mrs, inputs.disablingDeficit, inputs.lvoStatus, inputs.imagingType, coreVol, mismatchRat, inputs.afStatus, inputs.strokeClassification, inputs.cardioembolicSource, inputs.symptomOnsetToPresentation, inputs.highBleedingRisk, inputs.strokeSize, inputs.hemorrhagicTransformation]);
 
   // Get pathway highlight class
   const getPathwayClass = (isActive: boolean, baseColor: string) => {
@@ -552,6 +606,140 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* OAC Timing Inputs - Show when OAC is recommended */}
+                  {pathwayState.recommendOAC && (
+                    <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/30 border-2 border-purple-400 dark:border-purple-600 rounded-lg">
+                      <h5 className="font-semibold text-purple-800 dark:text-purple-200 mb-3 flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        OAC Timing: 1-3-6-12 Day Rule
+                        <Badge variant="outline" className="ml-2 text-purple-600 border-purple-400">Based on Stroke Size</Badge>
+                      </h5>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        {/* Stroke Size for OAC Timing */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                            Infarct Size on Imaging
+                          </Label>
+                          <Select value={inputs.strokeSize} onValueChange={(v) => updateInput("strokeSize", v)}>
+                            <SelectTrigger className={cn(getInputClass(inputs.strokeSize), "border-purple-300")}>
+                              <SelectValue placeholder="Select size" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="tia">TIA (no infarct)</SelectItem>
+                              <SelectItem value="small">Small (&lt;1.5 cm)</SelectItem>
+                              <SelectItem value="medium">Medium (1.5-3 cm)</SelectItem>
+                              <SelectItem value="large">Large (&gt;3 cm or &gt;1/3 MCA)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {/* Hemorrhagic Transformation */}
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                            Hemorrhagic Transformation
+                          </Label>
+                          <Select value={inputs.hemorrhagicTransformation} onValueChange={(v) => updateInput("hemorrhagicTransformation", v)}>
+                            <SelectTrigger className={cn(getInputClass(inputs.hemorrhagicTransformation), "border-purple-300")}>
+                              <SelectValue placeholder="HT present?" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="no">No</SelectItem>
+                              <SelectItem value="yes">Yes (HI-1/2 or PH-1/2)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {pathwayState.hasHemorrhagicTransformation && (
+                            <Badge variant="destructive" className="text-xs">⚠️ Delay OAC</Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 1-3-6-12 Visual Guide */}
+                      <div className="grid grid-cols-4 gap-2 mb-4">
+                        <div className={cn(
+                          "p-3 rounded-lg text-center border-2 transition-all",
+                          inputs.strokeSize === "tia" && !pathwayState.hasHemorrhagicTransformation
+                            ? "bg-green-200 dark:bg-green-800 border-green-500 ring-2 ring-green-400 shadow-lg"
+                            : "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700 opacity-60"
+                        )}>
+                          <div className="text-2xl font-bold text-green-700 dark:text-green-300">1</div>
+                          <div className="text-xs font-medium text-green-800 dark:text-green-200">Day</div>
+                          <div className="text-xs text-green-600 dark:text-green-400 mt-1">TIA</div>
+                        </div>
+                        <div className={cn(
+                          "p-3 rounded-lg text-center border-2 transition-all",
+                          inputs.strokeSize === "small" && !pathwayState.hasHemorrhagicTransformation
+                            ? "bg-blue-200 dark:bg-blue-800 border-blue-500 ring-2 ring-blue-400 shadow-lg"
+                            : "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700 opacity-60"
+                        )}>
+                          <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">3</div>
+                          <div className="text-xs font-medium text-blue-800 dark:text-blue-200">Days</div>
+                          <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">Small</div>
+                        </div>
+                        <div className={cn(
+                          "p-3 rounded-lg text-center border-2 transition-all",
+                          inputs.strokeSize === "medium" && !pathwayState.hasHemorrhagicTransformation
+                            ? "bg-amber-200 dark:bg-amber-800 border-amber-500 ring-2 ring-amber-400 shadow-lg"
+                            : "bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 opacity-60"
+                        )}>
+                          <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">6</div>
+                          <div className="text-xs font-medium text-amber-800 dark:text-amber-200">Days</div>
+                          <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">Medium</div>
+                        </div>
+                        <div className={cn(
+                          "p-3 rounded-lg text-center border-2 transition-all",
+                          inputs.strokeSize === "large" && !pathwayState.hasHemorrhagicTransformation
+                            ? "bg-red-200 dark:bg-red-800 border-red-500 ring-2 ring-red-400 shadow-lg"
+                            : "bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700 opacity-60"
+                        )}>
+                          <div className="text-2xl font-bold text-red-700 dark:text-red-300">12</div>
+                          <div className="text-xs font-medium text-red-800 dark:text-red-200">Days</div>
+                          <div className="text-xs text-red-600 dark:text-red-400 mt-1">Large</div>
+                        </div>
+                      </div>
+
+                      {/* Timing Recommendation Display */}
+                      {pathwayState.oacTiming && (
+                        <div className={cn(
+                          "p-4 rounded-lg border-2 transition-all",
+                          pathwayState.oacTiming.severity === "low_risk" 
+                            ? "bg-green-100 dark:bg-green-900/40 border-green-500"
+                            : pathwayState.oacTiming.severity === "moderate_risk"
+                              ? "bg-amber-100 dark:bg-amber-900/40 border-amber-500"
+                              : "bg-red-100 dark:bg-red-900/40 border-red-500"
+                        )}>
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className={cn(
+                              "px-4 py-2 rounded-lg font-bold text-lg",
+                              pathwayState.oacTiming.severity === "low_risk"
+                                ? "bg-green-600 text-white"
+                                : pathwayState.oacTiming.severity === "moderate_risk"
+                                  ? "bg-amber-600 text-white"
+                                  : "bg-red-600 text-white"
+                            )}>
+                              Day {pathwayState.oacTiming.days}
+                            </div>
+                            <div>
+                              <p className="font-semibold text-foreground">Start OAC/NOAC</p>
+                              <p className="text-sm text-muted-foreground">{pathwayState.oacTiming.recommendation}</p>
+                            </div>
+                          </div>
+                          {pathwayState.hasHemorrhagicTransformation && (
+                            <div className="mt-2 p-2 bg-red-200 dark:bg-red-900/60 rounded text-sm text-red-800 dark:text-red-200">
+                              ⚠️ <strong>Hemorrhagic transformation present:</strong> Repeat imaging at Day 7-10 to confirm stability before initiating OAC.
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Reference Note */}
+                      <div className="mt-3 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-muted-foreground">
+                        <strong>1-3-6-12 Rule Reference:</strong> European Stroke Organisation guidelines. TIA = Day 1, Small infarct = Day 3, 
+                        Medium infarct = Day 6, Large infarct = Day 12. Consider bridging with aspirin until OAC started.
+                      </div>
+                    </div>
+                  )}
+
                   {/* Recommendation Summary */}
                   {(pathwayState.recommendOAC || pathwayState.recommendDAPT || pathwayState.recommendSAPT) && (
                     <div className={cn(
@@ -571,7 +759,7 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                         ✓ Recommended: {pathwayState.recommendOAC ? "OAC/NOAC" : pathwayState.recommendDAPT ? "DAPT (21-90 days)" : "SAPT (long-term)"}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {pathwayState.recommendOAC && "AF or cardioembolic source detected → Anticoagulation indicated. Delay 4-14 days based on stroke size."}
+                        {pathwayState.recommendOAC && `AF or cardioembolic source detected → Anticoagulation indicated. ${pathwayState.oacTiming ? `Start Day ${pathwayState.oacTiming.days} based on stroke size.` : 'Select stroke size above for timing.'}`}
                         {pathwayState.recommendDAPT && "Minor stroke/TIA within 24h without cardioembolic source → DAPT for 21-90 days, then transition to SAPT."}
                         {pathwayState.recommendSAPT && "Non-cardioembolic stroke, not DAPT eligible → Long-term single antiplatelet therapy."}
                       </p>
