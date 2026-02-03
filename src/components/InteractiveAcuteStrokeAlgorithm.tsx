@@ -1105,13 +1105,40 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                         )}
                       </div>
                       <ul className="text-amber-700 dark:text-amber-400 space-y-0.5">
-                        <li>• Aspirin + Clopidogrel</li>
+                        <li>• <strong>First-line:</strong> Aspirin + Clopidogrel</li>
                         <li>• 21-90 days (minor stroke/TIA)</li>
                         <li>• ⚠️ Check CYP2C19 status</li>
                         {pathwayState.recommendDAPT && (
                           <li className="text-amber-800 dark:text-amber-300 font-medium">• Then transition to SAPT</li>
                         )}
                       </ul>
+                      
+                      {/* CYP2C19 Poor Metabolizer Alternative */}
+                      <div className="mt-2 p-2 bg-orange-100 dark:bg-orange-900/40 rounded border border-orange-300 dark:border-orange-600">
+                        <p className="font-semibold text-orange-800 dark:text-orange-300 mb-1">
+                          🧬 CYP2C19 Poor Metabolizer Alternative:
+                        </p>
+                        <ul className="text-orange-700 dark:text-orange-400 space-y-0.5">
+                          <li>• <strong>Ticagrelor 90mg BID</strong> + Aspirin 81mg daily</li>
+                          <li>• Not affected by CYP2C19 polymorphisms</li>
+                          <li>• THALES trial: Ticagrelor + ASA in minor stroke/TIA</li>
+                          <li>• ⚠️ 30-50% of Indian population carries LOF alleles</li>
+                        </ul>
+                      </div>
+                      
+                      {/* Prasugrel Contraindication Warning */}
+                      <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/40 rounded border border-red-300 dark:border-red-600">
+                        <p className="font-semibold text-red-800 dark:text-red-300 mb-1">
+                          🚫 Prasugrel CONTRAINDICATED in Stroke/TIA:
+                        </p>
+                        <ul className="text-red-700 dark:text-red-400 space-y-0.5">
+                          <li>• FDA Black Box: Prior stroke/TIA is formal contraindication</li>
+                          <li>• TRITON-TIMI 38: 6.5% vs 1.2% stroke rate (vs clopidogrel)</li>
+                          <li>• Increased intracranial hemorrhage risk</li>
+                          <li>• If on prasugrel for ACS and develops stroke → stop prasugrel</li>
+                          <li className="italic text-red-600 dark:text-red-300">• Only used in narrow neurointerventional scenarios (not routine)</li>
+                        </ul>
+                      </div>
                     </div>
 
                     {/* OAC/NOAC */}
