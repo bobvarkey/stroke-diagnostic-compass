@@ -21,7 +21,6 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import HeadsUpTest from "./HeadsUpTest";
-import CTACollateralGrading from "./CTACollateralGrading";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
 import LipidTherapyIntensificationGuide from "./LipidTherapyIntensificationGuide";
@@ -5637,12 +5636,7 @@ export default function StrokeWorkupChecklist() {
             <TreatmentDecisionAid />
           </div>
 
-          {/* CTA Collateral Grading - Moved into LVO Dashboard */}
-          <div id="collateral-grading">
-            <CTACollateralGrading />
-          </div>
-
-          {/* LVO Decision Dashboard - Integrated Treatment Recommendation */}
+          {/* LVO Decision Dashboard - Integrated Treatment Recommendation (includes Collateral Grading, HeadsUp, eTICI, TAL) */}
           <div id="lvo-dashboard">
             <LVODecisionDashboard />
           </div>

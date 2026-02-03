@@ -24,10 +24,16 @@ import {
   Gauge,
   TrendingUp,
   Shield,
-  Info
+  Info,
+  ArrowUpCircle,
+  Crosshair
 } from "lucide-react";
 import LVOLocationSelector, { LVOLocation } from "./LVOLocationSelector";
 import ImagingScanProgress, { ScanItem, ScanStatus } from "./ImagingScanProgress";
+import HeadsUpTest from "./HeadsUpTest";
+import ETICIScoreCalculator from "./ETICIScoreCalculator";
+import TALDefinitionGuide from "./TALDefinitionGuide";
+import CTACollateralGrading from "./CTACollateralGrading";
 import { toast } from "@/hooks/use-toast";
 import ModuleCommentBox from "./ModuleCommentBox";
 
@@ -751,6 +757,104 @@ const LVODecisionDashboard: React.FC = () => {
                 <p><strong>Step 4:</strong> For 6-24h window, perfusion imaging required (DAWN/DEFUSE-3 criteria)</p>
                 <p><strong>Step 5:</strong> Integrate all factors for individualized treatment decision</p>
               </div>
+            </div>
+
+            {/* EVT Assessment Tools - Collapsible Sub-sections */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                <Crosshair className="h-5 w-5" />
+                EVT Assessment Tools
+              </h3>
+              
+              {/* CTA Collateral Grading - Collapsible */}
+              <Collapsible>
+                <Card className="border-cyan-200 dark:border-cyan-800">
+                  <CollapsibleTrigger asChild>
+                    <CardHeader className="cursor-pointer hover:bg-cyan-50/50 dark:hover:bg-cyan-950/30 transition-colors py-3">
+                      <CardTitle className="flex items-center justify-between text-base">
+                        <div className="flex items-center gap-2">
+                          <Network className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+                          CTA Collateral Grading Scales
+                        </div>
+                        <ChevronDown className="h-4 w-4" />
+                      </CardTitle>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <CardContent className="pt-0">
+                      <CTACollateralGrading />
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+
+              {/* Heads Up Test - Collapsible */}
+              <Collapsible>
+                <Card className="border-amber-200 dark:border-amber-800">
+                  <CollapsibleTrigger asChild>
+                    <CardHeader className="cursor-pointer hover:bg-amber-50/50 dark:hover:bg-amber-950/30 transition-colors py-3">
+                      <CardTitle className="flex items-center justify-between text-base">
+                        <div className="flex items-center gap-2">
+                          <ArrowUpCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                          Heads Up Test (Low NIHSS LVO)
+                        </div>
+                        <Badge variant="outline" className="mr-2 text-xs">For NIHSS ≤5</Badge>
+                        <ChevronDown className="h-4 w-4" />
+                      </CardTitle>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <CardContent className="pt-0">
+                      <HeadsUpTest />
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+
+              {/* eTICI Score - Collapsible */}
+              <Collapsible>
+                <Card className="border-green-200 dark:border-green-800">
+                  <CollapsibleTrigger asChild>
+                    <CardHeader className="cursor-pointer hover:bg-green-50/50 dark:hover:bg-green-950/30 transition-colors py-3">
+                      <CardTitle className="flex items-center justify-between text-base">
+                        <div className="flex items-center gap-2">
+                          <Activity className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          eTICI Score (Post-EVT Reperfusion)
+                        </div>
+                        <Badge variant="outline" className="mr-2 text-xs">Post-Procedure</Badge>
+                        <ChevronDown className="h-4 w-4" />
+                      </CardTitle>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <CardContent className="pt-0">
+                      <ETICIScoreCalculator />
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+
+              {/* TAL Definition Guide - Collapsible */}
+              <Collapsible>
+                <Card className="border-indigo-200 dark:border-indigo-800">
+                  <CollapsibleTrigger asChild>
+                    <CardHeader className="cursor-pointer hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 transition-colors py-3">
+                      <CardTitle className="flex items-center justify-between text-base">
+                        <div className="flex items-center gap-2">
+                          <Target className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                          Target Arterial Lesion (TAL) Guide
+                        </div>
+                        <ChevronDown className="h-4 w-4" />
+                      </CardTitle>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <CardContent className="pt-0">
+                      <TALDefinitionGuide />
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
             </div>
 
             {/* Disclaimer */}

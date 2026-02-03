@@ -104,11 +104,6 @@ const navGroups: NavGroup[] = [
         icon: <Brain className="h-4 w-4 text-cyan-500" /> 
       },
       { 
-        id: "collateral-grading", 
-        label: "Collateral Grading", 
-        icon: <Heart className="h-4 w-4 text-red-500" /> 
-      },
-      { 
         id: "vascular-anatomy", 
         label: "Vascular Anatomy", 
         icon: <Heart className="h-4 w-4 text-pink-500" /> 
