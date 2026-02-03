@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, AlertTriangle, Target, Info } from "lucide-react";
+import vascularAnatomyImage from "@/assets/vascular-anatomy-diagram.png";
 
 interface VesselSegment {
   id: string;
@@ -102,28 +103,25 @@ const vesselSegments: VesselSegment[] = [
 
 const VascularAnatomyDiagram: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
-  const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
 
   const getSelectedInfo = () => vesselSegments.find(s => s.id === selectedSegment);
   const selectedInfo = getSelectedInfo();
 
   const getMorbidityColor = (morbidity: string) => {
     switch (morbidity) {
-      case "critical": return { bg: "fill-red-500", stroke: "stroke-red-600", badge: "bg-red-600" };
-      case "high": return { bg: "fill-orange-500", stroke: "stroke-orange-600", badge: "bg-orange-500" };
-      case "moderate": return { bg: "fill-yellow-500", stroke: "stroke-yellow-600", badge: "bg-yellow-500" };
-      default: return { bg: "fill-muted", stroke: "stroke-border", badge: "bg-muted" };
+      case "critical": return { badge: "bg-red-600" };
+      case "high": return { badge: "bg-orange-500" };
+      case "moderate": return { badge: "bg-yellow-500" };
+      default: return { badge: "bg-muted" };
     }
   };
-
-  const isActive = (id: string) => selectedSegment === id || hoveredSegment === id;
 
   return (
     <Card className="w-full border-primary/20 shadow-lg">
       <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5">
         <CardTitle className="flex items-center gap-2 text-lg text-primary">
           <Brain className="h-5 w-5" />
-          Interactive Vascular Anatomy - Anterior Circulation
+          Cerebral Vascular Anatomy Reference
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-6">
@@ -132,170 +130,44 @@ const VascularAnatomyDiagram: React.FC = () => {
           <div className="flex items-start gap-2">
             <Info className="h-4 w-4 text-blue-600 mt-0.5" />
             <p className="text-sm text-blue-700 dark:text-blue-400">
-              Click on vessel segments to view Target Arterial Lesion (TAL) details and thrombectomy considerations.
+              Reference diagram showing anterior (MCA/ACA) and posterior (PCA) circulation segments. Select a segment below for TAL details.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* SVG Diagram */}
-          <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-border">
-            <svg viewBox="0 0 400 350" className="w-full h-auto max-h-80">
-              {/* Background brain outline */}
-              <ellipse cx="200" cy="175" rx="170" ry="150" fill="none" stroke="currentColor" strokeOpacity="0.1" strokeWidth="2" />
-              
-              {/* ICA (coming up from bottom) */}
-              <path 
-                d="M200 340 L200 260" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeOpacity="0.3" 
-                strokeWidth="8"
-                strokeLinecap="round"
-              />
-              <text x="215" y="300" className="text-xs fill-muted-foreground">ICA</text>
-
-              {/* ICA Terminus */}
-              <circle 
-                cx="200" 
-                cy="260" 
-                r="18"
-                className={`cursor-pointer transition-all duration-200 ${
-                  isActive("ica_terminus") 
-                    ? "fill-red-500 stroke-red-700 stroke-2" 
-                    : "fill-red-400/70 stroke-red-500 stroke-1 hover:fill-red-500"
-                }`}
-                onClick={() => setSelectedSegment("ica_terminus")}
-                onMouseEnter={() => setHoveredSegment("ica_terminus")}
-                onMouseLeave={() => setHoveredSegment(null)}
-              />
-              <text 
-                x="200" y="265" 
-                textAnchor="middle" 
-                className="text-[10px] fill-white font-bold pointer-events-none"
-              >
-                ICA-T
-              </text>
-
-              {/* A1 Segment (going left/medial) */}
-              <path 
-                d="M182 260 Q150 250 130 220" 
-                fill="none" 
-                className={`cursor-pointer transition-all duration-200 ${
-                  isActive("a1") 
-                    ? "stroke-orange-500" 
-                    : "stroke-orange-400/70 hover:stroke-orange-500"
-                }`}
-                strokeWidth={isActive("a1") ? "10" : "8"}
-                strokeLinecap="round"
-                onClick={() => setSelectedSegment("a1")}
-                onMouseEnter={() => setHoveredSegment("a1")}
-                onMouseLeave={() => setHoveredSegment(null)}
-              />
-              <text x="135" y="250" className="text-xs fill-orange-600 dark:fill-orange-400 font-medium">A1</text>
-
-              {/* M1 Proximal */}
-              <path 
-                d="M218 260 Q260 255 280 245" 
-                fill="none" 
-                className={`cursor-pointer transition-all duration-200 ${
-                  isActive("m1_proximal") 
-                    ? "stroke-red-500" 
-                    : "stroke-red-400/70 hover:stroke-red-500"
-                }`}
-                strokeWidth={isActive("m1_proximal") ? "12" : "10"}
-                strokeLinecap="round"
-                onClick={() => setSelectedSegment("m1_proximal")}
-                onMouseEnter={() => setHoveredSegment("m1_proximal")}
-                onMouseLeave={() => setHoveredSegment(null)}
-              />
-              <text x="245" y="275" className="text-xs fill-red-600 dark:fill-red-400 font-medium">M1</text>
-              <text x="242" y="285" className="text-[9px] fill-muted-foreground">prox</text>
-
-              {/* LSA indicator (small branches) */}
-              <path d="M260 250 L255 225" fill="none" stroke="currentColor" strokeOpacity="0.4" strokeWidth="2" strokeDasharray="2,2" />
-              <path d="M270 248 L268 220" fill="none" stroke="currentColor" strokeOpacity="0.4" strokeWidth="2" strokeDasharray="2,2" />
-              <text x="248" y="215" className="text-[8px] fill-muted-foreground">LSAs</text>
-
-              {/* M1 Distal */}
-              <path 
-                d="M280 245 Q310 230 330 205" 
-                fill="none" 
-                className={`cursor-pointer transition-all duration-200 ${
-                  isActive("m1_distal") 
-                    ? "stroke-orange-500" 
-                    : "stroke-orange-400/70 hover:stroke-orange-500"
-                }`}
-                strokeWidth={isActive("m1_distal") ? "10" : "8"}
-                strokeLinecap="round"
-                onClick={() => setSelectedSegment("m1_distal")}
-                onMouseEnter={() => setHoveredSegment("m1_distal")}
-                onMouseLeave={() => setHoveredSegment(null)}
-              />
-              <text x="315" y="235" className="text-xs fill-orange-600 dark:fill-orange-400 font-medium">M1</text>
-              <text x="315" y="245" className="text-[9px] fill-muted-foreground">dist</text>
-
-              {/* MCA Bifurcation point */}
-              <circle cx="330" cy="205" r="5" className="fill-primary/30 stroke-primary" />
-
-              {/* M2 Superior */}
-              <path 
-                d="M330 205 Q345 170 340 130" 
-                fill="none" 
-                className={`cursor-pointer transition-all duration-200 ${
-                  isActive("m2_superior") 
-                    ? "stroke-yellow-500" 
-                    : "stroke-yellow-400/70 hover:stroke-yellow-500"
-                }`}
-                strokeWidth={isActive("m2_superior") ? "8" : "6"}
-                strokeLinecap="round"
-                onClick={() => setSelectedSegment("m2_superior")}
-                onMouseEnter={() => setHoveredSegment("m2_superior")}
-                onMouseLeave={() => setHoveredSegment(null)}
-              />
-              <text x="350" y="150" className="text-xs fill-yellow-600 dark:fill-yellow-400 font-medium">M2</text>
-              <text x="350" y="160" className="text-[9px] fill-muted-foreground">sup</text>
-
-              {/* M2 Inferior */}
-              <path 
-                d="M330 205 Q360 220 365 260" 
-                fill="none" 
-                className={`cursor-pointer transition-all duration-200 ${
-                  isActive("m2_inferior") 
-                    ? "stroke-yellow-500" 
-                    : "stroke-yellow-400/70 hover:stroke-yellow-500"
-                }`}
-                strokeWidth={isActive("m2_inferior") ? "8" : "6"}
-                strokeLinecap="round"
-                onClick={() => setSelectedSegment("m2_inferior")}
-                onMouseEnter={() => setHoveredSegment("m2_inferior")}
-                onMouseLeave={() => setHoveredSegment(null)}
-              />
-              <text x="370" y="245" className="text-xs fill-yellow-600 dark:fill-yellow-400 font-medium">M2</text>
-              <text x="370" y="255" className="text-[9px] fill-muted-foreground">inf</text>
-
-              {/* Territory labels */}
-              <text x="100" y="180" className="text-[10px] fill-muted-foreground italic">ACA territory</text>
-              <text x="280" y="100" className="text-[10px] fill-muted-foreground italic">MCA territory</text>
-              <text x="240" y="190" className="text-[10px] fill-muted-foreground italic">Basal ganglia</text>
-            </svg>
-
-            {/* Legend */}
-            <div className="mt-4 flex flex-wrap gap-3 text-xs">
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <span>Critical morbidity</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-orange-500" />
-                <span>High morbidity</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <span>Moderate morbidity</span>
-              </div>
+        {/* Vascular Anatomy Image */}
+        <div className="bg-white dark:bg-slate-900/50 rounded-lg p-4 border border-border">
+          <img 
+            src={vascularAnatomyImage} 
+            alt="Cerebral Vascular Anatomy - Anterior and Posterior Circulation showing ICA, MCA (M1-M4), ACA (A1-A3), and PCA (P1-P5) segments" 
+            className="w-full h-auto rounded-lg"
+          />
+          <div className="mt-4 grid grid-cols-2 gap-4 text-xs">
+            <div>
+              <p className="font-semibold text-foreground mb-2">Anterior Circulation (Left)</p>
+              <ul className="space-y-1 text-muted-foreground">
+                <li><span className="font-medium text-red-600">ICA</span> - Internal Carotid Artery</li>
+                <li><span className="font-medium text-orange-500">M1</span> - Sphenoidal/Horizontal MCA</li>
+                <li><span className="font-medium text-blue-500">M2</span> - Insular MCA</li>
+                <li><span className="font-medium text-green-500">M3</span> - Opercular MCA</li>
+                <li><span className="font-medium text-purple-500">M4</span> - Cortical MCA</li>
+                <li><span className="font-medium text-cyan-500">A1-A3</span> - Anterior Cerebral Artery segments</li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-semibold text-foreground mb-2">Posterior Circulation (Right)</p>
+              <ul className="space-y-1 text-muted-foreground">
+                <li><span className="font-medium text-red-600">P1</span> - Precommunicating PCA</li>
+                <li><span className="font-medium text-orange-500">P2</span> - Ambient PCA</li>
+                <li><span className="font-medium text-cyan-500">P3</span> - Quadrigeminal PCA</li>
+                <li><span className="font-medium text-blue-600">P4</span> - Calcarine PCA</li>
+                <li><span className="font-medium text-yellow-600">P5</span> - Terminal Cortical PCA</li>
+              </ul>
             </div>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Segment Details Panel */}
           <div className="space-y-4">
@@ -340,7 +212,7 @@ const VascularAnatomyDiagram: React.FC = () => {
               <div className="p-4 rounded-lg bg-muted/50 border border-dashed border-border text-center">
                 <Target className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">
-                  Click on a vessel segment in the diagram to view TAL details
+                  Select a vessel segment below to view TAL details
                 </p>
               </div>
             )}
