@@ -3,13 +3,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, User } from "lucide-react";
+import { ChevronDown, User, Clock } from "lucide-react";
 import { useState } from "react";
 
 interface Demographics {
+  patientId: string;
+  name?: string;
   age?: string;
   sex?: string;
   race?: string;
+  lastKnownWell?: string; // ISO datetime string
 }
 
 interface Props {
@@ -39,6 +42,22 @@ export default function DemographicsForm({ demographics, onDemographicsChange }:
 
   const selectedRace = raceOptions.find(r => r.value === demographics.race);
 
+  // Calculate time since LKW for stroke timer
+  const getStrokeTimerDisplay = () => {
+    if (!demographics.lastKnownWell) return null;
+    const lkw = new Date(demographics.lastKnownWell);
+    const now = new Date();
+    const diffMs = now.getTime() - lkw.getTime();
+    if (diffMs < 0) return null;
+    
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return { hours, minutes, totalMinutes: Math.floor(diffMs / (1000 * 60)) };
+  };
+
+  const strokeTimer = getStrokeTimerDisplay();
+
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <Card className="border-teal-400 dark:border-teal-600 bg-gradient-to-br from-teal-50 dark:from-teal-950/30 to-background">
@@ -48,14 +67,95 @@ export default function DemographicsForm({ demographics, onDemographicsChange }:
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5" />
                 Patient Demographics
-                <span className="text-xs font-normal text-teal-600 dark:text-teal-400">(Optional - for race-specific guidance)</span>
+                {demographics.patientId && (
+                  <span className="text-xs font-normal bg-teal-200 dark:bg-teal-800 px-2 py-0.5 rounded">
+                    ID: {demographics.patientId}
+                  </span>
+                )}
               </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              <div className="flex items-center gap-3">
+                {strokeTimer && (
+                  <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-mono ${
+                    strokeTimer.totalMinutes <= 270 ? 'bg-green-500/20 text-green-600 dark:text-green-400' :
+                    strokeTimer.totalMinutes <= 360 ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400' :
+                    'bg-red-500/20 text-red-600 dark:text-red-400'
+                  }`}>
+                    <Clock className="h-3.5 w-3.5" />
+                    {strokeTimer.hours}h {strokeTimer.minutes}m since LKW
+                  </div>
+                )}
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
             </CardTitle>
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="pt-6 space-y-4">
+            {/* Patient ID and Name - Top Row */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {/* Patient ID (Required) */}
+              <div className="space-y-2">
+                <Label htmlFor="patientId" className="text-teal-800 dark:text-teal-300">
+                  Patient ID <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="patientId"
+                  type="text"
+                  placeholder="Enter patient ID"
+                  value={demographics.patientId || ""}
+                  onChange={(e) => updateDemographic("patientId", e.target.value)}
+                  className="border-teal-300 dark:border-teal-700"
+                  required
+                />
+              </div>
+
+              {/* Patient Name (Optional) */}
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-teal-800 dark:text-teal-300">
+                  Name <span className="text-xs text-muted-foreground">(Optional)</span>
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Patient name"
+                  value={demographics.name || ""}
+                  onChange={(e) => updateDemographic("name", e.target.value)}
+                  className="border-teal-300 dark:border-teal-700"
+                />
+              </div>
+
+              {/* Last Known Well (LKW) */}
+              <div className="space-y-2 lg:col-span-2">
+                <Label htmlFor="lastKnownWell" className="text-teal-800 dark:text-teal-300">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    Last Known Well (LKW)
+                  </div>
+                </Label>
+                <Input
+                  id="lastKnownWell"
+                  type="datetime-local"
+                  value={demographics.lastKnownWell || ""}
+                  onChange={(e) => updateDemographic("lastKnownWell", e.target.value)}
+                  className="border-teal-300 dark:border-teal-700"
+                />
+                {strokeTimer && (
+                  <div className={`text-xs font-medium ${
+                    strokeTimer.totalMinutes <= 270 ? 'text-green-600 dark:text-green-400' :
+                    strokeTimer.totalMinutes <= 360 ? 'text-yellow-600 dark:text-yellow-400' :
+                    'text-red-600 dark:text-red-400'
+                  }`}>
+                    ⏱ Time elapsed: {strokeTimer.hours}h {strokeTimer.minutes}m
+                    {strokeTimer.totalMinutes <= 270 && " — Within tPA window (4.5h)"}
+                    {strokeTimer.totalMinutes > 270 && strokeTimer.totalMinutes <= 360 && " — Approaching late window"}
+                    {strokeTimer.totalMinutes > 360 && strokeTimer.totalMinutes <= 1440 && " — Late window (EVT eligible if LVO)"}
+                    {strokeTimer.totalMinutes > 1440 && " — Extended window evaluation needed"}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Age, Sex, Race - Second Row */}
             <div className="grid gap-4 md:grid-cols-3">
               {/* Age */}
               <div className="space-y-2">
