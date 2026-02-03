@@ -26,6 +26,9 @@ import {
   Shield,
   Info
 } from "lucide-react";
+import LVOLocationSelector, { LVOLocation } from "./LVOLocationSelector";
+import ImagingScanProgress, { ScanItem, ScanStatus } from "./ImagingScanProgress";
+import { toast } from "@/hooks/use-toast";
 
 type CollateralStatus = "good" | "intermediate" | "poor" | null;
 type HeadsUpResult = "positive" | "negative" | "not_performed" | null;
@@ -35,6 +38,7 @@ type RecommendationLevel = "strongly_recommended" | "recommended" | "consider" |
 interface AssessmentData {
   nihss: number | null;
   hasLVO: boolean | null;
+  lvoLocation: LVOLocation | null;
   collateralStatus: CollateralStatus;
   headsUpResult: HeadsUpResult;
   timeWindow: TimeWindow;
@@ -52,11 +56,20 @@ interface Recommendation {
   caveats: string[];
 }
 
+// Default imaging scans for LVO workup
+const DEFAULT_SCANS: ScanItem[] = [
+  { id: "ncct", name: "Non-Contrast CT Head", shortName: "NCCT", status: "pending", isRequired: true },
+  { id: "cta", name: "CT Angiography (Head/Neck)", shortName: "CTA", status: "pending", isRequired: true },
+  { id: "ctp", name: "CT Perfusion", shortName: "CTP", status: "pending", isRequired: false },
+  { id: "mra", name: "MR Angiography", shortName: "MRA", status: "pending", isRequired: false },
+];
+
 const LVODecisionDashboard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [assessment, setAssessment] = useState<AssessmentData>({
     nihss: null,
     hasLVO: null,
+    lvoLocation: null,
     collateralStatus: null,
     headsUpResult: null,
     timeWindow: null,
@@ -64,6 +77,8 @@ const LVODecisionDashboard: React.FC = () => {
     aspectsScore: null,
     perfusionMismatch: null,
   });
+  const [imagingScans, setImagingScans] = useState<ScanItem[]>(DEFAULT_SCANS);
+  const [savedLVOLocation, setSavedLVOLocation] = useState<LVOLocation | null>(null);
 
   const updateAssessment = <K extends keyof AssessmentData>(
     key: K,
@@ -76,12 +91,48 @@ const LVODecisionDashboard: React.FC = () => {
     setAssessment({
       nihss: null,
       hasLVO: null,
+      lvoLocation: null,
       collateralStatus: null,
       headsUpResult: null,
       timeWindow: null,
       tpaEligible: null,
       aspectsScore: null,
       perfusionMismatch: null,
+    });
+    setImagingScans(DEFAULT_SCANS);
+    setSavedLVOLocation(null);
+  };
+
+  // Imaging scan handlers
+  const handleScanStatusChange = (scanId: string, status: ScanStatus, result?: string) => {
+    setImagingScans(prev => prev.map(scan => 
+      scan.id === scanId 
+        ? { ...scan, status, result, completedAt: status === "completed" ? new Date() : undefined }
+        : scan
+    ));
+  };
+
+  const handleMarkScanComplete = (scanId: string) => {
+    setImagingScans(prev => prev.map(scan => 
+      scan.id === scanId 
+        ? { ...scan, status: "completed" as ScanStatus, completedAt: new Date() }
+        : scan
+    ));
+    
+    // If CTA completed, prompt for LVO confirmation
+    if (scanId === "cta") {
+      toast({
+        title: "CTA Completed",
+        description: "Please confirm LVO status and location based on imaging findings.",
+      });
+    }
+  };
+
+  const handleSaveLVOLocation = (location: LVOLocation) => {
+    setSavedLVOLocation(location);
+    toast({
+      title: "LVO Location Saved",
+      description: `${location.side !== "midline" ? location.side + " " : ""}${location.vessel} ${location.segment} recorded.`,
     });
   };
 
@@ -352,10 +403,17 @@ const LVODecisionDashboard: React.FC = () => {
 
         <CollapsibleContent>
           <CardContent className="space-y-6">
+            {/* Imaging Workflow Progress - NEW */}
+            <ImagingScanProgress
+              scans={imagingScans}
+              onStatusChange={handleScanStatusChange}
+              onMarkComplete={handleMarkScanComplete}
+            />
+
             {/* Completion Progress */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Assessment Completion</span>
+                <span className="text-muted-foreground">Clinical Assessment Completion</span>
                 <span className="font-medium">{Math.round(completionPercent)}%</span>
               </div>
               <Progress value={completionPercent} className="h-2" />
@@ -395,6 +453,12 @@ const LVODecisionDashboard: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                   <Label className="font-semibold">Large Vessel Occlusion (LVO)</Label>
+                  {savedLVOLocation && (
+                    <Badge className="bg-green-600 text-white text-xs ml-auto">
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      {savedLVOLocation.vessel} {savedLVOLocation.segment}
+                    </Badge>
+                  )}
                 </div>
                 <RadioGroup
                   value={assessment.hasLVO === null ? "" : assessment.hasLVO.toString()}
@@ -575,6 +639,15 @@ const LVODecisionDashboard: React.FC = () => {
                 </p>
               </div>
             </div>
+
+            {/* LVO Location Selector - Shows when LVO is confirmed */}
+            {assessment.hasLVO === true && (
+              <LVOLocationSelector
+                value={assessment.lvoLocation}
+                onChange={(location) => updateAssessment("lvoLocation", location)}
+                onSave={handleSaveLVOLocation}
+              />
+            )}
 
             {/* Reset Button */}
             <div className="flex justify-end">
