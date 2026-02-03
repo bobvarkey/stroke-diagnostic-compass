@@ -29,6 +29,7 @@ import {
 import LVOLocationSelector, { LVOLocation } from "./LVOLocationSelector";
 import ImagingScanProgress, { ScanItem, ScanStatus } from "./ImagingScanProgress";
 import { toast } from "@/hooks/use-toast";
+import ModuleCommentBox from "./ModuleCommentBox";
 
 type CollateralStatus = "good" | "intermediate" | "poor" | null;
 type HeadsUpResult = "positive" | "negative" | "not_performed" | null;
@@ -79,6 +80,7 @@ const LVODecisionDashboard: React.FC = () => {
   });
   const [imagingScans, setImagingScans] = useState<ScanItem[]>(DEFAULT_SCANS);
   const [savedLVOLocation, setSavedLVOLocation] = useState<LVOLocation | null>(null);
+  const [comment, setComment] = useState("");
 
   const updateAssessment = <K extends keyof AssessmentData>(
     key: K,
@@ -761,6 +763,14 @@ const LVODecisionDashboard: React.FC = () => {
                 and neurointerventional teams for complex cases.
               </p>
             </div>
+
+            {/* Comments Section */}
+            <ModuleCommentBox
+              value={comment}
+              onChange={setComment}
+              placeholder="Add notes about LVO assessment, imaging findings, collateral status, or treatment recommendations..."
+              label="LVO Assessment Notes"
+            />
           </CardContent>
         </CollapsibleContent>
       </Collapsible>

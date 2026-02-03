@@ -17,6 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ModuleCommentBox from "./ModuleCommentBox";
 
 interface Criterion {
   id: string;
@@ -98,6 +99,7 @@ const TPAEligibilityChecklist: React.FC = () => {
   const [inclusionOpen, setInclusionOpen] = useState(true);
   const [absoluteOpen, setAbsoluteOpen] = useState(true);
   const [relativeOpen, setRelativeOpen] = useState(true);
+  const [comment, setComment] = useState("");
 
   const toggleInclusion = (id: string) => {
     setInclusionChecked(prev => ({ ...prev, [id]: !prev[id] }));
@@ -437,6 +439,14 @@ const TPAEligibilityChecklist: React.FC = () => {
         <p className="text-xs text-muted-foreground text-center pt-2">
           Based on AHA/ASA 2019 Guidelines for Early Management of Acute Ischemic Stroke
         </p>
+
+        {/* Comments Section */}
+        <ModuleCommentBox
+          value={comment}
+          onChange={setComment}
+          placeholder="Add notes about tPA eligibility assessment, contraindications considered, or clinical rationale..."
+          label="tPA Eligibility Notes"
+        />
       </CardContent>
     </Card>
   );

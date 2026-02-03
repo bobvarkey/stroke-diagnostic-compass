@@ -7,6 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, ArrowRight, ChevronDown, Zap, Clock, Activity, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ModuleCommentBox from "./ModuleCommentBox";
 
 interface AlgorithmInputs {
   lastKnownWell: string;
@@ -37,6 +38,7 @@ interface AlgorithmInputs {
 
 const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [comment, setComment] = useState("");
   const [inputs, setInputs] = useState<AlgorithmInputs>({
     lastKnownWell: "",
     nihssScore: "",
@@ -1616,6 +1618,14 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                   <strong>Reference:</strong> Prabhakaran S, et al. 2026 Guideline for the Early Management of Patients With Acute Ischemic Stroke. Stroke. 2026. doi: 10.1161/STR.0000000000000513
                 </p>
               </div>
+
+              {/* Comments Section */}
+              <ModuleCommentBox
+                value={comment}
+                onChange={setComment}
+                placeholder="Add clinical notes about this patient's acute stroke management, treatment decisions, or timing considerations..."
+                label="Acute Stroke Algorithm Notes"
+              />
             </div>
           </CardContent>
         </CollapsibleContent>
