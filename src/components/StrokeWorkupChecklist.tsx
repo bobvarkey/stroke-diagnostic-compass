@@ -36,6 +36,7 @@ import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 import KDIGOHeatMap from "./KDIGOHeatMap";
 import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
+import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 
 interface TestItem {
   id: string;
@@ -5615,9 +5616,9 @@ export default function StrokeWorkupChecklist() {
             <StrokeCodeSystem />
           </div>
 
-          {/* Acute Stroke Management Algorithm */}
+          {/* Acute Stroke Management Algorithm - Interactive */}
           <div id="acute-algorithm">
-            <AcuteStrokeAlgorithm />
+            <InteractiveAcuteStrokeAlgorithm />
           </div>
 
           {/* tPA Eligibility Checklist */}
