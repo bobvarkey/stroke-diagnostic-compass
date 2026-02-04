@@ -37,6 +37,7 @@ import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
+import LabInvestigationsModule from "./LabInvestigationsModule";
 
 interface TestItem {
   id: string;
@@ -5732,6 +5733,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* ISPS25 Stroke Phenotyping System */}
           <div id="stroke-phenotyping">
             <ISPS25StrokePhenotyping />
+          </div>
+
+          {/* Lab Investigations Module */}
+          <div id="lab-investigations">
+            <LabInvestigationsModule />
           </div>
 
           {/* Progress Overview & Workup Checklist */}
