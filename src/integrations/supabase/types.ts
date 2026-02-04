@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      patients: {
+        Row: {
+          age: number | null
+          clinical_data: Json | null
+          created_at: string
+          created_by: string | null
+          demographics: Json | null
+          id: string
+          last_edited_by: string | null
+          last_known_well: string | null
+          name: string | null
+          patient_id: string
+          sex: string | null
+          updated_at: string
+          weight: number | null
+        }
+        Insert: {
+          age?: number | null
+          clinical_data?: Json | null
+          created_at?: string
+          created_by?: string | null
+          demographics?: Json | null
+          id?: string
+          last_edited_by?: string | null
+          last_known_well?: string | null
+          name?: string | null
+          patient_id: string
+          sex?: string | null
+          updated_at?: string
+          weight?: number | null
+        }
+        Update: {
+          age?: number | null
+          clinical_data?: Json | null
+          created_at?: string
+          created_by?: string | null
+          demographics?: Json | null
+          id?: string
+          last_edited_by?: string | null
+          last_known_well?: string | null
+          name?: string | null
+          patient_id?: string
+          sex?: string | null
+          updated_at?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       stroke_activations: {
         Row: {
           activated_by: string | null
@@ -176,14 +251,43 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_username: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "user"
       stroke_call_status:
         | "pending"
         | "calling"
@@ -328,6 +432,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "user"],
       stroke_call_status: [
         "pending",
         "calling",

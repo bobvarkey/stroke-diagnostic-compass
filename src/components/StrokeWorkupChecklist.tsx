@@ -5544,10 +5544,37 @@ function MetabolicSyndromeChecker() {
   );
 }
 
-export default function StrokeWorkupChecklist() {
+interface Patient {
+  id: string;
+  patient_id: string;
+  name: string | null;
+  weight: number | null;
+  age: number | null;
+  sex: string | null;
+  last_known_well: string | null;
+  demographics: Record<string, unknown>;
+  clinical_data: Record<string, unknown>;
+  created_by: string | null;
+  last_edited_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface StrokeWorkupChecklistProps {
+  patient?: Patient;
+  onPatientDataChange?: (data: Record<string, unknown>) => void;
+}
+
+export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: StrokeWorkupChecklistProps) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("ischemic");
-  const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({ patientId: "" });
+  const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({ 
+    patientId: patient?.patient_id || "",
+    name: patient?.name || undefined,
+    age: patient?.age?.toString() || undefined,
+    sex: patient?.sex || undefined,
+    lastKnownWell: patient?.last_known_well || undefined,
+  });
   const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
 
   const handleCheck = (testId: string) => {
