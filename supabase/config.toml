@@ -1,1 +1,4 @@
 project_id = "mudqzllcgiyivtlycrms"
+
+[functions.extract-lab-values]
+verify_jwt = false
