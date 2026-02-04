@@ -14,8 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      patient_presence: {
+        Row: {
+          created_at: string
+          id: string
+          last_seen_at: string
+          patient_id: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          patient_id: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          patient_id?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_presence_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patients: {
         Row: {
+          active_editors: Json | null
           age: number | null
           clinical_data: Json | null
           created_at: string
@@ -31,6 +67,7 @@ export type Database = {
           weight: number | null
         }
         Insert: {
+          active_editors?: Json | null
           age?: number | null
           clinical_data?: Json | null
           created_at?: string
@@ -46,6 +83,7 @@ export type Database = {
           weight?: number | null
         }
         Update: {
+          active_editors?: Json | null
           age?: number | null
           clinical_data?: Json | null
           created_at?: string
@@ -248,6 +286,51 @@ export type Database = {
           updated_at?: string
           voice_message_code_1?: string | null
           voice_message_code_2?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          is_renewal: boolean | null
+          max_users: number
+          plan_type: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          is_renewal?: boolean | null
+          max_users?: number
+          plan_type: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          is_renewal?: boolean | null
+          max_users?: number
+          plan_type?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
