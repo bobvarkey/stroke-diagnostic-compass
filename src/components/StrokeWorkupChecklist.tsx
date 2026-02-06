@@ -38,6 +38,7 @@ import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import LabInvestigationsModule from "./LabInvestigationsModule";
+import FeedbackForm from "./FeedbackForm";
 
 interface TestItem {
   id: string;
@@ -5955,6 +5956,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
         </Card>
       </Collapsible>
 
+          {/* User Feedback Section */}
+          <FeedbackForm />
+
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Ischemic stroke investigation checklist - Always correlate with clinical presentation</p>
           </div>
@@ -6013,6 +6017,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           {/* ADL Assessment Scales */}
           <ADLAssessmentScales />
+
+          {/* User Feedback Section */}
+          <FeedbackForm />
 
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Intracerebral hemorrhage investigation checklist - Always correlate with clinical presentation</p>
