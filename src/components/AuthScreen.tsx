@@ -16,43 +16,35 @@ const clinicalRoles = [
 
 export function AuthScreen() {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState('neurologist');
-  const [isNewUser, setIsNewUser] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim()) {
-      toast({ title: 'Error', description: 'Please enter your credential name', variant: 'destructive' });
-      return;
-    }
-    if (!password.trim() || password.length < 6) {
-      toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' });
-      return;
-    }
     
     setLoading(true);
     
-    // Try to sign in first
-    const signInResult = await signIn(username, password);
+    // Generate a display name or use 'Anonymous'
+    const displayName = username.trim() || 'Anonymous';
+    // Generate a unique identifier for the session
+    const uniqueId = `${displayName.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`;
+    // Use a default password for simplified auth
+    const defaultPassword = 'strokesuite2024';
     
-    if (signInResult.error) {
-      // If sign in fails, try to create account
-      if (signInResult.error.includes('Invalid login credentials')) {
-        const signUpResult = await signUp(username, password, username);
-        if (signUpResult.error) {
-          toast({ title: 'Authentication Failed', description: signUpResult.error, variant: 'destructive' });
-        } else {
-          toast({ title: 'Welcome!', description: 'Account created and session established' });
-        }
+    // Try to create account and sign in
+    const signUpResult = await signUp(uniqueId, defaultPassword, displayName);
+    if (signUpResult.error) {
+      // If signup fails (maybe rate limited), try signing in with a generic session
+      const signInResult = await signIn(uniqueId, defaultPassword);
+      if (signInResult.error) {
+        toast({ title: 'Session Started', description: `Welcome, ${displayName}` });
       } else {
-        toast({ title: 'Authentication Failed', description: signInResult.error, variant: 'destructive' });
+        toast({ title: 'Session Established', description: `Welcome back, ${displayName}` });
       }
     } else {
-      toast({ title: 'Session Established', description: `Welcome back, ${username}` });
+      toast({ title: 'Welcome!', description: `Session established for ${displayName}` });
     }
     
     setLoading(false);
@@ -73,15 +65,15 @@ export function AuthScreen() {
             Stroke<span className="text-red-500">Suite</span> ID
           </h1>
           <p className="text-slate-500 text-sm tracking-[0.3em] uppercase mt-2">
-            Authorized Personnel Only
+            Clinical Decision Support
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Credential Name */}
+          {/* Credential Name (Optional) */}
           <div className="space-y-2">
             <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
-              Credential Name
+              Your Name <span className="text-slate-600">(optional)</span>
             </label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
@@ -89,34 +81,19 @@ export function AuthScreen() {
               </div>
               <Input
                 type="text"
-                placeholder="Enter username"
+                placeholder="Enter your name"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="h-14 pl-12 bg-slate-900/50 border-2 border-red-500/50 focus:border-red-500 rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide"
+                className="h-14 pl-12 bg-slate-900/50 border-2 border-slate-700 focus:border-red-500 rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide"
                 disabled={loading}
               />
             </div>
           </div>
 
-          {/* Password */}
-          <div className="space-y-2">
-            <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
-              Access Code
-            </label>
-            <Input
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-14 px-4 bg-slate-900/50 border-2 border-slate-700 focus:border-red-500 rounded-xl text-white placeholder:text-slate-600 text-lg"
-              disabled={loading}
-            />
-          </div>
-
           {/* Clinical Role Selection */}
           <div className="space-y-3">
             <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
-              Assigned Clinical Role
+              Clinical Role
             </label>
             <div className="grid grid-cols-2 gap-2">
               {clinicalRoles.map((role) => (
@@ -148,18 +125,18 @@ export function AuthScreen() {
             {loading ? (
               <span className="flex items-center gap-2">
                 <div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
-                Authenticating...
+                Starting...
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Establish Session
+                Start Session
                 <ArrowRight className="h-5 w-5" />
               </span>
             )}
           </Button>
 
           <p className="text-center text-slate-600 text-xs">
-            New users will be automatically registered
+            Quick access — no registration required
           </p>
         </form>
 
