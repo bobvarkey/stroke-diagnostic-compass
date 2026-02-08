@@ -22,15 +22,41 @@ serve(async (req) => {
   }
 
   try {
-    const { activationId, codeLevel, facilityId, nsaEnabled, nsaPhone, voiceMessage } = await req.json() as CallRequest;
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    // Create client with user's auth token for verification
+    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data, error: authError } = await authClient.auth.getClaims(token);
+    if (authError || !data?.claims) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized - invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create service role client for database operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { activationId, codeLevel, facilityId, nsaEnabled, nsaPhone, voiceMessage } = await req.json() as CallRequest;
+
     const twilioAccountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
     const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN');
     const twilioPhoneNumber = Deno.env.get('TWILIO_PHONE_NUMBER');
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Fetch call logs for this activation
     const { data: callLogs, error: logsError } = await supabase
@@ -84,7 +110,7 @@ serve(async (req) => {
 
     // Twilio is configured - proceed with automated calling
     const twilioBaseUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Calls.json`;
-    const authHeader = 'Basic ' + btoa(`${twilioAccountSid}:${twilioAuthToken}`);
+    const authHeaderTwilio = 'Basic ' + btoa(`${twilioAccountSid}:${twilioAuthToken}`);
 
     const callResults: { contactId: string; success: boolean; error?: string }[] = [];
 
@@ -113,7 +139,7 @@ serve(async (req) => {
         const callResponse = await fetch(twilioBaseUrl, {
           method: 'POST',
           headers: {
-            'Authorization': authHeader,
+            'Authorization': authHeaderTwilio,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: formData,
@@ -171,7 +197,7 @@ serve(async (req) => {
         const nsaResponse = await fetch(twilioBaseUrl, {
           method: 'POST',
           headers: {
-            'Authorization': authHeader,
+            'Authorization': authHeaderTwilio,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: nsaFormData,
