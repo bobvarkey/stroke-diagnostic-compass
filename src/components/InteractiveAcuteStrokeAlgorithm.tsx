@@ -373,6 +373,69 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
               </div>
             </div>
 
+            {/* Recent Landmark Trials Banner */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 border border-emerald-300 dark:border-emerald-700 rounded-lg">
+              <h4 className="font-bold text-emerald-800 dark:text-emerald-300 mb-3 flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                Recent Landmark Trials – Acute Ischemic Stroke
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                {/* OCEANIC-STROKE */}
+                <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded border-l-4 border-emerald-500">
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">OCEANIC-STROKE</span>
+                  <span className="ml-1 px-1.5 py-0.5 bg-emerald-500 text-white text-xs rounded">Phase III +</span>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    FXIa inhibition with <strong>asundexian</strong> reduced ischemic stroke in non-cardioembolic stroke/high-risk TIA on antiplatelet therapy <em>without</em> increased major bleeding.
+                  </p>
+                </div>
+                
+                {/* OPTION */}
+                <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded border-l-4 border-blue-500">
+                  <span className="font-bold text-blue-700 dark:text-blue-400">OPTION</span>
+                  <span className="ml-1 px-1.5 py-0.5 bg-blue-500 text-white text-xs rounded">Extended Window</span>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    In patients with salvageable tissue, <strong>tenecteplase (4.5–24h)</strong> significantly improved 90-day excellent outcomes. Note: higher sICH (2.8% vs 0%).
+                  </p>
+                </div>
+                
+                {/* CHOICE-2 */}
+                <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded border-l-4 border-purple-500">
+                  <span className="font-bold text-purple-700 dark:text-purple-400">CHOICE-2</span>
+                  <span className="ml-1 px-1.5 py-0.5 bg-purple-500 text-white text-xs rounded">Phase III</span>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    Largest trial of <strong>IA alteplase post-EVT</strong>: higher mRS 0–1 outcomes, no increase in sICH. <strong>NNT ≈ 7</strong>.
+                  </p>
+                </div>
+                
+                {/* LAIS */}
+                <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded border-l-4 border-indigo-500">
+                  <span className="font-bold text-indigo-700 dark:text-indigo-400">LAIS</span>
+                  <span className="ml-1 px-1.5 py-0.5 bg-indigo-500 text-white text-xs rounded">Neuroprotection</span>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    <strong>Loberamisal</strong> (dual-target neuroprotection) within 48h for AIS (NIHSS 7–20): <strong>+13% absolute increase</strong> in excellent functional outcomes at 90 days.
+                  </p>
+                </div>
+                
+                {/* DISTALS */}
+                <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded border-l-4 border-pink-500">
+                  <span className="font-bold text-pink-700 dark:text-pink-400">DISTALS</span>
+                  <span className="ml-1 px-1.5 py-0.5 bg-pink-500 text-white text-xs rounded">Distal EVT</span>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    <strong>Tigertriever</strong> for distal occlusions: higher successful reperfusion at 24h without increased sICH.
+                  </p>
+                </div>
+                
+                {/* ORIENTA-MeVO */}
+                <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded border-l-4 border-cyan-500">
+                  <span className="font-bold text-cyan-700 dark:text-cyan-400">ORIENTA-MeVO</span>
+                  <span className="ml-1 px-1.5 py-0.5 bg-cyan-500 text-white text-xs rounded">MeVO</span>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    <strong>EVT for medium vessel occlusions</strong> improved 90-day functional outcomes without excess sICH in a Chinese population.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Interactive Information Inputs */}
             <div className="mb-6 p-4 bg-white dark:bg-gray-900 border-2 border-blue-400 dark:border-blue-600 rounded-lg shadow-md">
               <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">

@@ -636,6 +636,27 @@ function AcuteICHManagement() {
               </div>
             </div>
 
+            {/* FASTEST Trial - ICH Hemostatic Therapy */}
+            <div className="p-4 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-lg border border-purple-300 dark:border-purple-700">
+              <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-3 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                <span>Emerging Trial Evidence – Hemostatic Therapy</span>
+                <span className="px-2 py-0.5 bg-purple-500 text-white text-xs rounded font-bold">NEW</span>
+              </h4>
+              <div className="p-3 bg-white/60 dark:bg-purple-950/40 rounded border-l-4 border-purple-500">
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-purple-700 dark:text-purple-400">FASTEST Trial</span>
+                  <span className="px-1.5 py-0.5 bg-purple-500 text-white text-xs rounded">Phase III</span>
+                </div>
+                <p className="text-sm text-purple-700 dark:text-purple-300 mt-2">
+                  <strong>rFVIIa (recombinant Factor VIIa)</strong> for spontaneous ICH: promising early results in <strong>spot sign–positive patients</strong> treated within <strong>&lt;90 minutes</strong> of onset.
+                </p>
+                <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 italic">
+                  Clinical implication: Consider early CTA for spot sign identification to select patients who may benefit from hemostatic therapy.
+                </p>
+              </div>
+            </div>
+
             {/* Initial Evaluation */}
             <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
               <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3">Initial Evaluation (ED)</h4>
