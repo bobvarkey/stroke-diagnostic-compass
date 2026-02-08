@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, ArrowRight, ChevronDown, Zap, Clock, Activity, Target } from "lucide-react";
+import { AlertTriangle, ArrowRight, ChevronDown, Zap, Clock, Activity, Target, BookOpen, ClipboardList, GitBranch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ModuleCommentBox from "./ModuleCommentBox";
 
@@ -38,6 +39,7 @@ interface AlgorithmInputs {
 
 const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState("guidelines");
   const [comment, setComment] = useState("");
   const [inputs, setInputs] = useState<AlgorithmInputs>({
     lastKnownWell: "",
@@ -347,7 +349,28 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="pt-6">
-            {/* 2026 Key Updates Banner */}
+            {/* Internal Navigation Tabs */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-3 mb-6">
+                <TabsTrigger value="guidelines" className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  <span className="hidden sm:inline">Guidelines & Trials</span>
+                  <span className="sm:hidden">Evidence</span>
+                </TabsTrigger>
+                <TabsTrigger value="assessment" className="flex items-center gap-2">
+                  <ClipboardList className="h-4 w-4" />
+                  <span className="hidden sm:inline">Patient Assessment</span>
+                  <span className="sm:hidden">Assess</span>
+                </TabsTrigger>
+                <TabsTrigger value="pathways" className="flex items-center gap-2">
+                  <GitBranch className="h-4 w-4" />
+                  <span className="hidden sm:inline">Treatment Pathways</span>
+                  <span className="sm:hidden">Pathways</span>
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Guidelines & Trials Tab */}
+              <TabsContent value="guidelines" className="space-y-6">
             <div className="mb-6 p-4 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40 border border-blue-300 dark:border-blue-700 rounded-lg">
               <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
                 <Zap className="h-4 w-4" />
@@ -435,9 +458,12 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                 </div>
               </div>
             </div>
+              </TabsContent>
 
-            {/* Interactive Information Inputs */}
-            <div className="mb-6 p-4 bg-white dark:bg-gray-900 border-2 border-blue-400 dark:border-blue-600 rounded-lg shadow-md">
+              {/* Assessment Tab */}
+              <TabsContent value="assessment" className="space-y-6">
+              {/* Interactive Information Inputs */}
+              <div className="mb-6 p-4 bg-white dark:bg-gray-900 border-2 border-blue-400 dark:border-blue-600 rounded-lg shadow-md">
               <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                 <Target className="h-5 w-5 text-blue-500" />
                 Enter Patient Information
@@ -1690,6 +1716,8 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                 label="Acute Stroke Algorithm Notes"
               />
             </div>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </CollapsibleContent>
       </Card>
