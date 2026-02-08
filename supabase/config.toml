@@ -2,3 +2,9 @@ project_id = "mudqzllcgiyivtlycrms"
 
 [functions.extract-lab-values]
 verify_jwt = false
+
+[functions.stroke-code-caller]
+verify_jwt = false
+
+[functions.analyze-document]
+verify_jwt = false
