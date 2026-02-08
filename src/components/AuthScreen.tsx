@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
-import { Brain, User, ArrowRight } from 'lucide-react';
+import { Brain, User, ArrowRight, Play } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const clinicalRoles = [
@@ -14,7 +14,11 @@ const clinicalRoles = [
   { id: 'pharmacist', label: 'Pharmacist' },
 ];
 
-export function AuthScreen() {
+interface AuthScreenProps {
+  onEnterDemoMode?: () => void;
+}
+
+export function AuthScreen({ onEnterDemoMode }: AuthScreenProps) {
   const [username, setUsername] = useState('');
   const [selectedRole, setSelectedRole] = useState('neurologist');
   const [loading, setLoading] = useState(false);
@@ -138,6 +142,31 @@ export function AuthScreen() {
           <p className="text-center text-slate-600 text-xs">
             Quick access — no registration required
           </p>
+
+          {/* Demo Mode Divider */}
+          {onEnterDemoMode && (
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-700" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-slate-950 px-2 text-slate-500">or</span>
+              </div>
+            </div>
+          )}
+
+          {/* Demo Mode Button */}
+          {onEnterDemoMode && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onEnterDemoMode}
+              className="w-full h-12 border-2 border-amber-500/50 hover:border-amber-500 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 font-medium tracking-wide rounded-xl transition-all duration-200"
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Try Demo Mode
+            </Button>
+          )}
         </form>
 
         {/* Footer */}

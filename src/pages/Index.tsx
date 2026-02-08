@@ -7,7 +7,7 @@ import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, Users, LogOut, Shield } from "lucide-react";
+import { ChevronUp, Users, LogOut, Shield, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Json } from "@/integrations/supabase/types";
@@ -28,6 +28,23 @@ interface Patient {
   updated_at: string;
 }
 
+// Demo patient for demonstration mode
+const DEMO_PATIENT: Patient = {
+  id: "demo-patient-001",
+  patient_id: "DEMO-001",
+  name: "Demo Patient",
+  weight: 70,
+  age: 65,
+  sex: "M",
+  last_known_well: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+  demographics: { mrn: "DEMO-001", chief_complaint: "Left-sided weakness" },
+  clinical_data: {},
+  created_by: null,
+  last_edited_by: null,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
 const Index = () => {
   const { user, profile, isAdmin, loading, signOut } = useAuth();
   const { toast } = useToast();
@@ -35,6 +52,7 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -103,13 +121,31 @@ const Index = () => {
   const handleReturnToPatientList = () => {
     setSelectedPatient(null);
     setPatientData({});
+    setIsDemoMode(false);
   };
 
   const handleSignOut = async () => {
+    if (isDemoMode) {
+      setIsDemoMode(false);
+      setSelectedPatient(null);
+      setPatientData({});
+      toast({ title: 'Demo ended', description: 'Exited demonstration mode' });
+      return;
+    }
     await signOut();
     setSelectedPatient(null);
     setPatientData({});
     toast({ title: 'Signed out', description: 'You have been logged out' });
+  };
+
+  const handleEnterDemoMode = () => {
+    setIsDemoMode(true);
+    setSelectedPatient(DEMO_PATIENT);
+    setPatientData({});
+    toast({ 
+      title: 'Demo Mode Active', 
+      description: 'Exploring with sample patient data. Changes will not be saved.' 
+    });
   };
 
   const scrollToTop = () => {
@@ -128,14 +164,14 @@ const Index = () => {
     );
   }
 
-  // Show auth screen if not logged in
-  if (!user) {
-    return <AuthScreen />;
+  // Show auth screen if not logged in (unless in demo mode)
+  if (!user && !isDemoMode) {
+    return <AuthScreen onEnterDemoMode={handleEnterDemoMode} />;
   }
 
-  // Show patient selector if no patient selected
-  if (!selectedPatient) {
-    return <PatientSelector onSelectPatient={handleSelectPatient} />;
+  // Show patient selector if no patient selected (unless in demo mode)
+  if (!selectedPatient && !isDemoMode) {
+    return <PatientSelector onSelectPatient={handleSelectPatient} onEnterDemoMode={handleEnterDemoMode} />;
   }
 
   // Show main workup interface with selected patient
@@ -150,12 +186,18 @@ const Index = () => {
             {/* Patient info */}
             <div className="flex items-center gap-2 ml-2">
               <Badge variant="outline" className="font-mono">
-                {selectedPatient.patient_id}
+                {selectedPatient?.patient_id}
               </Badge>
-              {selectedPatient.name && (
+              {selectedPatient?.name && (
                 <span className="text-sm text-muted-foreground hidden sm:inline">
                   {selectedPatient.name}
                 </span>
+              )}
+              {isDemoMode && (
+                <Badge variant="secondary" className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-amber-300">
+                  <Play className="h-3 w-3 mr-1" />
+                  Demo Mode
+                </Badge>
               )}
             </div>
 
@@ -163,16 +205,18 @@ const Index = () => {
             
             {/* User info and actions */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground hidden sm:inline">
-                {profile?.display_name || profile?.username}
-              </span>
-              {isAdmin && (
+              {!isDemoMode && (
+                <span className="text-xs text-muted-foreground hidden sm:inline">
+                  {profile?.display_name || profile?.username}
+                </span>
+              )}
+              {isAdmin && !isDemoMode && (
                 <Badge variant="secondary" className="flex items-center gap-1 hidden sm:flex">
                   <Shield className="h-3 w-3" />
                   Admin
                 </Badge>
               )}
-              <Button 
+              <Button
                 variant="ghost" 
                 size="sm" 
                 onClick={handleReturnToPatientList}

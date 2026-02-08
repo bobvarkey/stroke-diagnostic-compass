@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Users, Plus, Search, Clock, User, LogOut, Shield, 
-  FileText, Calendar, ArrowRight 
+  FileText, Calendar, ArrowRight, Play 
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -40,9 +40,10 @@ interface Patient {
 
 interface PatientSelectorProps {
   onSelectPatient: (patient: Patient) => void;
+  onEnterDemoMode?: () => void;
 }
 
-export function PatientSelector({ onSelectPatient }: PatientSelectorProps) {
+export function PatientSelector({ onSelectPatient, onEnterDemoMode }: PatientSelectorProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -206,6 +207,16 @@ export function PatientSelector({ onSelectPatient }: PatientSelectorProps) {
               </div>
             </DialogContent>
           </Dialog>
+          {onEnterDemoMode && (
+            <Button 
+              variant="outline" 
+              onClick={onEnterDemoMode}
+              className="flex items-center gap-2 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
+            >
+              <Play className="h-4 w-4" />
+              Demo Mode
+            </Button>
+          )}
         </div>
 
         {/* Patient List */}
