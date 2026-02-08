@@ -6011,13 +6011,13 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           {/* Fisher Scale Calculator */}
           <FisherScaleCalculator 
-            onScoreChange={useCallback((scores) => {
+            onScoreChange={(scores) => {
               setCalculatedScores(prev => ({ 
                 ...prev, 
                 fisher: scores.fisher,
                 modifiedFisher: scores.modifiedFisher 
               }));
-            }, [])}
+            }}
           />
           <VisualNIHSSCalculator />
 
