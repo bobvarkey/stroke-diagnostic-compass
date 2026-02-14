@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertTriangle, ArrowRight, ChevronDown, Zap, Clock, Activity, Target, BookOpen, ClipboardList, GitBranch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ModuleCommentBox from "./ModuleCommentBox";
+import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.jpeg";
 
 interface AlgorithmInputs {
   lastKnownWell: string;
@@ -458,6 +459,47 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                 </div>
               </div>
             </div>
+
+                {/* EVT Eligibility Algorithm */}
+                <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-300 dark:border-green-700 rounded-lg">
+                  <h4 className="font-bold text-green-800 dark:text-green-300 mb-3 flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Algorithm for Management of Acute Ischemic Stroke Eligible for EVT
+                  </h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-border">
+                    <img 
+                      src={evtAlgorithmImage} 
+                      alt="EVT Eligibility Algorithm - Decision tree by population, vessel occlusion type, time from onset, tissue injury, baseline function, and evidence for EVT" 
+                      className="w-full h-auto rounded-lg"
+                    />
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-xs">
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">DVO</span>
+                      <p className="text-muted-foreground">Distal Vessel Occlusion</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">EVT</span>
+                      <p className="text-muted-foreground">Endovascular Thrombectomy</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">IDD</span>
+                      <p className="text-muted-foreground">Insufficient Data to Determine</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">LVO</span>
+                      <p className="text-muted-foreground">Large Vessel Occlusion</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">MVO</span>
+                      <p className="text-muted-foreground">Medium Vessel Occlusion</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2 italic">
+                    mRS: modified Rankin Scale. * LVO includes ICA, M1, and dominant M2 occlusions. † Recommendations may vary for pediatric populations.
+                  </p>
+                </div>
+
               </TabsContent>
 
               {/* Assessment Tab */}
