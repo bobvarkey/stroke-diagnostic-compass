@@ -152,6 +152,12 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSkipToApp = () => {
+    setIsDemoMode(true);
+    setSelectedPatient(DEMO_PATIENT);
+    setPatientData({});
+  };
+
   // Show loading state
   if (loading) {
     return (
@@ -166,7 +172,7 @@ const Index = () => {
 
   // Show auth screen if not logged in (unless in demo mode)
   if (!user && !isDemoMode) {
-    return <AuthScreen onEnterDemoMode={handleEnterDemoMode} />;
+    return <AuthScreen onEnterDemoMode={handleEnterDemoMode} onSkipToApp={handleSkipToApp} />;
   }
 
   // Show patient selector if no patient selected (unless in demo mode)
