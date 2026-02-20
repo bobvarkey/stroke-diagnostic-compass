@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -192,7 +192,11 @@ const allFactorLabels: Record<string, string> = {};
   allFactorLabels[f.id] = f.label;
 });
 
-const LAILipidRiskClassification: React.FC = () => {
+interface LAILipidRiskClassificationProps {
+  strokeHistoryFactors?: Record<string, boolean>;
+}
+
+const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({ strokeHistoryFactors }) => {
   const [selectedFactors, setSelectedFactors] = useState<Set<string>>(new Set());
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["key-concepts"]));
   
@@ -218,6 +222,47 @@ const LAILipidRiskClassification: React.FC = () => {
   const updateLipidValue = (field: keyof typeof lipidValues, value: string) => {
     setLipidValues(prev => ({ ...prev, [field]: value }));
   };
+
+  // Mapping from stroke history template IDs to LAI lipid risk factor IDs
+  const historyToLipidMap: Record<string, string[]> = {
+    previous_stroke: ["sk_ischemic_stroke"],
+    carotid_stenosis: ["sk_carotid_stenosis"],
+    afib: ["sk_af_stroke"],
+    diabetes: ["dm_present", "sk_stroke_dm"],
+    ihd: ["ascvd_present"],
+    hyperlipidemia: [],
+    early_menopause: ["rm_premature_menopause"],
+    gestational_dm: ["rm_gdm"],
+    autoimmune: ["rm_inflammatory_joint"],
+    family_stroke: ["hr_family_history"],
+    sickle_cell: [],
+    hypercoagulable: [],
+  };
+
+  const [syncedFromHistory, setSyncedFromHistory] = useState(false);
+
+  const syncFromStrokeHistory = useCallback(() => {
+    if (!strokeHistoryFactors) return;
+    setSelectedFactors(prev => {
+      const newSet = new Set(prev);
+      Object.entries(strokeHistoryFactors).forEach(([historyId, checked]) => {
+        if (checked && historyToLipidMap[historyId]) {
+          historyToLipidMap[historyId].forEach(lipidId => newSet.add(lipidId));
+        }
+      });
+      return newSet;
+    });
+    setSyncedFromHistory(true);
+    toast.success("Stroke history synced to lipid risk factors");
+  }, [strokeHistoryFactors]);
+
+  // Count available sync items
+  const syncableCount = useMemo(() => {
+    if (!strokeHistoryFactors) return 0;
+    return Object.entries(strokeHistoryFactors).filter(
+      ([id, checked]) => checked && historyToLipidMap[id]?.length > 0
+    ).length;
+  }, [strokeHistoryFactors]);
 
   const toggleFactor = (id: string) => {
     setSelectedFactors((prev) => {
@@ -451,6 +496,22 @@ const LAILipidRiskClassification: React.FC = () => {
         </p>
       </CardHeader>
       <CardContent className="p-4 space-y-4">
+        {/* Sync from Stroke History */}
+        {syncableCount > 0 && (
+          <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2">
+              <Brain className="h-4 w-4 text-blue-600" />
+              <span className="text-sm">
+                <strong>{syncableCount}</strong> stroke history item{syncableCount > 1 ? 's' : ''} can be synced
+              </span>
+            </div>
+            <Button size="sm" variant="outline" onClick={syncFromStrokeHistory} className="gap-1">
+              <Brain className="h-3 w-3" />
+              {syncedFromHistory ? 'Re-sync' : 'Sync from History'}
+            </Button>
+          </div>
+        )}
+
         {/* Key Concepts Section */}
         <Collapsible open={expandedSections.has("key-concepts")} onOpenChange={() => toggleSection("key-concepts")}>
           <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">

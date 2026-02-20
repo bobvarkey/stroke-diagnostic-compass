@@ -5590,6 +5590,7 @@ interface StrokeWorkupChecklistProps {
 
 export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: StrokeWorkupChecklistProps) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const [strokeHistoryFactors, setStrokeHistoryFactors] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState("ischemic");
   const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({ 
     patientId: patient?.patient_id || "",
@@ -5744,12 +5745,12 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           {/* LAI 2024 Lipid Risk Classification */}
           <div id="lipid-risk">
-            <LAILipidRiskClassification />
+            <LAILipidRiskClassification strokeHistoryFactors={strokeHistoryFactors} />
           </div>
 
           {/* Stroke History Template */}
           <div id="stroke-history">
-            <StrokeHistoryTemplate />
+            <StrokeHistoryTemplate onHistoryChange={setStrokeHistoryFactors} />
           </div>
 
           {/* ISPS25 Stroke Phenotyping System */}
