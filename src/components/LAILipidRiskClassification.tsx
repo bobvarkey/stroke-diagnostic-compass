@@ -3,9 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { AlertTriangle, ChevronDown, Heart, Target, Info, CheckCircle2, Calculator } from "lucide-react";
+import { AlertTriangle, ChevronDown, Heart, Target, Info, CheckCircle2, Calculator, Brain, FileText, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import LipidRiskPDFReport from "./LipidRiskPDFReport";
 
 interface RiskFactor {
@@ -93,6 +95,22 @@ const riskCategories: Record<string, RiskCategory> = {
   },
 };
 
+// Stroke-Specific Risk Factors (NEW for LAI 2026)
+const strokeRiskFactors: RiskFactor[] = [
+  { id: "sk_ischemic_stroke", label: "History of ischemic stroke", description: "Established ASCVD equivalent → Very High Risk", category: "Stroke Risk" },
+  { id: "sk_tia", label: "History of TIA", description: "Cerebrovascular ASCVD equivalent", category: "Stroke Risk" },
+  { id: "sk_lvo", label: "Large vessel occlusion (LVO) stroke", description: "High-risk cerebrovascular phenotype", category: "Stroke Risk" },
+  { id: "sk_recurrent_stroke", label: "Recurrent stroke despite optimal therapy", description: "Extreme Risk B/C consideration", category: "Stroke Risk" },
+  { id: "sk_carotid_stenosis", label: "Carotid stenosis ≥50%", description: "Subclinical/clinical atherosclerosis", category: "Stroke Risk" },
+  { id: "sk_intracranial_stenosis", label: "Intracranial atherosclerotic stenosis", description: "Very High Risk — aggressive lipid lowering", category: "Stroke Risk" },
+  { id: "sk_af_stroke", label: "Stroke with concurrent atrial fibrillation", description: "Cardioembolic + atherosclerotic overlap", category: "Stroke Risk" },
+  { id: "sk_young_stroke", label: "Cryptogenic/young-onset stroke (<45 years)", description: "Screen Lp(a), ApoB, FH", category: "Stroke Risk" },
+  { id: "sk_stroke_dm", label: "Stroke + diabetes mellitus", description: "Extreme Risk A consideration", category: "Stroke Risk" },
+  { id: "sk_stroke_pad", label: "Stroke + peripheral artery disease (polyvascular)", description: "Extreme Risk B — polyvascular disease", category: "Stroke Risk" },
+  { id: "sk_lacunar", label: "Lacunar/small vessel disease stroke", description: "Aggressive BP + lipid targets", category: "Stroke Risk" },
+  { id: "sk_carotid_imt", label: "Increased carotid IMT (>75th percentile)", description: "Subclinical atherosclerosis marker", category: "Stroke Risk" },
+];
+
 // High Risk Features (LDL target <70 mg/dL)
 const highRiskFeatures: RiskFactor[] = [
   { id: "hr_family_history", label: "Family history of premature CAD", description: "Independently warrants LDL-C <70 mg/dL", category: "High Risk Features" },
@@ -170,7 +188,7 @@ const extremeCFactors: RiskFactor[] = [
 
 // Factor labels for PDF report
 const allFactorLabels: Record<string, string> = {};
-[...highRiskFeatures, ...riskModifiers, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].forEach(f => {
+[...strokeRiskFactors, ...highRiskFeatures, ...riskModifiers, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].forEach(f => {
   allFactorLabels[f.id] = f.label;
 });
 
@@ -228,7 +246,7 @@ const LAILipidRiskClassification: React.FC = () => {
   // Determine risk category based on selected factors
   const determinedRiskCategory = useMemo(() => {
     // Extreme Risk C - highest priority
-    if (selectedFactors.has("ext_c_recurrent")) {
+    if (selectedFactors.has("ext_c_recurrent") || selectedFactors.has("sk_recurrent_stroke")) {
       return riskCategories.extremeC;
     }
 
@@ -236,7 +254,8 @@ const LAILipidRiskClassification: React.FC = () => {
     if (
       selectedFactors.has("ascvd_recurrent_acs") ||
       selectedFactors.has("ascvd_polyvascular") ||
-      selectedFactors.has("fh_hofh_ascvd")
+      selectedFactors.has("fh_hofh_ascvd") ||
+      selectedFactors.has("sk_stroke_pad")
     ) {
       return riskCategories.extremeB;
     }
@@ -247,7 +266,8 @@ const LAILipidRiskClassification: React.FC = () => {
       selectedFactors.has("dm_ascvd_tod") ||
       selectedFactors.has("cac_above300") ||
       selectedFactors.has("fh_hefh_ascvd") ||
-      selectedFactors.has("fh_hofh")
+      selectedFactors.has("fh_hofh") ||
+      selectedFactors.has("sk_stroke_dm")
     ) {
       return riskCategories.extremeA;
     }
@@ -263,7 +283,12 @@ const LAILipidRiskClassification: React.FC = () => {
       selectedFactors.has("sub_abi") ||
       selectedFactors.has("cac_above75") ||
       selectedFactors.has("cac_100_299") ||
-      selectedFactors.has("fh_hefh")
+      selectedFactors.has("fh_hefh") ||
+      selectedFactors.has("sk_ischemic_stroke") ||
+      selectedFactors.has("sk_tia") ||
+      selectedFactors.has("sk_lvo") ||
+      selectedFactors.has("sk_intracranial_stenosis") ||
+      selectedFactors.has("sk_carotid_stenosis")
     ) {
       return riskCategories.veryHigh;
     }
@@ -272,8 +297,12 @@ const LAILipidRiskClassification: React.FC = () => {
     const hasHighRiskFeature = highRiskFeatures.some((f) => selectedFactors.has(f.id));
     const hasDiabetes = selectedFactors.has("dm_present");
     const hasCacLow = selectedFactors.has("cac_1_99_below75");
+    const hasStrokeModifier = selectedFactors.has("sk_af_stroke") || 
+      selectedFactors.has("sk_young_stroke") || 
+      selectedFactors.has("sk_lacunar") || 
+      selectedFactors.has("sk_carotid_imt");
 
-    if (hasHighRiskFeature || hasDiabetes || hasCacLow) {
+    if (hasHighRiskFeature || hasDiabetes || hasCacLow || hasStrokeModifier) {
       return riskCategories.high;
     }
 
@@ -290,6 +319,70 @@ const LAILipidRiskClassification: React.FC = () => {
 
     return riskCategories.low;
   }, [selectedFactors]);
+
+  // Generate comprehensive risk profile summary
+  const generateRiskProfile = useMemo(() => {
+    const selectedStrokeFactors = strokeRiskFactors.filter(f => selectedFactors.has(f.id));
+    const selectedLipidFactors = [...highRiskFeatures, ...riskModifiers, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].filter(f => selectedFactors.has(f.id));
+    
+    if (selectedStrokeFactors.length === 0 && selectedLipidFactors.length === 0) return null;
+
+    const cat = determinedRiskCategory;
+    let therapyRec = "";
+    if (cat === riskCategories.low || cat === riskCategories.moderate) {
+      therapyRec = "Lifestyle modification ± moderate-intensity statin. Reassess in 6-12 weeks.";
+    } else if (cat === riskCategories.high) {
+      therapyRec = "High-intensity statin (Atorvastatin 40-80mg or Rosuvastatin 20-40mg). Add Ezetimibe if target not achieved by Week 6.";
+    } else if (cat === riskCategories.veryHigh) {
+      therapyRec = "High-intensity statin + Ezetimibe from Day 1. Consider PCSK9 inhibitor if target not met by Week 8. Achieve LDL-C target by Week 12.";
+    } else if (cat === riskCategories.extremeA) {
+      therapyRec = "High-intensity statin + Ezetimibe ± PCSK9 inhibitor. Achieve LDL-C <50 mg/dL (optional ≤30 mg/dL). Intensify every 2 weeks.";
+    } else if (cat === riskCategories.extremeB) {
+      therapyRec = "Maximum statin + Ezetimibe + PCSK9 inhibitor mandatory. Target LDL-C ≤30 mg/dL. Consider Inclisiran if PCSK9i intolerant.";
+    } else if (cat === riskCategories.extremeC) {
+      therapyRec = "Quadruple therapy: Max statin + Ezetimibe + PCSK9i + Bempedoic acid. Target LDL-C 10-15 mg/dL. Consider Lipoprotein apheresis.";
+    }
+
+    let strokeSpecific = "";
+    if (selectedStrokeFactors.length > 0) {
+      strokeSpecific = "\n\nSTROKE-SPECIFIC CONSIDERATIONS:\n";
+      if (selectedFactors.has("sk_ischemic_stroke") || selectedFactors.has("sk_tia") || selectedFactors.has("sk_lvo")) {
+        strokeSpecific += "• Cerebrovascular ASCVD equivalent — initiate intensive lipid therapy immediately\n";
+        strokeSpecific += "• Target LDL-C <50 mg/dL for secondary stroke prevention\n";
+      }
+      if (selectedFactors.has("sk_intracranial_stenosis")) {
+        strokeSpecific += "• Intracranial atherosclerosis: Target LDL-C <70 mg/dL per SAMMPRIS; LAI recommends <50 mg/dL\n";
+      }
+      if (selectedFactors.has("sk_carotid_stenosis")) {
+        strokeSpecific += "• Carotid stenosis ≥50%: Intensive lipid lowering may stabilize/regress plaque\n";
+      }
+      if (selectedFactors.has("sk_young_stroke")) {
+        strokeSpecific += "• Young-onset stroke: Screen Lp(a) at age 18, ApoB, lipid panel, consider FH screening\n";
+      }
+      if (selectedFactors.has("sk_lacunar")) {
+        strokeSpecific += "• Small vessel disease: Dual target — aggressive BP (<130/80) + LDL-C lowering\n";
+      }
+      if (selectedFactors.has("sk_stroke_pad")) {
+        strokeSpecific += "• Polyvascular disease (stroke + PAD): Extreme Risk B — mandatory LDL-C ≤30 mg/dL\n";
+      }
+      if (selectedFactors.has("sk_recurrent_stroke")) {
+        strokeSpecific += "• Recurrent stroke despite therapy: Extreme Risk C — consider LDL-C 10-15 mg/dL target\n";
+      }
+    }
+
+    return {
+      summary: `RISK CATEGORY: ${cat.name}\nLDL-C Target: ${cat.ldlTarget}${cat.optionalTarget ? ` (${cat.optionalTarget})` : ""}\nNon-HDL-C Target: ${cat.nonHdlTarget}\nApoB Target: ${cat.apoBTarget}\n\nTHERAPY RECOMMENDATION:\n${therapyRec}${strokeSpecific}\n\nSELECTED RISK FACTORS (${selectedFactors.size}):\n${[...selectedStrokeFactors, ...selectedLipidFactors].map(f => `• ${f.label}`).join("\n")}`,
+      therapyRec,
+      strokeSpecific,
+    };
+  }, [selectedFactors, determinedRiskCategory]);
+
+  const copyRiskProfile = () => {
+    if (generateRiskProfile) {
+      navigator.clipboard.writeText(generateRiskProfile.summary);
+      toast.success("Risk profile copied to clipboard");
+    }
+  };
 
   const renderFactorSection = (
     title: string,
@@ -351,10 +444,10 @@ const LAILipidRiskClassification: React.FC = () => {
       <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Heart className="h-5 w-5 text-orange-600" />
-          LAI 2024 Lipid Risk Classification (Indian Guidelines)
+          LAI 2026 Lipid Risk Classification (Indian Guidelines)
         </CardTitle>
         <p className="text-sm text-muted-foreground mt-1">
-          Lipid Association of India Consensus Statement IV - CV Risk Assessment & LDL-C Targets
+          Lipid Association of India — CV & Stroke Risk Assessment with LDL-C Targets
         </p>
       </CardHeader>
       <CardContent className="p-4 space-y-4">
@@ -585,7 +678,68 @@ const LAILipidRiskClassification: React.FC = () => {
           )}
         </div>
 
-        {/* Risk Factor Categories */}
+        {/* Stroke Risk Factors - NEW */}
+        <div className="space-y-3">
+          {renderFactorSection(
+            "Stroke & Cerebrovascular Risk Factors",
+            strokeRiskFactors,
+            "stroke-risk",
+            <Brain className="h-4 w-4 text-blue-600" />
+          )}
+        </div>
+
+        {/* Risk Profile Generator */}
+        {generateRiskProfile && (
+          <Card className="border-2 border-blue-200 dark:border-blue-800 bg-blue-50/30 dark:bg-blue-950/20">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-blue-600" />
+                  Generated Risk Profile
+                </CardTitle>
+                <Button variant="outline" size="sm" onClick={copyRiskProfile}>
+                  <Copy className="h-3.5 w-3.5 mr-1" />
+                  Copy
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className={cn("p-3 rounded-lg border mb-3", determinedRiskCategory.bgColor, determinedRiskCategory.borderColor)}>
+                <p className={cn("text-lg font-bold", determinedRiskCategory.color)}>{determinedRiskCategory.name}</p>
+                <div className="grid grid-cols-3 gap-2 mt-2 text-sm">
+                  <div>
+                    <span className="text-muted-foreground text-xs">LDL-C</span>
+                    <p className="font-semibold">{determinedRiskCategory.ldlTarget}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">Non-HDL-C</span>
+                    <p className="font-semibold">{determinedRiskCategory.nonHdlTarget}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">ApoB</span>
+                    <p className="font-semibold">{determinedRiskCategory.apoBTarget}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="text-sm space-y-2">
+                <div>
+                  <p className="font-semibold text-xs uppercase text-muted-foreground">Therapy Recommendation</p>
+                  <p className="text-sm mt-1">{generateRiskProfile.therapyRec}</p>
+                </div>
+                {generateRiskProfile.strokeSpecific && (
+                  <div className="mt-2 p-2 bg-blue-100/50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-800">
+                    <p className="font-semibold text-xs uppercase text-muted-foreground flex items-center gap-1">
+                      <Brain className="h-3 w-3" /> Stroke-Specific Considerations
+                    </p>
+                    <pre className="text-xs whitespace-pre-wrap font-sans mt-1">{generateRiskProfile.strokeSpecific.trim()}</pre>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Lipid Risk Factor Categories */}
         <div className="space-y-3">
           {renderFactorSection(
             "High Risk Features (Target: <70 mg/dL)",
@@ -696,7 +850,7 @@ const LAILipidRiskClassification: React.FC = () => {
                 <tr>
                   <td className="p-2 border font-medium text-red-600 dark:text-red-400">Very High Risk</td>
                   <td className="p-2 border">&lt;50 mg/dL</td>
-                  <td className="p-2 border text-muted-foreground">ASCVD, subclinical plaque, HeFH, DM+TOD</td>
+                  <td className="p-2 border text-muted-foreground">ASCVD, stroke/TIA, LVO, subclinical plaque, HeFH</td>
                 </tr>
                 <tr>
                   <td className="p-2 border font-medium text-red-700 dark:text-red-300">Extreme A</td>
@@ -706,7 +860,7 @@ const LAILipidRiskClassification: React.FC = () => {
                 <tr>
                   <td className="p-2 border font-medium text-purple-700 dark:text-purple-300">Extreme B</td>
                   <td className="p-2 border">≤30 mg/dL</td>
-                  <td className="p-2 border text-muted-foreground">Recurrent ACS, polyvascular, HoFH+ASCVD</td>
+                  <td className="p-2 border text-muted-foreground">Recurrent ACS, polyvascular (stroke+PAD), HoFH+ASCVD</td>
                 </tr>
                 <tr>
                   <td className="p-2 border font-medium text-pink-700 dark:text-pink-300">Extreme C</td>
@@ -720,7 +874,7 @@ const LAILipidRiskClassification: React.FC = () => {
 
         {/* Citation */}
         <p className="text-xs text-muted-foreground text-center pt-2 border-t">
-          Based on: LAI 2023 Update on CV Risk Assessment and Lipid Management in Indian Patients: Consensus Statement IV
+          Based on: LAI 2026 Update on CV & Stroke Risk Assessment and Lipid Management in Indian Patients
         </p>
       </CardContent>
     </Card>
