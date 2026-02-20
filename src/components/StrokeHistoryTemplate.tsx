@@ -99,7 +99,11 @@ const categories = [
   { id: "other", label: "Other Medical History", icon: AlertTriangle, color: "bg-slate-500" },
 ];
 
-const StrokeHistoryTemplate: React.FC = () => {
+interface StrokeHistoryTemplateProps {
+  onHistoryChange?: (checkedItems: Record<string, boolean>) => void;
+}
+
+const StrokeHistoryTemplate: React.FC<StrokeHistoryTemplateProps> = ({ onHistoryChange }) => {
   const [items, setItems] = useState<HistoryItem[]>(initialHistoryItems);
   const [openCategories, setOpenCategories] = useState<string[]>(categories.map(c => c.id));
 
@@ -112,9 +116,20 @@ const StrokeHistoryTemplate: React.FC = () => {
   };
 
   const updateItem = (id: string, updates: Partial<HistoryItem>) => {
-    setItems(prev => prev.map(item => 
-      item.id === id ? { ...item, ...updates } : item
-    ));
+    setItems(prev => {
+      const updated = prev.map(item => 
+        item.id === id ? { ...item, ...updates } : item
+      );
+      // Notify parent of checked items
+      if (onHistoryChange) {
+        const checkedMap: Record<string, boolean> = {};
+        updated.forEach(item => {
+          if (item.checked) checkedMap[item.id] = true;
+        });
+        onHistoryChange(checkedMap);
+      }
+      return updated;
+    });
   };
 
   const getCategoryItems = (categoryId: string) => {
