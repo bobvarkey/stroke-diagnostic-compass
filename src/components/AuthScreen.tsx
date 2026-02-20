@@ -16,9 +16,10 @@ const clinicalRoles = [
 
 interface AuthScreenProps {
   onEnterDemoMode?: () => void;
+  onSkipToApp?: () => void;
 }
 
-export function AuthScreen({ onEnterDemoMode }: AuthScreenProps) {
+export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
   const [username, setUsername] = useState('');
   const [selectedRole, setSelectedRole] = useState('neurologist');
   const [loading, setLoading] = useState(false);
@@ -165,6 +166,19 @@ export function AuthScreen({ onEnterDemoMode }: AuthScreenProps) {
             >
               <Play className="h-4 w-4 mr-2" />
               Try Demo Mode
+            </Button>
+          )}
+
+          {/* Skip to App Button */}
+          {onSkipToApp && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onSkipToApp}
+              className="w-full h-10 text-slate-500 hover:text-slate-300 font-medium tracking-wide rounded-xl transition-all duration-200 text-sm"
+            >
+              <ArrowRight className="h-4 w-4 mr-2" />
+              Skip — Enter without login
             </Button>
           )}
         </form>
