@@ -130,15 +130,38 @@ const riskModifiers: RiskFactor[] = [
   { id: "rm_waist_men", label: "Increased waist circumference: Men >90 cm", category: "Risk Modifiers" },
   { id: "rm_waist_women", label: "Increased waist circumference: Women >80 cm", category: "Risk Modifiers" },
   { id: "rm_ifg", label: "Impaired fasting glucose (100-125 mg/dL)", category: "Risk Modifiers" },
-  { id: "rm_hscrp", label: "hs-CRP >2 mg/L", category: "Risk Modifiers" },
   { id: "rm_air_pollution", label: "Air pollution exposure", category: "Risk Modifiers" },
-  { id: "rm_inflammatory_joint", label: "Inflammatory joint diseases (RA, AS, PsA)", category: "Risk Modifiers" },
   { id: "rm_premature_menopause", label: "Premature menopause", category: "Risk Modifiers" },
   { id: "rm_preeclampsia", label: "History of preeclampsia", category: "Risk Modifiers" },
   { id: "rm_gdm", label: "Gestational diabetes", category: "Risk Modifiers" },
   { id: "rm_pcos", label: "Polycystic ovary syndrome", category: "Risk Modifiers" },
   { id: "rm_prs", label: "High polygenic risk score", category: "Risk Modifiers" },
   { id: "rm_hiv", label: "HIV infection", category: "Risk Modifiers" },
+];
+
+// hsCRP-Based Risk Assessment
+const hsCRPFactors: RiskFactor[] = [
+  { id: "hscrp_low", label: "hs-CRP <1 mg/L (Low cardiovascular risk)", description: "Low inflammatory burden — standard lipid targets apply", category: "hs-CRP" },
+  { id: "hscrp_moderate", label: "hs-CRP 1-2 mg/L (Moderate risk)", description: "Borderline inflammation — consider risk modifier upshift", category: "hs-CRP" },
+  { id: "hscrp_high", label: "hs-CRP 2-5 mg/L (High risk)", description: "Residual inflammatory risk — intensify therapy, consider colchicine/icosapent ethyl", category: "hs-CRP" },
+  { id: "hscrp_very_high", label: "hs-CRP 5-10 mg/L (Very high risk)", description: "Significant inflammatory burden — aggressive LDL target + anti-inflammatory Rx", category: "hs-CRP" },
+  { id: "hscrp_extreme", label: "hs-CRP >10 mg/L (Extreme — rule out acute cause)", description: "Rule out infection/acute illness. If chronic: Extreme Risk consideration", category: "hs-CRP" },
+];
+
+// Chronic Inflammatory Conditions
+const inflammatoryConditions: RiskFactor[] = [
+  { id: "inf_ra", label: "Rheumatoid Arthritis (RA)", description: "2-3× ASCVD risk; accelerated atherosclerosis; treat as risk modifier", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_sle", label: "Systemic Lupus Erythematosus (SLE)", description: "5-10× MI risk in young women; antiphospholipid overlap", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_psoriasis", label: "Psoriasis", description: "1.5-2× CVD risk; severity-dependent; biologics may reduce risk", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_psa", label: "Psoriatic Arthritis (PsA)", description: "Joint + skin inflammation; additive CV risk", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_as", label: "Ankylosing Spondylitis (AS)", description: "Aortic inflammation + accelerated atherosclerosis", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_vasculitis", label: "Systemic Vasculitis (GPA, EGPA, PAN)", description: "Vessel wall inflammation; high ASCVD risk", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_ibd", label: "Inflammatory Bowel Disease (Crohn's / UC)", description: "Chronic systemic inflammation; increased thrombotic risk", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_sarcoidosis", label: "Sarcoidosis", description: "Granulomatous inflammation; cardiac involvement possible", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_sjogren", label: "Sjögren's Syndrome", description: "Chronic inflammation + accelerated atherosclerosis", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_dermatomyositis", label: "Dermatomyositis / Polymyositis", description: "Inflammatory myopathy; statin caution but CV risk elevated", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_scleroderma", label: "Systemic Sclerosis (Scleroderma)", description: "Microvascular + macrovascular disease", category: "Chronic Inflammatory Conditions" },
+  { id: "inf_behcet", label: "Behçet's Disease", description: "Vascular inflammation; arterial & venous thrombosis risk", category: "Chronic Inflammatory Conditions" },
 ];
 
 // Diabetes-Related
@@ -188,7 +211,7 @@ const extremeCFactors: RiskFactor[] = [
 
 // Factor labels for PDF report
 const allFactorLabels: Record<string, string> = {};
-[...strokeRiskFactors, ...highRiskFeatures, ...riskModifiers, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].forEach(f => {
+[...strokeRiskFactors, ...highRiskFeatures, ...riskModifiers, ...hsCRPFactors, ...inflammatoryConditions, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].forEach(f => {
   allFactorLabels[f.id] = f.label;
 });
 
@@ -351,14 +374,25 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
       return riskCategories.high;
     }
 
-    // Risk modifiers can elevate from low/moderate to higher risk
-    const riskModifierCount = riskModifiers.filter((f) => selectedFactors.has(f.id)).length;
+    // hsCRP and inflammatory conditions as risk modifiers
+    const hasHighCRP = selectedFactors.has("hscrp_very_high") || selectedFactors.has("hscrp_extreme");
+    const hasModCRP = selectedFactors.has("hscrp_high");
+    const inflammatoryCount = inflammatoryConditions.filter(f => selectedFactors.has(f.id)).length;
 
-    if (riskModifierCount >= 3) {
+    // ≥2 inflammatory conditions OR high CRP + any inflammatory condition → High Risk
+    if (hasHighCRP || inflammatoryCount >= 2 || (hasModCRP && inflammatoryCount >= 1)) {
       return riskCategories.high;
     }
 
-    if (riskModifierCount >= 1) {
+    // Risk modifiers can elevate from low/moderate to higher risk
+    const riskModifierCount = riskModifiers.filter((f) => selectedFactors.has(f.id)).length;
+    const totalModifiers = riskModifierCount + inflammatoryCount + (hasModCRP ? 1 : 0) + (selectedFactors.has("hscrp_moderate") ? 1 : 0);
+
+    if (totalModifiers >= 3) {
+      return riskCategories.high;
+    }
+
+    if (totalModifiers >= 1) {
       return riskCategories.moderate;
     }
 
@@ -368,7 +402,7 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
   // Generate comprehensive risk profile summary
   const generateRiskProfile = useMemo(() => {
     const selectedStrokeFactors = strokeRiskFactors.filter(f => selectedFactors.has(f.id));
-    const selectedLipidFactors = [...highRiskFeatures, ...riskModifiers, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].filter(f => selectedFactors.has(f.id));
+    const selectedLipidFactors = [...highRiskFeatures, ...riskModifiers, ...hsCRPFactors, ...inflammatoryConditions, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].filter(f => selectedFactors.has(f.id));
     
     if (selectedStrokeFactors.length === 0 && selectedLipidFactors.length === 0) return null;
 
@@ -415,8 +449,33 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
       }
     }
 
+    // Inflammatory / hsCRP considerations
+    const selectedInflammatory = inflammatoryConditions.filter(f => selectedFactors.has(f.id));
+    const selectedCRP = hsCRPFactors.filter(f => selectedFactors.has(f.id));
+    let inflammatorySpecific = "";
+    if (selectedInflammatory.length > 0 || selectedCRP.length > 0) {
+      inflammatorySpecific = "\n\nINFLAMMATORY RISK CONSIDERATIONS:\n";
+      if (selectedCRP.length > 0) {
+        const crpLevel = selectedCRP[selectedCRP.length - 1]; // highest selected
+        inflammatorySpecific += `• ${crpLevel.label}\n`;
+        if (selectedFactors.has("hscrp_high") || selectedFactors.has("hscrp_very_high")) {
+          inflammatorySpecific += "• Residual inflammatory risk — consider low-dose colchicine (0.5mg/day) or icosapent ethyl if TG elevated\n";
+          inflammatorySpecific += "• CANTOS/COLCOT/LoDoCo2 evidence supports anti-inflammatory therapy for residual CV risk\n";
+        }
+        if (selectedFactors.has("hscrp_extreme")) {
+          inflammatorySpecific += "• hs-CRP >10: Rule out acute infection/illness before attributing to chronic inflammation\n";
+        }
+      }
+      if (selectedInflammatory.length > 0) {
+        inflammatorySpecific += `• Chronic inflammatory conditions (${selectedInflammatory.length}): `;
+        inflammatorySpecific += selectedInflammatory.map(f => f.label.split(" (")[0]).join(", ") + "\n";
+        inflammatorySpecific += "• Autoimmune conditions accelerate atherosclerosis — treat as CV risk enhancer\n";
+        inflammatorySpecific += "• Monitor for statin myopathy in inflammatory myopathies; consider ezetimibe-first if concern\n";
+      }
+    }
+
     return {
-      summary: `RISK CATEGORY: ${cat.name}\nLDL-C Target: ${cat.ldlTarget}${cat.optionalTarget ? ` (${cat.optionalTarget})` : ""}\nNon-HDL-C Target: ${cat.nonHdlTarget}\nApoB Target: ${cat.apoBTarget}\n\nTHERAPY RECOMMENDATION:\n${therapyRec}${strokeSpecific}\n\nSELECTED RISK FACTORS (${selectedFactors.size}):\n${[...selectedStrokeFactors, ...selectedLipidFactors].map(f => `• ${f.label}`).join("\n")}`,
+      summary: `RISK CATEGORY: ${cat.name}\nLDL-C Target: ${cat.ldlTarget}${cat.optionalTarget ? ` (${cat.optionalTarget})` : ""}\nNon-HDL-C Target: ${cat.nonHdlTarget}\nApoB Target: ${cat.apoBTarget}\n\nTHERAPY RECOMMENDATION:\n${therapyRec}${strokeSpecific}${inflammatorySpecific}\n\nSELECTED RISK FACTORS (${selectedFactors.size}):\n${[...selectedStrokeFactors, ...selectedLipidFactors].map(f => `• ${f.label}`).join("\n")}`,
       therapyRec,
       strokeSpecific,
     };
@@ -814,6 +873,20 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
             riskModifiers,
             "modifiers",
             <AlertTriangle className="h-4 w-4 text-yellow-500" />
+          )}
+
+          {renderFactorSection(
+            "hs-CRP Based Risk Assessment",
+            hsCRPFactors,
+            "hscrp",
+            <Target className="h-4 w-4 text-rose-500" />
+          )}
+
+          {renderFactorSection(
+            "Chronic Inflammatory Conditions (CV Risk Enhancers)",
+            inflammatoryConditions,
+            "inflammatory",
+            <AlertTriangle className="h-4 w-4 text-orange-600" />
           )}
 
           {renderFactorSection(
