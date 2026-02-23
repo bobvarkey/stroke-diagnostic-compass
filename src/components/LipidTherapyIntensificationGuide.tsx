@@ -305,44 +305,119 @@ const LipidTherapyIntensificationGuide: React.FC = () => {
           </div>
         )}
 
-        {/* Expected LDL Reduction Table */}
+        {/* Expected LDL Reduction Table — ESC Guidelines 2025 */}
         <div className="bg-card border border-border rounded-lg overflow-hidden">
+          <div className="bg-muted px-3 py-2 border-b border-border">
+            <h4 className="font-semibold text-sm">Reduction in LDL-C With Pharmacotherapy — ESC Guidelines 2025</h4>
+          </div>
           <table className="w-full text-sm">
-            <thead className="bg-muted">
+            <thead className="bg-muted/50">
               <tr>
                 <th className="text-left p-3 font-medium">Therapy</th>
-                <th className="text-center p-3 font-medium">Expected LDL Reduction</th>
+                <th className="text-center p-3 font-medium">Avg LDL-C Reduction</th>
                 <th className="text-left p-3 font-medium">Notes</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
+              <tr className="bg-muted/20">
+                <td className="p-3 font-medium" colSpan={3}>Monotherapy</td>
+              </tr>
+              <tr>
+                <td className="p-3">Moderate-intensity statin</td>
+                <td className="p-3 text-center font-semibold text-green-600">~30%</td>
+                <td className="p-3 text-muted-foreground">Atorvastatin 10-20mg, Rosuvastatin 5-10mg</td>
+              </tr>
               <tr>
                 <td className="p-3">High-intensity statin</td>
-                <td className="p-3 text-center font-semibold text-green-600">50-55%</td>
-                <td className="p-3 text-muted-foreground">First-line therapy</td>
+                <td className="p-3 text-center font-semibold text-green-600">~50%</td>
+                <td className="p-3 text-muted-foreground">Atorvastatin 40-80mg, Rosuvastatin 20-40mg</td>
               </tr>
               <tr>
-                <td className="p-3">+ Ezetimibe 10mg</td>
-                <td className="p-3 text-center font-semibold text-green-600">+15-20%</td>
-                <td className="p-3 text-muted-foreground">Blocks intestinal absorption</td>
+                <td className="p-3">Ezetimibe (EZE) alone</td>
+                <td className="p-3 text-center font-semibold text-green-600">~20%</td>
+                <td className="p-3 text-muted-foreground">Blocks intestinal cholesterol absorption</td>
               </tr>
               <tr>
-                <td className="p-3">+ PCSK9 inhibitor</td>
-                <td className="p-3 text-center font-semibold text-green-600">+50-60%</td>
-                <td className="p-3 text-muted-foreground">Evolocumab, Alirocumab</td>
+                <td className="p-3">Bempedoic Acid (BA) alone</td>
+                <td className="p-3 text-center font-semibold text-green-600">~23%</td>
+                <td className="p-3 text-muted-foreground">ACL inhibitor; for statin-intolerant patients</td>
               </tr>
               <tr>
-                <td className="p-3">Inclisiran</td>
-                <td className="p-3 text-center font-semibold text-green-600">50-52%</td>
-                <td className="p-3 text-muted-foreground">siRNA, twice yearly dosing</td>
+                <td className="p-3">PCSK9 mAb alone</td>
+                <td className="p-3 text-center font-semibold text-green-600">~70%</td>
+                <td className="p-3 text-muted-foreground">Evolocumab 140mg q2w, Alirocumab 75-150mg q2w</td>
+              </tr>
+              <tr className="bg-muted/20">
+                <td className="p-3 font-medium" colSpan={3}>Dual Combinations</td>
               </tr>
               <tr>
-                <td className="p-3">Bempedoic Acid</td>
-                <td className="p-3 text-center font-semibold text-green-600">18-25%</td>
-                <td className="p-3 text-muted-foreground">For statin-intolerant patients</td>
+                <td className="p-3">EZE + BA</td>
+                <td className="p-3 text-center font-semibold text-green-600">~38%</td>
+                <td className="p-3 text-muted-foreground">Non-statin combination</td>
+              </tr>
+              <tr>
+                <td className="p-3">High-intensity statin + EZE</td>
+                <td className="p-3 text-center font-semibold text-green-600">~60%</td>
+                <td className="p-3 text-muted-foreground">Standard intensification step</td>
+              </tr>
+              <tr>
+                <td className="p-3">High-intensity statin + BA</td>
+                <td className="p-3 text-center font-semibold text-green-600">~58%</td>
+                <td className="p-3 text-muted-foreground">Alternative if EZE not tolerated</td>
+              </tr>
+              <tr>
+                <td className="p-3">PCSK9 mAb + EZE</td>
+                <td className="p-3 text-center font-semibold text-green-600">~75%</td>
+                <td className="p-3 text-muted-foreground">Statin-free high-intensity option</td>
+              </tr>
+              <tr>
+                <td className="p-3">High-intensity statin + PCSK9 mAb</td>
+                <td className="p-3 text-center font-semibold text-green-600">~75%</td>
+                <td className="p-3 text-muted-foreground">Dual high-intensity therapy</td>
+              </tr>
+              <tr className="bg-muted/20">
+                <td className="p-3 font-medium" colSpan={3}>Triple / Quadruple Combinations</td>
+              </tr>
+              <tr>
+                <td className="p-3">High-intensity statin + EZE + BA</td>
+                <td className="p-3 text-center font-semibold text-green-600">~60%</td>
+                <td className="p-3 text-muted-foreground">Triple non-biologic therapy</td>
+              </tr>
+              <tr>
+                <td className="p-3">PCSK9 mAb + EZE + BA</td>
+                <td className="p-3 text-center font-semibold text-green-600">~75%</td>
+                <td className="p-3 text-muted-foreground">Statin-free triple therapy</td>
+              </tr>
+              <tr>
+                <td className="p-3">High-intensity statin + EZE + PCSK9 mAb</td>
+                <td className="p-3 text-center font-semibold text-green-600">~80%</td>
+                <td className="p-3 text-muted-foreground">Guideline-recommended maximum</td>
+              </tr>
+              <tr className="bg-green-50 dark:bg-green-950/20">
+                <td className="p-3 font-semibold">High-intensity statin + EZE + BA + PCSK9 mAb</td>
+                <td className="p-3 text-center font-bold text-green-700 dark:text-green-400">~86%</td>
+                <td className="p-3 text-muted-foreground font-medium">Maximum achievable reduction</td>
+              </tr>
+              <tr>
+                <td className="p-3">BA + PCSK9 mAb</td>
+                <td className="p-3 text-center font-semibold text-green-600">~68%</td>
+                <td className="p-3 text-muted-foreground">Statin-free dual biologic/non-statin</td>
+              </tr>
+              <tr className="bg-muted/20">
+                <td className="p-3 font-medium" colSpan={3}>Other Agents</td>
+              </tr>
+              <tr>
+                <td className="p-3">Inclisiran 300mg</td>
+                <td className="p-3 text-center font-semibold text-green-600">~50%</td>
+                <td className="p-3 text-muted-foreground">siRNA; twice yearly after loading doses</td>
               </tr>
             </tbody>
           </table>
+          <div className="px-3 py-2 bg-muted/30 border-t border-border">
+            <p className="text-xs text-muted-foreground">
+              Source: Mach F, et al. Atherosclerosis. 2025;409:120479 | ESC/EAS Guidelines on Dyslipidemias 2025
+            </p>
+          </div>
         </div>
 
         {/* Timeline Guidance */}
