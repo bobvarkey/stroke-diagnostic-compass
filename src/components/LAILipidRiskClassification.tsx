@@ -139,6 +139,30 @@ const riskModifiers: RiskFactor[] = [
   { id: "rm_hiv", label: "HIV infection", category: "Risk Modifiers" },
 ];
 
+// Known Risk Enhancers (ESC/EAS 2025 + AHA/ACC 2018)
+const riskEnhancers: RiskFactor[] = [
+  { id: "re_fh_premature_cvd", label: "Family history of premature CVD (men <55y; women <60y)", description: "ESC/EAS 2025 + AHA/ACC 2018 risk enhancer", category: "Known Risk Enhancers" },
+  { id: "re_south_asian", label: "High-risk ethnicity (e.g., South Asian ancestry)", description: "ESC/EAS 2025 + AHA/ACC — independent ASCVD risk enhancer", category: "Known Risk Enhancers" },
+  { id: "re_primary_hyperchol", label: "Primary hypercholesterolemia (LDL-C 160–189 mg/dL; non-HDL-C 190–219 mg/dL)", description: "AHA/ACC 2018 — borderline high LDL without other risk factors", category: "Known Risk Enhancers" },
+  { id: "re_hypertriglyceridemia", label: "Persistently elevated primary hypertriglyceridemia (≥175 mg/dL)", description: "AHA/ACC 2018 risk enhancer", category: "Known Risk Enhancers" },
+  { id: "re_elevated_lpa", label: "Elevated Lp(a) ≥50 mg/dL or ≥125 nmol/L", description: "ESC/EAS 2025 (>50 mg/dL / >105 nmol/L) + AHA/ACC 2018", category: "Known Risk Enhancers" },
+  { id: "re_elevated_apob", label: "Elevated ApoB ≥130 mg/dL", description: "AHA/ACC 2018 risk enhancer — better predictor than LDL-C alone", category: "Known Risk Enhancers" },
+  { id: "re_elevated_hscrp", label: "Persistently elevated hs-CRP ≥2.0 mg/L", description: "ESC/EAS 2025 + AHA/ACC 2018 — residual inflammatory risk marker", category: "Known Risk Enhancers" },
+  { id: "re_abi_low", label: "ABI <0.9", description: "AHA/ACC 2018 — marker of peripheral atherosclerosis", category: "Known Risk Enhancers" },
+  { id: "re_ckd_moderate", label: "Chronic kidney disease (eGFR 15–59 mL/min/1.73m² ± albuminuria)", description: "AHA/ACC 2018 risk enhancer", category: "Known Risk Enhancers" },
+  { id: "re_metabolic_syndrome", label: "Metabolic syndrome", description: "AHA/ACC 2018 risk enhancer — cluster of cardiometabolic risk", category: "Known Risk Enhancers" },
+  { id: "re_obesity", label: "Obesity (BMI >30)", description: "ESC/EAS 2025 risk enhancer", category: "Known Risk Enhancers" },
+  { id: "re_physical_inactivity", label: "Physical inactivity / sedentary lifestyle", description: "ESC/EAS 2025 risk enhancer", category: "Known Risk Enhancers" },
+  { id: "re_stress_psychosocial", label: "Stress symptoms & psychosocial stressors", description: "ESC/EAS 2025 risk enhancer — including depression, anxiety", category: "Known Risk Enhancers" },
+  { id: "re_social_deprivation", label: "Social deprivation", description: "ESC/EAS 2025 risk enhancer — socioeconomic determinant of CV risk", category: "Known Risk Enhancers" },
+  { id: "re_major_psych", label: "Major psychiatric disorders", description: "ESC/EAS 2025 risk enhancer — schizophrenia, bipolar, major depression", category: "Known Risk Enhancers" },
+  { id: "re_premature_menopause", label: "History of premature menopause (before age 40)", description: "ESC/EAS 2025 + AHA/ACC 2018 risk enhancer", category: "Known Risk Enhancers" },
+  { id: "re_pregnancy_complications", label: "Preeclampsia or hypertensive disorders of pregnancy", description: "ESC/EAS 2025 + AHA/ACC 2018 — increases later ASCVD risk", category: "Known Risk Enhancers" },
+  { id: "re_hiv", label: "HIV infection / HIV/AIDS", description: "ESC/EAS 2025 + AHA/ACC 2018 — accelerated atherosclerosis", category: "Known Risk Enhancers" },
+  { id: "re_osa", label: "Obstructive sleep apnea syndrome", description: "ESC/EAS 2025 risk enhancer — intermittent hypoxia accelerates atherosclerosis", category: "Known Risk Enhancers" },
+  { id: "re_chronic_inflammatory", label: "Chronic immune-mediated / inflammatory disorder", description: "ESC/EAS 2025 + AHA/ACC 2018 — psoriasis, RA, HIV/AIDS", category: "Known Risk Enhancers" },
+];
+
 // hsCRP-Based Risk Assessment
 const hsCRPFactors: RiskFactor[] = [
   { id: "hscrp_low", label: "hs-CRP <1 mg/L (Low cardiovascular risk)", description: "Low inflammatory burden — standard lipid targets apply", category: "hs-CRP" },
@@ -211,7 +235,7 @@ const extremeCFactors: RiskFactor[] = [
 
 // Factor labels for PDF report
 const allFactorLabels: Record<string, string> = {};
-[...strokeRiskFactors, ...highRiskFeatures, ...riskModifiers, ...hsCRPFactors, ...inflammatoryConditions, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].forEach(f => {
+[...strokeRiskFactors, ...highRiskFeatures, ...riskModifiers, ...riskEnhancers, ...hsCRPFactors, ...inflammatoryConditions, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].forEach(f => {
   allFactorLabels[f.id] = f.label;
 });
 
@@ -384,9 +408,10 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
       return riskCategories.high;
     }
 
-    // Risk modifiers can elevate from low/moderate to higher risk
+    // Risk modifiers + risk enhancers can elevate from low/moderate to higher risk
     const riskModifierCount = riskModifiers.filter((f) => selectedFactors.has(f.id)).length;
-    const totalModifiers = riskModifierCount + inflammatoryCount + (hasModCRP ? 1 : 0) + (selectedFactors.has("hscrp_moderate") ? 1 : 0);
+    const riskEnhancerCount = riskEnhancers.filter((f) => selectedFactors.has(f.id)).length;
+    const totalModifiers = riskModifierCount + riskEnhancerCount + inflammatoryCount + (hasModCRP ? 1 : 0) + (selectedFactors.has("hscrp_moderate") ? 1 : 0);
 
     if (totalModifiers >= 3) {
       return riskCategories.high;
@@ -402,7 +427,7 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
   // Generate comprehensive risk profile summary
   const generateRiskProfile = useMemo(() => {
     const selectedStrokeFactors = strokeRiskFactors.filter(f => selectedFactors.has(f.id));
-    const selectedLipidFactors = [...highRiskFeatures, ...riskModifiers, ...hsCRPFactors, ...inflammatoryConditions, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].filter(f => selectedFactors.has(f.id));
+    const selectedLipidFactors = [...highRiskFeatures, ...riskModifiers, ...riskEnhancers, ...hsCRPFactors, ...inflammatoryConditions, ...diabetesFactors, ...ascvdFactors, ...subclinicalFactors, ...cacFactors, ...fhFactors, ...extremeCFactors].filter(f => selectedFactors.has(f.id));
     
     if (selectedStrokeFactors.length === 0 && selectedLipidFactors.length === 0) return null;
 
@@ -876,6 +901,13 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
           )}
 
           {renderFactorSection(
+            "Known Risk Enhancers (ESC/EAS 2025 + AHA/ACC 2018)",
+            riskEnhancers,
+            "risk-enhancers",
+            <Info className="h-4 w-4 text-blue-500" />
+          )}
+
+          {renderFactorSection(
             "hs-CRP Based Risk Assessment",
             hsCRPFactors,
             "hscrp",
@@ -1008,7 +1040,7 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
 
         {/* Citation */}
         <p className="text-xs text-muted-foreground text-center pt-2 border-t">
-          Based on: LAI 2026 Update on CV & Stroke Risk Assessment and Lipid Management in Indian Patients
+          Based on: LAI 2026 Update | ESC/EAS Guidelines on Dyslipidemias 2025 (Mach F, et al. Atherosclerosis. 2025;409:120479) | AHA/ACC Guideline on Blood Cholesterol 2018 (Grundy SM, et al. Circulation. 2019;139:e1082-e1143)
         </p>
       </CardContent>
     </Card>
