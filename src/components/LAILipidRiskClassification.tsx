@@ -740,9 +740,11 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
                 </p>
                 <Badge variant="outline" className="text-[10px] mt-1">Primary</Badge>
                 {determinedRiskCategory.optionalTarget && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {determinedRiskCategory.optionalTarget}
-                  </p>
+                  <div className="mt-1.5 px-2 py-1 rounded-md bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700">
+                    <p className="text-xs font-bold text-red-700 dark:text-red-300">
+                      LAI 2026: {determinedRiskCategory.optionalTarget}
+                    </p>
+                  </div>
                 )}
               </div>
               <div>
