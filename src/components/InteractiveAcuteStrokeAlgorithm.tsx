@@ -10,6 +10,9 @@ import { AlertTriangle, ArrowRight, ChevronDown, Zap, Clock, Activity, Target, B
 import { cn } from "@/lib/utils";
 import ModuleCommentBox from "./ModuleCommentBox";
 import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.jpeg";
+import evtDecisionTree2026 from "@/assets/evt-decision-tree-2026.jpeg";
+import antiplateletAlgorithm2026 from "@/assets/antiplatelet-algorithm-2026.jpeg";
+import cancerStrokeClassification from "@/assets/cancer-stroke-classification.jpeg";
 import InteractiveEVTDecisionTree from "./InteractiveEVTDecisionTree";
 
 interface AlgorithmInputs {
@@ -501,6 +504,97 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
 
                   <p className="text-xs text-muted-foreground mt-3 italic">
                     mRS: modified Rankin Scale · ASPECTS: Alberta Stroke Program Early CT Score · PC-ASPECTS: Posterior Circulation ASPECTS · NIHSS: National Institutes of Health Stroke Scale. * LVO includes ICA, M1, and dominant M2 occlusions.
+                  </p>
+                </div>
+
+                {/* Antiplatelet Decision Algorithm - AHA 2026 */}
+                <div className="p-4 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 border border-teal-300 dark:border-teal-700 rounded-lg">
+                  <h4 className="font-bold text-teal-800 dark:text-teal-300 mb-3 flex items-center gap-2">
+                    <Activity className="h-4 w-4" />
+                    Antiplatelet Decision Algorithm — Acute Noncardioembolic Ischemic Stroke / TIA
+                    <span className="ml-2 px-2 py-0.5 bg-teal-600 text-white text-xs rounded">AHA 2026</span>
+                  </h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-border">
+                    <img 
+                      src={antiplateletAlgorithm2026} 
+                      alt="Antiplatelet Decision Algorithm for Acute Noncardioembolic Ischemic Stroke or TIA — CHANCE, POINT, THALES, INSPIRES, CHANCE-2 trial-based flowchart with CYP2C19 genotype guidance" 
+                      className="w-full h-auto rounded-lg"
+                    />
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-xs">
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">DAPT</span>
+                      <p className="text-muted-foreground">Dual Antiplatelet Therapy</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">SAPT</span>
+                      <p className="text-muted-foreground">Single Antiplatelet Therapy</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">COR</span>
+                      <p className="text-muted-foreground">Class of Recommendation</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">LKN</span>
+                      <p className="text-muted-foreground">Last Known Normal</p>
+                    </div>
+                    <div className="p-1.5 bg-white/70 dark:bg-gray-800/70 rounded text-center">
+                      <span className="font-semibold text-foreground">Asa</span>
+                      <p className="text-muted-foreground">Aspirin</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3 italic">
+                    Key trials: CHANCE (Clopidogrel + ASA ×21–90d), POINT (Clopidogrel + ASA ×90d), THALES (Ticagrelor + ASA ×30d), 
+                    INSPIRES (Clopidogrel + ASA ×21d for athero &gt;50%), CHANCE-2 (Ticagrelor + ASA ×21d for CYP2C19 LOF carriers).
+                  </p>
+                </div>
+
+                {/* Cancer-Associated Stroke Classification */}
+                <div className="p-4 bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border border-rose-300 dark:border-rose-700 rounded-lg">
+                  <h4 className="font-bold text-rose-800 dark:text-rose-300 mb-3 flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    Classifying Stroke in Active Cancer
+                    <span className="ml-2 px-2 py-0.5 bg-rose-600 text-white text-xs rounded">AHA 2026</span>
+                  </h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-border">
+                    <img 
+                      src={cancerStrokeClassification} 
+                      alt="Classification of ischemic stroke in active cancer — Probable, Possible, and Unlikely cancer-mediated causality with treatment guidance (Navi et al., Stroke 2026)" 
+                      className="w-full h-auto rounded-lg"
+                    />
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                      <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded border border-yellow-300 dark:border-yellow-700">
+                        <p className="font-bold text-yellow-800 dark:text-yellow-300">Probable Causality</p>
+                        <ul className="text-yellow-700 dark:text-yellow-400 mt-1 space-y-0.5">
+                          <li>• Non-bacterial thrombotic endocarditis (NBTE)</li>
+                          <li>• Overt DIC (ISTH DIC Score ≥5)</li>
+                          <li>• Tumor embolism</li>
+                        </ul>
+                      </div>
+                      <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded border border-green-300 dark:border-green-700">
+                        <p className="font-bold text-green-800 dark:text-green-300">Possible Causality</p>
+                        <ul className="text-green-700 dark:text-green-400 mt-1 space-y-0.5">
+                          <li>• D-dimer &gt;2500 ng/mL</li>
+                          <li>• Multi-territory infarcts</li>
+                          <li>• Bilateral microemboli (HITS on TCD)</li>
+                          <li>• Absent SVS despite occlusion</li>
+                        </ul>
+                      </div>
+                      <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded border border-purple-300 dark:border-purple-700">
+                        <p className="font-bold text-purple-800 dark:text-purple-300">Unlikely</p>
+                        <p className="text-purple-700 dark:text-purple-400 mt-1">Not meeting criteria for probable or possible cancer-mediated causality</p>
+                      </div>
+                    </div>
+                    <div className="p-2 bg-muted/50 rounded text-xs text-muted-foreground">
+                      <strong>Key points:</strong> Up to 15% of ischemic stroke patients have cancer; ~50% of strokes in active cancer are cryptogenic. 
+                      Recurrence risk 14–29% at 1 year (highest in first 3 months). IVT and EVT eligible per standard criteria; avoid IVT in brain metastases. 
+                      For secondary prevention: known mechanism → treat mechanism; ESUS phenotype → equipoise DOAC vs aspirin; avoid routine VKA.
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2 italic">
+                    Ref: Navi BB, Kasner SE, Cushman M, et al. Stroke. 2026. doi:10.1161/STR.0000000000000517
                   </p>
                 </div>
 
