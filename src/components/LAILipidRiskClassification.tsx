@@ -246,6 +246,7 @@ interface LAILipidRiskClassificationProps {
 const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({ strokeHistoryFactors }) => {
   const [selectedFactors, setSelectedFactors] = useState<Set<string>>(new Set());
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["key-concepts"]));
+  const [cacScoreInput, setCacScoreInput] = useState<string>("");
   
   // Lipid panel values for automatic calculation
   const [lipidValues, setLipidValues] = useState({
@@ -255,6 +256,32 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
     triglycerides: "" as string,
     apoB: "" as string
   });
+
+  // Auto-select CAC tier based on numeric input
+  const cacAutoTier = useMemo(() => {
+    const score = parseFloat(cacScoreInput);
+    if (isNaN(score) || score < 0) return null;
+    if (score === 0) return { tier: "cac_0", label: "CAC = 0 (Low Risk)", color: "text-green-700 dark:text-green-400" };
+    if (score < 100) return { tier: "cac_1_99_below75", label: "CAC 1–99 (High Risk)", color: "text-orange-700 dark:text-orange-400" };
+    if (score < 300) return { tier: "cac_100_299", label: "CAC 100–299 (Very High Risk)", color: "text-red-600 dark:text-red-400" };
+    return { tier: "cac_above300", label: "CAC ≥300 (Extreme Risk A)", color: "text-red-700 dark:text-red-300" };
+  }, [cacScoreInput]);
+
+  // Apply CAC auto-selection to factors
+  const applyCacScore = useCallback(() => {
+    if (!cacAutoTier) return;
+    setSelectedFactors(prev => {
+      const newSet = new Set(prev);
+      // Remove all CAC-related factors first
+      ["cac_1_99_below75", "cac_above75", "cac_100_299", "cac_above300"].forEach(id => newSet.delete(id));
+      // Add the correct tier (skip cac_0 as it's not a risk factor)
+      if (cacAutoTier.tier !== "cac_0") {
+        newSet.add(cacAutoTier.tier);
+      }
+      return newSet;
+    });
+    toast.success(`CAC tier auto-selected: ${cacAutoTier.label}`);
+  }, [cacAutoTier]);
 
   // Calculate non-HDL-C automatically
   const calculatedNonHdl = useMemo(() => {
@@ -943,6 +970,49 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
             "subclinical",
             <Heart className="h-4 w-4 text-purple-500" />
           )}
+
+          {/* CAC Score Numeric Input */}
+          <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2 mb-3">
+              <Heart className="h-4 w-4 text-blue-600" />
+              <span className="font-medium text-sm">CAC Score Input</span>
+              <Badge variant="outline" className="text-xs">Auto-selects risk tier</Badge>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 max-w-[200px]">
+                <Label className="text-xs text-muted-foreground">Enter CAC Score (Agatston)</Label>
+                <input
+                  type="number"
+                  min="0"
+                  value={cacScoreInput}
+                  onChange={(e) => setCacScoreInput(e.target.value)}
+                  placeholder="e.g., 150"
+                  className="mt-1 w-full px-3 py-2 text-sm border rounded-md bg-background border-input"
+                />
+              </div>
+              {cacAutoTier && (
+                <div className="flex-1 flex items-center gap-2">
+                  <div className={cn("px-3 py-2 rounded-lg border-2 font-medium text-sm", 
+                    cacAutoTier.tier === "cac_0" ? "bg-green-100 dark:bg-green-900/40 border-green-400" :
+                    cacAutoTier.tier === "cac_1_99_below75" ? "bg-orange-100 dark:bg-orange-900/40 border-orange-400" :
+                    cacAutoTier.tier === "cac_100_299" ? "bg-red-100 dark:bg-red-900/40 border-red-400" :
+                    "bg-red-200 dark:bg-red-900/60 border-red-500"
+                  )}>
+                    <p className={cn("text-sm font-bold", cacAutoTier.color)}>{cacAutoTier.label}</p>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={applyCacScore} className="gap-1">
+                    <Target className="h-3 w-3" />
+                    Apply
+                  </Button>
+                </div>
+              )}
+            </div>
+            {cacScoreInput && parseFloat(cacScoreInput) === 0 && (
+              <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                CAC = 0 indicates very low short-term ASCVD risk. Consider deferring statin unless other high-risk features present.
+              </p>
+            )}
+          </div>
 
           {renderFactorSection(
             "CAC Score Categories",
