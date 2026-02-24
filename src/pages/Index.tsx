@@ -50,9 +50,9 @@ const Index = () => {
   const { toast } = useToast();
   const [activeSection, setActiveSection] = useState<string>("");
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
