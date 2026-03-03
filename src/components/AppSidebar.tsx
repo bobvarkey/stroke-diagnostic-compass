@@ -195,23 +195,21 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
     // Dispatch a custom event so LazySection can force-mount the target
     window.dispatchEvent(new CustomEvent('force-mount-section', { detail: sectionId }));
     
-    // Wait for mount then scroll
-    const tryScroll = (attempts = 0) => {
+    // Scroll to the target section with repeated corrections for layout shifts
+    // caused by intermediate lazy sections mounting and expanding
+    const scrollToTarget = (behavior: ScrollBehavior = 'smooth') => {
       const element = document.getElementById(sectionId);
-      if (element && element.children.length > 0 && element.children[0]?.tagName !== 'DIV') {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (element) {
-        const rect = element.getBoundingClientRect();
-        if (rect.height > 100 || attempts > 10) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (attempts <= 10) {
-          requestAnimationFrame(() => tryScroll(attempts + 1));
-        }
-      } else if (attempts <= 10) {
-        requestAnimationFrame(() => tryScroll(attempts + 1));
+      if (element) {
+        element.scrollIntoView({ behavior, block: 'start' });
       }
     };
-    requestAnimationFrame(() => tryScroll(0));
+    
+    // Instant jump first to get close, then smooth corrections
+    setTimeout(() => scrollToTarget('instant'), 100);
+    setTimeout(() => scrollToTarget('instant'), 400);
+    setTimeout(() => scrollToTarget('smooth'), 800);
+    setTimeout(() => scrollToTarget('smooth'), 1500);
+    setTimeout(() => scrollToTarget('smooth'), 2500);
   };
 
   return (
