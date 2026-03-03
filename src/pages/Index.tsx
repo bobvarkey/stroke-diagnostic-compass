@@ -182,11 +182,11 @@ const Index = () => {
 
   // Show main workup interface with selected patient
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar activeSection={activeSection} onSectionClick={setActiveSection} />
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-2 sm:px-4">
             <SidebarTrigger className="-ml-1" />
             
             {/* Patient info */}

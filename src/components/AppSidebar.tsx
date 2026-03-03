@@ -181,11 +181,16 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
 
   const handleClick = (sectionId: string) => {
     onSectionClick?.(sectionId);
+    
+    // Close sidebar on mobile after clicking a link
+    if (isMobile) {
+      setOpenMobile(false);
+    }
     
     // Dispatch a custom event so LazySection can force-mount the target
     window.dispatchEvent(new CustomEvent('force-mount-section', { detail: sectionId }));
@@ -196,7 +201,6 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
       if (element && element.children.length > 0 && element.children[0]?.tagName !== 'DIV') {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else if (element) {
-        // Check if it's the placeholder or real content
         const rect = element.getBoundingClientRect();
         if (rect.height > 100 || attempts > 10) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -245,7 +249,7 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
                             isActive={activeSection === item.id}
                             tooltip={item.label}
                             className={cn(
-                              "transition-colors",
+                              "transition-colors min-h-[44px] md:min-h-0",
                               activeSection === item.id && "bg-primary/10 text-primary font-medium"
                             )}
                           >
