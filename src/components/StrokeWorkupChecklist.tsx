@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, memo } from "react";
+import LazySection from "./LazySection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -5663,53 +5664,53 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />
 
           {/* Stroke Code System */}
-          <div id="stroke-code">
+          <LazySection id="stroke-code">
             <StrokeCodeSystem />
-          </div>
+          </LazySection>
 
           {/* Acute Stroke Management Algorithm - Interactive */}
-          <div id="acute-algorithm">
+          <LazySection id="acute-algorithm">
             <InteractiveAcuteStrokeAlgorithm />
-          </div>
+          </LazySection>
 
           {/* tPA Eligibility Checklist */}
-          <div id="tpa-eligibility">
+          <LazySection id="tpa-eligibility">
             <TPAEligibilityChecklist />
-          </div>
+          </LazySection>
 
           {/* Thrombolytic Dose Calculator */}
-          <div id="thrombolytic-dose">
+          <LazySection id="thrombolytic-dose">
             <ThrombolyticDoseCalculator />
-          </div>
+          </LazySection>
 
           {/* Treatment Choice Consequence Matrix */}
-          <div id="treatment-decision">
+          <LazySection id="treatment-decision">
             <TreatmentDecisionAid />
-          </div>
+          </LazySection>
 
           {/* LVO Decision Dashboard - Integrated Treatment Recommendation (includes Collateral Grading, HeadsUp, eTICI, TAL) */}
-          <div id="lvo-dashboard">
+          <LazySection id="lvo-dashboard">
             <LVODecisionDashboard />
-          </div>
+          </LazySection>
 
           {/* CTP Penumbra & Collateral Calculator */}
-          <div id="ctp-penumbra">
+          <LazySection id="ctp-penumbra">
             <CTPPenumbraCalculator />
-          </div>
+          </LazySection>
 
           {/* Interactive Vascular Anatomy Diagram */}
-          <div id="vascular-anatomy">
+          <LazySection id="vascular-anatomy">
             <VascularAnatomyDiagram />
-          </div>
+          </LazySection>
 
           {/* Interactive ASPECTS Calculator */}
-          <div id="aspects-calculator">
+          <LazySection id="aspects-calculator">
             <InteractiveASPECTSCalculator 
               onScoreChange={useCallback((score: number) => {
                 setCalculatedScores(prev => ({ ...prev, aspects: score }));
               }, [])}
             />
-          </div>
+          </LazySection>
 
           {/* Interactive pc-ASPECTS Calculator */}
           <InteractivePcASPECTSCalculator 
@@ -5719,49 +5720,49 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           />
 
           {/* Visual NIHSS Calculator */}
-          <div id="nihss-calculator">
+          <LazySection id="nihss-calculator">
             <VisualNIHSSCalculator />
-          </div>
+          </LazySection>
 
           {/* Visual GCS Calculator */}
-          <div id="gcs-calculator">
+          <LazySection id="gcs-calculator">
             <VisualGCSCalculator />
-          </div>
+          </LazySection>
 
           {/* PREVENT Score Calculator */}
-          <div id="prevent-score">
+          <LazySection id="prevent-score">
             <PREVENTScoreCalculator />
-          </div>
+          </LazySection>
 
           {/* KDIGO CKD Heat Map */}
-          <div id="kdigo-heatmap">
+          <LazySection id="kdigo-heatmap">
             <KDIGOHeatMap />
-          </div>
+          </LazySection>
 
           {/* PRIME Tool - Cancer Stroke Risk */}
-          <div id="prime-tool">
+          <LazySection id="prime-tool">
             <PRIMEToolCalculator />
-          </div>
+          </LazySection>
 
           {/* LAI 2024 Lipid Risk Classification */}
-          <div id="lipid-risk">
+          <LazySection id="lipid-risk">
             <LAILipidRiskClassification strokeHistoryFactors={strokeHistoryFactors} />
-          </div>
+          </LazySection>
 
           {/* Stroke History Template */}
-          <div id="stroke-history">
+          <LazySection id="stroke-history">
             <StrokeHistoryTemplate onHistoryChange={setStrokeHistoryFactors} />
-          </div>
+          </LazySection>
 
           {/* ISPS25 Stroke Phenotyping System */}
-          <div id="stroke-phenotyping">
+          <LazySection id="stroke-phenotyping">
             <ISPS25StrokePhenotyping />
-          </div>
+          </LazySection>
 
           {/* Lab Investigations Module */}
-          <div id="lab-investigations">
+          <LazySection id="lab-investigations">
             <LabInvestigationsModule />
-          </div>
+          </LazySection>
 
           {/* Progress Overview & Workup Checklist */}
           <div id="workup-checklist">
