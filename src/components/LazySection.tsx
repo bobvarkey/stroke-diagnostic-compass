@@ -10,7 +10,7 @@ interface LazySectionProps {
  * Only mounts children once the section is near the viewport (within 600px).
  * Once mounted, children stay mounted to preserve state.
  */
-const LazySection: React.FC<LazySectionProps> = ({ id, children, minHeight = "80px" }) => {
+const LazySection: React.FC<LazySectionProps> = ({ id, children, minHeight = "200px" }) => {
   const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
