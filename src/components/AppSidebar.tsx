@@ -185,11 +185,14 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
   const collapsed = state === "collapsed";
 
   const handleClick = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
     onSectionClick?.(sectionId);
+    // Use requestAnimationFrame to allow lazy sections to mount first
+    requestAnimationFrame(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
   };
 
   return (
