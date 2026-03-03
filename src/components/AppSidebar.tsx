@@ -186,13 +186,28 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
 
   const handleClick = (sectionId: string) => {
     onSectionClick?.(sectionId);
-    // Use requestAnimationFrame to allow lazy sections to mount first
-    requestAnimationFrame(() => {
+    
+    // Dispatch a custom event so LazySection can force-mount the target
+    window.dispatchEvent(new CustomEvent('force-mount-section', { detail: sectionId }));
+    
+    // Wait for mount then scroll
+    const tryScroll = (attempts = 0) => {
       const element = document.getElementById(sectionId);
-      if (element) {
+      if (element && element.children.length > 0 && element.children[0]?.tagName !== 'DIV') {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (element) {
+        // Check if it's the placeholder or real content
+        const rect = element.getBoundingClientRect();
+        if (rect.height > 100 || attempts > 10) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (attempts <= 10) {
+          requestAnimationFrame(() => tryScroll(attempts + 1));
+        }
+      } else if (attempts <= 10) {
+        requestAnimationFrame(() => tryScroll(attempts + 1));
       }
-    });
+    };
+    requestAnimationFrame(() => tryScroll(0));
   };
 
   return (

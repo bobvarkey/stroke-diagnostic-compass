@@ -14,6 +14,21 @@ const LazySection: React.FC<LazySectionProps> = ({ id, children, minHeight = "80
   const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  // Listen for force-mount events from sidebar navigation
+  useEffect(() => {
+    if (mounted) return;
+
+    const handleForceMount = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail === id) {
+        setMounted(true);
+      }
+    };
+
+    window.addEventListener('force-mount-section', handleForceMount);
+    return () => window.removeEventListener('force-mount-section', handleForceMount);
+  }, [mounted, id]);
+
   useEffect(() => {
     if (mounted) return;
 
@@ -30,24 +45,6 @@ const LazySection: React.FC<LazySectionProps> = ({ id, children, minHeight = "80
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, [mounted]);
-
-  // Also mount immediately if scrollIntoView targets this element
-  useEffect(() => {
-    if (mounted) return;
-    const el = ref.current;
-    if (!el) return;
-
-    const handleScroll = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight + 600 && rect.bottom > -600) {
-        setMounted(true);
-      }
-    };
-
-    // Check on next frame in case scrollIntoView was called
-    const frameId = requestAnimationFrame(handleScroll);
-    return () => cancelAnimationFrame(frameId);
-  });
 
   return (
     <div id={id} ref={ref}>
