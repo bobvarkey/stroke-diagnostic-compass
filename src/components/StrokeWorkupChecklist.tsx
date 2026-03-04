@@ -38,6 +38,7 @@ import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
+import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
 
@@ -5681,6 +5682,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Thrombolytic Dose Calculator */}
           <LazySection id="thrombolytic-dose">
             <ThrombolyticDoseCalculator />
+          </LazySection>
+
+          {/* Post-IV Thrombolysis Hemorrhage Management */}
+          <LazySection id="post-ivt-hemorrhage">
+            <PostThrombolysisICHManagement />
           </LazySection>
 
           {/* Treatment Choice Consequence Matrix */}

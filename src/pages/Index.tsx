@@ -59,7 +59,8 @@ const Index = () => {
       setShowScrollTop(window.scrollY > 400);
       
       const sections = [
-        "stroke-code", "acute-algorithm", "tpa-eligibility", "lvo-dashboard", "treatment-decision",
+        "stroke-code", "acute-algorithm", "tpa-eligibility", "thrombolytic-dose", "post-ivt-hemorrhage",
+        "lvo-dashboard", "treatment-decision",
         "ctp-penumbra", "aspects-calculator", "collateral-grading", "vascular-anatomy",
         "nihss-calculator", "gcs-calculator", "prevent-score", "kdigo-heatmap",
         "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "workup-checklist"
