@@ -196,12 +196,25 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
     if (isMobile) {
       setOpenMobile(false);
     }
+
+    // Switch to the correct tab if needed
+    const tabMap: Record<string, string> = {
+      "post-ivt-hemorrhage": "post-ivt",
+    };
+    const hemorrhagicSections = ["ich-score"];
+    const targetTab = tabMap[sectionId] 
+      || (hemorrhagicSections.includes(sectionId) ? "hemorrhagic" : "ischemic");
+    
+    // Find and click the correct tab trigger
+    const tabTrigger = document.querySelector(`[data-state][role="tab"][value="${targetTab}"]`) as HTMLElement;
+    if (tabTrigger && tabTrigger.getAttribute("data-state") !== "active") {
+      tabTrigger.click();
+    }
     
     // Dispatch a custom event so LazySection can force-mount the target
     window.dispatchEvent(new CustomEvent('force-mount-section', { detail: sectionId }));
     
     // Scroll to the target section with repeated corrections for layout shifts
-    // caused by intermediate lazy sections mounting and expanding
     const scrollToTarget = (behavior: ScrollBehavior = 'smooth') => {
       const element = document.getElementById(sectionId);
       if (element) {
