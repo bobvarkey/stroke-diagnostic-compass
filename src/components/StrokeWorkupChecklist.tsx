@@ -5636,20 +5636,30 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-14 mb-6">
+        <TabsList className="grid w-full grid-cols-3 h-14 mb-6">
           <TabsTrigger 
             value="ischemic" 
-            className="flex items-center gap-2 text-base font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            className="flex items-center gap-2 text-xs sm:text-base font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white"
           >
-            <Zap className="h-5 w-5" />
-            Ischemic Stroke
+            <Zap className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">Ischemic Stroke</span>
+            <span className="sm:hidden">Ischemic</span>
           </TabsTrigger>
           <TabsTrigger 
             value="hemorrhagic" 
-            className="flex items-center gap-2 text-base font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white"
+            className="flex items-center gap-2 text-xs sm:text-base font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white"
           >
-            <Droplets className="h-5 w-5" />
-            Intracerebral Hemorrhage
+            <Droplets className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">Intracerebral Hemorrhage</span>
+            <span className="sm:hidden">ICH</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="post-ivt" 
+            className="flex items-center gap-2 text-xs sm:text-base font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white"
+          >
+            <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">Post-IVT Hemorrhage</span>
+            <span className="sm:hidden">Post-IVT</span>
           </TabsTrigger>
         </TabsList>
 
@@ -5682,11 +5692,6 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Thrombolytic Dose Calculator */}
           <LazySection id="thrombolytic-dose">
             <ThrombolyticDoseCalculator />
-          </LazySection>
-
-          {/* Post-IV Thrombolysis Hemorrhage Management */}
-          <LazySection id="post-ivt-hemorrhage">
-            <PostThrombolysisICHManagement />
           </LazySection>
 
           {/* Treatment Choice Consequence Matrix */}
@@ -6052,6 +6057,17 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Intracerebral hemorrhage investigation checklist - Always correlate with clinical presentation</p>
+          </div>
+        </TabsContent>
+
+        {/* Post-IVT Hemorrhage Tab Content */}
+        <TabsContent value="post-ivt" className="space-y-6">
+          <LazySection id="post-ivt-hemorrhage">
+            <PostThrombolysisICHManagement />
+          </LazySection>
+
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>Post-IV thrombolysis hemorrhage management protocol - Follow institutional guidelines</p>
           </div>
         </TabsContent>
       </Tabs>
