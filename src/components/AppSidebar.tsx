@@ -78,6 +78,11 @@ const navGroups: NavGroup[] = [
         icon: <Beaker className="h-4 w-4 text-amber-600" /> 
       },
       { 
+        id: "post-ivt-hemorrhage", 
+        label: "Post-IVT Hemorrhage", 
+        icon: <Droplets className="h-4 w-4 text-red-600" /> 
+      },
+      { 
         id: "lvo-dashboard", 
         label: "LVO Dashboard", 
         icon: <Target className="h-4 w-4 text-purple-500" /> 
