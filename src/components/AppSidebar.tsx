@@ -83,6 +83,11 @@ const navGroups: NavGroup[] = [
         icon: <Droplets className="h-4 w-4 text-red-600" /> 
       },
       { 
+        id: "cvt-management", 
+        label: "CVT Management", 
+        icon: <Brain className="h-4 w-4 text-purple-600" /> 
+      },
+      { 
         id: "lvo-dashboard", 
         label: "LVO Dashboard", 
         icon: <Target className="h-4 w-4 text-purple-500" /> 
@@ -200,6 +205,7 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
     // Switch to the correct tab if needed
     const tabMap: Record<string, string> = {
       "post-ivt-hemorrhage": "post-ivt",
+      "cvt-management": "cvt",
     };
     const hemorrhagicSections = ["ich-score"];
     const targetTab = tabMap[sectionId] 

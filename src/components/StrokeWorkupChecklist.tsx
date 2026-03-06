@@ -39,6 +39,7 @@ import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
+import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
 
@@ -5636,30 +5637,38 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 h-14 mb-6">
+        <TabsList className="grid w-full grid-cols-4 h-14 mb-6">
           <TabsTrigger 
             value="ischemic" 
-            className="flex items-center gap-2 text-xs sm:text-base font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white px-1 sm:px-3"
           >
-            <Zap className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Zap className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
             <span className="hidden sm:inline">Ischemic Stroke</span>
             <span className="sm:hidden">Ischemic</span>
           </TabsTrigger>
           <TabsTrigger 
             value="hemorrhagic" 
-            className="flex items-center gap-2 text-xs sm:text-base font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white"
+            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white px-1 sm:px-3"
           >
-            <Droplets className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Droplets className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
             <span className="hidden sm:inline">Intracerebral Hemorrhage</span>
             <span className="sm:hidden">ICH</span>
           </TabsTrigger>
           <TabsTrigger 
             value="post-ivt" 
-            className="flex items-center gap-2 text-xs sm:text-base font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white"
+            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white px-1 sm:px-3"
           >
-            <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5" />
+            <AlertTriangle className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
             <span className="hidden sm:inline">Post-IVT Hemorrhage</span>
             <span className="sm:hidden">Post-IVT</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="cvt" 
+            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white px-1 sm:px-3"
+          >
+            <Brain className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
+            <span className="hidden sm:inline">Cerebral Venous Thrombosis</span>
+            <span className="sm:hidden">CVT</span>
           </TabsTrigger>
         </TabsList>
 
@@ -6068,6 +6077,17 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Post-IV thrombolysis hemorrhage management protocol - Follow institutional guidelines</p>
+          </div>
+        </TabsContent>
+
+        {/* Cerebral Venous Thrombosis Tab Content */}
+        <TabsContent value="cvt" className="space-y-6">
+          <LazySection id="cvt-management">
+            <CerebralVenousThrombosis />
+          </LazySection>
+
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>Cerebral venous thrombosis evaluation and management - Always correlate with clinical presentation</p>
           </div>
         </TabsContent>
       </Tabs>
