@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -106,6 +106,165 @@ const WarningBox: React.FC<{ children: React.ReactNode; variant?: "danger" | "ca
     </div>
   </div>
 );
+/* ─── Cryoprecipitate Dose Calculator ─── */
+const CryoDoseCalculator: React.FC = () => {
+  const [weight, setWeight] = useState(70);
+  const [currentFib, setCurrentFib] = useState(75);
+  const [targetFib, setTargetFib] = useState(150);
+
+  const plasmaVolume = weight * 70; // mL
+  const fibPerUnit = 250; // mg average
+  const unitsNeeded = useMemo(() => {
+    const raw = ((targetFib - currentFib) * plasmaVolume * 0.01) / fibPerUnit;
+    return Math.max(0, Math.ceil(raw));
+  }, [weight, currentFib, targetFib]);
+  const volumeML = useMemo(() => unitsNeeded * 15, [unitsNeeded]); // ~15mL per unit
+
+  const quickRef = [
+    { fib: 100, t150: "8–10", t200: "12–15", vol: "~250 mL" },
+    { fib: 75, t150: "12–15", t200: "16–20", vol: "~350 mL" },
+    { fib: 50, t150: "16–20", t200: "22–25", vol: "~500 mL" },
+    { fib: 25, t150: "20–25", t200: "25+", vol: "Switch to Fib concentrate" },
+  ];
+
+  return (
+    <div className="p-4 rounded-lg border-2 border-blue-300 dark:border-blue-700 bg-gradient-to-br from-blue-50/80 dark:from-blue-950/30 to-background space-y-4">
+      <div className="flex items-center gap-2">
+        <Badge className="bg-blue-700 text-white text-xs">CALCULATOR</Badge>
+        <span className="font-bold text-sm">Cryoprecipitate Dose Calculator</span>
+      </div>
+
+      {/* Formula */}
+      <div className="p-2 bg-muted/40 rounded text-xs font-mono text-center border">
+        Units = [(Target − Current Fib) × Plasma Vol × 0.01] ÷ Fib/Unit
+      </div>
+
+      {/* Sliders */}
+      <div className="space-y-4">
+        <div>
+          <div className="flex justify-between text-xs mb-1">
+            <span className="font-semibold">Patient Weight</span>
+            <span className="font-bold text-blue-700 dark:text-blue-300">{weight} kg</span>
+          </div>
+          <input
+            type="range" min={30} max={150} step={1} value={weight}
+            onChange={(e) => setWeight(Number(e.target.value))}
+            className="w-full h-2 bg-blue-200 dark:bg-blue-800 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          />
+          <div className="flex justify-between text-[10px] text-muted-foreground"><span>30</span><span>150 kg</span></div>
+        </div>
+
+        <div>
+          <div className="flex justify-between text-xs mb-1">
+            <span className="font-semibold">Current Fibrinogen</span>
+            <span className="font-bold text-amber-700 dark:text-amber-300">{currentFib} mg/dL</span>
+          </div>
+          <input
+            type="range" min={0} max={200} step={5} value={currentFib}
+            onChange={(e) => setCurrentFib(Number(e.target.value))}
+            className="w-full h-2 bg-amber-200 dark:bg-amber-800 rounded-lg appearance-none cursor-pointer accent-amber-600"
+          />
+          <div className="flex justify-between text-[10px] text-muted-foreground"><span>0</span><span>200 mg/dL</span></div>
+        </div>
+
+        <div>
+          <div className="flex justify-between text-xs mb-1">
+            <span className="font-semibold">Target Fibrinogen</span>
+            <div className="flex gap-2">
+              {[150, 200].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTargetFib(t)}
+                  className={cn(
+                    "px-3 py-0.5 rounded text-xs font-bold border transition-all",
+                    targetFib === t
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "border-muted-foreground/30 text-muted-foreground hover:border-blue-400"
+                  )}
+                >
+                  {t} mg/dL
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Result */}
+      <div className={cn(
+        "p-3 rounded-lg border-2 text-center",
+        currentFib >= targetFib
+          ? "border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-950/30"
+          : unitsNeeded > 20
+          ? "border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-950/30"
+          : "border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/30"
+      )}>
+        {currentFib >= targetFib ? (
+          <p className="text-green-700 dark:text-green-300 font-bold">✓ Fibrinogen already at target</p>
+        ) : (
+          <>
+            <p className="text-2xl font-black text-blue-700 dark:text-blue-300">{unitsNeeded} units</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Volume: ~{volumeML} mL · Infuse over 30–60 min · Plasma Vol: {(plasmaVolume / 1000).toFixed(1)}L
+            </p>
+            {unitsNeeded > 20 && (
+              <p className="text-xs text-red-600 dark:text-red-400 font-semibold mt-1">
+                ⚠️ Consider fibrinogen concentrate if &gt;20 units needed
+              </p>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Quick Reference Table */}
+      <div>
+        <p className="text-xs font-semibold mb-2">Quick Reference (70 kg Adult)</p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs border-collapse">
+            <thead>
+              <tr className="bg-muted/50">
+                <th className="p-1.5 border-b text-left font-medium text-muted-foreground">Current Fib</th>
+                <th className="p-1.5 border-b text-center font-medium text-muted-foreground">Target 150</th>
+                <th className="p-1.5 border-b text-center font-medium text-muted-foreground">Target 200</th>
+                <th className="p-1.5 border-b text-center font-medium text-muted-foreground">Volume</th>
+              </tr>
+            </thead>
+            <tbody>
+              {quickRef.map((row) => (
+                <tr key={row.fib} className="border-b border-border hover:bg-muted/30">
+                  <td className="p-1.5 font-semibold">{row.fib} mg/dL</td>
+                  <td className="p-1.5 text-center">{row.t150}</td>
+                  <td className="p-1.5 text-center">{row.t200}</td>
+                  <td className="p-1.5 text-center text-muted-foreground">{row.vol}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Emergency Dosing */}
+      <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
+        <p className="text-xs font-bold text-red-700 dark:text-red-300 mb-1">🚨 Emergency Dosing (No Lab Available)</p>
+        <ul className="text-xs text-red-600 dark:text-red-400 space-y-1 list-disc list-inside">
+          <li><strong>Rule of 10s:</strong> 10 units ≈ +50–100 mg/dL fibrinogen in adults</li>
+          <li><strong>Post-IVT ICH:</strong> Start 10–12 units if fibrinogen &lt;100 mg/dL or bleeding persists</li>
+          <li><strong>Recheck:</strong> 30–60 min post-infusion, repeat if needed</li>
+        </ul>
+      </div>
+
+      {/* Administration */}
+      <div className="p-3 rounded-lg bg-muted/30 border text-xs space-y-1">
+        <p className="font-bold">Administration Notes:</p>
+        <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+          <li>Dose: 1 unit/5–10 kg → infuse 10–20 mL/kg/hr</li>
+          <li>ABO-compatible preferred</li>
+          <li>Monitor: Post-infusion fibrinogen at 1 hour</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 const PostThrombolysisICHManagement: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -210,6 +369,9 @@ const PostThrombolysisICHManagement: React.FC = () => {
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">Administer additional doses as needed to reach and maintain target.</p>
                 </div>
+
+                {/* Cryoprecipitate Dose Calculator */}
+                <CryoDoseCalculator />
 
                 {/* Platelets */}
                 <div className="p-3 rounded-lg border border-border bg-muted/30">
