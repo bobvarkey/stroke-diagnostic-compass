@@ -634,30 +634,32 @@ const TransfusionReactionProtocol: React.FC = () => {
               <th className="border p-1.5 text-left">Febrile</th>
               <th className="border p-1.5 text-left">Allergic</th>
               <th className="border p-1.5 text-left">Hemolytic</th>
+              <th className="border p-1.5 text-left">DHTR</th>
               <th className="border p-1.5 text-left">TRALI</th>
               <th className="border p-1.5 text-left">TACO</th>
             </tr>
           </thead>
           <tbody>
             {[
-              ["Fever", "Yes", "Rare", "Yes (high)", "Possible", "No"],
-              ["Rash/Hives", "No", "Yes", "No", "No", "No"],
-              ["Hypotension", "Rare", "If anaphylaxis", "Yes", "Yes", "No (HTN)"],
-              ["Dyspnea", "No", "If anaphylaxis", "Rare", "YES — acute", "YES — acute"],
-              ["Back/Flank Pain", "No", "No", "YES", "No", "No"],
-              ["Dark Urine", "No", "No", "YES", "No", "No"],
-              ["CXR Infiltrates", "No", "No", "No", "Bilateral", "Pulm edema"],
-              ["BNP Level", "Normal", "Normal", "Normal", "Normal/Low", "ELEVATED"],
-              ["JVD/Edema", "No", "No", "No", "No", "YES"],
-              ["Diuretics?", "N/A", "N/A", "N/A", "AVOID", "YES — first-line"],
-              ["Can Resume?", "Maybe", "Mild only", "NEVER", "NEVER", "Cautiously, slow"],
-              ["Mortality", "Very low", "Low", "HIGH", "5–10%", "Low if treated"],
-            ].map(([feature, feb, allerg, hemo, trali, taco]) => (
+              ["Onset", "During", "During", "During", "2–14 days", "≤6 hrs", "During/after"],
+              ["Fever", "Yes", "Rare", "Yes (high)", "Possible", "Possible", "No"],
+              ["Rash/Hives", "No", "Yes", "No", "No", "No", "No"],
+              ["Hypotension", "Rare", "If anaph.", "Yes", "No", "Yes", "No (HTN)"],
+              ["Hgb Drop", "No", "No", "Acute", "YES — delayed", "No", "No"],
+              ["Dark Urine", "No", "No", "YES", "Possible", "No", "No"],
+              ["DAT", "Negative", "Negative", "Positive", "POSITIVE — key", "Negative", "Negative"],
+              ["Dyspnea", "No", "If anaph.", "Rare", "No", "YES", "YES"],
+              ["BNP Level", "Normal", "Normal", "Normal", "Normal", "Low", "ELEVATED"],
+              ["Diuretics?", "N/A", "N/A", "N/A", "N/A", "AVOID", "FIRST-LINE"],
+              ["Can Resume?", "Maybe", "Mild only", "NEVER", "Antigen-neg only", "NEVER", "Cautiously"],
+              ["Mortality", "Very low", "Low", "HIGH", "Low–moderate", "5–10%", "Low if treated"],
+            ].map(([feature, feb, allerg, hemo, dhtr, trali, taco]) => (
               <tr key={feature} className="hover:bg-muted/30">
                 <td className="border p-1.5 font-medium">{feature}</td>
                 <td className="border p-1.5">{feb}</td>
                 <td className="border p-1.5">{allerg}</td>
                 <td className="border p-1.5 font-semibold">{hemo}</td>
+                <td className="border p-1.5">{dhtr}</td>
                 <td className="border p-1.5">{trali}</td>
                 <td className="border p-1.5">{taco}</td>
               </tr>
