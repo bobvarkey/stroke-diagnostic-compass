@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine, Responsive
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Trash2, TrendingUp, Plus, Timer, Droplets as DropletIcon } from "lucide-react";
+import { Trash2, TrendingUp, Plus, Timer, Droplets as DropletIcon, ClipboardCheck, Package } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -407,18 +407,37 @@ const FibrinogenTrendTracker: React.FC = () => {
   );
 };
 
-// Blood Product Infusion Calculator
+// Blood Product Infusion Calculator with Order Summary
 const PRODUCTS = [
   { id: "cryo", label: "Cryoprecipitate", volumePerUnit: 15, defaultRate: 200, rateRange: [100, 300], notes: "~15 mL/unit pooled; infuse over 30–60 min" },
-  { id: "platelets", label: "Platelets (Apheresis)", volumePerUnit: 250, defaultRate: 300, rateRange: [150, 500], notes: "~250 mL/unit; infuse over 30–60 min", singleUnit: true },
+  { id: "platelets", label: "Platelets (Apheresis)", volumePerUnit: 250, defaultRate: 300, rateRange: [150, 500], notes: "~250 mL/unit; infuse over 30–60 min" },
   { id: "platelet_random", label: "Platelets (Random Donor)", volumePerUnit: 50, defaultRate: 300, rateRange: [150, 500], notes: "~50 mL/unit; pool 6–8 units" },
   { id: "ffp", label: "FFP", volumePerUnit: 250, defaultRate: 200, rateRange: [100, 400], notes: "~250 mL/unit; infuse over 30–60 min per unit" },
 ] as const;
+
+const NURSING_CHECKS = [
+  { id: "abo", label: "Verify ABO compatibility", detail: "Two-person verification of patient ID and blood product label" },
+  { id: "consent", label: "Confirm transfusion consent on file", detail: "Or emergency exception documented" },
+  { id: "baseline", label: "Baseline vitals obtained", detail: "T, HR, BP, RR, SpO2 before starting infusion" },
+  { id: "iv", label: "Adequate IV access confirmed", detail: "18–20G peripheral or central line; use blood tubing with filter" },
+  { id: "slow_start", label: "Start slow for first 15 min", detail: "Infuse at 50 mL/hr × 15 min, then increase to ordered rate" },
+  { id: "vitals_15", label: "Vitals q15 min × first hour", detail: "Then q30 min for remainder of infusion" },
+  { id: "reaction", label: "Monitor for transfusion reactions", detail: "Fever, rigors, urticaria, dyspnea, hypotension, back/flank pain" },
+  { id: "post_vitals", label: "Post-infusion vitals at 1 hour", detail: "Document completion time and any adverse events" },
+];
+
+interface OrderedProduct {
+  productId: string;
+  units: number;
+  rate: number;
+}
 
 const BloodProductInfusionCalculator: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<string>(PRODUCTS[0].id);
   const [units, setUnits] = useState("10");
   const [rateOverride, setRateOverride] = useState("");
+  const [nursingChecks, setNursingChecks] = useState<Record<string, boolean>>({});
+  const [orders, setOrders] = useState<OrderedProduct[]>([]);
 
   const product = PRODUCTS.find(p => p.id === selectedProduct)!;
   const unitsNum = parseInt(units) || 0;
@@ -427,6 +446,44 @@ const BloodProductInfusionCalculator: React.FC = () => {
   const durationMin = rate > 0 ? Math.ceil((totalVolume / rate) * 60) : 0;
   const hours = Math.floor(durationMin / 60);
   const mins = durationMin % 60;
+
+  const toggleCheck = useCallback((id: string) => {
+    setNursingChecks(prev => ({ ...prev, [id]: !prev[id] }));
+  }, []);
+
+  const addToOrder = useCallback(() => {
+    if (unitsNum <= 0) return;
+    setOrders(prev => {
+      const existing = prev.findIndex(o => o.productId === selectedProduct);
+      if (existing >= 0) {
+        const updated = [...prev];
+        updated[existing] = { productId: selectedProduct, units: unitsNum, rate };
+        return updated;
+      }
+      return [...prev, { productId: selectedProduct, units: unitsNum, rate }];
+    });
+  }, [selectedProduct, unitsNum, rate]);
+
+  const removeOrder = useCallback((idx: number) => {
+    setOrders(prev => prev.filter((_, i) => i !== idx));
+  }, []);
+
+  const checkedCount = Object.values(nursingChecks).filter(Boolean).length;
+
+  // Order summary calculations
+  const orderSummary = useMemo(() => {
+    let totalVol = 0;
+    let totalDur = 0;
+    const items = orders.map(o => {
+      const p = PRODUCTS.find(pr => pr.id === o.productId)!;
+      const vol = o.units * p.volumePerUnit;
+      const dur = Math.ceil((vol / o.rate) * 60);
+      totalVol += vol;
+      totalDur += dur;
+      return { ...o, label: p.label, volume: vol, duration: dur };
+    });
+    return { items, totalVol, totalDur };
+  }, [orders]);
 
   return (
     <div className="p-3 rounded-lg border-2 border-purple-300 dark:border-purple-700 bg-purple-50/30 dark:bg-purple-950/10 space-y-3">
@@ -473,6 +530,9 @@ const BloodProductInfusionCalculator: React.FC = () => {
             max={999}
           />
         </div>
+        <Button size="sm" variant="outline" className="h-8 text-xs" onClick={addToOrder}>
+          <Plus className="h-3 w-3 mr-1" /> Add to Order
+        </Button>
       </div>
 
       {/* Results */}
@@ -502,6 +562,100 @@ const BloodProductInfusionCalculator: React.FC = () => {
           <p>{product.notes}</p>
           <p className="mt-0.5">Rate range: {product.rateRange[0]}–{product.rateRange[1]} mL/hr</p>
         </div>
+      </div>
+
+      {/* Combined Order Summary */}
+      {orders.length > 0 && (
+        <div className="p-3 rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-950/10 space-y-2">
+          <div className="flex items-center gap-2">
+            <Package className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="font-bold text-sm">Combined Order Summary</span>
+            <Badge variant="outline" className="text-[10px]">{orders.length} product{orders.length > 1 ? "s" : ""}</Badge>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-muted/50">
+                  <th className="border p-1.5 text-left">Product</th>
+                  <th className="border p-1.5 text-left">Units</th>
+                  <th className="border p-1.5 text-left">Volume</th>
+                  <th className="border p-1.5 text-left">Rate</th>
+                  <th className="border p-1.5 text-left">Duration</th>
+                  <th className="border p-1.5 w-8"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderSummary.items.map((item, i) => (
+                  <tr key={item.productId}>
+                    <td className="border p-1.5 font-medium">{item.label}</td>
+                    <td className="border p-1.5">{item.units}</td>
+                    <td className="border p-1.5">{item.volume} mL</td>
+                    <td className="border p-1.5">{item.rate} mL/hr</td>
+                    <td className="border p-1.5">{Math.floor(item.duration / 60) > 0 ? `${Math.floor(item.duration / 60)}h ` : ""}{item.duration % 60}m</td>
+                    <td className="border p-1.5">
+                      <button onClick={() => removeOrder(i)} className="text-muted-foreground hover:text-destructive">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <div className="p-2 rounded-lg bg-background border text-center">
+              <p className="text-[10px] text-muted-foreground">Total Volume (All Products)</p>
+              <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">{orderSummary.totalVol} <span className="text-xs font-normal">mL</span></p>
+            </div>
+            <div className="p-2 rounded-lg bg-background border text-center">
+              <p className="text-[10px] text-muted-foreground">Total Infusion Time (Sequential)</p>
+              <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">
+                {Math.floor(orderSummary.totalDur / 60) > 0 && `${Math.floor(orderSummary.totalDur / 60)}h `}{orderSummary.totalDur % 60}m
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Nursing Infusion Monitoring Checklist */}
+      <div className="p-3 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50/30 dark:bg-amber-950/10 space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ClipboardCheck className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+            <span className="font-bold text-sm">Nursing Infusion Monitoring</span>
+          </div>
+          <Badge variant="outline" className={`text-[10px] ${checkedCount === NURSING_CHECKS.length ? "border-emerald-500 text-emerald-700 dark:text-emerald-400" : "border-amber-500 text-amber-700 dark:text-amber-400"}`}>
+            {checkedCount}/{NURSING_CHECKS.length} complete
+          </Badge>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+          {NURSING_CHECKS.map(check => (
+            <label
+              key={check.id}
+              className={cn(
+                "flex items-start gap-2 p-2 rounded border cursor-pointer transition-colors text-xs",
+                nursingChecks[check.id]
+                  ? "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-700"
+                  : "bg-background border-border hover:bg-muted/50"
+              )}
+            >
+              <Checkbox
+                checked={!!nursingChecks[check.id]}
+                onCheckedChange={() => toggleCheck(check.id)}
+                className="mt-0.5"
+              />
+              <div>
+                <p className={cn("font-medium", nursingChecks[check.id] && "line-through text-muted-foreground")}>{check.label}</p>
+                <p className="text-[10px] text-muted-foreground">{check.detail}</p>
+              </div>
+            </label>
+          ))}
+        </div>
+        {checkedCount === NURSING_CHECKS.length && (
+          <div className="p-2 rounded bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700 text-xs text-emerald-800 dark:text-emerald-300 font-medium text-center">
+            ✓ All pre-transfusion and monitoring checks complete
+          </div>
+        )}
       </div>
 
       {/* Quick Reference */}
