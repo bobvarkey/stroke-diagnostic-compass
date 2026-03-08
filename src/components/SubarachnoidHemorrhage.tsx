@@ -9,6 +9,11 @@ import {
   CheckCircle2, XCircle, ArrowRight, TrendingUp, RotateCcw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  SAHWFNSCalculator, SAHHuntHessCalculator, SAHScoreCalculator,
+  HijdraScoreCalculator, VasogradeCalculator, SEBESCalculator, BNIScaleCalculator
+} from "./SAHScaleCalculators";
+import FisherScaleCalculator from "./FisherScaleCalculator";
 
 // ─── Diagnostic Algorithm ───────────────────────────────────────────────────
 
@@ -696,122 +701,7 @@ function SAHComplicationsManagement() {
   );
 }
 
-// ─── SAH Grading Summary ────────────────────────────────────────────────────
-
-function SAHGradingSummary() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <Card className="border-indigo-400 dark:border-indigo-600 bg-gradient-to-br from-indigo-50 dark:from-indigo-950/30 to-background">
-        <CollapsibleTrigger className="w-full">
-          <CardHeader className="bg-indigo-100/50 dark:bg-indigo-900/30">
-            <CardTitle className="flex items-center justify-between text-indigo-800 dark:text-indigo-300">
-              <div className="flex items-center gap-2">
-                <Stethoscope className="h-5 w-5" />
-                SAH Grading Scales Quick Reference
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-            </CardTitle>
-          </CardHeader>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <CardContent className="pt-6 space-y-4">
-            {/* Hunt & Hess Quick Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs border-collapse">
-                <thead>
-                  <tr className="bg-indigo-100 dark:bg-indigo-900/40">
-                    <th className="p-2 text-left border border-indigo-200 dark:border-indigo-700">Grade</th>
-                    <th className="p-2 text-left border border-indigo-200 dark:border-indigo-700">Hunt & Hess</th>
-                    <th className="p-2 text-left border border-indigo-200 dark:border-indigo-700">WFNS (GCS)</th>
-                    <th className="p-2 text-left border border-indigo-200 dark:border-indigo-700">Mortality</th>
-                  </tr>
-                </thead>
-                <tbody className="text-indigo-700 dark:text-indigo-400">
-                  <tr className="bg-green-50 dark:bg-green-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">I</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Asymptomatic / mild headache</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">GCS 15, no deficit</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">1-5%</td>
-                  </tr>
-                  <tr className="bg-yellow-50 dark:bg-yellow-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">II</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Moderate headache, CN palsy</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">GCS 13-14, no deficit</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">5-10%</td>
-                  </tr>
-                  <tr className="bg-amber-50 dark:bg-amber-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">III</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Drowsy, mild focal deficit</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">GCS 13-14, + deficit</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">10-15%</td>
-                  </tr>
-                  <tr className="bg-orange-50 dark:bg-orange-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">IV</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Stupor, hemiparesis</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">GCS 7-12</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">20-40%</td>
-                  </tr>
-                  <tr className="bg-red-50 dark:bg-red-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">V</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Deep coma, decerebrate</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">GCS 3-6</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">50-70%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Modified Fisher Quick Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs border-collapse">
-                <thead>
-                  <tr className="bg-indigo-100 dark:bg-indigo-900/40">
-                    <th className="p-2 text-left border border-indigo-200 dark:border-indigo-700">Modified Fisher</th>
-                    <th className="p-2 text-left border border-indigo-200 dark:border-indigo-700">CT Findings</th>
-                    <th className="p-2 text-left border border-indigo-200 dark:border-indigo-700">Vasospasm Risk</th>
-                  </tr>
-                </thead>
-                <tbody className="text-indigo-700 dark:text-indigo-400">
-                  <tr className="bg-green-50 dark:bg-green-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">0</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">No SAH or IVH</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">0%</td>
-                  </tr>
-                  <tr className="bg-yellow-50 dark:bg-yellow-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">1</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Thin SAH, no IVH</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">~24%</td>
-                  </tr>
-                  <tr className="bg-amber-50 dark:bg-amber-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">2</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Thin SAH + IVH</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">~33%</td>
-                  </tr>
-                  <tr className="bg-orange-50 dark:bg-orange-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">3</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Thick SAH, no IVH</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">~33%</td>
-                  </tr>
-                  <tr className="bg-red-50 dark:bg-red-950/10">
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700 font-bold">4</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">Thick SAH + IVH</td>
-                    <td className="p-2 border border-indigo-200 dark:border-indigo-700">~40%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <p className="text-xs text-muted-foreground">
-              💡 Use the dedicated Hunt & Hess, WFNS, and Fisher Scale calculators in the ICH tab for interactive scoring.
-            </p>
-          </CardContent>
-        </CollapsibleContent>
-      </Card>
-    </Collapsible>
-  );
-}
+// SAHGradingSummary removed — replaced by interactive calculators in SAHScaleCalculators.tsx
 
 // ─── SAH Day-by-Day Timeline ────────────────────────────────────────────────
 
@@ -881,14 +771,27 @@ export default function SubarachnoidHemorrhage() {
         <p className="text-sm text-red-700 dark:text-red-400">
           SAH accounts for ~5% of strokes but 25% of stroke-related deaths. 85% are aneurysmal. 
           Rapid diagnosis, early aneurysm securing, and vigilant complication monitoring are critical.
-          Use the interactive calculators in the ICH tab for Hunt & Hess, WFNS, and Fisher scoring.
         </p>
       </div>
 
       <SAHDiagnosticAlgorithm />
       <SAHTreatmentAlgorithm />
       <SAHComplicationsManagement />
-      <SAHGradingSummary />
+
+      {/* Clinical Severity Scales */}
+      <SAHWFNSCalculator />
+      <SAHHuntHessCalculator />
+      <SAHScoreCalculator />
+
+      {/* Radiological Scales */}
+      <FisherScaleCalculator />
+      <HijdraScoreCalculator />
+
+      {/* Prognostic & DCI Prediction */}
+      <VasogradeCalculator />
+      <SEBESCalculator />
+      <BNIScaleCalculator />
+
       <SAHTimeline />
     </div>
   );
