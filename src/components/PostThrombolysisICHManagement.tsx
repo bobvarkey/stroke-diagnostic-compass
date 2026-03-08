@@ -416,7 +416,7 @@ const PRODUCTS = [
 ] as const;
 
 const BloodProductInfusionCalculator: React.FC = () => {
-  const [selectedProduct, setSelectedProduct] = useState(PRODUCTS[0].id);
+  const [selectedProduct, setSelectedProduct] = useState<string>(PRODUCTS[0].id);
   const [units, setUnits] = useState("10");
   const [rateOverride, setRateOverride] = useState("");
 
