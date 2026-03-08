@@ -9,6 +9,11 @@ import {
   CheckCircle2, XCircle, ArrowRight, TrendingUp, RotateCcw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  SAHWFNSCalculator, SAHHuntHessCalculator, SAHScoreCalculator,
+  HijdraScoreCalculator, VasogradeCalculator, SEBESCalculator, BNIScaleCalculator
+} from "./SAHScaleCalculators";
+import FisherScaleCalculator from "./FisherScaleCalculator";
 
 // ─── Diagnostic Algorithm ───────────────────────────────────────────────────
 
