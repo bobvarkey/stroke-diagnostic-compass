@@ -828,14 +828,88 @@ function ARISEConsensus() {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="pt-6 space-y-4">
+            {/* Important Caveat */}
+            <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-300 dark:border-amber-600">
+              <p className="text-xs text-amber-800 dark:text-amber-300 font-medium">
+                <AlertTriangle className="h-3 w-3 inline mr-1" />
+                <strong>Important:</strong> ARISE I does not provide rigid, standalone patient selection criteria for MMAE.
+                It emphasizes MMAE as an adjunct to standard care for neurologically stable cSDH patients, pending full trial publications.
+                It draws from pivotal RCTs (EMBOLISE, STEM, MEMBRANE) and consensus for pragmatic selection in non-emergent cases.
+              </p>
+            </div>
+
             {/* Overview */}
             <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700">
               <p className="text-xs text-cyan-700 dark:text-cyan-400">
                 <strong>ARISE I Consensus Statement</strong> outlines a management framework for chronic subdural hematoma (cSDH),
                 emphasizing middle meningeal artery embolization (MMAE) as an adjunctive therapy for neurologically stable patients
-                to reduce recurrence. It synthesizes evidence from EMBOLISE, STEM, and MAGIC-MT trials into a stepwise decision process
-                based on stability, symptoms, and imaging findings.
+                to reduce recurrence. It synthesizes evidence from EMBOLISE, STEM, MAGIC-MT, and MEMBRANE trials into a stepwise
+                decision process based on stability, symptoms, and imaging findings.
               </p>
+            </div>
+
+            {/* Key Inclusion Features */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">
+                <CheckCircle2 className="h-4 w-4 inline mr-1" />
+                MMAE Inclusion Features (Stable Patients)
+              </h4>
+              <ul className="text-xs space-y-1.5 text-cyan-700 dark:text-cyan-400">
+                <li>• <strong>Neurologically stable:</strong> GCS ≥9, no profound symptoms requiring emergent surgery</li>
+                <li>• <strong>Functional status:</strong> Pre-morbid or current mRS 0–3 (varies by trial: STEM 0–1; EMBOLISE 0–2; MEMBRANE 0–3)</li>
+                <li>• <strong>Imaging:</strong> cSDH thickness ≥10mm with mass effect or neurological symptoms (headache, mild weakness)</li>
+                <li>• <strong>Suitable for:</strong> Conventional management (surgical or nonsurgical) ± MMAE adjunct</li>
+              </ul>
+            </div>
+
+            {/* Exclusion Criteria */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">
+                <XCircle className="h-4 w-4 inline mr-1" />
+                Exclusion Criteria
+              </h4>
+              <div className="space-y-2">
+                {[
+                  { category: "Emergent", detail: "Unstable patients needing immediate surgery (decompensating, large shift)", color: "border-red-300 dark:border-red-700 bg-red-50/50 dark:bg-red-950/10" },
+                  { category: "Acute/Traumatic", detail: "Traumatic acute SDH — different pathophysiology; MMAE not recommended", color: "border-red-300 dark:border-red-700 bg-red-50/50 dark:bg-red-950/10" },
+                  { category: "Prior Treatment", detail: "No prior cSDH surgery/MMAE (for primary trial contexts)", color: "border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/10" },
+                  { category: "Severity", detail: "Markwalder grade >2 (some trials); extreme frailty or comorbidities confounding outcomes", color: "border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/10" },
+                ].map((item) => (
+                  <div key={item.category} className={`p-2 rounded-lg border ${item.color}`}>
+                    <span className="text-xs font-bold">{item.category}:</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">{item.detail}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Trial-Specific Exclusions */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">Trial-Specific Exclusion Criteria</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-cyan-300 dark:border-cyan-700">
+                      <th className="text-left py-2 pr-3 font-semibold text-cyan-800 dark:text-cyan-300">Trial</th>
+                      <th className="text-left py-2 font-semibold text-cyan-800 dark:text-cyan-300">Key Exclusions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    <tr className="border-b border-cyan-200 dark:border-cyan-800">
+                      <td className="py-2 pr-3 font-medium">STEM</td>
+                      <td className="py-2">Premorbid mRS &gt;1; GCS &lt;9</td>
+                    </tr>
+                    <tr className="border-b border-cyan-200 dark:border-cyan-800">
+                      <td className="py-2 pr-3 font-medium">EMBOLISE</td>
+                      <td className="py-2">Markwalder grade &gt;2; prior treatment</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-3 font-medium">MEMBRANE</td>
+                      <td className="py-2">mRS &gt;3; emergency cases</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Patient Stratification Table */}
@@ -878,16 +952,54 @@ function ARISEConsensus() {
               </div>
             </div>
 
+            {/* Decision Table */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">Decision Table — MMAE Role by Patient Status</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[10px] border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-cyan-300 dark:border-cyan-700">
+                      <th className="text-left py-2 pr-2 font-semibold text-cyan-800 dark:text-cyan-300">Patient Status</th>
+                      <th className="text-left py-2 pr-2 font-semibold text-cyan-800 dark:text-cyan-300">Conventional</th>
+                      <th className="text-left py-2 pr-2 font-semibold text-cyan-800 dark:text-cyan-300">+MMAE Role</th>
+                      <th className="text-left py-2 font-semibold text-cyan-800 dark:text-cyan-300">Recurrence Reduction</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    <tr className="border-b border-cyan-200 dark:border-cyan-800">
+                      <td className="py-2 pr-2 font-medium text-red-700 dark:text-red-400">Emergent/Unstable</td>
+                      <td className="py-2 pr-2">Surgery alone</td>
+                      <td className="py-2 pr-2">None</td>
+                      <td className="py-2">N/A</td>
+                    </tr>
+                    <tr className="border-b border-cyan-200 dark:border-cyan-800">
+                      <td className="py-2 pr-2 font-medium text-amber-700 dark:text-amber-400">Stable Symptomatic</td>
+                      <td className="py-2 pr-2">Surgery/observation</td>
+                      <td className="py-2 pr-2">Adjunct (pre/post-op)</td>
+                      <td className="py-2">4-15% vs 11-39%</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-2 font-medium text-green-700 dark:text-green-400">Stable Asymptomatic</td>
+                      <td className="py-2 pr-2">Observation</td>
+                      <td className="py-2 pr-2">Primary/adjunct</td>
+                      <td className="py-2">Lowers surgical rescue ~4%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             {/* ARISE Treatment Algorithm */}
             <div>
               <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">ARISE I Treatment Algorithm</h4>
               <div className="space-y-2">
                 {[
-                  { step: 1, title: "Assess Urgency", detail: "If unstable/emergent → surgery alone (burr-hole irrigation/drainage, twist-drill, or craniotomy); reverse anticoagulants/antiplatelets per risk" },
-                  { step: 2, title: "Stable Patients — Plan", detail: "Determine conventional plan (surgery vs. nonsurgical based on symptoms/size/comorbidities). Add MMAE as adjunct — reduces recurrence 4-15% vs. 11-39% with conventional alone" },
-                  { step: 3, title: "MMAE Technique", detail: "Use liquid embolics (Onyx/n-BCA/SQUID preferred), particles, or coils. Access radial/femoral, sedate. Target frontal/parietal MMA branches above clinoid to avoid dangerous anastomoses" },
-                  { step: 4, title: "Adjuncts", detail: "Manage antithrombotics individually (hold/reverse). Avoid routine steroids (increased complications). Consider atorvastatin for mild nonsurgical cases" },
-                  { step: 5, title: "Exclusions", detail: "Exclude MMAE for: acute/traumatic SDH, unstable patients needing emergent surgery" },
+                  { step: 1, title: "Confirm Diagnosis", detail: "Non-contrast CT showing cSDH (≥10mm thickness, mass effect, hypo/iso-dense); exclude acute/traumatic SDH" },
+                  { step: 2, title: "Assess Stability", detail: "GCS ≥9, mRS ≤3, no emergent decompensation → proceed; else → emergent surgery only" },
+                  { step: 3, title: "Stratify Management", detail: "Symptomatic/large (>10mm/>5mm shift) → surgery (burr-hole preferred); asymptomatic/mild → observation/medical" },
+                  { step: 4, title: "Add MMAE Adjunct", detail: "Stable patients: conventional ± MMAE (liquid embolic: Onyx/n-BCA/SQUID preferred; target frontal/parietal branches above clinoid)" },
+                  { step: 5, title: "Manage Adjuncts", detail: "Antithrombotics: individualize (hold/reverse). Avoid routine steroids (increased complications). Consider atorvastatin for mild nonsurgical cases" },
+                  { step: 6, title: "Exclude MMAE", detail: "Unstable, prior treatment (in trial context), acute/traumatic SDH" },
                 ].map((item) => (
                   <div key={item.step} className="p-3 rounded-lg border border-cyan-200 dark:border-cyan-700 bg-cyan-50/50 dark:bg-cyan-950/10">
                     <div className="flex items-center gap-2 mb-1">
@@ -898,6 +1010,66 @@ function ARISEConsensus() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Embolic Agents Summary Table */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">Embolic Agent Categories (ARISE I / Consensus)</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[10px] border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-cyan-300 dark:border-cyan-700">
+                      <th className="text-left py-2 pr-2 font-semibold text-cyan-800 dark:text-cyan-300">Category</th>
+                      <th className="text-left py-2 pr-2 font-semibold text-cyan-800 dark:text-cyan-300">Examples</th>
+                      <th className="text-left py-2 pr-2 font-semibold text-cyan-800 dark:text-cyan-300">Mechanism</th>
+                      <th className="text-left py-2 font-semibold text-cyan-800 dark:text-cyan-300">Pros / Cons</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    <tr className="border-b border-cyan-200 dark:border-cyan-800">
+                      <td className="py-2 pr-2 font-medium">Liquids</td>
+                      <td className="py-2 pr-2">Onyx (EVOH/DMSO), Squid, n-BCA, PHIL</td>
+                      <td className="py-2 pr-2">DMSO diffusion or rapid polymerization → permanent cast</td>
+                      <td className="py-2">Deep penetration; risk of reflux/ischemia; DMSO-compatible catheter required</td>
+                    </tr>
+                    <tr className="border-b border-cyan-200 dark:border-cyan-800">
+                      <td className="py-2 pr-2 font-medium">Particles</td>
+                      <td className="py-2 pr-2">PVA (150-250µm), Embosphere (300-500µm)</td>
+                      <td className="py-2 pr-2">Mechanical distal occlusion</td>
+                      <td className="py-2">Less reflux risk; recanalization possible; less penetration</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-2 font-medium">Coils</td>
+                      <td className="py-2 pr-2">Platinum/stainless steel detachable</td>
+                      <td className="py-2 pr-2">Proximal thrombosis scaffold</td>
+                      <td className="py-2">No distal reach; adjunct to liquids; repositionable</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* MMAE Technique Summary */}
+            <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700">
+              <h5 className="font-semibold text-cyan-800 dark:text-cyan-300 text-xs mb-2">MMAE Technique Notes (Consensus)</h5>
+              <ul className="text-[10px] space-y-1 text-cyan-700 dark:text-cyan-400">
+                <li>• <strong>Access:</strong> Radial preferred (elderly/coagulopathy) or femoral; conscious sedation + intra-arterial lidocaine for DMSO agents</li>
+                <li>• <strong>Targeting:</strong> Microcatheter above anterior clinoid (lateral view), frontal/parietal MMA branches; avoid dural-pial/meningo-ophthalmic anastomoses</li>
+                <li>• <strong>Injection:</strong> Slow for liquids; rapid for n-BCA (Lipiodol mix); superselective distal embolization</li>
+                <li>• <strong>Safety:</strong> ~3% complication rate (stroke/hemorrhage/vision loss &lt;1%); no agent-specific RCT comparisons yet</li>
+                <li>• <strong>Coagulopathy:</strong> MMAE safe in thrombocytopenia/anticoagulation per consensus</li>
+              </ul>
+            </div>
+
+            {/* Consensus Application */}
+            <div className="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-700">
+              <h5 className="font-semibold text-indigo-800 dark:text-indigo-300 text-xs mb-2">Consensus Application Notes</h5>
+              <ul className="text-xs space-y-1 text-indigo-700 dark:text-indigo-400">
+                <li>• <strong>Primary role:</strong> Adjunct to surgery/observation in symptomatic stable cSDH to cut recurrence (4–15% vs. 11–39%)</li>
+                <li>• <strong>Subgroups pending:</strong> Anticoagulated, recurrent, or specific morphologies; use pooled analyses for optimization</li>
+                <li>• <strong>Individualize:</strong> Weigh hematoma size (&gt;10mm), midline shift (&gt;5mm), symptoms, and antithrombotic risks</li>
+                <li>• <strong>Not a replacement:</strong> MMAE is adjunctive only — not replacement for surgery in symptomatic unstable cases</li>
+              </ul>
             </div>
 
             {/* Follow-Up Protocol */}
@@ -920,8 +1092,9 @@ function ARISEConsensus() {
                 <div>• EMBOLISE Trial (2024) — MMA embo reduced surgical rescue 4.6% vs 11.3%</div>
                 <div>• STEM Trial (2024) — Embolization non-inferior to surgery as primary treatment</div>
                 <div>• MAGIC-MT Trial (2024) — Combined MMA embo + surgery reduced recurrence 4.2% vs 11.3%</div>
-                <div>• European Clinical Practice Guidelines for cSDH Management</div>
-                <div>• Multidisciplinary Consensus on MMA Embolization Role (2024)</div>
+                <div>• MEMBRANE Trial — mRS 0-3 inclusion, emergency exclusion</div>
+                <div>• Multidisciplinary Consensus on MMA Embolization Role (2024) — <em>PMC: 11664065</em></div>
+                <div>• Embolic Materials in MMAE for cSDH — <em>PMC: 12766324</em></div>
               </div>
             </div>
           </CardContent>
