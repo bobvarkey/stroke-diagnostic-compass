@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, AlertTriangle, Brain, Activity, Stethoscope, Pill, Syringe, Eye } from "lucide-react";
 import cvtFlowchart from "@/assets/cvt-management-flowchart.png";
+import CVTGradingScale from "./CVTGradingScale";
+import DIAS3Calculator from "./DIAS3Calculator";
+import SI2NCAL2CCalculator from "./SI2NCAL2CCalculator";
 
 /* ─────────────────────────── Symptom Severity Scale ─────────────────────────── */
 
@@ -426,6 +429,9 @@ const CVTManagementFlowchart: React.FC = () => (
 const CerebralVenousThrombosis: React.FC = () => (
   <div className="space-y-6">
     <CVTManagementFlowchart />
+    <CVTGradingScale />
+    <SI2NCAL2CCalculator />
+    <DIAS3Calculator />
     <CVDSeverityScale />
   </div>
 );
