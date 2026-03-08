@@ -1135,6 +1135,7 @@ export default function SubduralHematoma() {
       <SDHSurgicalOptions />
       <MMAEmbolization />
       <SDHMedicalManagement />
+      <CSDHRecurrenceCalculator />
       <ARISEConsensus />
 
       <div className="text-center text-sm text-muted-foreground border-t pt-4">
