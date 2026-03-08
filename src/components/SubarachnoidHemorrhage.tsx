@@ -792,6 +792,7 @@ export default function SubarachnoidHemorrhage() {
       <VasogradeCalculator />
       <SEBESCalculator />
       <BNIScaleCalculator />
+      <PREDICTScoreCalculator />
 
       <SAHTimeline />
     </div>
