@@ -114,8 +114,8 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
                   className={`
                     px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200
                     ${selectedRole === role.id 
-                      ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' 
-                      : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-slate-300 border border-slate-700'
+                      ? 'bg-gradient-to-r from-primary to-accent-purple text-white shadow-lg shadow-primary/30' 
+                      : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-slate-300 border border-slate-600/50 backdrop-blur-sm'
                     }
                   `}
                   disabled={loading}
@@ -130,7 +130,7 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-14 bg-white hover:bg-slate-100 text-slate-900 font-bold text-lg tracking-wide rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-white/20"
+            className="w-full h-14 bg-gradient-to-r from-primary to-accent-purple hover:opacity-90 text-white font-bold text-lg tracking-wide rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -167,7 +167,7 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
               type="button"
               variant="outline"
               onClick={onEnterDemoMode}
-              className="w-full h-12 border-2 border-amber-500/50 hover:border-amber-500 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 font-medium tracking-wide rounded-xl transition-all duration-200"
+              className="w-full h-12 border-2 border-accent-teal/50 hover:border-accent-teal text-emerald-400 hover:text-emerald-300 hover:bg-accent-teal/10 font-medium tracking-wide rounded-xl transition-all duration-200"
             >
               <Play className="h-4 w-4 mr-2" />
               Try Demo Mode
