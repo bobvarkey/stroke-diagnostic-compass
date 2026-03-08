@@ -432,6 +432,164 @@ interface OrderedProduct {
   rate: number;
 }
 
+const TransfusionReactionProtocol: React.FC = () => {
+  const reactions = [
+    {
+      type: "Febrile Non-Hemolytic",
+      color: "amber",
+      signs: "Temperature rise ≥1°C, rigors, chills (no hemolysis)",
+      frequency: "Most common (1–3%)",
+      steps: [
+        "SLOW or STOP the infusion",
+        "Assess vitals: T, HR, BP, RR, SpO2",
+        "Administer Acetaminophen 650 mg PO/PR",
+        "Consider Meperidine 25–50 mg IV for severe rigors",
+        "If symptoms resolve in 30 min → may resume at slower rate",
+        "If symptoms persist or worsen → STOP infusion, send blood cultures + transfusion reaction workup",
+      ],
+    },
+    {
+      type: "Allergic / Urticarial",
+      color: "blue",
+      signs: "Urticaria, pruritus, flushing, mild angioedema",
+      frequency: "Common (1–3%)",
+      steps: [
+        "STOP the infusion",
+        "Administer Diphenhydramine 25–50 mg IV",
+        "Mild urticaria only → may resume after symptoms resolve",
+        "If angioedema, wheezing, or hypotension → treat as ANAPHYLAXIS:",
+        "  → Epinephrine 0.3 mg IM (1:1000) — repeat q5–15 min PRN",
+        "  → Normal saline bolus 500–1000 mL IV",
+        "  → Methylprednisolone 125 mg IV",
+        "  → Albuterol nebulizer for bronchospasm",
+      ],
+    },
+    {
+      type: "Acute Hemolytic (ABO Incompatibility)",
+      color: "red",
+      signs: "Fever, flank/back pain, dark urine, hypotension, DIC, hemoglobinuria",
+      frequency: "Rare but FATAL (~1:76,000; mortality 10–40%)",
+      steps: [
+        "STOP INFUSION IMMEDIATELY — do NOT resume",
+        "Disconnect tubing; maintain IV access with NS",
+        "Send STAT: Direct Coombs, haptoglobin, LDH, free Hgb, UA, DIC panel",
+        "Return blood bag + tubing to blood bank for re-crossmatch",
+        "Aggressive IV hydration: NS 200–300 mL/hr to maintain UOP >1 mL/kg/hr",
+        "Monitor for DIC: PT, aPTT, fibrinogen, D-dimer q4–6h",
+        "Consider vasopressors if hemodynamically unstable",
+        "Notify blood bank + attending physician IMMEDIATELY",
+      ],
+    },
+  ];
+
+  const colorMap: Record<string, { border: string; bg: string; text: string; badge: string }> = {
+    amber: {
+      border: "border-amber-400 dark:border-amber-600",
+      bg: "bg-amber-50/60 dark:bg-amber-950/20",
+      text: "text-amber-800 dark:text-amber-300",
+      badge: "bg-amber-600 text-white",
+    },
+    blue: {
+      border: "border-blue-400 dark:border-blue-600",
+      bg: "bg-blue-50/60 dark:bg-blue-950/20",
+      text: "text-blue-800 dark:text-blue-300",
+      badge: "bg-blue-600 text-white",
+    },
+    red: {
+      border: "border-red-400 dark:border-red-600",
+      bg: "bg-red-50/60 dark:bg-red-950/20",
+      text: "text-red-800 dark:text-red-300",
+      badge: "bg-red-600 text-white",
+    },
+  };
+
+  return (
+    <div className="p-3 rounded-lg border-2 border-orange-300 dark:border-orange-700 bg-orange-50/30 dark:bg-orange-950/10 space-y-3">
+      <div className="flex items-center gap-2">
+        <ShieldAlert className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+        <span className="font-bold text-sm">Transfusion Reaction Protocol</span>
+        <Badge className="bg-orange-600 text-white text-xs">FLOWCHART</Badge>
+      </div>
+
+      {/* Universal First Response */}
+      <div className="p-3 rounded-lg border-2 border-foreground/20 bg-muted/50 space-y-2">
+        <p className="text-xs font-bold flex items-center gap-1.5">
+          <AlertTriangle className="h-3.5 w-3.5" /> Universal First Response (ALL Reactions)
+        </p>
+        <ol className="text-xs space-y-1 list-decimal list-inside text-muted-foreground">
+          <li><strong>STOP</strong> the transfusion</li>
+          <li>Keep IV line open with <strong>Normal Saline</strong></li>
+          <li>Check vitals: <strong>T, HR, BP, RR, SpO2</strong></li>
+          <li>Verify patient ID ↔ blood product label match</li>
+          <li>Notify blood bank + physician</li>
+        </ol>
+      </div>
+
+      {/* Reaction-specific protocols */}
+      <div className="space-y-3">
+        {reactions.map((rxn) => {
+          const colors = colorMap[rxn.color];
+          return (
+            <div key={rxn.type} className={cn("p-3 rounded-lg border-2 space-y-2", colors.border, colors.bg)}>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className={cn("text-xs", colors.badge)}>{rxn.type}</Badge>
+                <span className="text-[10px] text-muted-foreground">{rxn.frequency}</span>
+              </div>
+              <div className="p-2 rounded bg-background/60 border text-xs">
+                <span className="font-semibold">Signs: </span>
+                <span className="text-muted-foreground">{rxn.signs}</span>
+              </div>
+              <div className="space-y-1">
+                <p className={cn("text-xs font-bold", colors.text)}>Step-by-Step Management:</p>
+                <ol className="text-xs space-y-1 list-decimal list-inside">
+                  {rxn.steps.map((step, i) => (
+                    <li key={i} className={step.startsWith("  →") ? "ml-4 list-none text-muted-foreground" : ""}>
+                      {step.startsWith("  →") ? step : step}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Key Differentiators Table */}
+      <div className="overflow-x-auto">
+        <p className="text-xs font-bold mb-1.5">Quick Differentiation Guide</p>
+        <table className="w-full text-[10px] sm:text-xs border-collapse">
+          <thead>
+            <tr className="bg-muted/50">
+              <th className="border p-1.5 text-left">Feature</th>
+              <th className="border p-1.5 text-left">Febrile</th>
+              <th className="border p-1.5 text-left">Allergic</th>
+              <th className="border p-1.5 text-left">Hemolytic</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ["Fever", "Yes", "Rare", "Yes (high)"],
+              ["Rash/Hives", "No", "Yes", "No"],
+              ["Hypotension", "Rare", "If anaphylaxis", "Yes"],
+              ["Back/Flank Pain", "No", "No", "YES — key finding"],
+              ["Dark Urine", "No", "No", "YES — hemoglobinuria"],
+              ["Can Resume?", "Maybe (slowly)", "Mild only", "NEVER"],
+              ["Mortality Risk", "Very low", "Low (unless anaphylaxis)", "HIGH (10–40%)"],
+            ].map(([feature, feb, allerg, hemo]) => (
+              <tr key={feature} className="hover:bg-muted/30">
+                <td className="border p-1.5 font-medium">{feature}</td>
+                <td className="border p-1.5">{feb}</td>
+                <td className="border p-1.5">{allerg}</td>
+                <td className="border p-1.5 font-semibold">{hemo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
 const BloodProductInfusionCalculator: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<string>(PRODUCTS[0].id);
   const [units, setUnits] = useState("10");
