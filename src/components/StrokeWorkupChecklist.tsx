@@ -6099,6 +6099,12 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <p>Subarachnoid hemorrhage management — Always correlate with clinical presentation</p>
           </div>
         </TabsContent>
+        {/* Subdural Hematoma Tab Content */}
+        <TabsContent value="sdh" className="space-y-6">
+          <LazySection id="sdh-management">
+            <SubduralHematoma />
+          </LazySection>
+        </TabsContent>
       </Tabs>
 
       {/* Mobile Bottom Navigation Bar */}
