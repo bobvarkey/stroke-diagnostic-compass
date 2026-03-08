@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
+import ARISE1PDFReport from "@/components/ARISE1PDFReport";
 
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
