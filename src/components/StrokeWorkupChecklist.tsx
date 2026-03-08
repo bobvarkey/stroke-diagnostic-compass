@@ -6103,6 +6103,16 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <p>Cerebral venous thrombosis evaluation and management - Always correlate with clinical presentation</p>
           </div>
         </TabsContent>
+        {/* Subarachnoid Hemorrhage Tab Content */}
+        <TabsContent value="sah" className="space-y-6">
+          <LazySection id="sah-management">
+            <SubarachnoidHemorrhage />
+          </LazySection>
+
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>Subarachnoid hemorrhage management — Always correlate with clinical presentation</p>
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );
