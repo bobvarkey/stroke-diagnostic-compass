@@ -514,6 +514,24 @@ const TransfusionReactionProtocol: React.FC = () => {
         "Future transfusions: slower rate (1 mL/kg/hr), pre-medicate with diuretics, single-unit orders",
       ],
     },
+    {
+      type: "Delayed Hemolytic (DHTR)",
+      color: "rose",
+      signs: "Unexplained hemoglobin drop 2–14 days post-transfusion, new jaundice, dark urine, fever, positive DAT (Direct Antiglobulin Test)",
+      frequency: "Incidence ~1:5,000–1:11,000; often missed — high index of suspicion needed",
+      steps: [
+        "Recognize: Unexplained Hgb drop or hemolysis 2–14 days after transfusion",
+        "Send STAT: Direct Antiglobulin Test (DAT/Coombs) — positive confirms diagnosis",
+        "Antibody identification panel — identify offending alloantibody (e.g., anti-Jka, anti-E, anti-c, anti-K)",
+        "Send: LDH (↑), haptoglobin (↓), indirect bilirubin (↑), reticulocyte count",
+        "Peripheral smear: spherocytes, polychromasia",
+        "Notify blood bank IMMEDIATELY — all future crossmatches must avoid implicated antigen",
+        "Supportive care: Transfuse ONLY antigen-negative, crossmatch-compatible RBCs if clinically indicated",
+        "Monitor renal function — hemoglobinuria can cause AKI; maintain UOP >0.5 mL/kg/hr",
+        "Avoid unnecessary transfusions — each new exposure increases alloimmunization risk",
+        "Document in patient's permanent transfusion record + allergy list",
+      ],
+    },
   ];
 
   const colorMap: Record<string, { border: string; bg: string; text: string; badge: string }> = {
@@ -546,6 +564,12 @@ const TransfusionReactionProtocol: React.FC = () => {
       bg: "bg-teal-50/60 dark:bg-teal-950/20",
       text: "text-teal-800 dark:text-teal-300",
       badge: "bg-teal-600 text-white",
+    },
+    rose: {
+      border: "border-rose-400 dark:border-rose-600",
+      bg: "bg-rose-50/60 dark:bg-rose-950/20",
+      text: "text-rose-800 dark:text-rose-300",
+      badge: "bg-rose-600 text-white",
     },
   };
 
@@ -610,30 +634,32 @@ const TransfusionReactionProtocol: React.FC = () => {
               <th className="border p-1.5 text-left">Febrile</th>
               <th className="border p-1.5 text-left">Allergic</th>
               <th className="border p-1.5 text-left">Hemolytic</th>
+              <th className="border p-1.5 text-left">DHTR</th>
               <th className="border p-1.5 text-left">TRALI</th>
               <th className="border p-1.5 text-left">TACO</th>
             </tr>
           </thead>
           <tbody>
             {[
-              ["Fever", "Yes", "Rare", "Yes (high)", "Possible", "No"],
-              ["Rash/Hives", "No", "Yes", "No", "No", "No"],
-              ["Hypotension", "Rare", "If anaphylaxis", "Yes", "Yes", "No (HTN)"],
-              ["Dyspnea", "No", "If anaphylaxis", "Rare", "YES — acute", "YES — acute"],
-              ["Back/Flank Pain", "No", "No", "YES", "No", "No"],
-              ["Dark Urine", "No", "No", "YES", "No", "No"],
-              ["CXR Infiltrates", "No", "No", "No", "Bilateral", "Pulm edema"],
-              ["BNP Level", "Normal", "Normal", "Normal", "Normal/Low", "ELEVATED"],
-              ["JVD/Edema", "No", "No", "No", "No", "YES"],
-              ["Diuretics?", "N/A", "N/A", "N/A", "AVOID", "YES — first-line"],
-              ["Can Resume?", "Maybe", "Mild only", "NEVER", "NEVER", "Cautiously, slow"],
-              ["Mortality", "Very low", "Low", "HIGH", "5–10%", "Low if treated"],
-            ].map(([feature, feb, allerg, hemo, trali, taco]) => (
+              ["Onset", "During", "During", "During", "2–14 days", "≤6 hrs", "During/after"],
+              ["Fever", "Yes", "Rare", "Yes (high)", "Possible", "Possible", "No"],
+              ["Rash/Hives", "No", "Yes", "No", "No", "No", "No"],
+              ["Hypotension", "Rare", "If anaph.", "Yes", "No", "Yes", "No (HTN)"],
+              ["Hgb Drop", "No", "No", "Acute", "YES — delayed", "No", "No"],
+              ["Dark Urine", "No", "No", "YES", "Possible", "No", "No"],
+              ["DAT", "Negative", "Negative", "Positive", "POSITIVE — key", "Negative", "Negative"],
+              ["Dyspnea", "No", "If anaph.", "Rare", "No", "YES", "YES"],
+              ["BNP Level", "Normal", "Normal", "Normal", "Normal", "Low", "ELEVATED"],
+              ["Diuretics?", "N/A", "N/A", "N/A", "N/A", "AVOID", "FIRST-LINE"],
+              ["Can Resume?", "Maybe", "Mild only", "NEVER", "Antigen-neg only", "NEVER", "Cautiously"],
+              ["Mortality", "Very low", "Low", "HIGH", "Low–moderate", "5–10%", "Low if treated"],
+            ].map(([feature, feb, allerg, hemo, dhtr, trali, taco]) => (
               <tr key={feature} className="hover:bg-muted/30">
                 <td className="border p-1.5 font-medium">{feature}</td>
                 <td className="border p-1.5">{feb}</td>
                 <td className="border p-1.5">{allerg}</td>
                 <td className="border p-1.5 font-semibold">{hemo}</td>
+                <td className="border p-1.5">{dhtr}</td>
                 <td className="border p-1.5">{trali}</td>
                 <td className="border p-1.5">{taco}</td>
               </tr>
