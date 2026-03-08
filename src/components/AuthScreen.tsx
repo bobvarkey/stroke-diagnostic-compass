@@ -56,18 +56,23 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4 relative overflow-hidden">
+      {/* Background orbs */}
+      <div className="absolute w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px] -top-40 -right-40 animate-glow" />
+      <div className="absolute w-[400px] h-[400px] rounded-full bg-accent-purple/20 blur-[100px] -bottom-32 -left-32 animate-glow" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute w-[300px] h-[300px] rounded-full bg-accent-teal/15 blur-[80px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-glow" style={{ animationDelay: '3s' }} />
+
       {/* Background grid effect */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
       
       <div className="relative w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex flex-col items-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mb-6 shadow-lg shadow-red-500/30">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent-purple flex items-center justify-center mb-6 shadow-lg shadow-primary/30">
             <Brain className="h-10 w-10 text-white" />
           </div>
           <h1 className="text-3xl font-black tracking-wider text-white uppercase">
-            Stroke<span className="text-red-500">Suite</span> ID
+            Stroke<span className="text-primary">Suite</span> ID
           </h1>
           <p className="text-slate-500 text-sm tracking-[0.3em] uppercase mt-2">
             Clinical Decision Support
