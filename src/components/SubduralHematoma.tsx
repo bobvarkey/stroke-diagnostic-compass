@@ -268,6 +268,21 @@ function SDHTreatmentIndications() {
               </div>
             </div>
 
+            {/* Acute SDH — Key Management Parameters */}
+            <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-700">
+              <h5 className="font-semibold text-emerald-800 dark:text-emerald-300 text-xs mb-2">
+                <Stethoscope className="h-3 w-3 inline mr-1" />
+                Acute SDH — Key Management Parameters
+              </h5>
+              <ul className="text-xs space-y-1.5 text-emerald-700 dark:text-emerald-400">
+                <li>• <strong>ICP Control:</strong> Maintain MAP 80-110 mmHg and SBP &lt;180 mmHg</li>
+                <li>• <strong>ICP Monitoring:</strong> For comatose patients (GCS &lt;9)</li>
+                <li>• <strong>Surgery:</strong> Immediate evacuation via craniotomy is standard for significant hematomas (&gt;10mm thickness or &gt;5mm shift)</li>
+                <li>• <strong>Seizure Prophylaxis:</strong> 7 days of AED prophylaxis recommended</li>
+                <li>• <strong>Anticoagulation:</strong> Immediate reversal is critical to prevent hematoma expansion</li>
+              </ul>
+            </div>
+
             {/* Chronic SDH Treatment Algorithm */}
             <div>
               <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 text-sm mb-3">
@@ -302,6 +317,18 @@ function SDHTreatmentIndications() {
               </div>
             </div>
 
+            {/* Chronic SDH Key Points */}
+            <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700">
+              <h5 className="font-semibold text-amber-800 dark:text-amber-300 text-xs mb-2">Chronic SDH — Clinical Pearls</h5>
+              <ul className="text-xs space-y-1 text-amber-700 dark:text-amber-400">
+                <li>• <strong>Surgical standard:</strong> Burr-hole drainage is standard of care for symptomatic patients with substantial mass effect</li>
+                <li>• <strong>Conservative watch:</strong> ~20% of stable patients initially managed conservatively will eventually require surgery</li>
+                <li>• <strong>Emerging:</strong> MMA embolization is being explored to reduce recurrence rates in chronic cases</li>
+                <li>• <strong>Steroids:</strong> Evidence is limited; avoid routine use (increased complications per Dex-CSDH)</li>
+                <li>• <strong>Post-op drains:</strong> Subdural drains are used to prevent recurrence after burr-hole drainage</li>
+              </ul>
+            </div>
+
             {/* Anticoagulation Reversal */}
             <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/20 border border-rose-300 dark:border-rose-700">
               <h5 className="font-semibold text-rose-800 dark:text-rose-300 text-xs mb-2">
@@ -314,6 +341,7 @@ function SDHTreatmentIndications() {
                 <li>• <strong>Antiplatelets:</strong> Consider platelet transfusion only if surgical emergency (PATCH trial negative)</li>
                 <li>• <strong>Timing of resumption:</strong> Individualize; typically 2-4 weeks post-intervention for high-risk AF patients</li>
                 <li>• <strong>cSDH on anticoagulation:</strong> Higher recurrence (~30%); MMA embolization may reduce this</li>
+                <li>• <strong>Critical:</strong> Immediate reversal of anticoagulants is essential to prevent hematoma expansion in all SDH types</li>
               </ul>
             </div>
           </CardContent>
