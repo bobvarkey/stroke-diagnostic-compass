@@ -806,6 +806,131 @@ function SDHMedicalManagement() {
   );
 }
 
+// ─── ARISE I Consensus Framework ────────────────────────────────────────────
+
+function ARISEConsensus() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-cyan-400 dark:border-cyan-600 bg-gradient-to-br from-cyan-50 dark:from-cyan-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-cyan-100/50 dark:bg-cyan-900/30">
+            <CardTitle className="flex items-center justify-between text-cyan-800 dark:text-cyan-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                <span>ARISE I Consensus Framework</span>
+                <Badge variant="outline" className="border-cyan-400 text-cyan-600 dark:text-cyan-400 text-[10px]">2024</Badge>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-4">
+            {/* Overview */}
+            <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700">
+              <p className="text-xs text-cyan-700 dark:text-cyan-400">
+                <strong>ARISE I Consensus Statement</strong> outlines a management framework for chronic subdural hematoma (cSDH),
+                emphasizing middle meningeal artery embolization (MMAE) as an adjunctive therapy for neurologically stable patients
+                to reduce recurrence. It synthesizes evidence from EMBOLISE, STEM, and MAGIC-MT trials into a stepwise decision process
+                based on stability, symptoms, and imaging findings.
+              </p>
+            </div>
+
+            {/* Patient Stratification Table */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">Patient Stratification (ARISE I)</h4>
+              <div className="space-y-2">
+                <div className="p-3 rounded-lg border-2 border-red-300 dark:border-red-700 bg-red-50/50 dark:bg-red-950/10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge className="bg-red-500 text-white text-[10px]">Emergent</Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    <strong>Criteria:</strong> Profound neuro symptoms, large mass effect
+                  </div>
+                  <div className="text-xs text-red-700 dark:text-red-400 mt-1 font-medium">
+                    → Immediate surgical drainage (burr-hole preferred)
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border-2 border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge className="bg-amber-500 text-white text-[10px]">Stable, Symptomatic</Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    <strong>Criteria:</strong> &gt;10mm thickness or &gt;5mm shift; mild-moderate symptoms (headache, mild weakness)
+                  </div>
+                  <div className="text-xs text-amber-700 dark:text-amber-400 mt-1 font-medium">
+                    → Conventional management ± adjunct MMAE
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border-2 border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-950/10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge className="bg-green-500 text-white text-[10px]">Stable, Asymptomatic/Mild</Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    <strong>Criteria:</strong> Small/mild collection, high surgical risk
+                  </div>
+                  <div className="text-xs text-green-700 dark:text-green-400 mt-1 font-medium">
+                    → Conservative observation or medical management ± MMAE
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ARISE Treatment Algorithm */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3">ARISE I Treatment Algorithm</h4>
+              <div className="space-y-2">
+                {[
+                  { step: 1, title: "Assess Urgency", detail: "If unstable/emergent → surgery alone (burr-hole irrigation/drainage, twist-drill, or craniotomy); reverse anticoagulants/antiplatelets per risk" },
+                  { step: 2, title: "Stable Patients — Plan", detail: "Determine conventional plan (surgery vs. nonsurgical based on symptoms/size/comorbidities). Add MMAE as adjunct — reduces recurrence 4-15% vs. 11-39% with conventional alone" },
+                  { step: 3, title: "MMAE Technique", detail: "Use liquid embolics (Onyx/n-BCA/SQUID preferred), particles, or coils. Access radial/femoral, sedate. Target frontal/parietal MMA branches above clinoid to avoid dangerous anastomoses" },
+                  { step: 4, title: "Adjuncts", detail: "Manage antithrombotics individually (hold/reverse). Avoid routine steroids (increased complications). Consider atorvastatin for mild nonsurgical cases" },
+                  { step: 5, title: "Exclusions", detail: "Exclude MMAE for: acute/traumatic SDH, unstable patients needing emergent surgery" },
+                ].map((item) => (
+                  <div key={item.step} className="p-3 rounded-lg border border-cyan-200 dark:border-cyan-700 bg-cyan-50/50 dark:bg-cyan-950/10">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="flex items-center justify-center h-5 w-5 rounded-full bg-cyan-500 text-white text-[10px] font-bold shrink-0">{item.step}</span>
+                      <span className="font-semibold text-cyan-800 dark:text-cyan-300 text-xs">{item.title}</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground ml-7">{item.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Follow-Up Protocol */}
+            <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700">
+              <h5 className="font-semibold text-cyan-800 dark:text-cyan-300 text-xs mb-2">Follow-Up Protocol (ARISE I)</h5>
+              <ul className="text-xs space-y-1.5 text-cyan-700 dark:text-cyan-400">
+                <li>• <strong>Imaging:</strong> CT at 24h post-intervention, then at 1, 3, and 6 months</li>
+                <li>• <strong>Success criteria:</strong> &lt;10mm thickness or ≥50% volume reduction on follow-up</li>
+                <li>• <strong>Recurrence:</strong> MMAE lowers surgical rescue to ~4-5% (vs 11% conventional)</li>
+                <li>• <strong>Clinical monitoring:</strong> Re-intervene for recurrence or clinical progression</li>
+                <li>• <strong>Ongoing research:</strong> Pooled trial analyses pending for subgroup optimization (e.g., anticoagulated patients)</li>
+              </ul>
+            </div>
+
+            {/* Evidence Base */}
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-700">
+              <h5 className="font-semibold text-slate-800 dark:text-slate-300 text-xs mb-2">Key Evidence Sources</h5>
+              <div className="text-[10px] text-muted-foreground space-y-1">
+                <div>• ARISE I Consensus Statement (2024) — <em>PubMed: 38648281</em></div>
+                <div>• EMBOLISE Trial (2024) — MMA embo reduced surgical rescue 4.6% vs 11.3%</div>
+                <div>• STEM Trial (2024) — Embolization non-inferior to surgery as primary treatment</div>
+                <div>• MAGIC-MT Trial (2024) — Combined MMA embo + surgery reduced recurrence 4.2% vs 11.3%</div>
+                <div>• European Clinical Practice Guidelines for cSDH Management</div>
+                <div>• Multidisciplinary Consensus on MMA Embolization Role (2024)</div>
+              </div>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // ─── Main Component ─────────────────────────────────────────────────────────
 
 export default function SubduralHematoma() {
@@ -821,9 +946,9 @@ export default function SubduralHematoma() {
                 Subdural Hematoma (SDH) — Comprehensive Management
               </h2>
               <p className="text-orange-100 text-xs sm:text-sm mt-1">
-                SDH is a collection of blood between the dura and arachnoid mater, most commonly from bridging vein rupture.
-                Acute SDH carries high mortality (40-60%), while chronic SDH is increasingly managed with minimally invasive
-                MMA embolization alongside traditional surgical drainage.
+                SDH management focuses on rapid CT diagnosis, reversing anticoagulation, and controlling ICP.
+                Acute SDH &gt;10mm or &gt;5mm midline shift requires prompt surgical evacuation. Chronic SDH management
+                often involves burr-hole drainage, with emerging less-invasive options like MMA embolization gaining traction.
               </p>
             </div>
           </div>
@@ -836,6 +961,7 @@ export default function SubduralHematoma() {
       <SDHSurgicalOptions />
       <MMAEmbolization />
       <SDHMedicalManagement />
+      <ARISEConsensus />
 
       <div className="text-center text-sm text-muted-foreground border-t pt-4">
         <p>Subdural hematoma management — Always correlate with clinical presentation and imaging</p>
