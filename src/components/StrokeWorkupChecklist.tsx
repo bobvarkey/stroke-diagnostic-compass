@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
@@ -41,6 +41,7 @@ import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
+import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
@@ -5643,41 +5644,30 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-5 h-14 mb-5 glass-strong rounded-xl p-1">
-          <TabsTrigger 
-            value="ischemic" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+        <TabsList className="hidden sm:grid w-full grid-cols-6 h-14 mb-5 glass-strong rounded-xl p-1">
+          <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Zap className="h-4 w-4 shrink-0" />
-            Ischemic Stroke
+            Ischemic
           </TabsTrigger>
-          <TabsTrigger 
-            value="hemorrhagic" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="hemorrhagic" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Droplets className="h-4 w-4 shrink-0" />
             ICH
           </TabsTrigger>
-          <TabsTrigger 
-            value="post-ivt" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="post-ivt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             Post-IVT
           </TabsTrigger>
-          <TabsTrigger 
-            value="cvt" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Brain className="h-4 w-4 shrink-0" />
             CVT
           </TabsTrigger>
-          <TabsTrigger 
-            value="sah" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="sah" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Droplets className="h-4 w-4 shrink-0" />
             SAH
+          </TabsTrigger>
+          <TabsTrigger value="sdh" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+            <Layers className="h-4 w-4 shrink-0" />
+            SDH
           </TabsTrigger>
         </TabsList>
 
@@ -6109,17 +6099,24 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <p>Subarachnoid hemorrhage management — Always correlate with clinical presentation</p>
           </div>
         </TabsContent>
+        {/* Subdural Hematoma Tab Content */}
+        <TabsContent value="sdh" className="space-y-6">
+          <LazySection id="sdh-management">
+            <SubduralHematoma />
+          </LazySection>
+        </TabsContent>
       </Tabs>
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-border/50 backdrop-blur-xl bg-background/90" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
-        <div className="grid grid-cols-5 h-16">
+        <div className="grid grid-cols-6 h-16">
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
             { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
             { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post-IVT", activeColor: "text-rose-500" },
             { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
+            { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },
           ].map((tab) => (
             <button
               key={tab.value}
