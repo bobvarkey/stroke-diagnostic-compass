@@ -6,7 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import {
   ChevronDown, AlertTriangle, Activity, Brain, Clock, Shield,
   Stethoscope, Syringe, Target, CheckCircle2, XCircle, ArrowRight,
-  RotateCcw, Layers, Scissors, Zap
+  RotateCcw, Layers, Scissors, Zap, BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
