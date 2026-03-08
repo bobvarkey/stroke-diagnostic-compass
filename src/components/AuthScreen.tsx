@@ -79,7 +79,7 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 glass-strong rounded-2xl p-6">
           {/* Credential Name (Optional) */}
           <div className="space-y-2">
             <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
@@ -94,7 +94,7 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
                 placeholder="Enter your name"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="h-14 pl-12 bg-slate-900/50 border-2 border-slate-700 focus:border-red-500 rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide"
+                className="h-14 pl-12 bg-slate-800/50 border-2 border-slate-600/50 focus:border-primary rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide backdrop-blur-sm"
                 disabled={loading}
               />
             </div>
