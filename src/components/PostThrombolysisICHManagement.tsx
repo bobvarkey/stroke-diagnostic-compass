@@ -359,10 +359,10 @@ const FactorConcentrateCalculators: React.FC = () => {
   const styles = colorStyles[active.color];
 
   return (
-    <div className={cn("p-4 rounded-lg border-2 space-y-4", styles.border, styles.bg)}>
+    <div className={cn("p-3 sm:p-4 rounded-lg border-2 space-y-4 overflow-hidden", styles.border, styles.bg)}>
       <div className="flex items-center gap-2 flex-wrap">
-        <Badge className="bg-emerald-700 text-white text-xs">CALCULATORS</Badge>
-        <span className="font-bold text-sm">Factor Concentrate Dosing</span>
+        <Badge className="bg-emerald-700 text-white text-xs shrink-0">CALCULATORS</Badge>
+        <span className="font-bold text-xs sm:text-sm">Factor Concentrate Dosing</span>
       </div>
 
       {/* Calculator Selector */}
@@ -372,13 +372,13 @@ const FactorConcentrateCalculators: React.FC = () => {
             key={c.id}
             onClick={() => { setActiveCalc(c.id); setIndication(c.id === "pcc" ? "warfarin" : c.id === "rfviia" ? "ich_spot_sign" : "dabigatran"); }}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition-all",
+              "px-2 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border-2 transition-all",
               activeCalc === c.id
                 ? `${colorStyles[c.color].border} ${colorStyles[c.color].bg} ${colorStyles[c.color].accent}`
                 : "border-muted-foreground/20 text-muted-foreground hover:border-muted-foreground/40"
             )}
           >
-            {c.label} <span className="font-normal opacity-70">({c.subtitle})</span>
+            {c.label} <span className="font-normal opacity-70 hidden sm:inline">({c.subtitle})</span>
           </button>
         ))}
       </div>
@@ -479,7 +479,7 @@ const FactorConcentrateCalculators: React.FC = () => {
           {/* Indication Selector */}
           <div>
             <Label className="text-xs font-semibold">Indication</Label>
-            <div className="flex flex-wrap gap-1.5 mt-1">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 mt-1">
               {[
                 { id: "ich_spot_sign", label: "ICH (Spot Sign+)", dose: "80 mcg/kg" },
                 { id: "fondaparinux", label: "Fondaparinux Reversal", dose: "90 mcg/kg" },
@@ -489,7 +489,7 @@ const FactorConcentrateCalculators: React.FC = () => {
                   key={ind.id}
                   onClick={() => setIndication(ind.id)}
                   className={cn(
-                    "px-2.5 py-1 rounded text-xs font-medium border transition-all",
+                    "px-2.5 py-1.5 rounded text-xs font-medium border transition-all text-left",
                     indication === ind.id
                       ? "bg-red-600 text-white border-red-600"
                       : "border-muted-foreground/30 text-muted-foreground hover:border-red-400"
@@ -503,9 +503,9 @@ const FactorConcentrateCalculators: React.FC = () => {
 
           {/* Result */}
           <div className="p-3 rounded-lg border-2 border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/30 text-center">
-            <p className="text-2xl font-black text-red-700 dark:text-red-300">{rfviiaDose.totalMcg} mcg</p>
-            <p className="text-lg font-bold text-red-600 dark:text-red-400">({rfviiaDose.totalMg} mg)</p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xl sm:text-2xl font-black text-red-700 dark:text-red-300">{rfviiaDose.totalMcg} mcg</p>
+            <p className="text-base sm:text-lg font-bold text-red-600 dark:text-red-400">({rfviiaDose.totalMg} mg)</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
               {rfviiaDose.dosePerKg} mcg/kg × {weight} kg · Single IV bolus over 2–5 min
             </p>
           </div>
@@ -548,7 +548,7 @@ const FactorConcentrateCalculators: React.FC = () => {
           {/* Indication Selector */}
           <div>
             <Label className="text-xs font-semibold">Indication</Label>
-            <div className="flex flex-wrap gap-1.5 mt-1">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 mt-1">
               {[
                 { id: "dabigatran", label: "Dabigatran Reversal", dose: "50 units/kg" },
                 { id: "hemophilia_inhibitor", label: "Hemophilia w/ Inhibitor", dose: "50–100 units/kg" },
@@ -557,7 +557,7 @@ const FactorConcentrateCalculators: React.FC = () => {
                   key={ind.id}
                   onClick={() => setIndication(ind.id)}
                   className={cn(
-                    "px-2.5 py-1 rounded text-xs font-medium border transition-all",
+                    "px-2.5 py-1.5 rounded text-xs font-medium border transition-all text-left",
                     indication === ind.id
                       ? "bg-violet-600 text-white border-violet-600"
                       : "border-muted-foreground/30 text-muted-foreground hover:border-violet-400"
@@ -571,10 +571,11 @@ const FactorConcentrateCalculators: React.FC = () => {
 
           {/* Result */}
           <div className="p-3 rounded-lg border-2 border-violet-300 dark:border-violet-700 bg-violet-50 dark:bg-violet-950/30 text-center">
-            <p className="text-2xl font-black text-violet-700 dark:text-violet-300">{apccDose.totalUnits} units</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {apccDose.dosePerKg} units/kg × {weight} kg · Rate: {apccDose.infusionRate} · Est. time: ~{apccDose.infusionTime} min
+            <p className="text-xl sm:text-2xl font-black text-violet-700 dark:text-violet-300">{apccDose.totalUnits} units</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
+              {apccDose.dosePerKg} units/kg × {weight} kg
             </p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Rate: {apccDose.infusionRate} · Est. time: ~{apccDose.infusionTime} min</p>
             {apccDose.capped && (
               <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">
                 ⚠️ Capped at 5000 units (max single dose)
