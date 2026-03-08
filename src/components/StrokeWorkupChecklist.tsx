@@ -42,6 +42,7 @@ import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
+import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 
 interface TestItem {
   id: string;
@@ -801,6 +802,9 @@ function AcuteICHManagement() {
                 <strong>DOACs:</strong> Thorough medication history is key. Assess dose and timing of last DOAC dose; may consider activated charcoal if ingested ≤2 hours
               </div>
             </div>
+
+            {/* Anticoagulation Reversal Dose Calculators */}
+            <ICHAnticoagReversalCalculators />
 
             {/* Antiplatelet Reversal */}
             <div className="p-4 bg-pink-50 dark:bg-pink-900/30 rounded-lg border border-pink-200 dark:border-pink-700">
