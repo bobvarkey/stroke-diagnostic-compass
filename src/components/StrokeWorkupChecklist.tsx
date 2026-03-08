@@ -5675,6 +5675,14 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <span className="hidden sm:inline">CVT</span>
             <span className="sm:hidden">CVT</span>
           </TabsTrigger>
+          <TabsTrigger 
+            value="sah" 
+            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+          >
+            <Droplets className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden sm:inline">SAH</span>
+            <span className="sm:hidden">SAH</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Ischemic Stroke Tab Content */}
