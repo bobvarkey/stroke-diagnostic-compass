@@ -272,6 +272,371 @@ const CryoDoseCalculator: React.FC = () => {
   );
 };
 
+/* ─── Factor Concentrate Calculators (rFVIIa, 4F-PCC, aPCC) ─── */
+const FactorConcentrateCalculators: React.FC = () => {
+  const [weight, setWeight] = useState(70);
+  const [activeCalc, setActiveCalc] = useState<"rfviia" | "pcc" | "apcc">("pcc");
+  const [inr, setInr] = useState("3.0");
+  const [indication, setIndication] = useState<string>("warfarin");
+
+  const inrVal = parseFloat(inr) || 0;
+
+  // 4F-PCC dosing (Kcentra) based on INR and weight
+  const pccDose = useMemo(() => {
+    if (inrVal >= 6) return { unitsPerKg: 50, maxUnits: 5000 };
+    if (inrVal >= 4) return { unitsPerKg: 35, maxUnits: 3500 };
+    if (inrVal >= 2) return { unitsPerKg: 25, maxUnits: 2500 };
+    return { unitsPerKg: 25, maxUnits: 2500 };
+  }, [inrVal]);
+
+  const pccTotalUnits = useMemo(() => {
+    const raw = pccDose.unitsPerKg * weight;
+    return Math.min(raw, pccDose.maxUnits);
+  }, [pccDose, weight]);
+
+  const pccRate = useMemo(() => {
+    // Kcentra: 0.12 mL/kg/min → convert to units/min based on concentration ~25 units/mL
+    return Math.round(weight * 0.12 * 25);
+  }, [weight]);
+
+  const pccInfusionTime = useMemo(() => {
+    if (pccRate <= 0) return 0;
+    return Math.ceil(pccTotalUnits / pccRate);
+  }, [pccTotalUnits, pccRate]);
+
+  // rFVIIa (NovoSeven) dosing
+  const rfviiaDose = useMemo(() => {
+    const dosePerKg = indication === "ich_spot_sign" ? 80 : indication === "fondaparinux" ? 90 : 20;
+    return {
+      dosePerKg,
+      totalMcg: Math.round(dosePerKg * weight),
+      totalMg: (dosePerKg * weight / 1000).toFixed(1),
+    };
+  }, [weight, indication]);
+
+  // aPCC (FEIBA) dosing
+  const apccDose = useMemo(() => {
+    const dosePerKg = indication === "dabigatran" ? 50 : indication === "hemophilia_inhibitor" ? 75 : 50;
+    const totalUnits = dosePerKg * weight;
+    const maxSingle = 5000; // max single dose
+    return {
+      dosePerKg,
+      totalUnits: Math.min(totalUnits, maxSingle),
+      capped: totalUnits > maxSingle,
+      infusionRate: "2 units/kg/min",
+      infusionTime: Math.ceil(Math.min(totalUnits, maxSingle) / (2 * weight)),
+    };
+  }, [weight, indication]);
+
+  const calcs = [
+    { id: "pcc" as const, label: "4F-PCC", subtitle: "Kcentra", color: "emerald" },
+    { id: "rfviia" as const, label: "rFVIIa", subtitle: "NovoSeven", color: "red" },
+    { id: "apcc" as const, label: "aPCC", subtitle: "FEIBA", color: "violet" },
+  ];
+
+  const colorStyles: Record<string, { border: string; bg: string; accent: string; slider: string }> = {
+    emerald: {
+      border: "border-emerald-300 dark:border-emerald-700",
+      bg: "bg-gradient-to-br from-emerald-50/80 dark:from-emerald-950/30 to-background",
+      accent: "text-emerald-700 dark:text-emerald-300",
+      slider: "bg-emerald-200 dark:bg-emerald-800 accent-emerald-600",
+    },
+    red: {
+      border: "border-red-300 dark:border-red-700",
+      bg: "bg-gradient-to-br from-red-50/80 dark:from-red-950/30 to-background",
+      accent: "text-red-700 dark:text-red-300",
+      slider: "bg-red-200 dark:bg-red-800 accent-red-600",
+    },
+    violet: {
+      border: "border-violet-300 dark:border-violet-700",
+      bg: "bg-gradient-to-br from-violet-50/80 dark:from-violet-950/30 to-background",
+      accent: "text-violet-700 dark:text-violet-300",
+      slider: "bg-violet-200 dark:bg-violet-800 accent-violet-600",
+    },
+  };
+
+  const active = calcs.find(c => c.id === activeCalc)!;
+  const styles = colorStyles[active.color];
+
+  return (
+    <div className={cn("p-4 rounded-lg border-2 space-y-4", styles.border, styles.bg)}>
+      <div className="flex items-center gap-2 flex-wrap">
+        <Badge className="bg-emerald-700 text-white text-xs">CALCULATORS</Badge>
+        <span className="font-bold text-sm">Factor Concentrate Dosing</span>
+      </div>
+
+      {/* Calculator Selector */}
+      <div className="flex gap-1.5 flex-wrap">
+        {calcs.map(c => (
+          <button
+            key={c.id}
+            onClick={() => { setActiveCalc(c.id); setIndication(c.id === "pcc" ? "warfarin" : c.id === "rfviia" ? "ich_spot_sign" : "dabigatran"); }}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition-all",
+              activeCalc === c.id
+                ? `${colorStyles[c.color].border} ${colorStyles[c.color].bg} ${colorStyles[c.color].accent}`
+                : "border-muted-foreground/20 text-muted-foreground hover:border-muted-foreground/40"
+            )}
+          >
+            {c.label} <span className="font-normal opacity-70">({c.subtitle})</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Weight Slider — shared */}
+      <div>
+        <div className="flex justify-between text-xs mb-1">
+          <span className="font-semibold">Patient Weight</span>
+          <span className={cn("font-bold", styles.accent)}>{weight} kg</span>
+        </div>
+        <input
+          type="range" min={30} max={150} step={1} value={weight}
+          onChange={(e) => setWeight(Number(e.target.value))}
+          className={cn("w-full h-2 rounded-lg appearance-none cursor-pointer", styles.slider)}
+        />
+        <div className="flex justify-between text-[10px] text-muted-foreground"><span>30</span><span>150 kg</span></div>
+      </div>
+
+      {/* ──── 4F-PCC Calculator ──── */}
+      {activeCalc === "pcc" && (
+        <div className="space-y-3">
+          <div className="p-2 bg-muted/40 rounded text-xs font-mono text-center border">
+            Dose (units) = INR-based units/kg × Weight (max per INR tier)
+          </div>
+
+          <div>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="font-semibold">Current INR</span>
+              <span className="font-bold text-amber-700 dark:text-amber-300">{inr}</span>
+            </div>
+            <input
+              type="range" min={1.5} max={10} step={0.1} value={inrVal}
+              onChange={(e) => setInr(e.target.value)}
+              className="w-full h-2 bg-amber-200 dark:bg-amber-800 rounded-lg appearance-none cursor-pointer accent-amber-600"
+            />
+            <div className="flex justify-between text-[10px] text-muted-foreground"><span>1.5</span><span>10.0</span></div>
+          </div>
+
+          {/* INR Tier Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-muted/50">
+                  <th className="border p-1.5 text-left">INR Range</th>
+                  <th className="border p-1.5 text-center">Dose (units/kg)</th>
+                  <th className="border p-1.5 text-center">Max Dose</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { range: "2.0–3.9", dose: 25, max: 2500, active: inrVal >= 2 && inrVal < 4 },
+                  { range: "4.0–5.9", dose: 35, max: 3500, active: inrVal >= 4 && inrVal < 6 },
+                  { range: "≥ 6.0", dose: 50, max: 5000, active: inrVal >= 6 },
+                ].map(row => (
+                  <tr key={row.range} className={row.active ? "bg-emerald-50/50 dark:bg-emerald-950/20 font-bold" : ""}>
+                    <td className="border p-1.5">{row.range}</td>
+                    <td className="border p-1.5 text-center">{row.dose}</td>
+                    <td className="border p-1.5 text-center">{row.max} units</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Result */}
+          <div className="p-3 rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/30 text-center">
+            <p className="text-2xl font-black text-emerald-700 dark:text-emerald-300">{pccTotalUnits} units</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {pccDose.unitsPerKg} units/kg × {weight} kg · Max infusion rate: {pccRate} units/min · Est. time: ~{pccInfusionTime} min
+            </p>
+          </div>
+
+          <div className="p-3 rounded bg-muted/30 border text-xs space-y-1">
+            <p className="font-bold">Administration (Kcentra):</p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+              <li>Reconstitute with supplied diluent; gently swirl</li>
+              <li>Max rate: 0.12 mL/kg/min (~{pccRate} units/min for {weight} kg)</li>
+              <li>Co-administer <strong>Vitamin K 10 mg IV</strong> (for sustained reversal)</li>
+              <li>Recheck INR at 30 min post-infusion</li>
+              <li>Contains heparin — <strong>contraindicated in HIT</strong></li>
+            </ul>
+          </div>
+
+          <WarningBox variant="danger">
+            <p className="font-bold">NOT first-line for tPA reversal</p>
+            <p className="text-xs mt-1">4F-PCC replaces clotting factors but contains NO fibrinogen. For post-tPA ICH, cryoprecipitate is first-line. PCC is indicated for Warfarin reversal or concurrent coagulopathy.</p>
+          </WarningBox>
+        </div>
+      )}
+
+      {/* ──── rFVIIa Calculator ──── */}
+      {activeCalc === "rfviia" && (
+        <div className="space-y-3">
+          <div className="p-2 bg-muted/40 rounded text-xs font-mono text-center border">
+            Dose (mcg) = Dose/kg × Weight
+          </div>
+
+          {/* Indication Selector */}
+          <div>
+            <Label className="text-xs font-semibold">Indication</Label>
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {[
+                { id: "ich_spot_sign", label: "ICH (Spot Sign+)", dose: "80 mcg/kg" },
+                { id: "fondaparinux", label: "Fondaparinux Reversal", dose: "90 mcg/kg" },
+                { id: "refractory", label: "Refractory Bleeding", dose: "20 mcg/kg" },
+              ].map(ind => (
+                <button
+                  key={ind.id}
+                  onClick={() => setIndication(ind.id)}
+                  className={cn(
+                    "px-2.5 py-1 rounded text-xs font-medium border transition-all",
+                    indication === ind.id
+                      ? "bg-red-600 text-white border-red-600"
+                      : "border-muted-foreground/30 text-muted-foreground hover:border-red-400"
+                  )}
+                >
+                  {ind.label} <span className="opacity-70">({ind.dose})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Result */}
+          <div className="p-3 rounded-lg border-2 border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/30 text-center">
+            <p className="text-2xl font-black text-red-700 dark:text-red-300">{rfviiaDose.totalMcg} mcg</p>
+            <p className="text-lg font-bold text-red-600 dark:text-red-400">({rfviiaDose.totalMg} mg)</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {rfviiaDose.dosePerKg} mcg/kg × {weight} kg · Single IV bolus over 2–5 min
+            </p>
+          </div>
+
+          <div className="p-3 rounded bg-muted/30 border text-xs space-y-1">
+            <p className="font-bold">Administration (NovoSeven RT):</p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+              <li>Reconstitute with histidine diluent; DO NOT shake</li>
+              <li>Administer as <strong>slow IV bolus over 2–5 minutes</strong></li>
+              <li>Onset: 10–20 minutes; duration ~2–6 hours</li>
+              <li>May repeat in 2–3 hours if bleeding persists</li>
+              <li>Monitor: PT, aPTT, fibrinogen, platelets q2–4h</li>
+            </ul>
+          </div>
+
+          <WarningBox variant="danger">
+            <p className="font-bold">⚠️ HIGH thrombotic risk — use only when specifically indicated</p>
+            <p className="text-xs mt-1">rFVIIa carries significant arterial/venous thromboembolism risk. For ICH, only supported by FASTEST trial (spot sign+ patients treated &lt;90 min). NOT routine for tPA reversal.</p>
+          </WarningBox>
+
+          {/* FASTEST Trial Reference */}
+          <div className="p-3 rounded-lg bg-red-50/50 dark:bg-red-950/10 border border-red-200 dark:border-red-800 text-xs">
+            <p className="font-bold text-red-700 dark:text-red-300 mb-1">📋 FASTEST Trial Evidence</p>
+            <ul className="text-muted-foreground space-y-0.5 list-disc list-inside">
+              <li><strong>Population:</strong> Spontaneous ICH with CTA spot sign within 120 min</li>
+              <li><strong>Dose:</strong> rFVIIa 80 mcg/kg (single bolus)</li>
+              <li><strong>Outcome:</strong> Reduced hematoma expansion; trial stopped early for futility on primary endpoint but signal for early treatment benefit (&lt;90 min)</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* ──── aPCC (FEIBA) Calculator ──── */}
+      {activeCalc === "apcc" && (
+        <div className="space-y-3">
+          <div className="p-2 bg-muted/40 rounded text-xs font-mono text-center border">
+            Dose (units) = Dose/kg × Weight (max 5000 units/dose)
+          </div>
+
+          {/* Indication Selector */}
+          <div>
+            <Label className="text-xs font-semibold">Indication</Label>
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {[
+                { id: "dabigatran", label: "Dabigatran Reversal", dose: "50 units/kg" },
+                { id: "hemophilia_inhibitor", label: "Hemophilia w/ Inhibitor", dose: "50–100 units/kg" },
+              ].map(ind => (
+                <button
+                  key={ind.id}
+                  onClick={() => setIndication(ind.id)}
+                  className={cn(
+                    "px-2.5 py-1 rounded text-xs font-medium border transition-all",
+                    indication === ind.id
+                      ? "bg-violet-600 text-white border-violet-600"
+                      : "border-muted-foreground/30 text-muted-foreground hover:border-violet-400"
+                  )}
+                >
+                  {ind.label} <span className="opacity-70">({ind.dose})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Result */}
+          <div className="p-3 rounded-lg border-2 border-violet-300 dark:border-violet-700 bg-violet-50 dark:bg-violet-950/30 text-center">
+            <p className="text-2xl font-black text-violet-700 dark:text-violet-300">{apccDose.totalUnits} units</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {apccDose.dosePerKg} units/kg × {weight} kg · Rate: {apccDose.infusionRate} · Est. time: ~{apccDose.infusionTime} min
+            </p>
+            {apccDose.capped && (
+              <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">
+                ⚠️ Capped at 5000 units (max single dose)
+              </p>
+            )}
+          </div>
+
+          <div className="p-3 rounded bg-muted/30 border text-xs space-y-1">
+            <p className="font-bold">Administration (FEIBA):</p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+              <li>Reconstitute per package insert; use filter needle</li>
+              <li>Max infusion rate: <strong>2 units/kg/min</strong></li>
+              <li>Max single dose: 5000 units; max daily: 200 units/kg/day</li>
+              <li>For Dabigatran: use ONLY if Idarucizumab (Praxbind) is unavailable</li>
+              <li>Monitor: aPTT, thrombin time, clinical hemostasis</li>
+            </ul>
+          </div>
+
+          <WarningBox variant="caution">
+            <p className="font-bold">Dabigatran Reversal Hierarchy</p>
+            <p className="text-xs mt-1">
+              <strong>1st line:</strong> Idarucizumab (Praxbind) 5g IV — specific antidote<br />
+              <strong>2nd line:</strong> aPCC (FEIBA) 50 units/kg — if Praxbind unavailable<br />
+              <strong>NOT recommended:</strong> 4F-PCC for Dabigatran (limited efficacy)
+            </p>
+          </WarningBox>
+
+          {/* Comparison Table */}
+          <div className="overflow-x-auto">
+            <p className="text-xs font-bold mb-1.5">aPCC vs PCC — When to Use Which</p>
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-muted/50">
+                  <th className="border p-1.5 text-left">Feature</th>
+                  <th className="border p-1.5 text-left">4F-PCC (Kcentra)</th>
+                  <th className="border p-1.5 text-left">aPCC (FEIBA)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["Primary Use", "Warfarin reversal", "Dabigatran / Inhibitors"],
+                  ["Contains", "II, VII, IX, X (inactive)", "Activated II, VII, IX, X"],
+                  ["Fibrinogen?", "No", "No"],
+                  ["Thrombotic Risk", "Moderate", "Higher (activated factors)"],
+                  ["HIT Safe?", "No (contains heparin)", "Yes"],
+                  ["Max Dose", "INR-tiered (2500–5000)", "5000 units/dose"],
+                ].map(([feature, pcc, apcc]) => (
+                  <tr key={feature} className="hover:bg-muted/30">
+                    <td className="border p-1.5 font-medium">{feature}</td>
+                    <td className="border p-1.5">{pcc}</td>
+                    <td className="border p-1.5">{apcc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Fibrinogen Trend Tracker
 interface FibEntry {
   time: string;
@@ -1066,6 +1431,9 @@ const PostThrombolysisICHManagement: React.FC = () => {
 
                 {/* Cryoprecipitate Dose Calculator */}
                 <CryoDoseCalculator />
+
+                {/* Factor Concentrate Calculators (rFVIIa, PCC, aPCC) */}
+                <FactorConcentrateCalculators />
 
                 {/* Fibrinogen Trend Tracker */}
                 <FibrinogenTrendTracker />
