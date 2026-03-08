@@ -19,11 +19,24 @@ interface DoseResult {
 
 export default function ThrombolyticDoseCalculator() {
   const [weight, setWeight] = useState<string>("");
-  const [activeAgent, setActiveAgent] = useState<"alteplase" | "tenecteplase">("alteplase");
+  const [activeAgent, setActiveAgent] = useState<"alteplase" | "tenecteplase" | "ia_tpa">("alteplase");
   const [comments, setComments] = useState<string>("");
 
   const weightNum = parseFloat(weight) || 0;
   const cappedWeight = Math.min(weightNum, 100); // Cap at 100kg for dosing
+
+  // Intra-arterial tPA dosing (CHOICE-2 trial based)
+  const iaTPADose = useMemo(() => {
+    // IA tPA is weight-independent per CHOICE-2 protocol
+    // Standard dose: 10mg max (up to 20mg in some protocols)
+    return {
+      standardDose: 10, // mg (CHOICE-2 protocol)
+      maxDose: 20, // mg (some extended protocols)
+      concentration: "1 mg/mL",
+      infusionTime: "10-15 minutes",
+      technique: "Superselective microcatheter delivery distal to clot"
+    };
+  }, []);
 
   // Alteplase (tPA) dosing: 0.9 mg/kg, max 90mg, 10% bolus, 90% infusion over 60 min
   const alteplaseDose = useMemo((): DoseResult | null => {
@@ -95,13 +108,16 @@ export default function ThrombolyticDoseCalculator() {
         </div>
 
         {/* Agent Tabs */}
-        <Tabs value={activeAgent} onValueChange={(v) => setActiveAgent(v as "alteplase" | "tenecteplase")}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="alteplase" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              Alteplase (tPA)
+        <Tabs value={activeAgent} onValueChange={(v) => setActiveAgent(v as "alteplase" | "tenecteplase" | "ia_tpa")}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="alteplase" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm">
+              IV Alteplase
             </TabsTrigger>
-            <TabsTrigger value="tenecteplase" className="data-[state=active]:bg-green-600 data-[state=active]:text-white">
-              Tenecteplase (TNK)
+            <TabsTrigger value="tenecteplase" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-xs sm:text-sm">
+              IV TNK
+            </TabsTrigger>
+            <TabsTrigger value="ia_tpa" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+              IA tPA
             </TabsTrigger>
           </TabsList>
 
@@ -232,6 +248,112 @@ export default function ThrombolyticDoseCalculator() {
                 Enter a valid weight (30-200 kg) to calculate dose
               </div>
             )}
+          </TabsContent>
+
+          {/* Intra-arterial tPA Tab */}
+          <TabsContent value="ia_tpa" className="space-y-4">
+            <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
+              <div className="flex items-center gap-2 mb-3">
+                <Info className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-purple-800 dark:text-purple-300">Intra-arterial tPA Protocol (Post-EVT)</span>
+              </div>
+              <ul className="text-sm text-purple-700 dark:text-purple-400 space-y-1 list-disc list-inside">
+                <li>Dose: 10 mg (CHOICE-2); up to 20 mg in extended protocols</li>
+                <li>Concentration: 1 mg/mL (standard reconstitution)</li>
+                <li>Infusion: Slow infusion over 10-15 minutes</li>
+                <li>Delivery: Superselective microcatheter distal to clot</li>
+                <li>Indication: Adjunctive to EVT for residual thrombus</li>
+              </ul>
+            </div>
+
+            {/* CHOICE-2 Evidence Box */}
+            <div className="p-4 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-lg border-2 border-purple-400 dark:border-purple-600">
+              <h5 className="font-bold text-purple-800 dark:text-purple-300 mb-2 flex items-center gap-2">
+                <Badge className="bg-purple-600 text-white text-xs">CHOICE-2</Badge>
+                Landmark Trial Evidence
+              </h5>
+              <div className="text-sm text-purple-700 dark:text-purple-400 space-y-2">
+                <p><strong>Design:</strong> Phase III RCT of IA alteplase (10mg) vs placebo post-EVT in LVO stroke</p>
+                <p><strong>Primary Outcome:</strong> Higher rates of mRS 0-1 at 90 days with IA tPA</p>
+                <p><strong>Safety:</strong> No significant increase in symptomatic ICH (sICH)</p>
+                <p><strong>NNT:</strong> ~7 for excellent outcome (mRS 0-1)</p>
+              </div>
+            </div>
+
+            {/* Dosing Display */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-6 bg-purple-100 dark:bg-purple-900/40 rounded-lg text-center border-2 border-purple-400">
+                <Badge className="mb-2 bg-purple-600">CHOICE-2 Protocol</Badge>
+                <div className="text-4xl font-bold text-purple-700 dark:text-purple-300">
+                  10 mg
+                </div>
+                <div className="text-sm text-purple-600 dark:text-purple-400 mt-1">
+                  Standard IA dose
+                </div>
+                <div className="text-xs text-purple-500 mt-2">
+                  = 10 mL at 1 mg/mL over 10-15 min
+                </div>
+              </div>
+              <div className="p-6 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg text-center border-2 border-indigo-400">
+                <Badge className="mb-2 bg-indigo-600">Extended Protocol</Badge>
+                <div className="text-4xl font-bold text-indigo-700 dark:text-indigo-300">
+                  15-20 mg
+                </div>
+                <div className="text-sm text-indigo-600 dark:text-indigo-400 mt-1">
+                  Maximum IA dose
+                </div>
+                <div className="text-xs text-indigo-500 mt-2">
+                  For persistent residual thrombus
+                </div>
+              </div>
+            </div>
+
+            {/* Technique Box */}
+            <div className="p-4 bg-white dark:bg-gray-900/50 rounded-lg border border-purple-200 dark:border-purple-700">
+              <h5 className="font-semibold text-purple-800 dark:text-purple-300 text-sm mb-2">Administration Technique</h5>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                  <strong>1. Catheter Position:</strong> Microcatheter tip placed distal to the clot/residual thrombus
+                </div>
+                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                  <strong>2. Reconstitution:</strong> Dilute to 1 mg/mL concentration
+                </div>
+                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                  <strong>3. Infusion Rate:</strong> ~1 mg/min (slow pulsatile injection)
+                </div>
+                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                  <strong>4. Monitoring:</strong> Angiographic runs to assess lysis progress
+                </div>
+              </div>
+            </div>
+
+            {/* Patient Selection */}
+            <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+              <h5 className="font-semibold text-amber-800 dark:text-amber-300 text-sm mb-2 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                Patient Selection (CHOICE-2 Criteria)
+              </h5>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div className="text-green-700 dark:text-green-400">
+                  <strong>✓ Include:</strong>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>Post-EVT with residual thrombus (eTICI &lt;3)</li>
+                    <li>LVO stroke (ICA, M1, M2)</li>
+                    <li>Within 24h of symptom onset</li>
+                    <li>No sICH on post-EVT angiography</li>
+                  </ul>
+                </div>
+                <div className="text-red-700 dark:text-red-400">
+                  <strong>✗ Exclude:</strong>
+                  <ul className="list-disc list-inside mt-1">
+                    <li>Active intracranial hemorrhage</li>
+                    <li>Known coagulopathy</li>
+                    <li>Recent major surgery (&lt;14 days)</li>
+                    <li>Severe uncontrolled HTN</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
 

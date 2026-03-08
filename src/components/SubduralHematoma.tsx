@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
+import ARISE1PDFReport from "@/components/ARISE1PDFReport";
 
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
@@ -823,7 +824,12 @@ function ARISEConsensus() {
                 <span>ARISE I Consensus Framework</span>
                 <Badge variant="outline" className="border-cyan-400 text-cyan-600 dark:text-cyan-400 text-[10px]">2024</Badge>
               </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              <div className="flex items-center gap-2">
+                <div onClick={(e) => e.stopPropagation()}>
+                  <ARISE1PDFReport />
+                </div>
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
             </CardTitle>
           </CardHeader>
         </CollapsibleTrigger>
