@@ -372,13 +372,13 @@ const FactorConcentrateCalculators: React.FC = () => {
             key={c.id}
             onClick={() => { setActiveCalc(c.id); setIndication(c.id === "pcc" ? "warfarin" : c.id === "rfviia" ? "ich_spot_sign" : "dabigatran"); }}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition-all",
+              "px-2 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border-2 transition-all",
               activeCalc === c.id
                 ? `${colorStyles[c.color].border} ${colorStyles[c.color].bg} ${colorStyles[c.color].accent}`
                 : "border-muted-foreground/20 text-muted-foreground hover:border-muted-foreground/40"
             )}
           >
-            {c.label} <span className="font-normal opacity-70">({c.subtitle})</span>
+            {c.label} <span className="font-normal opacity-70 hidden sm:inline">({c.subtitle})</span>
           </button>
         ))}
       </div>
