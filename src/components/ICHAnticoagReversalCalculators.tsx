@@ -107,12 +107,12 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
       </div>
 
       {/* Agent Tabs */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
+      <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1.5 mb-4">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`px-2 py-1.5 rounded-md text-[10px] sm:text-xs font-semibold transition-all text-center ${
               activeTab === tab.id
                 ? `${tab.color} text-white shadow-lg scale-105`
                 : "bg-white/70 dark:bg-gray-800/70 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700"
