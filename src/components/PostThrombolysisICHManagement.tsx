@@ -3,7 +3,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine, Responsive
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Trash2, TrendingUp, Plus } from "lucide-react";
+import { Trash2, TrendingUp, Plus, Timer, Droplets as DropletIcon } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -406,6 +407,134 @@ const FibrinogenTrendTracker: React.FC = () => {
   );
 };
 
+// Blood Product Infusion Calculator
+const PRODUCTS = [
+  { id: "cryo", label: "Cryoprecipitate", volumePerUnit: 15, defaultRate: 200, rateRange: [100, 300], notes: "~15 mL/unit pooled; infuse over 30–60 min" },
+  { id: "platelets", label: "Platelets (Apheresis)", volumePerUnit: 250, defaultRate: 300, rateRange: [150, 500], notes: "~250 mL/unit; infuse over 30–60 min", singleUnit: true },
+  { id: "platelet_random", label: "Platelets (Random Donor)", volumePerUnit: 50, defaultRate: 300, rateRange: [150, 500], notes: "~50 mL/unit; pool 6–8 units" },
+  { id: "ffp", label: "FFP", volumePerUnit: 250, defaultRate: 200, rateRange: [100, 400], notes: "~250 mL/unit; infuse over 30–60 min per unit" },
+] as const;
+
+const BloodProductInfusionCalculator: React.FC = () => {
+  const [selectedProduct, setSelectedProduct] = useState<string>(PRODUCTS[0].id);
+  const [units, setUnits] = useState("10");
+  const [rateOverride, setRateOverride] = useState("");
+
+  const product = PRODUCTS.find(p => p.id === selectedProduct)!;
+  const unitsNum = parseInt(units) || 0;
+  const totalVolume = unitsNum * product.volumePerUnit;
+  const rate = parseInt(rateOverride) || product.defaultRate;
+  const durationMin = rate > 0 ? Math.ceil((totalVolume / rate) * 60) : 0;
+  const hours = Math.floor(durationMin / 60);
+  const mins = durationMin % 60;
+
+  return (
+    <div className="p-3 rounded-lg border-2 border-purple-300 dark:border-purple-700 bg-purple-50/30 dark:bg-purple-950/10 space-y-3">
+      <div className="flex items-center gap-2">
+        <Timer className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+        <span className="font-bold text-sm">Blood Product Infusion Calculator</span>
+      </div>
+
+      {/* Inputs */}
+      <div className="flex flex-wrap gap-2 items-end">
+        <div className="space-y-1">
+          <Label className="text-xs">Product</Label>
+          <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+            <SelectTrigger className="h-8 text-xs w-44">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PRODUCTS.map(p => (
+                <SelectItem key={p.id} value={p.id} className="text-xs">{p.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Units</Label>
+          <Input
+            type="number"
+            value={units}
+            onChange={e => setUnits(e.target.value)}
+            className="h-8 text-xs w-20"
+            min={1}
+            max={50}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Rate (mL/hr)</Label>
+          <Input
+            type="number"
+            placeholder={`${product.defaultRate}`}
+            value={rateOverride}
+            onChange={e => setRateOverride(e.target.value)}
+            className="h-8 text-xs w-24"
+            min={50}
+            max={999}
+          />
+        </div>
+      </div>
+
+      {/* Results */}
+      {unitsNum > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          <div className="p-2 rounded-lg bg-background border text-center">
+            <p className="text-[10px] text-muted-foreground">Total Volume</p>
+            <p className="text-lg font-bold text-purple-700 dark:text-purple-300">{totalVolume} <span className="text-xs font-normal">mL</span></p>
+          </div>
+          <div className="p-2 rounded-lg bg-background border text-center">
+            <p className="text-[10px] text-muted-foreground">Flow Rate</p>
+            <p className="text-lg font-bold text-purple-700 dark:text-purple-300">{rate} <span className="text-xs font-normal">mL/hr</span></p>
+          </div>
+          <div className="p-2 rounded-lg bg-background border text-center">
+            <p className="text-[10px] text-muted-foreground">Duration</p>
+            <p className="text-lg font-bold text-purple-700 dark:text-purple-300">
+              {hours > 0 && `${hours}h `}{mins}m
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Product Info */}
+      <div className="p-2 rounded bg-muted/40 border text-xs text-muted-foreground flex items-start gap-2">
+        <DropletIcon className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+        <div>
+          <p>{product.notes}</p>
+          <p className="mt-0.5">Rate range: {product.rateRange[0]}–{product.rateRange[1]} mL/hr</p>
+        </div>
+      </div>
+
+      {/* Quick Reference */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs border-collapse">
+          <thead>
+            <tr className="bg-muted/50">
+              <th className="border p-1.5 text-left">Product</th>
+              <th className="border p-1.5 text-left">Vol/Unit</th>
+              <th className="border p-1.5 text-left">Typical Rate</th>
+              <th className="border p-1.5 text-left">Typical Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            {PRODUCTS.map(p => {
+              const typVol = p.id === "cryo" ? 10 * p.volumePerUnit : p.id === "platelet_random" ? 6 * p.volumePerUnit : p.volumePerUnit;
+              const typDur = Math.ceil((typVol / p.defaultRate) * 60);
+              return (
+                <tr key={p.id} className={p.id === selectedProduct ? "bg-purple-50/50 dark:bg-purple-950/10 font-medium" : ""}>
+                  <td className="border p-1.5">{p.label}</td>
+                  <td className="border p-1.5">{p.volumePerUnit} mL</td>
+                  <td className="border p-1.5">{p.defaultRate} mL/hr</td>
+                  <td className="border p-1.5">{typDur} min ({p.id === "cryo" ? "10 units" : p.id === "platelet_random" ? "6 units" : "1 unit"})</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
 const PostThrombolysisICHManagement: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -515,6 +644,9 @@ const PostThrombolysisICHManagement: React.FC = () => {
 
                 {/* Fibrinogen Trend Tracker */}
                 <FibrinogenTrendTracker />
+
+                {/* Blood Product Infusion Calculator */}
+                <BloodProductInfusionCalculator />
 
                 {/* Platelets */}
                 <div className="p-3 rounded-lg border border-border bg-muted/30">
