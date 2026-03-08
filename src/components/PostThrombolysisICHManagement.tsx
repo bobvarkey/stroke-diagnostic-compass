@@ -656,6 +656,11 @@ const BloodProductInfusionCalculator: React.FC = () => {
             ✓ All pre-transfusion and monitoring checks complete
           </div>
         )}
+
+        {/* Transfusion Reaction Protocol — appears when "reaction" checkbox is checked */}
+        {nursingChecks["reaction"] && (
+          <TransfusionReactionProtocol />
+        )}
       </div>
 
       {/* Quick Reference */}
