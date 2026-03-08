@@ -5642,46 +5642,42 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-12 sm:h-14 mb-5 glass-strong rounded-xl p-1">
+        {/* Desktop/Tablet top tabs - hidden on mobile */}
+        <TabsList className="hidden sm:grid w-full grid-cols-5 h-14 mb-5 glass-strong rounded-xl p-1">
           <TabsTrigger 
             value="ischemic" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">Ischemic Stroke</span>
-            <span className="sm:hidden">Ischemic</span>
+            <Zap className="h-4 w-4 shrink-0" />
+            Ischemic Stroke
           </TabsTrigger>
           <TabsTrigger 
             value="hemorrhagic" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Droplets className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">ICH</span>
-            <span className="sm:hidden">ICH</span>
+            <Droplets className="h-4 w-4 shrink-0" />
+            ICH
           </TabsTrigger>
           <TabsTrigger 
             value="post-ivt" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">Post-IVT</span>
-            <span className="sm:hidden">Post-IVT</span>
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            Post-IVT
           </TabsTrigger>
           <TabsTrigger 
             value="cvt" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">CVT</span>
-            <span className="sm:hidden">CVT</span>
+            <Brain className="h-4 w-4 shrink-0" />
+            CVT
           </TabsTrigger>
           <TabsTrigger 
             value="sah" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Droplets className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">SAH</span>
-            <span className="sm:hidden">SAH</span>
+            <Droplets className="h-4 w-4 shrink-0" />
+            SAH
           </TabsTrigger>
         </TabsList>
 
