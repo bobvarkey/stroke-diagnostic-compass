@@ -108,13 +108,16 @@ export default function ThrombolyticDoseCalculator() {
         </div>
 
         {/* Agent Tabs */}
-        <Tabs value={activeAgent} onValueChange={(v) => setActiveAgent(v as "alteplase" | "tenecteplase")}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="alteplase" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              Alteplase (tPA)
+        <Tabs value={activeAgent} onValueChange={(v) => setActiveAgent(v as "alteplase" | "tenecteplase" | "ia_tpa")}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="alteplase" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm">
+              IV Alteplase
             </TabsTrigger>
-            <TabsTrigger value="tenecteplase" className="data-[state=active]:bg-green-600 data-[state=active]:text-white">
-              Tenecteplase (TNK)
+            <TabsTrigger value="tenecteplase" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-xs sm:text-sm">
+              IV TNK
+            </TabsTrigger>
+            <TabsTrigger value="ia_tpa" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+              IA tPA
             </TabsTrigger>
           </TabsList>
 
