@@ -172,15 +172,27 @@ function SDHDiagnosis() {
               </div>
             </div>
 
-            {/* Key Imaging Measurements */}
+            {/* Key Imaging Measurements — ARISE I */}
             <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-700">
-              <h5 className="font-semibold text-blue-800 dark:text-blue-300 text-sm mb-2">Key Measurements on Imaging</h5>
+              <h5 className="font-semibold text-blue-800 dark:text-blue-300 text-sm mb-2">Key Measurements on Imaging (ARISE I)</h5>
               <ul className="text-xs space-y-1.5 text-blue-700 dark:text-blue-400">
-                <li>• <strong>Maximum thickness:</strong> Measured perpendicular to inner table (surgical threshold: ≥10mm)</li>
+                <li>• <strong>Maximum thickness:</strong> Measured above temporal bones, up to 2 slices above ventricles (surgical threshold: ≥10mm)</li>
                 <li>• <strong>Midline shift (MLS):</strong> Displacement of septum pellucidum (surgical threshold: ≥5mm)</li>
+                <li>• <strong>Morphology:</strong> Nakaguchi classification (homogeneous, laminar, separated) — predicts recurrence</li>
                 <li>• <strong>Effacement:</strong> Sulcal effacement, basal cistern compression</li>
                 <li>• <strong>CT Angiography:</strong> Evaluate for active bleeding / cortical vessel compression</li>
-                <li>• <strong>MRI:</strong> Superior for isodense subacute SDH, membrane characterization</li>
+                <li>• <strong>MRI:</strong> Superior for neomembrane vascularity, isodense subacute SDH, recurrence risk assessment</li>
+                <li>• <strong>AI Tools:</strong> Automated volume/mass effect analysis emerging for standardized measurement</li>
+              </ul>
+            </div>
+
+            {/* Clinical Stability Assessment */}
+            <div className="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-700">
+              <h5 className="font-semibold text-indigo-800 dark:text-indigo-300 text-xs mb-2">Clinical Stability Assessment (ARISE I)</h5>
+              <ul className="text-xs space-y-1 text-indigo-700 dark:text-indigo-400">
+                <li>• <strong>GCS ≥9</strong> — required for "stable" classification</li>
+                <li>• <strong>Pre-morbid mRS ≤3</strong> — baseline functional status</li>
+                <li>• <strong>No emergent decompensation</strong> — no profound weakness, no altered status requiring emergency intervention</li>
               </ul>
             </div>
 
