@@ -6110,6 +6110,41 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden glass-strong border-t border-border/50 backdrop-blur-xl bg-background/90">
+        <div className="grid grid-cols-5 h-16">
+          {[
+            { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
+            { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
+            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post-IVT", activeColor: "text-rose-500" },
+            { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
+            { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
+          ].map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => {
+                setActiveTab(tab.value);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex flex-col items-center justify-center gap-0.5 transition-all active:scale-95 ${
+                activeTab === tab.value
+                  ? `${tab.activeColor} font-semibold`
+                  : 'text-muted-foreground'
+              }`}
+            >
+              <div className={`p-1 rounded-lg transition-all ${
+                activeTab === tab.value ? 'bg-primary/10' : ''
+              }`}>
+                {tab.icon}
+              </div>
+              <span className="text-[10px] leading-tight">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+        {/* Safe area padding for devices with home indicator */}
+        <div className="h-[env(safe-area-inset-bottom)]" />
+      </nav>
     </div>
   );
 }
