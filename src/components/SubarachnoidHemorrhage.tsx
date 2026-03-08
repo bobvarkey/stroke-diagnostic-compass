@@ -11,7 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   SAHWFNSCalculator, SAHHuntHessCalculator, SAHScoreCalculator,
-  HijdraScoreCalculator, VasogradeCalculator, SEBESCalculator, BNIScaleCalculator
+  HijdraScoreCalculator, VasogradeCalculator, SEBESCalculator, BNIScaleCalculator,
+  PREDICTScoreCalculator
 } from "./SAHScaleCalculators";
 import FisherScaleCalculator from "./FisherScaleCalculator";
 
