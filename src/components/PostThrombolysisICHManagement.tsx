@@ -359,10 +359,10 @@ const FactorConcentrateCalculators: React.FC = () => {
   const styles = colorStyles[active.color];
 
   return (
-    <div className={cn("p-4 rounded-lg border-2 space-y-4", styles.border, styles.bg)}>
+    <div className={cn("p-3 sm:p-4 rounded-lg border-2 space-y-4 overflow-hidden", styles.border, styles.bg)}>
       <div className="flex items-center gap-2 flex-wrap">
-        <Badge className="bg-emerald-700 text-white text-xs">CALCULATORS</Badge>
-        <span className="font-bold text-sm">Factor Concentrate Dosing</span>
+        <Badge className="bg-emerald-700 text-white text-xs shrink-0">CALCULATORS</Badge>
+        <span className="font-bold text-xs sm:text-sm">Factor Concentrate Dosing</span>
       </div>
 
       {/* Calculator Selector */}
