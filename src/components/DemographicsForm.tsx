@@ -12,7 +12,16 @@ interface Demographics {
   age?: string;
   sex?: string;
   race?: string;
-  lastKnownWell?: string; // ISO datetime string
+  lastKnownWell?: string;
+}
+
+// Helper to get a display summary for the collapsed header
+function getDemographicsSummary(d: Demographics): string {
+  const parts: string[] = [];
+  if (d.name) parts.push(d.name);
+  if (d.age) parts.push(`${d.age}y`);
+  if (d.sex) parts.push(d.sex === 'male' ? 'M' : d.sex === 'female' ? 'F' : d.sex);
+  return parts.length > 0 ? parts.join(' · ') : '';
 }
 
 interface Props {
@@ -64,12 +73,18 @@ export default function DemographicsForm({ demographics, onDemographicsChange }:
         <CollapsibleTrigger className="w-full">
           <CardHeader className="bg-teal-100/50 dark:bg-teal-900/30">
             <CardTitle className="flex items-center justify-between text-teal-800 dark:text-teal-300">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <User className="h-5 w-5" />
-                Patient Demographics
+                <span className="hidden sm:inline">Patient Demographics</span>
+                <span className="sm:hidden">Demographics</span>
                 {demographics.patientId && (
                   <span className="text-xs font-normal bg-teal-200 dark:bg-teal-800 px-2 py-0.5 rounded">
                     ID: {demographics.patientId}
+                  </span>
+                )}
+                {!isOpen && getDemographicsSummary(demographics) && (
+                  <span className="text-xs font-normal text-muted-foreground">
+                    ({getDemographicsSummary(demographics)})
                   </span>
                 )}
               </div>
@@ -96,16 +111,15 @@ export default function DemographicsForm({ demographics, onDemographicsChange }:
               {/* Patient ID (Required) */}
               <div className="space-y-2">
                 <Label htmlFor="patientId" className="text-teal-800 dark:text-teal-300">
-                  Patient ID <span className="text-red-500">*</span>
+                  Patient ID <span className="text-xs text-muted-foreground">(Optional)</span>
                 </Label>
                 <Input
                   id="patientId"
                   type="text"
-                  placeholder="Enter patient ID"
+                  placeholder="Auto-generated or enter manually"
                   value={demographics.patientId || ""}
                   onChange={(e) => updateDemographic("patientId", e.target.value)}
                   className="border-teal-300 dark:border-teal-700"
-                  required
                 />
               </div>
 

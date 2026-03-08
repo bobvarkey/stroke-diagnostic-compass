@@ -5604,7 +5604,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
     name: patient?.name || undefined,
     age: patient?.age?.toString() || undefined,
     sex: patient?.sex || undefined,
-    lastKnownWell: patient?.last_known_well || undefined,
+    lastKnownWell: patient?.last_known_well ? patient.last_known_well.slice(0, 16) : undefined,
   });
   const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
 
