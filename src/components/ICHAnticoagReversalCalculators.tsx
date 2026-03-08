@@ -97,10 +97,10 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
   ];
 
   return (
-    <div className="mt-4 p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-lg border-2 border-amber-300 dark:border-amber-700">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="mt-4 p-3 sm:p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-lg border-2 border-amber-300 dark:border-amber-700">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <Calculator className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-        <h4 className="font-bold text-amber-800 dark:text-amber-300 text-base">
+        <h4 className="font-bold text-amber-800 dark:text-amber-300 text-sm sm:text-base">
           Anticoagulation Reversal Dose Calculators
         </h4>
         <Badge className="bg-red-600 text-white text-xs">ICH</Badge>
