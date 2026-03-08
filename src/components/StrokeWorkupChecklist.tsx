@@ -803,6 +803,9 @@ function AcuteICHManagement() {
               </div>
             </div>
 
+            {/* Anticoagulation Reversal Dose Calculators */}
+            <ICHAnticoagReversalCalculators weight={weight || 70} />
+
             {/* Antiplatelet Reversal */}
             <div className="p-4 bg-pink-50 dark:bg-pink-900/30 rounded-lg border border-pink-200 dark:border-pink-700">
               <h4 className="font-semibold text-pink-800 dark:text-pink-300 mb-3">Antiplatelet Reversal</h4>
