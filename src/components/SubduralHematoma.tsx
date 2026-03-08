@@ -9,6 +9,7 @@ import {
   RotateCcw, Layers, Scissors, Zap, BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
 
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
