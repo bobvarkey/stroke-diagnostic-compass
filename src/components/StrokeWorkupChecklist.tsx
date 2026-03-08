@@ -40,6 +40,7 @@ import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
+import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
@@ -5674,6 +5675,14 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <span className="hidden sm:inline">CVT</span>
             <span className="sm:hidden">CVT</span>
           </TabsTrigger>
+          <TabsTrigger 
+            value="sah" 
+            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+          >
+            <Droplets className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden sm:inline">SAH</span>
+            <span className="sm:hidden">SAH</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Ischemic Stroke Tab Content */}
@@ -6092,6 +6101,16 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Cerebral venous thrombosis evaluation and management - Always correlate with clinical presentation</p>
+          </div>
+        </TabsContent>
+        {/* Subarachnoid Hemorrhage Tab Content */}
+        <TabsContent value="sah" className="space-y-6">
+          <LazySection id="sah-management">
+            <SubarachnoidHemorrhage />
+          </LazySection>
+
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>Subarachnoid hemorrhage management — Always correlate with clinical presentation</p>
           </div>
         </TabsContent>
       </Tabs>
