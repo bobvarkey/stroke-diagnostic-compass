@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Syringe, AlertTriangle, Info, Calculator, Clock } from "lucide-react";
+import { Syringe, AlertTriangle, Info, Calculator, Clock, ChevronDown } from "lucide-react";
 import ModuleCommentBox from "./ModuleCommentBox";
 
 interface DoseResult {
