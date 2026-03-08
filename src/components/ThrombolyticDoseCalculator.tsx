@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Syringe, AlertTriangle, Info, Calculator, Clock } from "lucide-react";
+import { Syringe, AlertTriangle, Info, Calculator, Clock, ChevronDown } from "lucide-react";
 import ModuleCommentBox from "./ModuleCommentBox";
 
 interface DoseResult {
@@ -251,109 +252,109 @@ export default function ThrombolyticDoseCalculator() {
           </TabsContent>
 
           {/* Intra-arterial tPA Tab */}
-          <TabsContent value="ia_tpa" className="space-y-4">
-            <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
-              <div className="flex items-center gap-2 mb-3">
-                <Info className="h-4 w-4 text-purple-600" />
-                <span className="font-medium text-purple-800 dark:text-purple-300">Intra-arterial tPA Protocol (Post-EVT)</span>
+          <TabsContent value="ia_tpa" className="space-y-3">
+            {/* Quick Dosing Summary - Always visible */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-3 bg-purple-100 dark:bg-purple-900/40 rounded-lg text-center border-2 border-purple-400">
+                <Badge className="mb-1 bg-purple-600 text-[10px]">CHOICE-2</Badge>
+                <div className="text-2xl sm:text-3xl font-bold text-purple-700 dark:text-purple-300">10 mg</div>
+                <div className="text-[10px] sm:text-xs text-purple-600 dark:text-purple-400">Standard IA dose</div>
               </div>
-              <ul className="text-sm text-purple-700 dark:text-purple-400 space-y-1 list-disc list-inside">
-                <li>Dose: 10 mg (CHOICE-2); up to 20 mg in extended protocols</li>
-                <li>Concentration: 1 mg/mL (standard reconstitution)</li>
-                <li>Infusion: Slow infusion over 10-15 minutes</li>
-                <li>Delivery: Superselective microcatheter distal to clot</li>
-                <li>Indication: Adjunctive to EVT for residual thrombus</li>
-              </ul>
-            </div>
-
-            {/* CHOICE-2 Evidence Box */}
-            <div className="p-4 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-lg border-2 border-purple-400 dark:border-purple-600">
-              <h5 className="font-bold text-purple-800 dark:text-purple-300 mb-2 flex items-center gap-2">
-                <Badge className="bg-purple-600 text-white text-xs">CHOICE-2</Badge>
-                Landmark Trial Evidence
-              </h5>
-              <div className="text-sm text-purple-700 dark:text-purple-400 space-y-2">
-                <p><strong>Design:</strong> Phase III RCT of IA alteplase (10mg) vs placebo post-EVT in LVO stroke</p>
-                <p><strong>Primary Outcome:</strong> Higher rates of mRS 0-1 at 90 days with IA tPA</p>
-                <p><strong>Safety:</strong> No significant increase in symptomatic ICH (sICH)</p>
-                <p><strong>NNT:</strong> ~7 for excellent outcome (mRS 0-1)</p>
+              <div className="p-3 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg text-center border-2 border-indigo-400">
+                <Badge className="mb-1 bg-indigo-600 text-[10px]">Extended</Badge>
+                <div className="text-2xl sm:text-3xl font-bold text-indigo-700 dark:text-indigo-300">15-20 mg</div>
+                <div className="text-[10px] sm:text-xs text-indigo-600 dark:text-indigo-400">Maximum dose</div>
               </div>
             </div>
 
-            {/* Dosing Display */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-6 bg-purple-100 dark:bg-purple-900/40 rounded-lg text-center border-2 border-purple-400">
-                <Badge className="mb-2 bg-purple-600">CHOICE-2 Protocol</Badge>
-                <div className="text-4xl font-bold text-purple-700 dark:text-purple-300">
-                  10 mg
-                </div>
-                <div className="text-sm text-purple-600 dark:text-purple-400 mt-1">
-                  Standard IA dose
-                </div>
-                <div className="text-xs text-purple-500 mt-2">
-                  = 10 mL at 1 mg/mL over 10-15 min
-                </div>
-              </div>
-              <div className="p-6 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg text-center border-2 border-indigo-400">
-                <Badge className="mb-2 bg-indigo-600">Extended Protocol</Badge>
-                <div className="text-4xl font-bold text-indigo-700 dark:text-indigo-300">
-                  15-20 mg
-                </div>
-                <div className="text-sm text-indigo-600 dark:text-indigo-400 mt-1">
-                  Maximum IA dose
-                </div>
-                <div className="text-xs text-indigo-500 mt-2">
-                  For persistent residual thrombus
-                </div>
-              </div>
+            {/* Quick Protocol Summary */}
+            <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800 text-xs">
+              <p className="text-purple-700 dark:text-purple-400">
+                <strong>Quick:</strong> 10 mL at 1 mg/mL • 10-15 min infusion • Microcatheter distal to clot • Post-EVT for residual thrombus
+              </p>
             </div>
 
-            {/* Technique Box */}
-            <div className="p-4 bg-white dark:bg-gray-900/50 rounded-lg border border-purple-200 dark:border-purple-700">
-              <h5 className="font-semibold text-purple-800 dark:text-purple-300 text-sm mb-2">Administration Technique</h5>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
-                  <strong>1. Catheter Position:</strong> Microcatheter tip placed distal to the clot/residual thrombus
+            {/* Collapsible CHOICE-2 Evidence */}
+            <Collapsible>
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-2 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-lg border border-purple-300 dark:border-purple-600 hover:bg-purple-200/50 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-purple-600 text-white text-[10px]">CHOICE-2</Badge>
+                    <span className="text-xs font-medium text-purple-800 dark:text-purple-300">Trial Evidence</span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-purple-600 transition-transform data-[state=open]:rotate-180" />
                 </div>
-                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
-                  <strong>2. Reconstitution:</strong> Dilute to 1 mg/mL concentration
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2">
+                <div className="p-3 bg-white dark:bg-gray-900/50 rounded-lg border border-purple-200 dark:border-purple-700 text-xs space-y-1">
+                  <p><strong>Design:</strong> Phase III RCT of IA alteplase (10mg) vs placebo post-EVT in LVO</p>
+                  <p><strong>Primary:</strong> Higher mRS 0-1 at 90 days with IA tPA</p>
+                  <p><strong>Safety:</strong> No increase in sICH</p>
+                  <p><strong>NNT:</strong> ~7 for excellent outcome</p>
                 </div>
-                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
-                  <strong>3. Infusion Rate:</strong> ~1 mg/min (slow pulsatile injection)
-                </div>
-                <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
-                  <strong>4. Monitoring:</strong> Angiographic runs to assess lysis progress
-                </div>
-              </div>
-            </div>
+              </CollapsibleContent>
+            </Collapsible>
 
-            {/* Patient Selection */}
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
-              <h5 className="font-semibold text-amber-800 dark:text-amber-300 text-sm mb-2 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" />
-                Patient Selection (CHOICE-2 Criteria)
-              </h5>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                <div className="text-green-700 dark:text-green-400">
-                  <strong>✓ Include:</strong>
-                  <ul className="list-disc list-inside mt-1">
-                    <li>Post-EVT with residual thrombus (eTICI &lt;3)</li>
-                    <li>LVO stroke (ICA, M1, M2)</li>
-                    <li>Within 24h of symptom onset</li>
-                    <li>No sICH on post-EVT angiography</li>
-                  </ul>
+            {/* Collapsible Technique */}
+            <Collapsible>
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-900/50 rounded-lg border border-purple-200 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors">
+                  <span className="text-xs font-medium text-purple-800 dark:text-purple-300">Administration Technique</span>
+                  <ChevronDown className="h-4 w-4 text-purple-600 transition-transform data-[state=open]:rotate-180" />
                 </div>
-                <div className="text-red-700 dark:text-red-400">
-                  <strong>✗ Exclude:</strong>
-                  <ul className="list-disc list-inside mt-1">
-                    <li>Active intracranial hemorrhage</li>
-                    <li>Known coagulopathy</li>
-                    <li>Recent major surgery (&lt;14 days)</li>
-                    <li>Severe uncontrolled HTN</li>
-                  </ul>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2">
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                    <strong>1.</strong> Microcatheter distal to clot
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                    <strong>2.</strong> Dilute to 1 mg/mL
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                    <strong>3.</strong> ~1 mg/min infusion
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded">
+                    <strong>4.</strong> Angio runs to assess
+                  </div>
                 </div>
-              </div>
-            </div>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* Collapsible Patient Selection */}
+            <Collapsible>
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-950/30 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-3 w-3 text-amber-600" />
+                    <span className="text-xs font-medium text-amber-800 dark:text-amber-300">Patient Selection</span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-amber-600 transition-transform data-[state=open]:rotate-180" />
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2">
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-700">
+                    <strong className="text-green-700 dark:text-green-400">✓ Include:</strong>
+                    <ul className="list-disc list-inside mt-1 text-green-600 dark:text-green-500">
+                      <li>Post-EVT, eTICI &lt;3</li>
+                      <li>LVO (ICA, M1, M2)</li>
+                      <li>Within 24h onset</li>
+                      <li>No sICH on angio</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-red-50 dark:bg-red-950/20 rounded border border-red-200 dark:border-red-700">
+                    <strong className="text-red-700 dark:text-red-400">✗ Exclude:</strong>
+                    <ul className="list-disc list-inside mt-1 text-red-600 dark:text-red-500">
+                      <li>Active ICH</li>
+                      <li>Coagulopathy</li>
+                      <li>Surgery &lt;14d</li>
+                      <li>Uncontrolled HTN</li>
+                    </ul>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </TabsContent>
         </Tabs>
 
