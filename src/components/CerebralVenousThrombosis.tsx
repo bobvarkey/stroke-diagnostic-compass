@@ -7,6 +7,7 @@ import cvtFlowchart from "@/assets/cvt-management-flowchart.png";
 import CVTGradingScale from "./CVTGradingScale";
 import DIAS3Calculator from "./DIAS3Calculator";
 import SI2NCAL2CCalculator from "./SI2NCAL2CCalculator";
+import HeldnerCVTScore from "./HeldnerCVTScore";
 
 /* ─────────────────────────── Symptom Severity Scale ─────────────────────────── */
 
@@ -429,6 +430,7 @@ const CVTManagementFlowchart: React.FC = () => (
 const CerebralVenousThrombosis: React.FC = () => (
   <div className="space-y-6">
     <CVTManagementFlowchart />
+    <HeldnerCVTScore />
     <CVTGradingScale />
     <SI2NCAL2CCalculator />
     <DIAS3Calculator />
