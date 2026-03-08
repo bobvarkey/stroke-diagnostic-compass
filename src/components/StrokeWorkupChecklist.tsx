@@ -5624,7 +5624,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
 
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 space-y-5">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 pb-24 sm:pb-4 space-y-5">
       {/* Header with Theme Toggle */}
       <div className="relative text-center mb-4">
         {/* Theme Toggle - Fixed Position */}
@@ -5642,46 +5642,42 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-12 sm:h-14 mb-5 glass-strong rounded-xl p-1">
+        {/* Desktop/Tablet top tabs - hidden on mobile */}
+        <TabsList className="hidden sm:grid w-full grid-cols-5 h-14 mb-5 glass-strong rounded-xl p-1">
           <TabsTrigger 
             value="ischemic" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">Ischemic Stroke</span>
-            <span className="sm:hidden">Ischemic</span>
+            <Zap className="h-4 w-4 shrink-0" />
+            Ischemic Stroke
           </TabsTrigger>
           <TabsTrigger 
             value="hemorrhagic" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Droplets className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">ICH</span>
-            <span className="sm:hidden">ICH</span>
+            <Droplets className="h-4 w-4 shrink-0" />
+            ICH
           </TabsTrigger>
           <TabsTrigger 
             value="post-ivt" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">Post-IVT</span>
-            <span className="sm:hidden">Post-IVT</span>
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            Post-IVT
           </TabsTrigger>
           <TabsTrigger 
             value="cvt" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">CVT</span>
-            <span className="sm:hidden">CVT</span>
+            <Brain className="h-4 w-4 shrink-0" />
+            CVT
           </TabsTrigger>
           <TabsTrigger 
             value="sah" 
-            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
+            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
           >
-            <Droplets className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-            <span className="hidden sm:inline">SAH</span>
-            <span className="sm:hidden">SAH</span>
+            <Droplets className="h-4 w-4 shrink-0" />
+            SAH
           </TabsTrigger>
         </TabsList>
 
@@ -6114,6 +6110,41 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden glass-strong border-t border-border/50 backdrop-blur-xl bg-background/90">
+        <div className="grid grid-cols-5 h-16">
+          {[
+            { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
+            { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
+            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post-IVT", activeColor: "text-rose-500" },
+            { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
+            { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
+          ].map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => {
+                setActiveTab(tab.value);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex flex-col items-center justify-center gap-0.5 transition-all active:scale-95 ${
+                activeTab === tab.value
+                  ? `${tab.activeColor} font-semibold`
+                  : 'text-muted-foreground'
+              }`}
+            >
+              <div className={`p-1 rounded-lg transition-all ${
+                activeTab === tab.value ? 'bg-primary/10' : ''
+              }`}>
+                {tab.icon}
+              </div>
+              <span className="text-[10px] leading-tight">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+        {/* Safe area padding for devices with home indicator */}
+        <div className="h-[env(safe-area-inset-bottom)]" />
+      </nav>
     </div>
   );
 }
