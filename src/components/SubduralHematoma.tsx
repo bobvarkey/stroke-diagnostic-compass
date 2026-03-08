@@ -9,6 +9,7 @@ import {
   RotateCcw, Layers, Scissors, Zap, BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
 
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
@@ -1134,6 +1135,7 @@ export default function SubduralHematoma() {
       <SDHSurgicalOptions />
       <MMAEmbolization />
       <SDHMedicalManagement />
+      <CSDHRecurrenceCalculator />
       <ARISEConsensus />
 
       <div className="text-center text-sm text-muted-foreground border-t pt-4">
