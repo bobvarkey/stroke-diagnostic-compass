@@ -5624,7 +5624,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
 
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 pb-24 sm:pb-4 space-y-5">
+    <div className="max-w-6xl mx-auto px-[max(0.75rem,env(safe-area-inset-left))] sm:px-4 md:px-6 py-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-4 space-y-5">
       {/* Header with Theme Toggle */}
       <div className="relative text-center mb-4">
         {/* Theme Toggle - Fixed Position */}
@@ -6112,7 +6112,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       </Tabs>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden glass-strong border-t border-border/50 backdrop-blur-xl bg-background/90">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-border/50 backdrop-blur-xl bg-background/90" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
         <div className="grid grid-cols-5 h-16">
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
@@ -6142,8 +6142,6 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             </button>
           ))}
         </div>
-        {/* Safe area padding for devices with home indicator */}
-        <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
     </div>
   );
