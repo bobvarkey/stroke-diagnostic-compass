@@ -97,22 +97,22 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
   ];
 
   return (
-    <div className="mt-4 p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-lg border-2 border-amber-300 dark:border-amber-700">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="mt-4 p-3 sm:p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-lg border-2 border-amber-300 dark:border-amber-700">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <Calculator className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-        <h4 className="font-bold text-amber-800 dark:text-amber-300 text-base">
+        <h4 className="font-bold text-amber-800 dark:text-amber-300 text-sm sm:text-base">
           Anticoagulation Reversal Dose Calculators
         </h4>
         <Badge className="bg-red-600 text-white text-xs">ICH</Badge>
       </div>
 
       {/* Agent Tabs */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
+      <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1.5 mb-4">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
+            className={`px-2 py-1.5 rounded-md text-[10px] sm:text-xs font-semibold transition-all text-center ${
               activeTab === tab.id
                 ? `${tab.color} text-white shadow-lg scale-105`
                 : "bg-white/70 dark:bg-gray-800/70 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700"
@@ -177,12 +177,12 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
 
           {/* Result */}
           {pccDose.unitsPerKg > 0 ? (
-            <div className="p-4 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 rounded-lg text-center">
-              <div className="text-3xl font-black text-amber-700 dark:text-amber-300">{pccTotalUnits} IU</div>
-              <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">
-                {pccDose.unitsPerKg} IU/kg × {weight} kg · Max rate: {pccInfusionRate} IU/min · Est. time: ~{pccInfusionTime} min
+            <div className="p-3 sm:p-4 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 rounded-lg text-center">
+              <div className="text-2xl sm:text-3xl font-black text-amber-700 dark:text-amber-300">{pccTotalUnits} IU</div>
+              <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 mt-1">
+                {pccDose.unitsPerKg} IU/kg × {weight} kg
               </p>
-              <p className="text-xs text-amber-500 dark:text-amber-500 mt-1 italic">{pccDose.note}</p>
+              <p className="text-xs text-amber-500 dark:text-amber-500 mt-0.5">Max rate: {pccInfusionRate} IU/min · Est. time: ~{pccInfusionTime} min</p>
             </div>
           ) : (
             <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded text-center text-sm text-gray-500">INR below reversal threshold</div>
@@ -203,10 +203,10 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
       {/* ===== Idarucizumab (Dabigatran) ===== */}
       {activeTab === "idarucizumab" && (
         <div className="space-y-3">
-          <div className="p-4 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 rounded-lg text-center">
-            <div className="text-3xl font-black text-emerald-700 dark:text-emerald-300">5 g</div>
-            <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
-              2 × 2.5 g/50 mL vials · IV push or infusion · ≤15 min total
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 rounded-lg text-center">
+            <div className="text-2xl sm:text-3xl font-black text-emerald-700 dark:text-emerald-300">5 g</div>
+            <p className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 mt-1">
+              2 × 2.5 g/50 mL vials · IV push or infusion · ≤15 min
             </p>
             <p className="text-xs text-emerald-500 mt-1 italic">Fixed dose — weight-independent (Class 2a)</p>
           </div>
@@ -292,21 +292,23 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
           </div>
 
           {/* Result */}
-          <div className="p-4 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/50 dark:to-indigo-900/50 rounded-lg">
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/50 dark:to-indigo-900/50 rounded-lg">
             <div className="text-center mb-3">
               <Badge className="bg-blue-600 text-white mb-2">{andexanetDose.regimen}</Badge>
-              <div className="text-3xl font-black text-blue-700 dark:text-blue-300">{andexanetDose.totalMg} mg total</div>
+              <div className="text-2xl sm:text-3xl font-black text-blue-700 dark:text-blue-300">{andexanetDose.totalMg} mg total</div>
             </div>
-            <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs">
               <div className="p-2 bg-white/60 dark:bg-gray-900/40 rounded text-center">
                 <p className="font-bold text-blue-700 dark:text-blue-300">Bolus</p>
-                <p className="text-lg font-black text-blue-600">{andexanetDose.bolus} mg</p>
-                <p className="text-blue-500">{andexanetDose.bolusRate} · {andexanetDose.bolusDuration}</p>
+                <p className="text-base sm:text-lg font-black text-blue-600">{andexanetDose.bolus} mg</p>
+                <p className="text-blue-500 text-[10px] sm:text-xs">{andexanetDose.bolusRate}</p>
+                <p className="text-blue-500 text-[10px] sm:text-xs">{andexanetDose.bolusDuration}</p>
               </div>
               <div className="p-2 bg-white/60 dark:bg-gray-900/40 rounded text-center">
                 <p className="font-bold text-blue-700 dark:text-blue-300">Infusion</p>
-                <p className="text-lg font-black text-blue-600">{andexanetDose.infusion} mg</p>
-                <p className="text-blue-500">{andexanetDose.infusionRate} · {andexanetDose.infusionDuration}</p>
+                <p className="text-base sm:text-lg font-black text-blue-600">{andexanetDose.infusion} mg</p>
+                <p className="text-blue-500 text-[10px] sm:text-xs">{andexanetDose.infusionRate}</p>
+                <p className="text-blue-500 text-[10px] sm:text-xs">{andexanetDose.infusionDuration}</p>
               </div>
             </div>
           </div>
@@ -393,11 +395,12 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
           )}
 
           {/* Result */}
-          <div className="p-4 bg-gradient-to-r from-purple-100 to-violet-100 dark:from-purple-900/50 dark:to-violet-900/50 rounded-lg text-center">
-            <div className="text-3xl font-black text-purple-700 dark:text-purple-300">{protamineDose.dose} mg</div>
-            <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">
-              Max single dose: {protamineDose.maxDose} mg · Rate: {protamineDose.rate}
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-purple-100 to-violet-100 dark:from-purple-900/50 dark:to-violet-900/50 rounded-lg text-center">
+            <div className="text-2xl sm:text-3xl font-black text-purple-700 dark:text-purple-300">{protamineDose.dose} mg</div>
+            <p className="text-xs sm:text-sm text-purple-600 dark:text-purple-400 mt-1">
+              Max: {protamineDose.maxDose} mg
             </p>
+            <p className="text-[10px] sm:text-xs text-purple-500 mt-0.5">Rate: {protamineDose.rate}</p>
             <p className="text-xs text-purple-500 mt-1 italic">{protamineDose.note}</p>
           </div>
 
@@ -411,10 +414,10 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
       {/* ===== Vitamin K ===== */}
       {activeTab === "vitK" && (
         <div className="space-y-3">
-          <div className="p-4 bg-gradient-to-r from-green-100 to-lime-100 dark:from-green-900/50 dark:to-lime-900/50 rounded-lg text-center">
-            <div className="text-3xl font-black text-green-700 dark:text-green-300">10 mg IV</div>
-            <p className="text-sm text-green-600 dark:text-green-400 mt-1">
-              Fixed dose · Infuse over 20–60 min · Weight-independent
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-green-100 to-lime-100 dark:from-green-900/50 dark:to-lime-900/50 rounded-lg text-center">
+            <div className="text-2xl sm:text-3xl font-black text-green-700 dark:text-green-300">10 mg IV</div>
+            <p className="text-xs sm:text-sm text-green-600 dark:text-green-400 mt-1">
+              Fixed dose · Infuse over 20–60 min
             </p>
             <p className="text-xs text-green-500 mt-1 italic">Class 1 — Always co-administer with PCC for VKA-ICH</p>
           </div>
@@ -451,9 +454,9 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
       {/* ===== Desmopressin (DDAVP) ===== */}
       {activeTab === "desmopressin" && (
         <div className="space-y-3">
-          <div className="p-4 bg-gradient-to-r from-pink-100 to-rose-100 dark:from-pink-900/50 dark:to-rose-900/50 rounded-lg text-center">
-            <div className="text-3xl font-black text-pink-700 dark:text-pink-300">{desmopressinDose.dose} mcg</div>
-            <p className="text-sm text-pink-600 dark:text-pink-400 mt-1">
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-pink-100 to-rose-100 dark:from-pink-900/50 dark:to-rose-900/50 rounded-lg text-center">
+            <div className="text-2xl sm:text-3xl font-black text-pink-700 dark:text-pink-300">{desmopressinDose.dose} mcg</div>
+            <p className="text-xs sm:text-sm text-pink-600 dark:text-pink-400 mt-1">
               0.3 mcg/kg × {weight} kg · IV over 15–30 min
             </p>
             <p className="text-xs text-pink-500 mt-1 italic">For antiplatelet reversal pre-neurosurgery (Class 2b)</p>
