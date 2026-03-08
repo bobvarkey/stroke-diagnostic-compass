@@ -42,6 +42,7 @@ import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
+import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 
 interface TestItem {
   id: string;
