@@ -5624,7 +5624,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
 
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 space-y-5">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 pb-24 sm:pb-4 space-y-5">
       {/* Header with Theme Toggle */}
       <div className="relative text-center mb-4">
         {/* Theme Toggle - Fixed Position */}
