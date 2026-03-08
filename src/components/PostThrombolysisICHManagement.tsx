@@ -1,4 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Trash2, TrendingUp, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -266,6 +271,141 @@ const CryoDoseCalculator: React.FC = () => {
   );
 };
 
+// Fibrinogen Trend Tracker
+interface FibEntry {
+  time: string;
+  value: number;
+  timestamp: number;
+}
+
+const FibrinogenTrendTracker: React.FC = () => {
+  const [entries, setEntries] = useState<FibEntry[]>([]);
+  const [fibValue, setFibValue] = useState("");
+  const [timeLabel, setTimeLabel] = useState("");
+
+  const addEntry = useCallback(() => {
+    const val = parseFloat(fibValue);
+    if (isNaN(val) || val < 0 || val > 1000) return;
+    const label = timeLabel.trim() || `T${entries.length}`;
+    setEntries(prev => [...prev, { time: label, value: val, timestamp: Date.now() }]);
+    setFibValue("");
+    setTimeLabel("");
+  }, [fibValue, timeLabel, entries.length]);
+
+  const removeEntry = useCallback((idx: number) => {
+    setEntries(prev => prev.filter((_, i) => i !== idx));
+  }, []);
+
+  const latestValue = entries.length > 0 ? entries[entries.length - 1].value : null;
+  const atTarget = latestValue !== null && latestValue >= 150;
+
+  return (
+    <div className="p-3 rounded-lg border-2 border-blue-300 dark:border-blue-700 bg-blue-50/30 dark:bg-blue-950/10 space-y-3">
+      <div className="flex items-center gap-2">
+        <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+        <span className="font-bold text-sm">Fibrinogen Trend Tracker</span>
+        {latestValue !== null && (
+          <Badge className={atTarget ? "bg-emerald-600 text-white text-xs" : "bg-red-600 text-white text-xs"}>
+            Latest: {latestValue} mg/dL {atTarget ? "✓ At Target" : "✗ Below Target"}
+          </Badge>
+        )}
+      </div>
+
+      {/* Input Row */}
+      <div className="flex flex-wrap gap-2 items-end">
+        <div className="space-y-1">
+          <Label className="text-xs">Time Point</Label>
+          <Input
+            placeholder="e.g. Baseline, 1hr"
+            value={timeLabel}
+            onChange={(e) => setTimeLabel(e.target.value)}
+            className="h-8 text-xs w-28"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Fibrinogen (mg/dL)</Label>
+          <Input
+            type="number"
+            placeholder="mg/dL"
+            value={fibValue}
+            onChange={(e) => setFibValue(e.target.value)}
+            className="h-8 text-xs w-28"
+            min={0}
+            max={1000}
+          />
+        </div>
+        <Button size="sm" variant="outline" className="h-8 text-xs" onClick={addEntry}>
+          <Plus className="h-3 w-3 mr-1" /> Log
+        </Button>
+      </div>
+
+      {/* Chart */}
+      {entries.length >= 2 && (
+        <div className="bg-background rounded-lg border p-2">
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={entries} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+              <XAxis dataKey="time" tick={{ fontSize: 10 }} className="fill-muted-foreground" />
+              <YAxis domain={[0, 'auto']} tick={{ fontSize: 10 }} className="fill-muted-foreground" />
+              <RechartsTooltip
+                contentStyle={{ fontSize: 11, borderRadius: 8 }}
+                formatter={(val: number) => [`${val} mg/dL`, "Fibrinogen"]}
+              />
+              <ReferenceLine y={150} stroke="hsl(142, 71%, 45%)" strokeDasharray="6 3" label={{ value: "Target 150", position: "right", fontSize: 10, fill: "hsl(142, 71%, 45%)" }} />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="hsl(217, 91%, 60%)"
+                strokeWidth={2}
+                dot={{ r: 4, fill: "hsl(217, 91%, 60%)" }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Entries Table */}
+      {entries.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs border-collapse">
+            <thead>
+              <tr className="bg-muted/50">
+                <th className="border p-1.5 text-left">Time</th>
+                <th className="border p-1.5 text-left">Fibrinogen</th>
+                <th className="border p-1.5 text-left">Status</th>
+                <th className="border p-1.5 w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((e, i) => (
+                <tr key={e.timestamp} className={e.value >= 150 ? "bg-emerald-50/50 dark:bg-emerald-950/10" : "bg-red-50/50 dark:bg-red-950/10"}>
+                  <td className="border p-1.5 font-medium">{e.time}</td>
+                  <td className="border p-1.5">{e.value} mg/dL</td>
+                  <td className="border p-1.5">
+                    <Badge variant="outline" className={`text-[10px] ${e.value >= 150 ? "border-emerald-500 text-emerald-700 dark:text-emerald-400" : "border-red-500 text-red-700 dark:text-red-400"}`}>
+                      {e.value >= 150 ? "≥150 ✓" : `${150 - e.value} below target`}
+                    </Badge>
+                  </td>
+                  <td className="border p-1.5">
+                    <button onClick={() => removeEntry(i)} className="text-muted-foreground hover:text-destructive">
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {entries.length === 0 && (
+        <p className="text-xs text-muted-foreground italic">Log serial fibrinogen levels to track progress toward the 150 mg/dL target.</p>
+      )}
+    </div>
+  );
+};
+
 const PostThrombolysisICHManagement: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -372,6 +512,9 @@ const PostThrombolysisICHManagement: React.FC = () => {
 
                 {/* Cryoprecipitate Dose Calculator */}
                 <CryoDoseCalculator />
+
+                {/* Fibrinogen Trend Tracker */}
+                <FibrinogenTrendTracker />
 
                 {/* Platelets */}
                 <div className="p-3 rounded-lg border border-border bg-muted/30">
