@@ -513,6 +513,9 @@ const PostThrombolysisICHManagement: React.FC = () => {
                 {/* Cryoprecipitate Dose Calculator */}
                 <CryoDoseCalculator />
 
+                {/* Fibrinogen Trend Tracker */}
+                <FibrinogenTrendTracker />
+
                 {/* Platelets */}
                 <div className="p-3 rounded-lg border border-border bg-muted/30">
                   <div className="flex items-center gap-2 mb-2">
