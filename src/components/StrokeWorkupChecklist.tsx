@@ -40,6 +40,7 @@ import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
+import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
