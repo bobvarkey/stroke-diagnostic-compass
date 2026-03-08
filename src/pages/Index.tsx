@@ -162,8 +162,10 @@ const Index = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div className="bg-orb bg-orb-1" />
+        <div className="bg-orb bg-orb-2" />
+        <div className="text-center relative z-10 glass-strong rounded-2xl p-8">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading...</p>
         </div>
