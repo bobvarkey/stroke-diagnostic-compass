@@ -19,11 +19,24 @@ interface DoseResult {
 
 export default function ThrombolyticDoseCalculator() {
   const [weight, setWeight] = useState<string>("");
-  const [activeAgent, setActiveAgent] = useState<"alteplase" | "tenecteplase">("alteplase");
+  const [activeAgent, setActiveAgent] = useState<"alteplase" | "tenecteplase" | "ia_tpa">("alteplase");
   const [comments, setComments] = useState<string>("");
 
   const weightNum = parseFloat(weight) || 0;
   const cappedWeight = Math.min(weightNum, 100); // Cap at 100kg for dosing
+
+  // Intra-arterial tPA dosing (CHOICE-2 trial based)
+  const iaTPADose = useMemo(() => {
+    // IA tPA is weight-independent per CHOICE-2 protocol
+    // Standard dose: 10mg max (up to 20mg in some protocols)
+    return {
+      standardDose: 10, // mg (CHOICE-2 protocol)
+      maxDose: 20, // mg (some extended protocols)
+      concentration: "1 mg/mL",
+      infusionTime: "10-15 minutes",
+      technique: "Superselective microcatheter delivery distal to clot"
+    };
+  }, []);
 
   // Alteplase (tPA) dosing: 0.9 mg/kg, max 90mg, 10% bolus, 90% infusion over 60 min
   const alteplaseDose = useMemo((): DoseResult | null => {
