@@ -480,6 +480,40 @@ const TransfusionReactionProtocol: React.FC = () => {
         "Notify blood bank + attending physician IMMEDIATELY",
       ],
     },
+    {
+      type: "TRALI (Transfusion-Related Acute Lung Injury)",
+      color: "violet",
+      signs: "Acute dyspnea, hypoxemia (SpO2 <90%), bilateral pulmonary infiltrates on CXR within 6 hrs of transfusion; NO evidence of circulatory overload",
+      frequency: "Incidence ~1:5,000; leading cause of transfusion-related death",
+      steps: [
+        "STOP INFUSION IMMEDIATELY",
+        "Supportive care: High-flow O2, consider BIPAP/CPAP",
+        "Intubate + mechanical ventilation if PaO2/FiO2 <200 (use lung-protective strategy: TV 6 mL/kg IBW)",
+        "AVOID diuretics — this is NON-cardiogenic pulmonary edema",
+        "Send STAT: CXR (bilateral infiltrates), ABG, BNP (should be LOW/normal)",
+        "Notify blood bank — donor implicated products must be quarantined",
+        "Supportive IV fluids if hypotensive (NOT volume overload)",
+        "Most cases resolve within 48–72 hours with supportive care",
+        "Report to blood bank for donor HLA/HNA antibody testing",
+      ],
+    },
+    {
+      type: "TACO (Transfusion-Associated Circulatory Overload)",
+      color: "teal",
+      signs: "Dyspnea, orthopnea, JVD, peripheral edema, hypertension, elevated BNP, pulmonary edema on CXR",
+      frequency: "Common (1–8%); highest risk in elderly, cardiac/renal disease, rapid infusion",
+      steps: [
+        "STOP or SLOW the infusion",
+        "Sit patient UPRIGHT (head of bed >45°)",
+        "Administer Furosemide 20–40 mg IV (titrate to response)",
+        "Apply supplemental O2 to maintain SpO2 >92%",
+        "Send STAT: BNP/NT-proBNP (elevated = TACO), CXR, ABG",
+        "Strict I/O monitoring — target negative fluid balance",
+        "Consider BIPAP/CPAP if persistent respiratory distress",
+        "Reassess volume status before resuming ANY transfusion",
+        "Future transfusions: slower rate (1 mL/kg/hr), pre-medicate with diuretics, single-unit orders",
+      ],
+    },
   ];
 
   const colorMap: Record<string, { border: string; bg: string; text: string; badge: string }> = {
@@ -500,6 +534,18 @@ const TransfusionReactionProtocol: React.FC = () => {
       bg: "bg-red-50/60 dark:bg-red-950/20",
       text: "text-red-800 dark:text-red-300",
       badge: "bg-red-600 text-white",
+    },
+    violet: {
+      border: "border-violet-400 dark:border-violet-600",
+      bg: "bg-violet-50/60 dark:bg-violet-950/20",
+      text: "text-violet-800 dark:text-violet-300",
+      badge: "bg-violet-600 text-white",
+    },
+    teal: {
+      border: "border-teal-400 dark:border-teal-600",
+      bg: "bg-teal-50/60 dark:bg-teal-950/20",
+      text: "text-teal-800 dark:text-teal-300",
+      badge: "bg-teal-600 text-white",
     },
   };
 
