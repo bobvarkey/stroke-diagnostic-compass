@@ -480,6 +480,40 @@ const TransfusionReactionProtocol: React.FC = () => {
         "Notify blood bank + attending physician IMMEDIATELY",
       ],
     },
+    {
+      type: "TRALI (Transfusion-Related Acute Lung Injury)",
+      color: "violet",
+      signs: "Acute dyspnea, hypoxemia (SpO2 <90%), bilateral pulmonary infiltrates on CXR within 6 hrs of transfusion; NO evidence of circulatory overload",
+      frequency: "Incidence ~1:5,000; leading cause of transfusion-related death",
+      steps: [
+        "STOP INFUSION IMMEDIATELY",
+        "Supportive care: High-flow O2, consider BIPAP/CPAP",
+        "Intubate + mechanical ventilation if PaO2/FiO2 <200 (use lung-protective strategy: TV 6 mL/kg IBW)",
+        "AVOID diuretics — this is NON-cardiogenic pulmonary edema",
+        "Send STAT: CXR (bilateral infiltrates), ABG, BNP (should be LOW/normal)",
+        "Notify blood bank — donor implicated products must be quarantined",
+        "Supportive IV fluids if hypotensive (NOT volume overload)",
+        "Most cases resolve within 48–72 hours with supportive care",
+        "Report to blood bank for donor HLA/HNA antibody testing",
+      ],
+    },
+    {
+      type: "TACO (Transfusion-Associated Circulatory Overload)",
+      color: "teal",
+      signs: "Dyspnea, orthopnea, JVD, peripheral edema, hypertension, elevated BNP, pulmonary edema on CXR",
+      frequency: "Common (1–8%); highest risk in elderly, cardiac/renal disease, rapid infusion",
+      steps: [
+        "STOP or SLOW the infusion",
+        "Sit patient UPRIGHT (head of bed >45°)",
+        "Administer Furosemide 20–40 mg IV (titrate to response)",
+        "Apply supplemental O2 to maintain SpO2 >92%",
+        "Send STAT: BNP/NT-proBNP (elevated = TACO), CXR, ABG",
+        "Strict I/O monitoring — target negative fluid balance",
+        "Consider BIPAP/CPAP if persistent respiratory distress",
+        "Reassess volume status before resuming ANY transfusion",
+        "Future transfusions: slower rate (1 mL/kg/hr), pre-medicate with diuretics, single-unit orders",
+      ],
+    },
   ];
 
   const colorMap: Record<string, { border: string; bg: string; text: string; badge: string }> = {
@@ -500,6 +534,18 @@ const TransfusionReactionProtocol: React.FC = () => {
       bg: "bg-red-50/60 dark:bg-red-950/20",
       text: "text-red-800 dark:text-red-300",
       badge: "bg-red-600 text-white",
+    },
+    violet: {
+      border: "border-violet-400 dark:border-violet-600",
+      bg: "bg-violet-50/60 dark:bg-violet-950/20",
+      text: "text-violet-800 dark:text-violet-300",
+      badge: "bg-violet-600 text-white",
+    },
+    teal: {
+      border: "border-teal-400 dark:border-teal-600",
+      bg: "bg-teal-50/60 dark:bg-teal-950/20",
+      text: "text-teal-800 dark:text-teal-300",
+      badge: "bg-teal-600 text-white",
     },
   };
 
@@ -564,27 +610,63 @@ const TransfusionReactionProtocol: React.FC = () => {
               <th className="border p-1.5 text-left">Febrile</th>
               <th className="border p-1.5 text-left">Allergic</th>
               <th className="border p-1.5 text-left">Hemolytic</th>
+              <th className="border p-1.5 text-left">TRALI</th>
+              <th className="border p-1.5 text-left">TACO</th>
             </tr>
           </thead>
           <tbody>
             {[
-              ["Fever", "Yes", "Rare", "Yes (high)"],
-              ["Rash/Hives", "No", "Yes", "No"],
-              ["Hypotension", "Rare", "If anaphylaxis", "Yes"],
-              ["Back/Flank Pain", "No", "No", "YES — key finding"],
-              ["Dark Urine", "No", "No", "YES — hemoglobinuria"],
-              ["Can Resume?", "Maybe (slowly)", "Mild only", "NEVER"],
-              ["Mortality Risk", "Very low", "Low (unless anaphylaxis)", "HIGH (10–40%)"],
-            ].map(([feature, feb, allerg, hemo]) => (
+              ["Fever", "Yes", "Rare", "Yes (high)", "Possible", "No"],
+              ["Rash/Hives", "No", "Yes", "No", "No", "No"],
+              ["Hypotension", "Rare", "If anaphylaxis", "Yes", "Yes", "No (HTN)"],
+              ["Dyspnea", "No", "If anaphylaxis", "Rare", "YES — acute", "YES — acute"],
+              ["Back/Flank Pain", "No", "No", "YES", "No", "No"],
+              ["Dark Urine", "No", "No", "YES", "No", "No"],
+              ["CXR Infiltrates", "No", "No", "No", "Bilateral", "Pulm edema"],
+              ["BNP Level", "Normal", "Normal", "Normal", "Normal/Low", "ELEVATED"],
+              ["JVD/Edema", "No", "No", "No", "No", "YES"],
+              ["Diuretics?", "N/A", "N/A", "N/A", "AVOID", "YES — first-line"],
+              ["Can Resume?", "Maybe", "Mild only", "NEVER", "NEVER", "Cautiously, slow"],
+              ["Mortality", "Very low", "Low", "HIGH", "5–10%", "Low if treated"],
+            ].map(([feature, feb, allerg, hemo, trali, taco]) => (
               <tr key={feature} className="hover:bg-muted/30">
                 <td className="border p-1.5 font-medium">{feature}</td>
                 <td className="border p-1.5">{feb}</td>
                 <td className="border p-1.5">{allerg}</td>
                 <td className="border p-1.5 font-semibold">{hemo}</td>
+                <td className="border p-1.5">{trali}</td>
+                <td className="border p-1.5">{taco}</td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* TRALI vs TACO Critical Distinction */}
+      <div className="p-3 rounded-lg border-2 border-foreground/20 bg-muted/40 space-y-2">
+        <p className="text-xs font-bold flex items-center gap-1.5">
+          <AlertTriangle className="h-3.5 w-3.5" /> TRALI vs TACO — Critical Distinction
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div className="p-2 rounded border border-violet-300 dark:border-violet-700 bg-violet-50/40 dark:bg-violet-950/10">
+            <p className="font-bold text-violet-800 dark:text-violet-300 mb-1">TRALI = Non-cardiogenic</p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+              <li>Normal/low BNP</li>
+              <li>Normal cardiac filling pressures</li>
+              <li>Do NOT give diuretics</li>
+              <li>Caused by donor antibodies → lung injury</li>
+            </ul>
+          </div>
+          <div className="p-2 rounded border border-teal-300 dark:border-teal-700 bg-teal-50/40 dark:bg-teal-950/10">
+            <p className="font-bold text-teal-800 dark:text-teal-300 mb-1">TACO = Cardiogenic</p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+              <li>Elevated BNP (&gt;1.5× baseline)</li>
+              <li>Elevated cardiac filling pressures</li>
+              <li>Diuretics are FIRST-LINE</li>
+              <li>Caused by volume overload → pulm edema</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
