@@ -514,6 +514,24 @@ const TransfusionReactionProtocol: React.FC = () => {
         "Future transfusions: slower rate (1 mL/kg/hr), pre-medicate with diuretics, single-unit orders",
       ],
     },
+    {
+      type: "Delayed Hemolytic (DHTR)",
+      color: "rose",
+      signs: "Unexplained hemoglobin drop 2–14 days post-transfusion, new jaundice, dark urine, fever, positive DAT (Direct Antiglobulin Test)",
+      frequency: "Incidence ~1:5,000–1:11,000; often missed — high index of suspicion needed",
+      steps: [
+        "Recognize: Unexplained Hgb drop or hemolysis 2–14 days after transfusion",
+        "Send STAT: Direct Antiglobulin Test (DAT/Coombs) — positive confirms diagnosis",
+        "Antibody identification panel — identify offending alloantibody (e.g., anti-Jka, anti-E, anti-c, anti-K)",
+        "Send: LDH (↑), haptoglobin (↓), indirect bilirubin (↑), reticulocyte count",
+        "Peripheral smear: spherocytes, polychromasia",
+        "Notify blood bank IMMEDIATELY — all future crossmatches must avoid implicated antigen",
+        "Supportive care: Transfuse ONLY antigen-negative, crossmatch-compatible RBCs if clinically indicated",
+        "Monitor renal function — hemoglobinuria can cause AKI; maintain UOP >0.5 mL/kg/hr",
+        "Avoid unnecessary transfusions — each new exposure increases alloimmunization risk",
+        "Document in patient's permanent transfusion record + allergy list",
+      ],
+    },
   ];
 
   const colorMap: Record<string, { border: string; bg: string; text: string; badge: string }> = {
@@ -546,6 +564,12 @@ const TransfusionReactionProtocol: React.FC = () => {
       bg: "bg-teal-50/60 dark:bg-teal-950/20",
       text: "text-teal-800 dark:text-teal-300",
       badge: "bg-teal-600 text-white",
+    },
+    rose: {
+      border: "border-rose-400 dark:border-rose-600",
+      bg: "bg-rose-50/60 dark:bg-rose-950/20",
+      text: "text-rose-800 dark:text-rose-300",
+      badge: "bg-rose-600 text-white",
     },
   };
 

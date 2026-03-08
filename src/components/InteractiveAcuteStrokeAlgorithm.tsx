@@ -464,6 +464,52 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
               </div>
             </div>
 
+                {/* 3-6-24 Rule for LVO Thrombectomy Screening */}
+                <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-400 dark:border-amber-600 rounded-lg">
+                  <h4 className="font-bold text-amber-800 dark:text-amber-300 mb-3 flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    The 3-6-24 Rule — LVO Thrombectomy Screening
+                    <Badge className="bg-amber-600 text-white text-xs">SIMPLIFIED</Badge>
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    A simplified stroke-screening framework for acute anterior circulation large vessel occlusion (LVO) to rapidly identify patients eligible for mechanical thrombectomy.
+                  </p>
+
+                  <div className="grid grid-cols-3 gap-3 mb-4">
+                    <div className="p-3 rounded-lg border-2 border-amber-300 dark:border-amber-700 bg-amber-100/60 dark:bg-amber-950/30 text-center">
+                      <p className="text-3xl font-black text-amber-700 dark:text-amber-300">3</p>
+                      <p className="text-xs font-bold mt-1">ASPECTS ≥ 3</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Infarct core size</p>
+                    </div>
+                    <div className="p-3 rounded-lg border-2 border-orange-300 dark:border-orange-700 bg-orange-100/60 dark:bg-orange-950/30 text-center">
+                      <p className="text-3xl font-black text-orange-700 dark:text-orange-300">6</p>
+                      <p className="text-xs font-bold mt-1">NIHSS ≥ 6</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Stroke severity</p>
+                    </div>
+                    <div className="p-3 rounded-lg border-2 border-red-300 dark:border-red-700 bg-red-100/60 dark:bg-red-950/30 text-center">
+                      <p className="text-3xl font-black text-red-700 dark:text-red-300">24</p>
+                      <p className="text-xs font-bold mt-1">Within 24 hrs</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Time from onset</p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-muted/50 border text-sm space-y-2">
+                    <p className="font-semibold">How to apply:</p>
+                    <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1">
+                      <li><strong>ASPECTS ≥ 3:</strong> CT/CTA demonstrates salvageable tissue (not massive established infarct)</li>
+                      <li><strong>NIHSS ≥ 6:</strong> Clinical deficit severe enough to warrant intervention (correlates with LVO probability)</li>
+                      <li><strong>≤ 24 hours:</strong> Within the expanded thrombectomy time window (per DAWN/DEFUSE 3 era and beyond)</li>
+                    </ul>
+                    <div className="mt-2 p-2 rounded bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 text-xs">
+                      <p className="font-bold text-amber-800 dark:text-amber-300">⚡ Quick screen: If ALL three criteria are met → activate thrombectomy pathway and obtain advanced imaging (CTA/CTP)</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 p-2 rounded bg-muted/30 border text-[10px] text-muted-foreground">
+                    <strong>Note:</strong> This is a screening heuristic for rapid triage. Final EVT eligibility requires CTA confirmation of LVO, assessment of premorbid function (mRS), and advanced perfusion imaging in extended windows. Always follow institutional protocols.
+                  </div>
+                </div>
+
                 {/* EVT Eligibility Algorithm */}
                 <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-300 dark:border-green-700 rounded-lg">
                   <h4 className="font-bold text-green-800 dark:text-green-300 mb-3 flex items-center gap-2">
