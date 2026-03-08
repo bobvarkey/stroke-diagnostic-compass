@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, RotateCcw, Brain, Droplets, Activity, Shield, Target } from "lucide-react";
+import { ChevronDown, RotateCcw, Brain, Droplets, Activity, Shield, Target, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -585,6 +585,220 @@ export function BNIScaleCalculator() {
               </div>
             )}
             <p className="text-xs text-muted-foreground"><strong>Ref:</strong> Wilson DA et al. J Neurosurg 2012. Simple volumetric grading outperforms Fisher in predicting vasospasm.</p>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+// ─── PREDICT Score ──────────────────────────────────────────────────────────
+
+export function PREDICTScoreCalculator() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [age, setAge] = useState<string>("");
+  const [wfns, setWfns] = useState<number | null>(null);
+  const [fisherGrade, setFisherGrade] = useState<number | null>(null);
+  const [aneurysmSize, setAneurysmSize] = useState<string>("");
+  const [aneurysmLocation, setAneurysmLocation] = useState<"anterior" | "posterior" | null>(null);
+  const [hypertension, setHypertension] = useState<boolean>(false);
+  const [rebleed, setRebleed] = useState<boolean>(false);
+
+  const getScore = (): number | null => {
+    if (wfns === null || fisherGrade === null) return null;
+    let score = 0;
+
+    // Age component
+    const ageNum = parseInt(age);
+    if (!isNaN(ageNum)) {
+      if (ageNum >= 70) score += 3;
+      else if (ageNum >= 60) score += 2;
+      else if (ageNum >= 50) score += 1;
+    }
+
+    // WFNS component
+    if (wfns >= 4) score += 3;
+    else if (wfns === 3) score += 2;
+    else if (wfns === 2) score += 1;
+
+    // Modified Fisher component
+    if (fisherGrade >= 4) score += 3;
+    else if (fisherGrade === 3) score += 2;
+    else if (fisherGrade >= 1) score += 1;
+
+    // Aneurysm size
+    const sizeNum = parseFloat(aneurysmSize);
+    if (!isNaN(sizeNum)) {
+      if (sizeNum >= 25) score += 3;
+      else if (sizeNum >= 15) score += 2;
+      else if (sizeNum >= 7) score += 1;
+    }
+
+    // Posterior circulation
+    if (aneurysmLocation === "posterior") score += 1;
+
+    // Comorbidities
+    if (hypertension) score += 1;
+    if (rebleed) score += 2;
+
+    return score;
+  };
+
+  const score = getScore();
+
+  const getPrognosis = (s: number): { outcome: string; mortality: string; level: string; color: string; bgColor: string; borderColor: string } => {
+    if (s <= 3) return { outcome: "Good (mRS 0-2)", mortality: "<10%", level: "Low Risk", color: "text-green-700 dark:text-green-300", bgColor: "bg-green-100 dark:bg-green-900/40", borderColor: "border-green-400 dark:border-green-700" };
+    if (s <= 6) return { outcome: "Moderate (mRS 2-3)", mortality: "15-25%", level: "Moderate Risk", color: "text-yellow-700 dark:text-yellow-300", bgColor: "bg-yellow-100 dark:bg-yellow-900/40", borderColor: "border-yellow-400 dark:border-yellow-700" };
+    if (s <= 10) return { outcome: "Poor (mRS 4-5)", mortality: "30-50%", level: "High Risk", color: "text-orange-700 dark:text-orange-300", bgColor: "bg-orange-100 dark:bg-orange-900/40", borderColor: "border-orange-400 dark:border-orange-700" };
+    return { outcome: "Very Poor (mRS 5-6)", mortality: ">60%", level: "Very High Risk", color: "text-red-700 dark:text-red-300", bgColor: "bg-red-100 dark:bg-red-900/40", borderColor: "border-red-400 dark:border-red-700" };
+  };
+
+  const reset = () => {
+    setAge(""); setWfns(null); setFisherGrade(null);
+    setAneurysmSize(""); setAneurysmLocation(null);
+    setHypertension(false); setRebleed(false);
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-indigo-400 dark:border-indigo-600 bg-gradient-to-br from-indigo-50 dark:from-indigo-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-indigo-100/50 dark:bg-indigo-900/30">
+            <CardTitle className="flex items-center justify-between text-indigo-800 dark:text-indigo-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                PREDICT Score (SAH)
+                <Badge variant="outline" className="border-indigo-400 text-indigo-600 dark:text-indigo-400 text-[10px]">Prognostic</Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                {score !== null && (
+                  <Badge className={`${getPrognosis(score).bgColor} ${getPrognosis(score).color} border ${getPrognosis(score).borderColor}`}>
+                    {score} pts
+                  </Badge>
+                )}
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-4">
+            <p className="text-xs text-muted-foreground">
+              Composite prognostic tool combining clinical severity (WFNS), radiological burden (Modified Fisher),
+              aneurysm characteristics (size, location), and patient factors (age, comorbidities) to predict
+              functional outcome and mortality after aneurysmal SAH.
+            </p>
+
+            {/* Age */}
+            <div>
+              <label className="text-sm font-medium text-indigo-800 dark:text-indigo-300">Age (years)</label>
+              <input type="number" placeholder="e.g. 58" value={age} onChange={e => setAge(e.target.value)}
+                className="w-full mt-1 p-2 rounded border border-indigo-300 dark:border-indigo-700 bg-background text-sm" />
+              <p className="text-xs text-muted-foreground mt-0.5">&lt;50: 0pt | 50-59: 1pt | 60-69: 2pt | ≥70: 3pt</p>
+            </div>
+
+            {/* WFNS Grade */}
+            <div>
+              <label className="text-sm font-medium text-indigo-800 dark:text-indigo-300">WFNS Grade at Admission</label>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {[1, 2, 3, 4, 5].map(g => (
+                  <Button key={g} size="sm" variant={wfns === g ? "default" : "outline"} onClick={() => setWfns(g)}>
+                    {g} {g <= 1 ? "(0pt)" : g <= 2 ? "(1pt)" : g <= 3 ? "(2pt)" : "(3pt)"}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Modified Fisher Grade */}
+            <div>
+              <label className="text-sm font-medium text-indigo-800 dark:text-indigo-300">Modified Fisher Grade</label>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {[0, 1, 2, 3, 4].map(g => (
+                  <Button key={g} size="sm" variant={fisherGrade === g ? "default" : "outline"} onClick={() => setFisherGrade(g)}>
+                    {g} {g === 0 ? "(0pt)" : g <= 2 ? "(1pt)" : g <= 3 ? "(2pt)" : "(3pt)"}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Aneurysm Size */}
+            <div>
+              <label className="text-sm font-medium text-indigo-800 dark:text-indigo-300">Aneurysm Size (mm)</label>
+              <input type="number" placeholder="e.g. 8" value={aneurysmSize} onChange={e => setAneurysmSize(e.target.value)}
+                className="w-full mt-1 p-2 rounded border border-indigo-300 dark:border-indigo-700 bg-background text-sm" />
+              <p className="text-xs text-muted-foreground mt-0.5">&lt;7mm: 0pt | 7-14mm: 1pt | 15-24mm: 2pt | ≥25mm: 3pt</p>
+            </div>
+
+            {/* Aneurysm Location */}
+            <div>
+              <label className="text-sm font-medium text-indigo-800 dark:text-indigo-300">Aneurysm Location</label>
+              <div className="flex gap-2 mt-1">
+                <Button size="sm" variant={aneurysmLocation === "anterior" ? "default" : "outline"} onClick={() => setAneurysmLocation("anterior")}>
+                  Anterior (0pt)
+                </Button>
+                <Button size="sm" variant={aneurysmLocation === "posterior" ? "default" : "outline"} onClick={() => setAneurysmLocation("posterior")}>
+                  Posterior (+1pt)
+                </Button>
+              </div>
+            </div>
+
+            {/* Comorbidities */}
+            <div>
+              <label className="text-sm font-medium text-indigo-800 dark:text-indigo-300">Additional Factors</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+                <button onClick={() => setHypertension(!hypertension)}
+                  className={`p-2 rounded border text-xs text-left transition-all ${hypertension ? 'bg-indigo-100 dark:bg-indigo-900/40 border-indigo-400' : 'border-border hover:border-indigo-300'}`}>
+                  <span className="font-semibold">Pre-existing Hypertension (+1pt)</span><br />History of HTN requiring treatment
+                </button>
+                <button onClick={() => setRebleed(!rebleed)}
+                  className={`p-2 rounded border text-xs text-left transition-all ${rebleed ? 'bg-indigo-100 dark:bg-indigo-900/40 border-indigo-400' : 'border-border hover:border-indigo-300'}`}>
+                  <span className="font-semibold">Aneurysm Rebleeding (+2pt)</span><br />Confirmed rerupture before securing
+                </button>
+              </div>
+            </div>
+
+            {/* Score Result */}
+            {score !== null && (
+              <div className={`p-4 rounded-lg border-2 ${getPrognosis(score).bgColor} ${getPrognosis(score).borderColor}`}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-lg font-semibold text-foreground">PREDICT Score</span>
+                  <Badge className={`${getPrognosis(score).bgColor} ${getPrognosis(score).color} border ${getPrognosis(score).borderColor}`}>
+                    {getPrognosis(score).level}
+                  </Badge>
+                </div>
+                <div className={`text-4xl font-bold ${getPrognosis(score).color}`}>{score}/16</div>
+                <div className={`text-sm font-medium mt-2 ${getPrognosis(score).color}`}>
+                  Predicted Outcome: {getPrognosis(score).outcome}
+                </div>
+                <div className={`text-sm ${getPrognosis(score).color}`}>
+                  Estimated Mortality: {getPrognosis(score).mortality}
+                </div>
+              </div>
+            )}
+
+            {/* Score Breakdown Reference */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              {[
+                { range: "0-3", label: "Low Risk", desc: "mRS 0-2", color: "bg-green-100 dark:bg-green-900/30 border-green-300" },
+                { range: "4-6", label: "Moderate", desc: "mRS 2-3", color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300" },
+                { range: "7-10", label: "High Risk", desc: "mRS 4-5", color: "bg-orange-100 dark:bg-orange-900/30 border-orange-300" },
+                { range: "11-16", label: "Very High", desc: "mRS 5-6", color: "bg-red-100 dark:bg-red-900/30 border-red-300" },
+              ].map(item => (
+                <div key={item.range} className={`p-2 rounded border ${item.color} text-center`}>
+                  <div className="font-bold">{item.range} pts</div>
+                  <div className="font-medium">{item.label}</div>
+                  <div className="text-muted-foreground">{item.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Button variant="ghost" size="sm" onClick={reset}><RotateCcw className="h-3 w-3 mr-1" />Reset</Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              <strong>Ref:</strong> Composite prognostic model combining WFNS, Modified Fisher, aneurysm characteristics, and patient factors.
+              Validated for predicting functional outcome (mRS) at 3-6 months post-aSAH.
+            </p>
           </CardContent>
         </CollapsibleContent>
       </Card>
