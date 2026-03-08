@@ -771,14 +771,27 @@ export default function SubarachnoidHemorrhage() {
         <p className="text-sm text-red-700 dark:text-red-400">
           SAH accounts for ~5% of strokes but 25% of stroke-related deaths. 85% are aneurysmal. 
           Rapid diagnosis, early aneurysm securing, and vigilant complication monitoring are critical.
-          Use the interactive calculators in the ICH tab for Hunt & Hess, WFNS, and Fisher scoring.
         </p>
       </div>
 
       <SAHDiagnosticAlgorithm />
       <SAHTreatmentAlgorithm />
       <SAHComplicationsManagement />
-      <SAHGradingSummary />
+
+      {/* Clinical Severity Scales */}
+      <SAHWFNSCalculator />
+      <SAHHuntHessCalculator />
+      <SAHScoreCalculator />
+
+      {/* Radiological Scales */}
+      <FisherScaleCalculator />
+      <HijdraScoreCalculator />
+
+      {/* Prognostic & DCI Prediction */}
+      <VasogradeCalculator />
+      <SEBESCalculator />
+      <BNIScaleCalculator />
+
       <SAHTimeline />
     </div>
   );
