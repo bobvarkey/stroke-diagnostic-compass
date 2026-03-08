@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
@@ -41,6 +41,7 @@ import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
+import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
@@ -5643,41 +5644,30 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-5 h-14 mb-5 glass-strong rounded-xl p-1">
-          <TabsTrigger 
-            value="ischemic" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+        <TabsList className="hidden sm:grid w-full grid-cols-6 h-14 mb-5 glass-strong rounded-xl p-1">
+          <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Zap className="h-4 w-4 shrink-0" />
-            Ischemic Stroke
+            Ischemic
           </TabsTrigger>
-          <TabsTrigger 
-            value="hemorrhagic" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="hemorrhagic" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Droplets className="h-4 w-4 shrink-0" />
             ICH
           </TabsTrigger>
-          <TabsTrigger 
-            value="post-ivt" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="post-ivt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             Post-IVT
           </TabsTrigger>
-          <TabsTrigger 
-            value="cvt" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Brain className="h-4 w-4 shrink-0" />
             CVT
           </TabsTrigger>
-          <TabsTrigger 
-            value="sah" 
-            className="flex items-center gap-1 text-sm font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 rounded-lg transition-all"
-          >
+          <TabsTrigger value="sah" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Droplets className="h-4 w-4 shrink-0" />
             SAH
+          </TabsTrigger>
+          <TabsTrigger value="sdh" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+            <Layers className="h-4 w-4 shrink-0" />
+            SDH
           </TabsTrigger>
         </TabsList>
 
