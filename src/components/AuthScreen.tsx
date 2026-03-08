@@ -56,25 +56,30 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4 relative overflow-hidden">
+      {/* Background orbs */}
+      <div className="absolute w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px] -top-40 -right-40 animate-glow" />
+      <div className="absolute w-[400px] h-[400px] rounded-full bg-accent-purple/20 blur-[100px] -bottom-32 -left-32 animate-glow" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute w-[300px] h-[300px] rounded-full bg-accent-teal/15 blur-[80px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-glow" style={{ animationDelay: '3s' }} />
+
       {/* Background grid effect */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
       
       <div className="relative w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex flex-col items-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mb-6 shadow-lg shadow-red-500/30">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent-purple flex items-center justify-center mb-6 shadow-lg shadow-primary/30">
             <Brain className="h-10 w-10 text-white" />
           </div>
           <h1 className="text-3xl font-black tracking-wider text-white uppercase">
-            Stroke<span className="text-red-500">Suite</span> ID
+            Stroke<span className="text-primary">Suite</span> ID
           </h1>
           <p className="text-slate-500 text-sm tracking-[0.3em] uppercase mt-2">
             Clinical Decision Support
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 glass-strong rounded-2xl p-6">
           {/* Credential Name (Optional) */}
           <div className="space-y-2">
             <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
@@ -89,7 +94,7 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
                 placeholder="Enter your name"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="h-14 pl-12 bg-slate-900/50 border-2 border-slate-700 focus:border-red-500 rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide"
+                className="h-14 pl-12 bg-slate-800/50 border-2 border-slate-600/50 focus:border-primary rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide backdrop-blur-sm"
                 disabled={loading}
               />
             </div>
@@ -109,8 +114,8 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
                   className={`
                     px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200
                     ${selectedRole === role.id 
-                      ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' 
-                      : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-slate-300 border border-slate-700'
+                      ? 'bg-gradient-to-r from-primary to-accent-purple text-white shadow-lg shadow-primary/30' 
+                      : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-slate-300 border border-slate-600/50 backdrop-blur-sm'
                     }
                   `}
                   disabled={loading}
@@ -125,7 +130,7 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-14 bg-white hover:bg-slate-100 text-slate-900 font-bold text-lg tracking-wide rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-white/20"
+            className="w-full h-14 bg-gradient-to-r from-primary to-accent-purple hover:opacity-90 text-white font-bold text-lg tracking-wide rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -162,7 +167,7 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
               type="button"
               variant="outline"
               onClick={onEnterDemoMode}
-              className="w-full h-12 border-2 border-amber-500/50 hover:border-amber-500 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 font-medium tracking-wide rounded-xl transition-all duration-200"
+              className="w-full h-12 border-2 border-accent-teal/50 hover:border-accent-teal text-emerald-400 hover:text-emerald-300 hover:bg-accent-teal/10 font-medium tracking-wide rounded-xl transition-all duration-200"
             >
               <Play className="h-4 w-4 mr-2" />
               Try Demo Mode

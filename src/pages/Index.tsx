@@ -162,8 +162,10 @@ const Index = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div className="bg-orb bg-orb-1" />
+        <div className="bg-orb bg-orb-2" />
+        <div className="text-center relative z-10 glass-strong rounded-2xl p-8">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading...</p>
         </div>
@@ -184,26 +186,31 @@ const Index = () => {
   // Show main workup interface with selected patient
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="min-h-screen flex w-full bg-background">
+      {/* Background orbs for glassmorphic effect */}
+      <div className="bg-orb bg-orb-1" />
+      <div className="bg-orb bg-orb-2" />
+      <div className="bg-orb bg-orb-3" />
+
+      <div className="min-h-screen flex w-full relative z-10">
         <AppSidebar activeSection={activeSection} onSectionClick={setActiveSection} />
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-2 sm:px-4">
+          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b px-2 sm:px-4 glass-strong safe-top">
             <SidebarTrigger className="-ml-1" />
             
             {/* Patient info */}
-            <div className="flex items-center gap-2 ml-2">
-              <Badge variant="outline" className="font-mono">
+            <div className="flex items-center gap-1.5 sm:gap-2 ml-1 sm:ml-2 min-w-0">
+              <Badge variant="outline" className="font-mono text-xs shrink-0 bg-primary/5 border-primary/20">
                 {selectedPatient?.patient_id}
               </Badge>
               {selectedPatient?.name && (
-                <span className="text-sm text-muted-foreground hidden sm:inline">
+                <span className="text-sm text-muted-foreground hidden sm:inline truncate">
                   {selectedPatient.name}
                 </span>
               )}
               {isDemoMode && (
-                <Badge variant="secondary" className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-amber-300">
+                <Badge variant="secondary" className="bg-accent-amber/15 text-amber-700 dark:text-amber-300 border-amber-300/30 text-xs shrink-0">
                   <Play className="h-3 w-3 mr-1" />
-                  Demo Mode
+                  <span className="hidden sm:inline">Demo</span>
                 </Badge>
               )}
             </div>
@@ -211,14 +218,14 @@ const Index = () => {
             <div className="flex-1" />
             
             {/* User info and actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {!isDemoMode && (
-                <span className="text-xs text-muted-foreground hidden sm:inline">
+                <span className="text-xs text-muted-foreground hidden md:inline">
                   {profile?.display_name || profile?.username}
                 </span>
               )}
               {isAdmin && !isDemoMode && (
-                <Badge variant="secondary" className="flex items-center gap-1 hidden sm:flex">
+                <Badge variant="secondary" className="items-center gap-1 hidden md:flex text-xs">
                   <Shield className="h-3 w-3" />
                   Admin
                 </Badge>
@@ -227,17 +234,17 @@ const Index = () => {
                 variant="ghost" 
                 size="sm" 
                 onClick={handleReturnToPatientList}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 h-9 px-2 sm:px-3"
               >
                 <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">All Cases</span>
+                <span className="hidden sm:inline text-xs">Cases</span>
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleSignOut}>
+              <Button variant="ghost" size="icon" onClick={handleSignOut} className="h-9 w-9">
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
           </header>
-          <main className="flex-1">
+          <main className="flex-1 relative">
             <StrokeWorkupChecklist 
               patient={selectedPatient}
               onPatientDataChange={setPatientData}
@@ -251,7 +258,7 @@ const Index = () => {
         <Button
           onClick={scrollToTop}
           size="icon"
-          className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg h-12 w-12"
+          className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg h-12 w-12 bg-primary/90 backdrop-blur-sm hover:bg-primary safe-bottom"
         >
           <ChevronUp className="h-5 w-5" />
         </Button>

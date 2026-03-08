@@ -237,14 +237,16 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
-      <SidebarHeader className="border-b p-4">
+    <Sidebar collapsible="icon" className="border-r glass-subtle">
+      <SidebarHeader className="border-b p-3 sm:p-4">
         <div className="flex items-center gap-2">
-          <Stethoscope className="h-6 w-6 text-primary" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent-purple flex items-center justify-center">
+            <Stethoscope className="h-4 w-4 text-primary-foreground" />
+          </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-bold text-sm">Stroke Workup</span>
-              <span className="text-xs text-muted-foreground">Quick Navigation</span>
+              <span className="font-bold text-sm gradient-text">Stroke Workup</span>
+              <span className="text-[10px] text-muted-foreground">Quick Navigation</span>
             </div>
           )}
         </div>
@@ -256,9 +258,9 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
             <Collapsible key={group.title} defaultOpen={group.defaultOpen} className="group/collapsible">
               <SidebarGroup>
                 <CollapsibleTrigger asChild>
-                  <SidebarGroupLabel className="cursor-pointer hover:bg-accent/50 rounded-md transition-colors flex items-center justify-between pr-2">
+                  <SidebarGroupLabel className="cursor-pointer hover:bg-accent/50 rounded-md transition-colors flex items-center justify-between pr-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground">
                     <span>{group.title}</span>
-                    <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    <ChevronDown className="h-3.5 w-3.5 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                   </SidebarGroupLabel>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -271,12 +273,12 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
                             isActive={activeSection === item.id}
                             tooltip={item.label}
                             className={cn(
-                              "transition-colors min-h-[44px] md:min-h-0",
-                              activeSection === item.id && "bg-primary/10 text-primary font-medium"
+                              "transition-all min-h-[44px] md:min-h-0 rounded-lg",
+                              activeSection === item.id && "bg-primary/10 text-primary font-medium shadow-sm"
                             )}
                           >
                             {item.icon}
-                            <span className="truncate">{item.label}</span>
+                            <span className="truncate text-sm">{item.label}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
@@ -291,8 +293,8 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
 
       <SidebarFooter className="border-t p-2">
         {!collapsed && (
-          <div className="text-xs text-muted-foreground text-center">
-            AHA 2026 Guidelines
+          <div className="text-xs text-muted-foreground text-center font-medium">
+            <span className="gradient-text">AHA 2026</span> Guidelines
           </div>
         )}
       </SidebarFooter>

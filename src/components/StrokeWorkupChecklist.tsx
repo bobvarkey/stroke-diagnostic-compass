@@ -5623,7 +5623,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 space-y-5">
       {/* Header with Theme Toggle */}
       <div className="relative text-center mb-4">
         {/* Theme Toggle - Fixed Position */}
@@ -5631,47 +5631,47 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <ThemeToggle />
         </div>
         
-        <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2 leading-relaxed">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text mb-2 leading-relaxed">
           Acute Stroke Workup Checklist
         </h1>
-        <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+        <p className="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
       </div>
 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-14 mb-6">
+        <TabsList className="grid w-full grid-cols-4 h-12 sm:h-14 mb-5 glass-strong rounded-xl p-1">
           <TabsTrigger 
             value="ischemic" 
-            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white px-1 sm:px-3"
+            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
           >
-            <Zap className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
+            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
             <span className="hidden sm:inline">Ischemic Stroke</span>
             <span className="sm:hidden">Ischemic</span>
           </TabsTrigger>
           <TabsTrigger 
             value="hemorrhagic" 
-            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white px-1 sm:px-3"
+            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
           >
-            <Droplets className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
-            <span className="hidden sm:inline">Intracerebral Hemorrhage</span>
+            <Droplets className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden sm:inline">ICH</span>
             <span className="sm:hidden">ICH</span>
           </TabsTrigger>
           <TabsTrigger 
             value="post-ivt" 
-            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white px-1 sm:px-3"
+            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
           >
-            <AlertTriangle className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
-            <span className="hidden sm:inline">Post-IVT Hemorrhage</span>
+            <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden sm:inline">Post-IVT</span>
             <span className="sm:hidden">Post-IVT</span>
           </TabsTrigger>
           <TabsTrigger 
             value="cvt" 
-            className="flex items-center gap-1 text-[10px] sm:text-base font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white px-1 sm:px-3"
+            className="flex items-center gap-1 text-[10px] sm:text-sm font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-1 sm:px-3 rounded-lg transition-all"
           >
-            <Brain className="h-3.5 w-3.5 sm:h-5 sm:w-5 shrink-0" />
-            <span className="hidden sm:inline">Cerebral Venous Thrombosis</span>
+            <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden sm:inline">CVT</span>
             <span className="sm:hidden">CVT</span>
           </TabsTrigger>
         </TabsList>
