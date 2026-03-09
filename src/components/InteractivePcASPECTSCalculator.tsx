@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, RotateCcw, ChevronDown } from "lucide-react";
+import { Brain, RotateCcw, ChevronDown, Image } from "lucide-react";
+import pcAspectsReferenceDiagram from "@/assets/pc-aspects-reference-diagram.jpeg";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface PcASPECTSRegion {
