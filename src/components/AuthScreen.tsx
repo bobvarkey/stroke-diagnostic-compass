@@ -2,17 +2,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
-import { Brain, User, ArrowRight, Play } from 'lucide-react';
+import { Brain, User, Lock, ArrowRight, Play } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-const clinicalRoles = [
-  { id: 'neurologist', label: 'Neurologist' },
-  { id: 'resident', label: 'Resident' },
-  { id: 'stroke_nurse', label: 'Stroke Nurse' },
-  { id: 'er_physician', label: 'ER Physician' },
-  { id: 'radiologist', label: 'Radiologist' },
-  { id: 'pharmacist', label: 'Pharmacist' },
-];
 
 interface AuthScreenProps {
   onEnterDemoMode?: () => void;
@@ -21,37 +12,70 @@ interface AuthScreenProps {
 
 export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
   const [username, setUsername] = useState('');
-  const [selectedRole, setSelectedRole] = useState('neurologist');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
+  const validatePassword = (pwd: string): string | null => {
+    if (pwd.length < 8) return 'Password must be at least 8 characters';
+    if (!/[A-Z]/.test(pwd)) return 'Password must contain an uppercase letter';
+    if (!/[a-z]/.test(pwd)) return 'Password must contain a lowercase letter';
+    if (!/[0-9]/.test(pwd)) return 'Password must contain a number';
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!username.trim()) {
+      toast({ title: 'Username required', variant: 'destructive' });
+      return;
+    }
+
+    if (username.trim().length > 50) {
+      toast({ title: 'Username must be under 50 characters', variant: 'destructive' });
+      return;
+    }
+
+    if (!password) {
+      toast({ title: 'Password required', variant: 'destructive' });
+      return;
+    }
+
     setLoading(true);
-    
-    // Generate a display name or use 'Anonymous'
-    const displayName = username.trim() || 'Anonymous';
-    // Generate a unique identifier for the session
-    const uniqueId = `${displayName.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`;
-    // Use a default password for simplified auth
-    const defaultPassword = 'strokesuite2024';
-    
-    // Try to create account and sign in
-    const signUpResult = await signUp(uniqueId, defaultPassword, displayName);
-    if (signUpResult.error) {
-      // If signup fails (maybe rate limited), try signing in with a generic session
-      const signInResult = await signIn(uniqueId, defaultPassword);
-      if (signInResult.error) {
-        toast({ title: 'Session Started', description: `Welcome, ${displayName}` });
+
+    if (isSignUp) {
+      const pwdError = validatePassword(password);
+      if (pwdError) {
+        toast({ title: 'Weak password', description: pwdError, variant: 'destructive' });
+        setLoading(false);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        toast({ title: 'Passwords do not match', variant: 'destructive' });
+        setLoading(false);
+        return;
+      }
+
+      const result = await signUp(username.trim(), password, username.trim());
+      if (result.error) {
+        toast({ title: 'Sign up failed', description: result.error, variant: 'destructive' });
       } else {
-        toast({ title: 'Session Established', description: `Welcome back, ${displayName}` });
+        toast({ title: 'Account created!', description: 'You are now signed in.' });
       }
     } else {
-      toast({ title: 'Welcome!', description: `Session established for ${displayName}` });
+      const result = await signIn(username.trim(), password);
+      if (result.error) {
+        toast({ title: 'Sign in failed', description: result.error, variant: 'destructive' });
+      } else {
+        toast({ title: 'Welcome!', description: `Signed in as ${username}` });
+      }
     }
-    
+
     setLoading(false);
   };
 
@@ -80,10 +104,10 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 glass-strong rounded-2xl p-6">
-          {/* Credential Name (Optional) */}
+          {/* Username */}
           <div className="space-y-2">
             <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
-              Your Name <span className="text-slate-600">(optional)</span>
+              Username
             </label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
@@ -91,40 +115,63 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
               </div>
               <Input
                 type="text"
-                placeholder="Enter your name"
+                placeholder="Enter your username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="h-14 pl-12 bg-slate-800/50 border-2 border-slate-600/50 focus:border-primary rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide backdrop-blur-sm"
                 disabled={loading}
+                required
+                maxLength={50}
               />
             </div>
           </div>
 
-          {/* Clinical Role Selection */}
-          <div className="space-y-3">
+          {/* Password */}
+          <div className="space-y-2">
             <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
-              Clinical Role
+              Password
             </label>
-            <div className="grid grid-cols-2 gap-2">
-              {clinicalRoles.map((role) => (
-                <button
-                  key={role.id}
-                  type="button"
-                  onClick={() => setSelectedRole(role.id)}
-                  className={`
-                    px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200
-                    ${selectedRole === role.id 
-                      ? 'bg-gradient-to-r from-primary to-accent-purple text-white shadow-lg shadow-primary/30' 
-                      : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-slate-300 border border-slate-600/50 backdrop-blur-sm'
-                    }
-                  `}
-                  disabled={loading}
-                >
-                  {role.label}
-                </button>
-              ))}
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                <Lock className="h-5 w-5 text-slate-500" />
+              </div>
+              <Input
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-14 pl-12 bg-slate-800/50 border-2 border-slate-600/50 focus:border-primary rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide backdrop-blur-sm"
+                disabled={loading}
+                required
+              />
             </div>
           </div>
+
+          {/* Confirm Password (sign up only) */}
+          {isSignUp && (
+            <div className="space-y-2">
+              <label className="text-slate-400 text-xs tracking-[0.2em] uppercase">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                  <Lock className="h-5 w-5 text-slate-500" />
+                </div>
+                <Input
+                  type="password"
+                  placeholder="Confirm password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="h-14 pl-12 bg-slate-800/50 border-2 border-slate-600/50 focus:border-primary rounded-xl text-white placeholder:text-slate-600 text-lg font-medium tracking-wide backdrop-blur-sm"
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <p className="text-slate-600 text-xs">
+                Min 8 chars, uppercase, lowercase, and a number
+              </p>
+            </div>
+          )}
 
           {/* Submit Button */}
           <Button
@@ -135,19 +182,27 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
             {loading ? (
               <span className="flex items-center gap-2">
                 <div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
-                Starting...
+                {isSignUp ? 'Creating Account...' : 'Signing In...'}
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Start Session
+                {isSignUp ? 'Create Account' : 'Sign In'}
                 <ArrowRight className="h-5 w-5" />
               </span>
             )}
           </Button>
 
-          <p className="text-center text-slate-600 text-xs">
-            Quick access — no registration required
-          </p>
+          {/* Toggle Sign Up/Sign In */}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => { setIsSignUp(!isSignUp); setPassword(''); setConfirmPassword(''); }}
+              className="text-slate-400 hover:text-white text-sm transition-colors"
+              disabled={loading}
+            >
+              {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+            </button>
+          </div>
 
           {/* Demo Mode Divider */}
           {onEnterDemoMode && (
