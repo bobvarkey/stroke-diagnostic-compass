@@ -92,9 +92,23 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
     });
   };
 
+  const MAX_DOCUMENT_LENGTH = 50000;
+  const MAX_NOTES_LENGTH = 5000;
+  const MAX_IMAGE_SIZE_MB = 10;
+
   const analyzeDocument = async () => {
     if (!documentText.trim() && uploadedImages.length === 0) {
       toast.error("Please enter text, upload a document, or add images first");
+      return;
+    }
+
+    if (documentText.length > MAX_DOCUMENT_LENGTH) {
+      toast.error(`Document text exceeds ${MAX_DOCUMENT_LENGTH} characters. Please shorten it.`);
+      return;
+    }
+
+    if (additionalNotes.length > MAX_NOTES_LENGTH) {
+      toast.error(`Additional notes exceed ${MAX_NOTES_LENGTH} characters.`);
       return;
     }
 
@@ -105,7 +119,13 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
       // If we have images, convert the first one to base64 for analysis
       let imageBase64: string | undefined;
       if (uploadedImages.length > 0) {
-        imageBase64 = await convertImageToBase64(uploadedImages[0].file);
+        const file = uploadedImages[0].file;
+        if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+          toast.error(`Image exceeds ${MAX_IMAGE_SIZE_MB}MB limit.`);
+          setIsAnalyzing(false);
+          return;
+        }
+        imageBase64 = await convertImageToBase64(file);
       }
 
       const { data, error } = await supabase.functions.invoke("analyze-document", {

@@ -49,6 +49,20 @@ serve(async (req) => {
       throw new Error('No image data provided');
     }
 
+    if (typeof imageBase64 !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Invalid image data format', labs: [] }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (imageBase64.length > 15_000_000) {
+      return new Response(
+        JSON.stringify({ error: 'Image exceeds size limit (max ~10MB)', labs: [] }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Use Gemini multimodal to extract lab values from image
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

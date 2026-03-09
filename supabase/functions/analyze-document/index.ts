@@ -37,7 +37,29 @@ serve(async (req) => {
       );
     }
 
-    const { documentText, additionalNotes, imageBase64, checkedTests, demographics, calculatedScores } = await req.json();
+    const body = await req.json();
+    const { documentText, additionalNotes, imageBase64, checkedTests, demographics, calculatedScores } = body;
+
+    // Server-side input validation
+    if (typeof documentText === 'string' && documentText.length > 50000) {
+      return new Response(
+        JSON.stringify({ error: 'Document text exceeds 50,000 character limit' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (typeof additionalNotes === 'string' && additionalNotes.length > 5000) {
+      return new Response(
+        JSON.stringify({ error: 'Additional notes exceed 5,000 character limit' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (imageBase64 && typeof imageBase64 === 'string' && imageBase64.length > 15_000_000) {
+      return new Response(
+        JSON.stringify({ error: 'Image exceeds size limit' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
