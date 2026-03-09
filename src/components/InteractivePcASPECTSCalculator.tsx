@@ -36,6 +36,7 @@ interface Props {
 export default function InteractivePcASPECTSCalculator({ onScoreChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [affectedRegions, setAffectedRegions] = useState<Set<string>>(new Set());
+  const [showReference, setShowReference] = useState(false);
 
   const totalDeducted = pcAspectsRegions
     .filter(r => affectedRegions.has(r.id))
