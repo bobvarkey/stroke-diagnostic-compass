@@ -54,6 +54,27 @@ serve(async (req) => {
 
     const { activationId, codeLevel, facilityId, nsaEnabled, nsaPhone, voiceMessage } = await req.json() as CallRequest;
 
+    // Server-side input validation
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (typeof voiceMessage === 'string' && voiceMessage.length > 500) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Voice message exceeds 500 character limit' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (typeof facilityId === 'string' && facilityId.length > 50) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Facility ID exceeds 50 character limit' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (nsaPhone && !phoneRegex.test(nsaPhone.replace(/[\s\-()]/g, ''))) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid NSA phone number format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const twilioAccountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
     const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN');
     const twilioPhoneNumber = Deno.env.get('TWILIO_PHONE_NUMBER');

@@ -136,12 +136,20 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
     return undefined;
   };
 
+  const MAX_LAB_IMAGE_SIZE_MB = 10;
+  const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      toast({ title: 'Invalid file', description: 'Please upload an image file', variant: 'destructive' });
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      toast({ title: 'Invalid file type', description: 'Please upload a JPEG, PNG, or WebP image', variant: 'destructive' });
+      return;
+    }
+
+    if (file.size > MAX_LAB_IMAGE_SIZE_MB * 1024 * 1024) {
+      toast({ title: 'File too large', description: `Image must be under ${MAX_LAB_IMAGE_SIZE_MB}MB`, variant: 'destructive' });
       return;
     }
 

@@ -356,6 +356,18 @@ export default function StrokeCodeSystem() {
   };
 
   const handleSaveSettings = async () => {
+    if (facilityId.trim().length > 50) {
+      toast({ title: "Facility ID must be under 50 characters", variant: "destructive" });
+      return;
+    }
+    if (nsaPhone.trim() && !isValidPhoneNumber(nsaPhone.trim().replace(/[\s\-()]/g, ''))) {
+      toast({ title: "Invalid NSA phone number", description: "Please use E.164 format", variant: "destructive" });
+      return;
+    }
+    if (voiceMessage1.trim().length > 500 || voiceMessage2.trim().length > 500) {
+      toast({ title: "Voice messages must be under 500 characters", variant: "destructive" });
+      return;
+    }
     try {
       if (settings) {
         await supabase
