@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, RotateCcw, ChevronDown } from "lucide-react";
+import { Brain, RotateCcw, ChevronDown, Image } from "lucide-react";
+import pcAspectsReferenceDiagram from "@/assets/pc-aspects-reference-diagram.jpeg";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface PcASPECTSRegion {
@@ -35,6 +36,7 @@ interface Props {
 export default function InteractivePcASPECTSCalculator({ onScoreChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [affectedRegions, setAffectedRegions] = useState<Set<string>>(new Set());
+  const [showReference, setShowReference] = useState(false);
 
   const totalDeducted = pcAspectsRegions
     .filter(r => affectedRegions.has(r.id))
@@ -451,6 +453,26 @@ export default function InteractivePcASPECTSCalculator({ onScoreChange }: Props)
                 Brainstem involvement (midbrain, pons) carries more weight (2 points each) due to clinical significance. 
                 DWI-MRI is preferred over CT for posterior fossa assessment due to artifact limitations.
               </p>
+            </div>
+
+            {/* Reference Diagram Toggle */}
+            <div className="mt-4">
+              <button
+                onClick={() => setShowReference(!showReference)}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-900/40 border border-teal-300 dark:border-teal-700 rounded-lg hover:bg-teal-200 dark:hover:bg-teal-900/60 transition-colors"
+              >
+                <Image className="h-4 w-4" />
+                {showReference ? "Hide" : "Show"} pc-ASPECTS Reference Diagram
+              </button>
+              {showReference && (
+                <div className="mt-3 rounded-lg overflow-hidden border border-teal-300 dark:border-teal-700">
+                  <img 
+                    src={pcAspectsReferenceDiagram} 
+                    alt="pc-ASPECTS posterior circulation scoring reference diagram showing midbrain, pons, thalamus, cerebellum, and PCA territory regions" 
+                    className="w-full h-auto"
+                  />
+                </div>
+              )}
             </div>
           </CardContent>
         </CollapsibleContent>
