@@ -26,18 +26,21 @@ export default function ThrombolyticDoseCalculator() {
   const weightNum = parseFloat(weight) || 0;
   const cappedWeight = Math.min(weightNum, 100); // Cap at 100kg for dosing
 
-  // Intra-arterial tPA dosing (CHOICE-2 trial based)
-  const iaTPADose = useMemo(() => {
-    // IA tPA is weight-independent per CHOICE-2 protocol
-    // Standard dose: 10mg max (up to 20mg in some protocols)
+  // Intra-arterial tPA dosing: 0.225 mg/kg (weight-based)
+  const iaTPADose = useMemo((): { dose: number; volume: number; maxDose: number } | null => {
+    if (weightNum < 30 || weightNum > 200) return null;
+    
+    // 0.225 mg/kg, capped at 20mg max
+    const calculatedDose = cappedWeight * 0.225;
+    const dose = Math.min(Math.round(calculatedDose * 10) / 10, 20);
+    const volume = Math.round(dose * 10) / 10; // 1 mg/mL concentration
+    
     return {
-      standardDose: 10, // mg (CHOICE-2 protocol)
-      maxDose: 20, // mg (some extended protocols)
-      concentration: "1 mg/mL",
-      infusionTime: "10-15 minutes",
-      technique: "Superselective microcatheter delivery distal to clot"
+      dose,
+      volume,
+      maxDose: 20
     };
-  }, []);
+  }, [weightNum, cappedWeight]);
 
   // Alteplase (tPA) dosing: 0.9 mg/kg, max 90mg, 10% bolus, 90% infusion over 60 min
   const alteplaseDose = useMemo((): DoseResult | null => {
