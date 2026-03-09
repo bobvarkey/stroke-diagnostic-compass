@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, RotateCcw, ChevronDown } from "lucide-react";
+import { Brain, RotateCcw, ChevronDown, Image } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import aspectsReferenceDiagram from "@/assets/aspects-reference-diagram.jpeg";
 
 interface ASPECTSRegion {
   id: string;
@@ -37,6 +38,7 @@ interface Props {
 
 export default function InteractiveASPECTSCalculator({ onScoreChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showReference, setShowReference] = useState(false);
   const [affectedRegions, setAffectedRegions] = useState<Set<string>>(new Set());
   const [activeLevel, setActiveLevel] = useState<"ganglionic" | "supraganglionic">("ganglionic");
 
@@ -292,6 +294,28 @@ export default function InteractiveASPECTSCalculator({ onScoreChange }: Props) {
                 For mechanical thrombectomy, ASPECTS ≥6 on CT is typically required. Recent trials (DAWN, DEFUSE 3) 
                 also incorporate perfusion imaging for extended window patients.
               </p>
+            </div>
+
+            {/* ASPECTS Reference Diagram */}
+            <div className="mt-4">
+              <button
+                onClick={() => setShowReference(!showReference)}
+                className="flex items-center gap-2 w-full py-2 px-3 bg-cyan-100 dark:bg-cyan-900/40 border border-cyan-200 dark:border-cyan-700 rounded-lg text-sm font-medium text-cyan-700 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-800/40 transition-colors"
+              >
+                <Image className="h-4 w-4" />
+                {showReference ? "Hide" : "Show"} ASPECTS Reference Diagram
+                <ChevronDown className={`h-4 w-4 ml-auto transition-transform ${showReference ? 'rotate-180' : ''}`} />
+              </button>
+              {showReference && (
+                <div className="mt-3 rounded-lg overflow-hidden border border-cyan-200 dark:border-cyan-700 shadow-md">
+                  <img
+                    src={aspectsReferenceDiagram}
+                    alt="ASPECTS scoring reference showing basal ganglia level (C, P, IC, I, M1, M2, M3) and supraganglionic level (M4, M5, M6) MCA territories on axial CT"
+                    className="w-full h-auto"
+                    loading="lazy"
+                  />
+                </div>
+              )}
             </div>
           </CardContent>
         </CollapsibleContent>
