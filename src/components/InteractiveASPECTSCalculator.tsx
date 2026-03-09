@@ -38,6 +38,7 @@ interface Props {
 
 export default function InteractiveASPECTSCalculator({ onScoreChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showReference, setShowReference] = useState(false);
   const [affectedRegions, setAffectedRegions] = useState<Set<string>>(new Set());
   const [activeLevel, setActiveLevel] = useState<"ganglionic" | "supraganglionic">("ganglionic");
 
