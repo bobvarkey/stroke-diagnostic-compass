@@ -279,7 +279,7 @@ export default function ThrombolyticDoseCalculator() {
             {/* Quick Protocol Summary */}
             <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800 text-xs">
               <p className="text-purple-700 dark:text-purple-400">
-                <strong>Quick:</strong> 10 mL at 1 mg/mL • 10-15 min infusion • Microcatheter distal to clot • Post-EVT for residual thrombus
+                <strong>Protocol:</strong> 0.225 mg/kg (max 20mg) • 1 mg/mL concentration • 10-15 min infusion • Microcatheter distal to clot
               </p>
             </div>
 
