@@ -274,9 +274,24 @@ export default function StrokeCodeSystem() {
     setActivating(false);
   };
 
+  const isValidPhoneNumber = (phone: string): boolean => {
+    return /^\+?[1-9]\d{1,14}$/.test(phone.replace(/[\s\-()]/g, ''));
+  };
+
   const handleSaveContact = async () => {
     if (!contactName.trim() || !contactPhone.trim()) {
       toast({ title: "Please fill in name and phone number", variant: "destructive" });
+      return;
+    }
+
+    if (contactName.trim().length > 100) {
+      toast({ title: "Name must be under 100 characters", variant: "destructive" });
+      return;
+    }
+
+    const sanitizedPhone = contactPhone.trim().replace(/[\s\-()]/g, '');
+    if (!isValidPhoneNumber(sanitizedPhone)) {
+      toast({ title: "Invalid phone number", description: "Please use E.164 format (e.g. +1234567890)", variant: "destructive" });
       return;
     }
 
