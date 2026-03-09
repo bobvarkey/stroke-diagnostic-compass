@@ -254,21 +254,27 @@ export default function ThrombolyticDoseCalculator() {
             )}
           </TabsContent>
 
-          {/* Intra-arterial tPA Tab */}
           <TabsContent value="ia_tpa" className="space-y-3">
-            {/* Quick Dosing Summary - Always visible */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="p-3 bg-purple-100 dark:bg-purple-900/40 rounded-lg text-center border-2 border-purple-400">
-                <Badge className="mb-1 bg-purple-600 text-[10px]">CHOICE-2</Badge>
-                <div className="text-2xl sm:text-3xl font-bold text-purple-700 dark:text-purple-300">10 mg</div>
-                <div className="text-[10px] sm:text-xs text-purple-600 dark:text-purple-400">Standard IA dose</div>
+            {/* Weight-Based Dose Result */}
+            {isValidWeight && iaTPADose ? (
+              <div className="p-4 bg-purple-100 dark:bg-purple-900/40 rounded-lg text-center border-2 border-purple-400">
+                <Badge className="mb-2 bg-purple-600">0.225 mg/kg</Badge>
+                <div className="text-4xl font-bold text-purple-700 dark:text-purple-300">
+                  {iaTPADose.dose} mg
+                </div>
+                <div className="text-sm text-purple-600 dark:text-purple-400 mt-1">
+                  = {iaTPADose.volume} mL at 1 mg/mL
+                </div>
+                <div className="text-xs text-purple-500 mt-2">
+                  Max dose: {iaTPADose.maxDose} mg • Infusion over 10-15 min
+                </div>
               </div>
-              <div className="p-3 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg text-center border-2 border-indigo-400">
-                <Badge className="mb-1 bg-indigo-600 text-[10px]">Extended</Badge>
-                <div className="text-2xl sm:text-3xl font-bold text-indigo-700 dark:text-indigo-300">15-20 mg</div>
-                <div className="text-[10px] sm:text-xs text-indigo-600 dark:text-indigo-400">Maximum dose</div>
+            ) : (
+              <div className="p-4 bg-muted/50 rounded-lg text-center text-muted-foreground">
+                <Calculator className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                Enter a valid weight (30-200 kg) to calculate IA tPA dose
               </div>
-            </div>
+            )}
 
             {/* Quick Protocol Summary */}
             <div className="p-2 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800 text-xs">
