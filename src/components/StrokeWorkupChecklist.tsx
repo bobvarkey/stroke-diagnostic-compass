@@ -5,7 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse } from "lucide-react";
+import SectionNavigator, { SectionItem } from "./SectionNavigator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
@@ -5673,6 +5674,35 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
         {/* Ischemic Stroke Tab Content */}
         <TabsContent value="ischemic" className="space-y-6">
+          {/* Section Navigator */}
+          <SectionNavigator 
+            title="Ischemic Stroke Modules"
+            sections={[
+              { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
+              { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
+              { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
+              { id: "thrombolytic-dose", label: "Thrombolytic Dosing", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
+              { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
+              { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
+              { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
+              { id: "vascular-anatomy", label: "Vascular Anatomy", icon: <Heart className="h-3.5 w-3.5 text-red-400" /> },
+              { id: "aspects-calculator", label: "ASPECTS Calculator", icon: <Calculator className="h-3.5 w-3.5 text-teal-500" /> },
+              { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
+              { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
+              { id: "prevent-score", label: "PREVENT Score", icon: <ShieldAlert className="h-3.5 w-3.5 text-emerald-500" /> },
+              { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
+              { id: "prime-tool", label: "PRIME Tool", icon: <Calculator className="h-3.5 w-3.5 text-violet-500" /> },
+              { id: "lipid-risk", label: "Lipid Risk", icon: <Pill className="h-3.5 w-3.5 text-yellow-500" /> },
+              { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
+              { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
+              { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" /> },
+              { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
+            ]}
+            onNavigateToSection={(id) => {
+              // Sections are already rendered, just scroll
+            }}
+          />
+
           {/* Demographics Form */}
           <DemographicsForm demographics={demographics} onDemographicsChange={setDemographics} />
 
@@ -6008,6 +6038,21 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
         {/* Intracerebral Hemorrhage Tab Content */}
         <TabsContent value="hemorrhagic" className="space-y-6">
+          {/* Section Navigator */}
+          <SectionNavigator 
+            title="ICH Modules"
+            sections={[
+              { id: "acute-ich", label: "Acute ICH Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
+              { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" /> },
+              { id: "func-score", label: "FUNC Score", icon: <BarChart3 className="h-3.5 w-3.5 text-blue-500" /> },
+              { id: "sah-grading", label: "SAH Grading Scales", icon: <Activity className="h-3.5 w-3.5 text-purple-500" /> },
+              { id: "fisher-scale", label: "Fisher Scale", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
+              { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
+              { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-teal-500" /> },
+            ]}
+            onNavigateToSection={() => {}}
+          />
+
           {/* Acute ICH Management */}
           <AcuteICHManagement />
 
@@ -6070,6 +6115,15 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
         {/* Post-IVT Hemorrhage Tab Content */}
         <TabsContent value="post-ivt" className="space-y-6">
+          {/* Section Navigator */}
+          <SectionNavigator 
+            title="Post IVT-ICH Modules"
+            sections={[
+              { id: "post-ivt-hemorrhage", label: "Hemorrhage Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
+            ]}
+            onNavigateToSection={() => {}}
+          />
+
           <LazySection id="post-ivt-hemorrhage">
             <PostThrombolysisICHManagement />
           </LazySection>
