@@ -6115,6 +6115,15 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
         {/* Post-IVT Hemorrhage Tab Content */}
         <TabsContent value="post-ivt" className="space-y-6">
+          {/* Section Navigator */}
+          <SectionNavigator 
+            title="Post IVT-ICH Modules"
+            sections={[
+              { id: "post-ivt-hemorrhage", label: "Hemorrhage Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
+            ]}
+            onNavigateToSection={() => {}}
+          />
+
           <LazySection id="post-ivt-hemorrhage">
             <PostThrombolysisICHManagement />
           </LazySection>
