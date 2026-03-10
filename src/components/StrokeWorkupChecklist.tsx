@@ -6038,6 +6038,21 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
         {/* Intracerebral Hemorrhage Tab Content */}
         <TabsContent value="hemorrhagic" className="space-y-6">
+          {/* Section Navigator */}
+          <SectionNavigator 
+            title="ICH Modules"
+            sections={[
+              { id: "acute-ich", label: "Acute ICH Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
+              { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" /> },
+              { id: "func-score", label: "FUNC Score", icon: <BarChart3 className="h-3.5 w-3.5 text-blue-500" /> },
+              { id: "sah-grading", label: "SAH Grading Scales", icon: <Activity className="h-3.5 w-3.5 text-purple-500" /> },
+              { id: "fisher-scale", label: "Fisher Scale", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
+              { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
+              { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-teal-500" /> },
+            ]}
+            onNavigateToSection={() => {}}
+          />
+
           {/* Acute ICH Management */}
           <AcuteICHManagement />
 
