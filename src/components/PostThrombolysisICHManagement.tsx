@@ -1433,6 +1433,9 @@ const PostThrombolysisICHManagement: React.FC = () => {
                 {/* Cryoprecipitate Dose Calculator */}
                 <CryoDoseCalculator />
 
+                {/* Fibrinogen Concentrate */}
+                <FibrinogenConcentrateSection />
+
                 {/* Factor Concentrate Calculators (rFVIIa, PCC, aPCC) */}
                 <FactorConcentrateCalculators />
 

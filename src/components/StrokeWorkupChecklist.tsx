@@ -6113,7 +6113,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
             { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
-            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post-IVT", activeColor: "text-rose-500" },
+            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post IVT-ICH", activeColor: "text-rose-500" },
             { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
             { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },
