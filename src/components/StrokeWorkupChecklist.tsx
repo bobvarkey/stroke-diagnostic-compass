@@ -5655,7 +5655,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </TabsTrigger>
           <TabsTrigger value="post-ivt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            Post-IVT
+            Post IVT-ICH
           </TabsTrigger>
           <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Brain className="h-4 w-4 shrink-0" />

@@ -272,6 +272,221 @@ const CryoDoseCalculator: React.FC = () => {
   );
 };
 
+/* ─── Fibrinogen Concentrate Section ─── */
+const FibrinogenConcentrateSection: React.FC = () => {
+  const [weight, setWeight] = useState(70);
+  const [currentFib, setCurrentFib] = useState(75);
+  const [targetFib, setTargetFib] = useState(150);
+  const [showComparison, setShowComparison] = useState(false);
+
+  // Fibrinogen concentrate dosing: Dose (g) = (Target - Current) / 100 × (body weight kg × 0.07) × (1/1.2)
+  // Simplified: ~70 mg/kg per 1 g/L increase desired. Or use: Dose (g) = ΔFib(g/L) × plasma vol(L) / recovery(~0.7)
+  // Standard approach: 1g vial raises fibrinogen ~25-30 mg/dL in 70kg adult
+  const doseGrams = useMemo(() => {
+    const delta = targetFib - currentFib; // mg/dL
+    if (delta <= 0) return 0;
+    // Formula: Dose(g) = delta(mg/dL) × 0.01(g/L per mg/dL) × weight(kg) × 0.07(L/kg plasma vol) / 0.7(recovery)
+    const raw = (delta * 0.01 * weight * 0.07) / 0.7;
+    return Math.max(0, Math.ceil(raw * 10) / 10); // round to 0.1g
+  }, [weight, currentFib, targetFib]);
+
+  const vials = useMemo(() => Math.ceil(doseGrams), [doseGrams]); // 1g per vial
+  const volumeML = vials * 50; // ~50 mL per reconstituted vial
+
+  return (
+    <div className="p-4 rounded-lg border-2 border-teal-300 dark:border-teal-700 bg-gradient-to-br from-teal-50/80 dark:from-teal-950/30 to-background space-y-4">
+      <div className="flex items-center gap-2 flex-wrap">
+        <Badge className="bg-teal-700 text-white text-xs">ALTERNATIVE</Badge>
+        <span className="font-bold text-sm">Fibrinogen Concentrate (RiaSTAP / Haemocomplettan)</span>
+      </div>
+
+      {/* Clinical Summary */}
+      <div className="p-3 rounded-lg bg-teal-50/60 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-800 text-xs space-y-2">
+        <p className="font-semibold text-teal-800 dark:text-teal-300">Why Fibrinogen Concentrate?</p>
+        <ul className="list-disc list-inside text-muted-foreground space-y-1">
+          <li>Purified, standardized product with consistent dosing (1g per vial)</li>
+          <li>Undergoes rigorous pathogen reduction — inherently safer than plasma-derived options</li>
+          <li><strong>Room temperature storage</strong> — no thawing required (immediate bedside preparation)</li>
+          <li>Low volume (~50 mL/vial) — minimal risk of volume overload</li>
+          <li>FIBRES trial confirms comparable efficacy to cryoprecipitate in reducing transfusion requirements</li>
+        </ul>
+      </div>
+
+      {/* FIBRES Trial Evidence */}
+      <div className="p-3 rounded-lg bg-teal-50/40 dark:bg-teal-950/10 border border-teal-200 dark:border-teal-800 text-xs">
+        <p className="font-bold text-teal-700 dark:text-teal-300 mb-1">📋 FIBRES Trial Evidence</p>
+        <ul className="text-muted-foreground space-y-0.5 list-disc list-inside">
+          <li><strong>Design:</strong> Multicenter RCT comparing fibrinogen concentrate vs cryoprecipitate</li>
+          <li><strong>Population:</strong> Patients with major surgical bleeding and hypofibrinogenemia</li>
+          <li><strong>Result:</strong> Both treatments achieved comparable reduction in transfusion volume</li>
+          <li><strong>Implication:</strong> Fibrinogen concentrate is a valid first-line alternative, especially in emergency settings where rapid preparation is critical</li>
+        </ul>
+      </div>
+
+      {/* Dose Calculator */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Badge className="bg-teal-600 text-white text-xs">CALCULATOR</Badge>
+          <span className="font-bold text-xs">Fibrinogen Concentrate Dosing</span>
+        </div>
+
+        <div className="p-2 bg-muted/40 rounded text-xs font-mono text-center border">
+          Dose (g) = [ΔFib × 0.01 × Weight × 0.07] ÷ Recovery (0.7)
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="font-semibold">Patient Weight</span>
+              <span className="font-bold text-teal-700 dark:text-teal-300">{weight} kg</span>
+            </div>
+            <input
+              type="range" min={30} max={150} step={1} value={weight}
+              onChange={(e) => setWeight(Number(e.target.value))}
+              className="w-full h-2 bg-teal-200 dark:bg-teal-800 rounded-lg appearance-none cursor-pointer accent-teal-600"
+            />
+            <div className="flex justify-between text-[10px] text-muted-foreground"><span>30</span><span>150 kg</span></div>
+          </div>
+
+          <div>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="font-semibold">Current Fibrinogen</span>
+              <span className="font-bold text-amber-700 dark:text-amber-300">{currentFib} mg/dL</span>
+            </div>
+            <input
+              type="range" min={0} max={200} step={5} value={currentFib}
+              onChange={(e) => setCurrentFib(Number(e.target.value))}
+              className="w-full h-2 bg-amber-200 dark:bg-amber-800 rounded-lg appearance-none cursor-pointer accent-amber-600"
+            />
+            <div className="flex justify-between text-[10px] text-muted-foreground"><span>0</span><span>200 mg/dL</span></div>
+          </div>
+
+          <div>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="font-semibold">Target Fibrinogen</span>
+              <div className="flex gap-2">
+                {[150, 200].map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTargetFib(t)}
+                    className={cn(
+                      "px-3 py-0.5 rounded text-xs font-bold border transition-all",
+                      targetFib === t
+                        ? "bg-teal-600 text-white border-teal-600"
+                        : "border-muted-foreground/30 text-muted-foreground hover:border-teal-400"
+                    )}
+                  >
+                    {t} mg/dL
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Result */}
+        <div className={cn(
+          "p-3 rounded-lg border-2 text-center",
+          currentFib >= targetFib
+            ? "border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-950/30"
+            : "border-teal-300 bg-teal-50 dark:border-teal-700 dark:bg-teal-950/30"
+        )}>
+          {currentFib >= targetFib ? (
+            <p className="text-green-700 dark:text-green-300 font-bold">✓ Fibrinogen already at target</p>
+          ) : (
+            <>
+              <p className="text-2xl font-black text-teal-700 dark:text-teal-300">{doseGrams} g ({vials} vial{vials > 1 ? "s" : ""})</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Volume: ~{volumeML} mL · Infuse at 5 mL/min (~{Math.ceil(volumeML / 5)} min)
+              </p>
+            </>
+          )}
+        </div>
+
+        {/* Administration */}
+        <div className="p-3 rounded-lg bg-muted/30 border text-xs space-y-1">
+          <p className="font-bold">Administration Notes:</p>
+          <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+            <li>Reconstitute each 1g vial with ~50 mL sterile water</li>
+            <li>Gently swirl — do NOT shake (avoid foaming)</li>
+            <li>Max infusion rate: <strong>5 mL/min</strong></li>
+            <li>No ABO matching required</li>
+            <li>Room temperature storage — ready within 5–10 minutes</li>
+            <li>Recheck fibrinogen 30–60 min post-infusion</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Fibrinogen Content Comparison Table */}
+      <div>
+        <button
+          onClick={() => setShowComparison(!showComparison)}
+          className="flex items-center gap-2 text-xs font-bold text-teal-700 dark:text-teal-300 hover:underline"
+        >
+          <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", showComparison && "rotate-180")} />
+          Fibrinogen Content Comparison Table
+        </button>
+
+        {showComparison && (
+          <div className="mt-3 space-y-3">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="bg-muted/50">
+                    <th className="border p-1.5 text-left">Product</th>
+                    <th className="border p-1.5 text-left">Typical Volume</th>
+                    <th className="border p-1.5 text-left">Fib Concentration</th>
+                    <th className="border p-1.5 text-left">Total Fib (per unit/vial)</th>
+                    <th className="border p-1.5 text-left">Additional Factors</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["FFP", "~250–300 mL", "1.6–5 g/L (avg 2)", "400–900 mg", "All clotting factors, Albumin, Antithrombin"],
+                    ["Cryoprecipitate", "~15–20 mL", "10–30 g/L (avg 15)", "150–250 mg (min 150)", "Factors VIII & XIII, vWF"],
+                    ["Fib Concentrate", "~50 mL (reconstituted)", "20 g/L (standardized)", "1.0 g (standardized)", "Highly purified fibrinogen only"],
+                  ].map(([product, vol, conc, total, factors]) => (
+                    <tr key={product} className={product === "Fib Concentrate" ? "bg-teal-50/50 dark:bg-teal-950/20 font-medium" : "hover:bg-muted/30"}>
+                      <td className="border p-1.5 font-medium">{product}</td>
+                      <td className="border p-1.5">{vol}</td>
+                      <td className="border p-1.5">{conc}</td>
+                      <td className="border p-1.5">{total}</td>
+                      <td className="border p-1.5 text-muted-foreground">{factors}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Key Differences */}
+            <div className="p-3 rounded-lg bg-muted/30 border text-xs space-y-2">
+              <p className="font-bold">Key Differences in Usage:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="p-2 rounded border bg-background">
+                  <p className="font-semibold text-teal-700 dark:text-teal-300">🔬 Concentration</p>
+                  <p className="text-muted-foreground mt-0.5">Fibrinogen concentrate has ~10× higher concentration than FFP</p>
+                </div>
+                <div className="p-2 rounded border bg-background">
+                  <p className="font-semibold text-teal-700 dark:text-teal-300">⚡ Speed of Delivery</p>
+                  <p className="text-muted-foreground mt-0.5">Concentrate: immediate reconstitution. FFP/Cryo: 20–45 min thawing</p>
+                </div>
+                <div className="p-2 rounded border bg-background">
+                  <p className="font-semibold text-teal-700 dark:text-teal-300">💧 Volume Overload</p>
+                  <p className="text-muted-foreground mt-0.5">FFP requires large volumes for severe hypofibrinogenemia — risk of overload</p>
+                </div>
+                <div className="p-2 rounded border bg-background">
+                  <p className="font-semibold text-teal-700 dark:text-teal-300">📏 Standardization</p>
+                  <p className="text-muted-foreground mt-0.5">Cryo/FFP vary by donor; concentrate provides predictable, standardized dosing</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 /* ─── Factor Concentrate Calculators (rFVIIa, 4F-PCC, aPCC) ─── */
 const FactorConcentrateCalculators: React.FC = () => {
   const [weight, setWeight] = useState(70);
