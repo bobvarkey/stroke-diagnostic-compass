@@ -57,7 +57,7 @@ const HeadsUpTest: React.FC = () => {
   const [currentNihss, setCurrentNihss] = useState(0);
   const [assessmentTimes, setAssessmentTimes] = useState<{ time: number; nihss: number }[]>([]);
   
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const TEST_DURATION = 30 * 60; // 30 minutes in seconds
 
   // Timer effect
