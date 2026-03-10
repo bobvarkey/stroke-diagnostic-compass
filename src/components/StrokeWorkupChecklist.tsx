@@ -5655,7 +5655,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </TabsTrigger>
           <TabsTrigger value="post-ivt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            Post-IVT
+            Post IVT-ICH
           </TabsTrigger>
           <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Brain className="h-4 w-4 shrink-0" />
@@ -6113,7 +6113,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
             { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
-            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post-IVT", activeColor: "text-rose-500" },
+            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post IVT-ICH", activeColor: "text-rose-500" },
             { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
             { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },

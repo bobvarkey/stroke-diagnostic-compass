@@ -79,7 +79,7 @@ const navGroups: NavGroup[] = [
       },
       { 
         id: "post-ivt-hemorrhage", 
-        label: "Post-IVT Hemorrhage", 
+        label: "Post IVT-ICH", 
         icon: <Droplets className="h-4 w-4 text-red-600" /> 
       },
       { 
