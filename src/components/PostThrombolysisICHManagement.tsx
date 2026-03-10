@@ -1716,7 +1716,8 @@ const PostThrombolysisICHManagement: React.FC = () => {
                     </thead>
                     <tbody>
                       {[
-                        ["Cryoprecipitate", "First-line for tPA (Fibrinogen)", "Rapid", "Transfusion risk"],
+                        ["Cryoprecipitate", "First-line for tPA (Fibrinogen)", "Rapid (thaw required)", "Transfusion risk, donor variability"],
+                        ["Fib Concentrate", "Alternative to Cryo (FIBRES trial)", "Immediate (no thaw)", "Cost, limited availability"],
                         ["4-Factor PCC", "First-line for Warfarin ONLY", "5–15 min", "No fibrinogen content"],
                         ["FFP", "Second-line alternative", "1–4 hours", "Volume overload risk"],
                         ["Platelets", "Thrombocytopenia", "N/A", "Potential harm in routine use"],
