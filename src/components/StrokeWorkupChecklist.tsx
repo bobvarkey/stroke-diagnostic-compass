@@ -22,6 +22,7 @@ import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
+import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
