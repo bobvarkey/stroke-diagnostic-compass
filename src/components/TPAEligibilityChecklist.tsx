@@ -14,7 +14,11 @@ import {
   ShieldAlert,
   ShieldCheck,
   Info,
-  Zap
+  Zap,
+  Eye,
+  Hand,
+  MessageSquare,
+  Brain
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ModuleCommentBox from "./ModuleCommentBox";
@@ -34,57 +38,39 @@ const inclusionCriteria: Criterion[] = [
 ];
 
 const absoluteContraindications: Criterion[] = [
-  // Hemorrhage-related
   { id: "abs_ich_history", label: "History of intracranial hemorrhage", description: "Any prior ICH, including SAH", severity: "absolute" },
   { id: "abs_active_bleed", label: "Active internal bleeding", severity: "absolute" },
   { id: "abs_ich_ct", label: "CT shows hemorrhage or multilobar infarct (>1/3 hemisphere)", severity: "absolute" },
   { id: "abs_sah_suspected", label: "Suspected subarachnoid hemorrhage", severity: "absolute" },
-  
-  // Recent procedures/trauma
   { id: "abs_brain_surgery", label: "Intracranial/intraspinal surgery within 3 months", severity: "absolute" },
   { id: "abs_head_trauma", label: "Serious head trauma within 3 months", severity: "absolute" },
   { id: "abs_arterial_puncture", label: "Arterial puncture at noncompressible site within 7 days", severity: "absolute" },
-  
-  // Coagulation
   { id: "abs_anticoag", label: "Current anticoagulation with INR >1.7 or PT >15 seconds", severity: "absolute" },
   { id: "abs_heparin", label: "Heparin received within 48 hours with elevated aPTT", severity: "absolute" },
   { id: "abs_doac_48h", label: "DOAC use within 48 hours (or elevated drug levels)", description: "Includes dabigatran, rivaroxaban, apixaban, edoxaban", severity: "absolute" },
   { id: "abs_platelets", label: "Platelet count <100,000/mm³", severity: "absolute" },
-  
-  // Medical conditions
   { id: "abs_endocarditis", label: "Infective endocarditis", severity: "absolute" },
   { id: "abs_aortic_dissection", label: "Known or suspected aortic arch dissection", severity: "absolute" },
   { id: "abs_neoplasm", label: "Intracranial neoplasm (excluding meningioma)", severity: "absolute" },
-  
-  // Blood pressure
   { id: "abs_sbp", label: "Systolic BP >185 mmHg despite treatment", severity: "absolute" },
   { id: "abs_dbp", label: "Diastolic BP >110 mmHg despite treatment", severity: "absolute" },
-  
-  // Blood glucose
   { id: "abs_glucose_low", label: "Blood glucose <50 mg/dL", severity: "absolute" },
 ];
 
 const relativeContraindications: Criterion[] = [
-  // Extended window specific (3-4.5 hours)
   { id: "rel_age_80", label: "Age >80 years (for 3-4.5 hour window)", description: "Not a contraindication for 0-3 hour window", severity: "relative" },
   { id: "rel_severe_stroke", label: "Severe stroke (NIHSS >25)", severity: "relative" },
   { id: "rel_dm_prior_stroke", label: "Diabetes AND prior ischemic stroke (for 3-4.5 hour window)", severity: "relative" },
   { id: "rel_any_anticoag", label: "Any anticoagulant use regardless of INR (for 3-4.5 hour window)", severity: "relative" },
-  
-  // Recent events
   { id: "rel_major_surgery", label: "Major surgery or serious trauma within 14 days", severity: "relative" },
   { id: "rel_gi_gu_bleed", label: "GI or urinary tract hemorrhage within 21 days", severity: "relative" },
   { id: "rel_mi_3mo", label: "Recent acute MI within 3 months", severity: "relative" },
   { id: "rel_stroke_3mo", label: "Ischemic stroke within 3 months", severity: "relative" },
-  
-  // Medical conditions
   { id: "rel_seizure", label: "Seizure at stroke onset with postictal residual deficits", description: "Consider if deficits are due to stroke vs postictal", severity: "relative" },
   { id: "rel_pregnancy", label: "Pregnancy", description: "Weigh risk-benefit carefully; not absolute contraindication", severity: "relative" },
   { id: "rel_uncontrolled_htn", label: "History of uncontrolled hypertension", severity: "relative" },
   { id: "rel_gi_pathology", label: "Known GI malignancy or recent GI bleed", severity: "relative" },
-  
-  // Other considerations
-  { id: "rel_minor_deficit", label: "Minor or rapidly improving stroke symptoms", description: "Consider if symptoms are disabling", severity: "relative" },
+  { id: "rel_minor_deficit", label: "Minor or rapidly improving stroke symptoms", description: "Consider if symptoms are disabling — see Low NIHSS Guidance below", severity: "relative" },
   { id: "rel_glucose_high", label: "Blood glucose >400 mg/dL", severity: "relative" },
   { id: "rel_lp_7days", label: "Lumbar puncture within 7 days", severity: "relative" },
   { id: "rel_dementia", label: "Dementia or poor baseline functional status", description: "Consider patient/family preferences", severity: "relative" },
@@ -99,6 +85,7 @@ const TPAEligibilityChecklist: React.FC = () => {
   const [inclusionOpen, setInclusionOpen] = useState(true);
   const [absoluteOpen, setAbsoluteOpen] = useState(true);
   const [relativeOpen, setRelativeOpen] = useState(true);
+  const [lowNihssOpen, setLowNihssOpen] = useState(false);
   const [comment, setComment] = useState("");
 
   const toggleInclusion = (id: string) => {
@@ -124,7 +111,6 @@ const TPAEligibilityChecklist: React.FC = () => {
     let message = "";
     let details: string[] = [];
 
-    // Check for absolute contraindications first
     if (absolutePresent.length > 0) {
       status = "ineligible";
       message = "ABSOLUTE CONTRAINDICATION PRESENT - tPA NOT RECOMMENDED";
@@ -146,13 +132,17 @@ const TPAEligibilityChecklist: React.FC = () => {
         return criterion?.label || id;
       });
       
-      // Extended window specific warnings
       if (inclusionChecked["inc_time_4_5h"] && !inclusionChecked["inc_time_3h"]) {
         const extendedWindowIssues = ["rel_age_80", "rel_dm_prior_stroke", "rel_any_anticoag"];
         const hasExtendedIssue = relativePresent.some(id => extendedWindowIssues.includes(id));
         if (hasExtendedIssue) {
           details.unshift("⚠️ Extended window (3-4.5h) contraindications present");
         }
+      }
+
+      // If minor deficit is checked, prompt low NIHSS guidance
+      if (relativePresent.includes("rel_minor_deficit")) {
+        details.push("📋 See 'Low NIHSS Disabling Deficit Guidance' below to determine if deficits are clearly disabling");
       }
     } else if (hasBasicInclusion && hasTimeWindow) {
       status = "eligible";
@@ -191,12 +181,6 @@ const TPAEligibilityChecklist: React.FC = () => {
     onToggle: () => void;
     type: "inclusion" | "absolute" | "relative";
   }> = ({ criterion, checked, onToggle, type }) => {
-    const getBadgeVariant = () => {
-      if (type === "inclusion") return checked ? "default" : "outline";
-      if (type === "absolute") return checked ? "destructive" : "outline";
-      return checked ? "secondary" : "outline";
-    };
-
     return (
       <div 
         className={cn(
@@ -402,6 +386,126 @@ const TPAEligibilityChecklist: React.FC = () => {
                 type="relative"
               />
             ))}
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Low NIHSS Disabling Deficit Guidance */}
+        <Collapsible open={lowNihssOpen} onOpenChange={setLowNihssOpen}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors">
+            <div className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-indigo-500" />
+              <span className="font-medium text-indigo-700 dark:text-indigo-400">Low NIHSS (0–5): Disabling Deficit Guidance</span>
+              <Badge variant="outline" className="text-xs border-indigo-500/50 text-indigo-600">BATHE</Badge>
+            </div>
+            <ChevronDown className={cn(
+              "h-4 w-4 text-indigo-500 transition-transform",
+              lowNihssOpen && "rotate-180"
+            )} />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2 space-y-3">
+            {/* Clinical Question */}
+            <Alert className="bg-indigo-500/5 border-indigo-500/30">
+              <Info className="h-4 w-4 text-indigo-500" />
+              <AlertTitle className="text-sm text-indigo-700 dark:text-indigo-400">Key Clinical Question</AlertTitle>
+              <AlertDescription className="text-xs mt-1">
+                Among patients with NIHSS 0–5 at presentation, <strong>if the observed deficits persist, would they still 
+                be able to do basic activities of daily living and/or return to work?</strong>
+              </AlertDescription>
+            </Alert>
+
+            {/* BATHE Mnemonic */}
+            <div className="p-3 rounded-lg border bg-indigo-500/5 border-indigo-500/20">
+              <h5 className="text-sm font-semibold mb-2 text-indigo-700 dark:text-indigo-400">
+                BATHE Mnemonic — Basic ADLs
+              </h5>
+              <div className="grid grid-cols-5 gap-1 text-center">
+                {[
+                  { letter: "B", word: "Bathing / Dressing" },
+                  { letter: "A", word: "Ambulating" },
+                  { letter: "T", word: "Toileting" },
+                  { letter: "H", word: "Hygiene" },
+                  { letter: "E", word: "Eating" },
+                ].map(item => (
+                  <div key={item.letter} className="p-2 rounded bg-indigo-600/10 border border-indigo-500/20">
+                    <div className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{item.letter}</div>
+                    <div className="text-[10px] text-muted-foreground leading-tight mt-1">{item.word}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Clearly Disabling Deficits */}
+            <div className="p-3 rounded-lg border bg-destructive/5 border-destructive/20">
+              <h5 className="text-sm font-semibold mb-2 flex items-center gap-2 text-destructive">
+                <XCircle className="h-4 w-4" />
+                Clearly Disabling — Favor IVT
+              </h5>
+              <div className="space-y-2">
+                {[
+                  {
+                    icon: <Eye className="h-4 w-4 text-destructive shrink-0" />,
+                    label: "Complete hemianopsia",
+                    nihss: "NIHSS 'Vision' = 2",
+                  },
+                  {
+                    icon: <MessageSquare className="h-4 w-4 text-destructive shrink-0" />,
+                    label: "Severe aphasia — unable to communicate meaningfully",
+                    nihss: "NIHSS 'Best Language' ≥ 2",
+                  },
+                  {
+                    icon: <Hand className="h-4 w-4 text-destructive shrink-0" />,
+                    label: "Any weakness limiting sustained effort against gravity",
+                    nihss: "NIHSS 'Motor' ≥ 2",
+                  },
+                  {
+                    icon: <Brain className="h-4 w-4 text-destructive shrink-0" />,
+                    label: "Severe hemi-attention or extinction to >1 modality",
+                    nihss: "NIHSS 'Extinction/Inattention' = 2",
+                  },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2 p-2 rounded bg-destructive/5 border border-destructive/10">
+                    {item.icon}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-medium">{item.label}</span>
+                      <Badge variant="outline" className="ml-2 text-[10px] border-destructive/30 text-destructive">{item.nihss}</Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* May Not Be Clearly Disabling */}
+            <div className="p-3 rounded-lg border bg-green-500/5 border-green-500/20">
+              <h5 className="text-sm font-semibold mb-2 flex items-center gap-2 text-green-700 dark:text-green-400">
+                <CheckCircle2 className="h-4 w-4" />
+                May NOT Be Clearly Disabling — Weigh Risk-Benefit
+              </h5>
+              <div className="space-y-1">
+                {[
+                  "Mild cortical hand weakness (especially nondominant, NIHSS 0)",
+                  "Isolated facial droop",
+                  "Isolated mild aphasia (still able to communicate)",
+                  "Mild hemi-motor loss",
+                  "Hemisensory loss",
+                  "Mild hemi-sensorimotor loss",
+                  "Mild hemiataxia (can still ambulate)",
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2 p-1.5 text-sm text-muted-foreground">
+                    <span className="text-green-500 shrink-0">✓</span>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Alert className="bg-muted/50 border-border">
+              <AlertTriangle className="h-4 w-4 text-yellow-500" />
+              <AlertDescription className="text-xs">
+                <strong>Clinical Pearl:</strong> "Minor or rapidly improving" is a relative contraindication, not absolute. 
+                If the deficit would prevent the patient from returning to work or performing ADLs (BATHE), 
+                IVT should be strongly considered even with low NIHSS. Document the disabling nature of deficits clearly.
+              </AlertDescription>
+            </Alert>
           </CollapsibleContent>
         </Collapsible>
 
