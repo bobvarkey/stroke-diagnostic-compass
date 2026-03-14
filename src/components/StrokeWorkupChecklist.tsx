@@ -23,6 +23,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
+import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
@@ -5679,6 +5680,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <SectionNavigator 
             title="Ischemic Stroke Modules"
             sections={[
+              { id: "treatment-recommender", label: "Treatment Pathway", icon: <Brain className="h-3.5 w-3.5 text-primary" /> },
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
@@ -5714,10 +5716,16 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* PDF Score Summary */}
           <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />
 
+          {/* Treatment Pathway Recommender */}
+          <LazySection id="treatment-recommender">
+            <StrokeTreatmentRecommender />
+          </LazySection>
+
           {/* Stroke Code System */}
           <LazySection id="stroke-code">
             <StrokeCodeSystem />
           </LazySection>
+
 
           {/* Acute Stroke Management Algorithm - Interactive */}
           <LazySection id="acute-algorithm">
