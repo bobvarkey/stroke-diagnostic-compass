@@ -5729,6 +5729,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <TPAEligibilityChecklist />
           </LazySection>
 
+          {/* IVT in Anticoagulated Patients */}
+          <LazySection id="ivt-anticoag">
+            <IVTAnticoagulationGuide />
+          </LazySection>
+
           {/* Thrombolytic Dose Calculator */}
           <LazySection id="thrombolytic-dose">
             <ThrombolyticDoseCalculator />
