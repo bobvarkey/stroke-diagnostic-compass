@@ -5716,10 +5716,16 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* PDF Score Summary */}
           <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />
 
+          {/* Treatment Pathway Recommender */}
+          <LazySection id="treatment-recommender">
+            <StrokeTreatmentRecommender />
+          </LazySection>
+
           {/* Stroke Code System */}
           <LazySection id="stroke-code">
             <StrokeCodeSystem />
           </LazySection>
+
 
           {/* Acute Stroke Management Algorithm - Interactive */}
           <LazySection id="acute-algorithm">
