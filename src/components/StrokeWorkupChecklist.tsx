@@ -5682,6 +5682,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
+              { id: "ivt-anticoag", label: "IVT & Anticoagulation", icon: <ShieldAlert className="h-3.5 w-3.5 text-orange-500" /> },
               { id: "thrombolytic-dose", label: "Thrombolytic Dosing", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
