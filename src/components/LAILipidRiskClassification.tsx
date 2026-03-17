@@ -895,6 +895,14 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
                   </div>
                 </div>
               </div>
+              {(determinedRiskCategory === riskCategories.extremeA || determinedRiskCategory === riskCategories.extremeB || determinedRiskCategory === riskCategories.extremeC) && (
+                <div className="mt-2 p-2 bg-amber-100/60 dark:bg-amber-900/30 rounded border border-amber-300 dark:border-amber-700 flex items-start gap-2">
+                  <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                  <p className="text-xs text-amber-800 dark:text-amber-200">
+                    <strong>Note:</strong> CAD (coronary artery disease) is typically a "must" to fall under the "Extreme Risk" category, with PAD, stroke, or CKD acting as additional major complicating factors.
+                  </p>
+                </div>
+              )}
               <div className="text-sm space-y-2">
                 <div>
                   <p className="font-semibold text-xs uppercase text-muted-foreground">Therapy Recommendation</p>
