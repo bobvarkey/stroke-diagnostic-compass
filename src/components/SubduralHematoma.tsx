@@ -198,19 +198,81 @@ function SDHDiagnosis() {
               </ul>
             </div>
 
-            {/* Markwalder Grading Scale */}
+            {/* Markwalder Grading Scale — AHA/ASA 2025 */}
             <div>
-              <h4 className="font-semibold text-blue-800 dark:text-blue-300 text-sm mb-3">Markwalder Grading Scale (cSDH)</h4>
-              <div className="space-y-1.5">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-300 text-sm mb-2">
+                Severity Grading of Chronic Subdural Hematoma (Markwalder)
+              </h4>
+              <p className="text-xs text-muted-foreground mb-3">
+                <a href="https://www.ahajournals.org/doi/10.1161/SVIN.125.001814" target="_blank" rel="noopener noreferrer" className="underline text-blue-600 dark:text-blue-400">AHA/ASA Scientific Statement 2025 — Table 2</a>
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-blue-100 dark:bg-blue-900/40">
+                      <th className="border border-blue-200 dark:border-blue-700 px-2 py-1.5 text-left font-semibold text-blue-800 dark:text-blue-300">Grade</th>
+                      <th className="border border-blue-200 dark:border-blue-700 px-2 py-1.5 text-left font-semibold text-blue-800 dark:text-blue-300">GCS</th>
+                      <th className="border border-blue-200 dark:border-blue-700 px-2 py-1.5 text-left font-semibold text-blue-800 dark:text-blue-300">Clinical Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { grade: 0, gcs: "15", desc: "Normal neurological status without symptoms", color: "bg-green-50 dark:bg-green-950/20" },
+                      { grade: 1, gcs: "15", desc: "No neurological deficits but with symptoms such as headache or unsteady gait", color: "bg-green-50 dark:bg-green-950/20" },
+                      { grade: 2, gcs: "13–14", desc: "Focal neurological deficits, drowsiness or disorientation, or variable neurological deficits such as hemiparesis", color: "bg-yellow-50 dark:bg-yellow-950/20" },
+                      { grade: 3, gcs: "9–12", desc: "Stupor with responses to painful stimuli and multiple focal neurological signs such as hemiplegia", color: "bg-orange-50 dark:bg-orange-950/20" },
+                      { grade: 4, gcs: "<9", desc: "Coma with no motor responses to painful stimuli and decerebrate or decorticate posturing", color: "bg-red-50 dark:bg-red-950/20" },
+                    ].map((item) => (
+                      <tr key={item.grade} className={item.color}>
+                        <td className="border border-blue-200 dark:border-blue-700 px-2 py-1.5 font-bold text-center">{item.grade}</td>
+                        <td className="border border-blue-200 dark:border-blue-700 px-2 py-1.5 text-center font-mono">{item.gcs}</td>
+                        <td className="border border-blue-200 dark:border-blue-700 px-2 py-1.5">{item.desc}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* AHA/ASA 2025 Imaging Recommendations */}
+            <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-700">
+              <h5 className="font-semibold text-blue-800 dark:text-blue-300 text-sm mb-3">
+                <Target className="h-4 w-4 inline mr-1" />
+                AHA/ASA 2025 Imaging Recommendations for cSDH
+              </h5>
+              <div className="space-y-2">
                 {[
-                  { grade: 0, desc: "Normal neurological status", color: "bg-green-100 dark:bg-green-900/30 border-green-300" },
-                  { grade: 1, desc: "Alert, oriented; mild symptoms (headache) or no deficit", color: "bg-green-100 dark:bg-green-900/30 border-green-300" },
-                  { grade: 2, desc: "Drowsy/disoriented OR variable neurological deficit (e.g., hemiparesis)", color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300" },
-                  { grade: 3, desc: "Stuporous but responds to stimuli; severe focal deficits", color: "bg-orange-100 dark:bg-orange-900/30 border-orange-300" },
-                  { grade: 4, desc: "Comatose, no motor response; decerebrate/decorticate posturing", color: "bg-red-100 dark:bg-red-900/30 border-red-300" },
-                ].map((item) => (
-                  <div key={item.grade} className={`p-2 rounded border text-xs ${item.color}`}>
-                    <strong>Grade {item.grade}:</strong> {item.desc}
+                  {
+                    rec: "Noncontrast head CT is recommended as the primary imaging study to determine hematoma presence, size, and location.",
+                    cor: "Class 1",
+                    loe: "B-NR",
+                    corColor: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
+                  },
+                  {
+                    rec: "Contrast-enhanced MRI is a reasonable option for detailed assessment of membrane morphology and hematoma composition when surgical planning is complex.",
+                    cor: "Class 2a",
+                    loe: "C-LD",
+                    corColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300",
+                  },
+                  {
+                    rec: "Dual-energy CT (DECT) can be considered as an alternative to evaluate membrane thickness, complexity, and hematoma composition for recurrence risk assessment.",
+                    cor: "Class 2b",
+                    loe: "C-LD",
+                    corColor: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+                  },
+                  {
+                    rec: "Follow-up imaging: 24 hours post-intervention, then at 1, 3, and 6 months to monitor for changes or complications.",
+                    cor: "Class 2a",
+                    loe: "C-LD",
+                    corColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300",
+                  },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-2 items-start">
+                    <div className="flex flex-col gap-0.5 shrink-0">
+                      <Badge className={`text-[9px] px-1.5 py-0 ${item.corColor} border-0`}>{item.cor}</Badge>
+                      <Badge variant="outline" className="text-[9px] px-1.5 py-0">{item.loe}</Badge>
+                    </div>
+                    <p className="text-xs text-blue-700 dark:text-blue-400">{item.rec}</p>
                   </div>
                 ))}
               </div>
