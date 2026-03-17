@@ -1173,6 +1173,221 @@ function ARISEConsensus() {
   );
 }
 
+// ─── Subdural Hygroma ───────────────────────────────────────────────────────
+
+function SubduralHygroma() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-cyan-400 dark:border-cyan-600 bg-gradient-to-br from-cyan-50 dark:from-cyan-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-cyan-100/50 dark:bg-cyan-900/30">
+            <CardTitle className="flex items-center justify-between text-cyan-800 dark:text-cyan-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                <span>Subdural Hygroma — Diagnosis & Management</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-4">
+
+            {/* Key Differentiating Features */}
+            <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700">
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-2 flex items-center gap-2">
+                <Target className="h-4 w-4" />
+                Hygroma vs. Chronic SDH — Key Differences
+              </h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-cyan-200 dark:border-cyan-700">
+                      <th className="text-left py-2 pr-3 text-cyan-700 dark:text-cyan-400">Feature</th>
+                      <th className="text-left py-2 pr-3 text-cyan-700 dark:text-cyan-400">Subdural Hygroma</th>
+                      <th className="text-left py-2 text-cyan-700 dark:text-cyan-400">Chronic SDH</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    <tr className="border-b border-cyan-100 dark:border-cyan-800">
+                      <td className="py-1.5 pr-3 font-medium">Content</td>
+                      <td className="py-1.5 pr-3">CSF (clear fluid)</td>
+                      <td className="py-1.5">Blood / blood products</td>
+                    </tr>
+                    <tr className="border-b border-cyan-100 dark:border-cyan-800">
+                      <td className="py-1.5 pr-3 font-medium">CT Density</td>
+                      <td className="py-1.5 pr-3">Hypodense (CSF density)</td>
+                      <td className="py-1.5">Hypodense ± mixed densities / membranes</td>
+                    </tr>
+                    <tr className="border-b border-cyan-100 dark:border-cyan-800">
+                      <td className="py-1.5 pr-3 font-medium">MRI Signal</td>
+                      <td className="py-1.5 pr-3">Follows CSF on all sequences</td>
+                      <td className="py-1.5">Variable signal (blood products)</td>
+                    </tr>
+                    <tr className="border-b border-cyan-100 dark:border-cyan-800">
+                      <td className="py-1.5 pr-3 font-medium">Membranes</td>
+                      <td className="py-1.5 pr-3">Absent</td>
+                      <td className="py-1.5">Often present (neomembranes)</td>
+                    </tr>
+                    <tr>
+                      <td className="py-1.5 pr-3 font-medium">Natural History</td>
+                      <td className="py-1.5 pr-3">May resolve or evolve → cSDH</td>
+                      <td className="py-1.5">Tends to persist / recur</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Diagnostic Approach */}
+            <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700">
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-2 flex items-center gap-2">
+                <Stethoscope className="h-4 w-4" />
+                Diagnostic Approach
+              </h4>
+              <div className="space-y-2 text-xs text-muted-foreground">
+                <div className="flex items-start gap-2">
+                  <Badge variant="outline" className="shrink-0 text-[10px] border-cyan-300 text-cyan-700 dark:text-cyan-300">Preferred</Badge>
+                  <span><strong>MRI brain with contrast</strong> — Detailed membrane assessment, differentiates CSF from blood products</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="outline" className="shrink-0 text-[10px] border-cyan-300 text-cyan-700 dark:text-cyan-300">Initial</Badge>
+                  <span><strong>CT scan</strong> — Useful in emergencies; look for low-density CSF collection without blood products</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="outline" className="shrink-0 text-[10px] border-amber-300 text-amber-700 dark:text-amber-300">Key Point</Badge>
+                  <span>Don't mistake subdural hygroma for chronic SDH — management approaches may differ</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Treatment Algorithm */}
+            <div>
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-3 flex items-center gap-2">
+                <Scissors className="h-4 w-4" />
+                Treatment Algorithm
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Asymptomatic */}
+                <div className="p-3 rounded-lg border-2 border-green-400 bg-green-50 dark:bg-green-950/20">
+                  <div className="font-bold text-green-800 dark:text-green-300 text-sm flex items-center gap-1 mb-2">
+                    <CheckCircle2 className="h-4 w-4" />
+                    Asymptomatic / Small
+                  </div>
+                  <ul className="text-xs space-y-1 text-green-700 dark:text-green-400">
+                    <li>• <strong>Conservative management</strong> — first-line</li>
+                    <li>• Regular clinical monitoring</li>
+                    <li>• Serial imaging (CT/MRI) to assess stability</li>
+                    <li>• Observation period 2-4 weeks for spontaneous resolution</li>
+                    <li>• Address any underlying CSF leak</li>
+                    <li>• Many resolve spontaneously</li>
+                  </ul>
+                </div>
+
+                {/* Symptomatic */}
+                <div className="p-3 rounded-lg border-2 border-red-400 bg-red-50 dark:bg-red-950/20">
+                  <div className="font-bold text-red-800 dark:text-red-300 text-sm flex items-center gap-1 mb-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    Symptomatic / Mass Effect
+                  </div>
+                  <ul className="text-xs space-y-1 text-red-700 dark:text-red-400">
+                    <li>• <strong>Surgical evacuation</strong> for neurological symptoms</li>
+                    <li>• <strong>Burr hole drainage</strong> — preferred approach</li>
+                    <li>• Simple burr hole irrigation usually sufficient</li>
+                    <li>• Large craniotomy only for complex cases</li>
+                    <li>• Assess and treat underlying cause</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Special Scenarios */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* SIH-associated */}
+              <div className="p-3 rounded-lg bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700">
+                <h5 className="font-semibold text-violet-800 dark:text-violet-300 text-xs mb-2 flex items-center gap-1">
+                  <Zap className="h-3.5 w-3.5" />
+                  Associated with SIH (Intracranial Hypotension)
+                </h5>
+                <ul className="text-xs space-y-1 text-violet-700 dark:text-violet-400">
+                  <li>• <strong>Epidural blood patch (EBP)</strong> — primary treatment</li>
+                  <li>• Targeted CSF leak treatment if identified</li>
+                  <li>• May require repeat EBP</li>
+                  <li>• Image-guided patch if leak localized</li>
+                </ul>
+              </div>
+
+              {/* CVT-associated */}
+              <div className="p-3 rounded-lg bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-700">
+                <h5 className="font-semibold text-violet-800 dark:text-violet-300 text-xs mb-2 flex items-center gap-1">
+                  <Activity className="h-3.5 w-3.5" />
+                  Associated with Cerebral Venous Thrombosis
+                </h5>
+                <ul className="text-xs space-y-1 text-violet-700 dark:text-violet-400">
+                  <li>• Prioritize treatment of underlying CSF leak with EBP</li>
+                  <li>• Consider anticoagulation after weighing bleeding risks</li>
+                  <li>• <strong>Role of MMA embolization — uncertain</strong></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Follow-up */}
+            <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700">
+              <h4 className="font-semibold text-cyan-800 dark:text-cyan-300 text-sm mb-2 flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Follow-up Protocol
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-muted-foreground">
+                <div>
+                  <div className="font-medium text-cyan-700 dark:text-cyan-300 mb-1">Post-Treatment</div>
+                  <ul className="space-y-1">
+                    <li>• Clinical review after intervention</li>
+                    <li>• Repeat MRI brain at <strong>1-3 months</strong></li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-medium text-cyan-700 dark:text-cyan-300 mb-1">Untreated / Conservative</div>
+                  <ul className="space-y-1">
+                    <li>• Clinical review + neuroimaging every <strong>1-2 years</strong></li>
+                    <li>• Watch for evolution into chronic SDH</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Pitfalls */}
+            <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-700">
+              <h4 className="font-semibold text-amber-800 dark:text-amber-300 text-sm mb-2 flex items-center gap-2">
+                <XCircle className="h-4 w-4" />
+                Pitfalls to Avoid
+              </h4>
+              <ul className="text-xs space-y-1.5 text-amber-700 dark:text-amber-400">
+                <li>• <strong>Don't mistake hygroma for cSDH</strong> on imaging — management differs</li>
+                <li>• <strong>Avoid unnecessary craniotomy</strong> when simple burr hole drainage suffices</li>
+                <li>• <strong>Don't overlook CSF leaks</strong> — may require specific treatment (EBP)</li>
+                <li>• <strong>Avoid aggressive surgery in asymptomatic patients</strong> — many resolve spontaneously</li>
+                <li>• In patients with coagulopathies (e.g., thrombocythemia), medical management may help resolve the hygroma</li>
+              </ul>
+            </div>
+
+            {/* Key Takeaway */}
+            <div className="p-3 rounded-lg bg-cyan-100 dark:bg-cyan-900/40 border border-cyan-300 dark:border-cyan-600">
+              <p className="text-xs text-cyan-800 dark:text-cyan-200">
+                <strong>Key Principle:</strong> Subdural hygromas may resolve spontaneously or evolve into chronic SDH.
+                Conservative management is appropriate for asymptomatic cases; surgical drainage is reserved for significant
+                symptoms or mass effect. Always investigate for underlying CSF leaks.
+              </p>
+            </div>
+
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 // ─── Main Component ─────────────────────────────────────────────────────────
 
 export default function SubduralHematoma() {
@@ -1204,6 +1419,7 @@ export default function SubduralHematoma() {
       <MMAEmbolization />
       <SDHMedicalManagement />
       <CSDHRecurrenceCalculator />
+      <SubduralHygroma />
       <ARISEConsensus />
 
       <div className="text-center text-sm text-muted-foreground border-t pt-4">
