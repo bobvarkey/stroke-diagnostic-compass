@@ -1044,6 +1044,140 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
           )}
         </div>
 
+        {/* Lp(a) Risk Stratification — AHA/ACC 2026 */}
+        <Collapsible open={expandedSections.has("lpa-guide")} onOpenChange={() => toggleSection("lpa-guide")}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors border border-purple-200 dark:border-purple-800">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-purple-600" />
+              <span className="font-medium text-sm">Lp(a) — Risk Stratification & AHA/ACC 2026 Update</span>
+              <Badge variant="outline" className="text-xs border-purple-300 text-purple-700 dark:text-purple-300">Genetic Risk</Badge>
+            </div>
+            <ChevronDown className={cn("h-4 w-4 transition-transform", expandedSections.has("lpa-guide") && "rotate-180")} />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2 space-y-3 p-4 bg-purple-50/50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
+            <div className="text-sm space-y-2">
+              <p className="font-semibold text-purple-800 dark:text-purple-300">What is Lp(a)?</p>
+              <p className="text-muted-foreground">Lp(a) represents a specific, highly inherited subset of atherogenic particles that are particularly dangerous — often described as a "hidden" risk factor that <strong>does not respond</strong> to standard diet or lifestyle changes. It is the <strong>strongest hereditary risk factor</strong> for heart disease.</p>
+            </div>
+
+            <div className="text-sm">
+              <p className="font-semibold text-purple-800 dark:text-purple-300 mb-2">Lp(a) Levels & Classification</p>
+              <div className="grid grid-cols-1 gap-1.5">
+                <div className="flex items-center gap-2 p-1.5 bg-green-100 dark:bg-green-900/30 rounded text-xs">
+                  <CheckCircle2 className="h-3 w-3 text-green-600 shrink-0" />
+                  <span><strong>Optimal:</strong> ≤14 mg/dL</span>
+                </div>
+                <div className="flex items-center gap-2 p-1.5 bg-green-50 dark:bg-green-900/20 rounded text-xs">
+                  <CheckCircle2 className="h-3 w-3 text-green-500 shrink-0" />
+                  <span><strong>Normal:</strong> ≤30 mg/dL (&lt;75 nmol/L) — Reference (low risk)</span>
+                </div>
+                <div className="flex items-center gap-2 p-1.5 bg-yellow-100 dark:bg-yellow-900/30 rounded text-xs">
+                  <AlertTriangle className="h-3 w-3 text-yellow-600 shrink-0" />
+                  <span><strong>Borderline:</strong> 30–49 mg/dL (75–124 nmol/L) — 1.2× ASCVD risk; 28% higher CV risk</span>
+                </div>
+                <div className="flex items-center gap-2 p-1.5 bg-orange-100 dark:bg-orange-900/30 rounded text-xs">
+                  <AlertTriangle className="h-3 w-3 text-orange-600 shrink-0" />
+                  <span><strong>Elevated:</strong> ≥50 mg/dL (≥125 nmol/L) — 1.4× ASCVD risk; 44% higher CV risk</span>
+                </div>
+                <div className="flex items-center gap-2 p-1.5 bg-red-100 dark:bg-red-900/30 rounded text-xs">
+                  <AlertTriangle className="h-3 w-3 text-red-600 shrink-0" />
+                  <span><strong>High:</strong> ≥100 mg/dL (≥250 nmol/L) — 2× ASCVD risk; 114% higher CV risk</span>
+                </div>
+                <div className="flex items-center gap-2 p-1.5 bg-red-200 dark:bg-red-900/40 rounded text-xs">
+                  <AlertTriangle className="h-3 w-3 text-red-700 shrink-0" />
+                  <span><strong>Very High:</strong> ≥150 mg/dL (≥350 nmol/L) — 3× ASCVD risk</span>
+                </div>
+                <div className="flex items-center gap-2 p-1.5 bg-red-300 dark:bg-red-900/50 rounded text-xs">
+                  <AlertTriangle className="h-3 w-3 text-red-800 shrink-0" />
+                  <span><strong>Extreme:</strong> ≥180 mg/dL (≥430 nmol/L) — 4× ASCVD risk</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-2 bg-blue-100/50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800 text-xs">
+              <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">🆕 AHA/ACC 2026 Key Change</p>
+              <p className="text-muted-foreground"><strong>Lp(a) testing is now recommended for ALL adults.</strong> This is the first guideline update in 8 years. Treatment decisions for younger adults are now based on <strong>30-year</strong> heart disease risk projections rather than 10-year risk alone.</p>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* ApoB Clinical Guide — AHA/ACC 2026 */}
+        <Collapsible open={expandedSections.has("apob-guide")} onOpenChange={() => toggleSection("apob-guide")}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-950/50 transition-colors border border-amber-200 dark:border-amber-800">
+            <div className="flex items-center gap-2">
+              <Info className="h-4 w-4 text-amber-600" />
+              <span className="font-medium text-sm">ApoB — Why It Matters More Than LDL-C</span>
+              <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 dark:text-amber-300">AHA/ACC 2026</Badge>
+            </div>
+            <ChevronDown className={cn("h-4 w-4 transition-transform", expandedSections.has("apob-guide") && "rotate-180")} />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2 space-y-3 p-4 bg-amber-50/50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
+            <div className="text-sm space-y-2">
+              <p className="font-semibold text-amber-800 dark:text-amber-300">ApoB vs LDL-C: Key Differences</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-muted/50">
+                      <th className="text-left p-2 border">Feature</th>
+                      <th className="text-left p-2 border">LDL-C</th>
+                      <th className="text-left p-2 border">ApoB</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="p-2 border font-medium">What it measures</td>
+                      <td className="p-2 border text-muted-foreground">Mass of cholesterol in LDL</td>
+                      <td className="p-2 border text-muted-foreground">Number of all atherogenic particles</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">How obtained</td>
+                      <td className="p-2 border text-muted-foreground">Often <em>calculated</em> (Friedewald)</td>
+                      <td className="p-2 border text-muted-foreground">Always <em>directly measured</em></td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">Particles counted</td>
+                      <td className="p-2 border text-muted-foreground">Only LDL (1 of 3 atherogenic)</td>
+                      <td className="p-2 border text-muted-foreground">LDL + VLDL + Lp(a) — all atherogenic</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">CV risk prediction</td>
+                      <td className="p-2 border text-muted-foreground">Good</td>
+                      <td className="p-2 border text-muted-foreground"><strong>Superior</strong> — more accurate predictor</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">Discordance</td>
+                      <td className="p-2 border text-muted-foreground" colSpan={2}>Common in metabolic syndrome, diabetes, high TG — <strong>ApoB wins when they disagree</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="text-sm space-y-1.5">
+              <p className="font-semibold text-amber-800 dark:text-amber-300">Clinical Pearls</p>
+              <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1">
+                <li><strong>ApoB reflects total atherogenic particle burden</strong> (LDL + Lp(a) + VLDL remnants)</li>
+                <li><strong>Lp(a) confers genetic risk</strong> — a specific, inherited subset that doesn't respond to lifestyle changes</li>
+                <li>Think of ApoB as "sticky cholesterol" — it counts every particle that can enter the arterial wall</li>
+                <li>Young adults with high ApoB but normal LDL-C had <strong>55% higher risk</strong> of developing coronary artery calcification 25 years later</li>
+                <li>Those with high LDL-C but normal ApoB did <strong>not</strong> show increased risk — ApoB was the true driver</li>
+                <li>When ApoB and LDL-C disagree, <strong>always follow ApoB</strong> for risk prediction</li>
+              </ul>
+            </div>
+
+            <div className="p-2 bg-blue-100/50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800 text-xs">
+              <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">🆕 AHA/ACC 2026 Highlights (52 New Recommendations)</p>
+              <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
+                <li><strong>Lp(a) testing recommended for ALL adults</strong> — strongest hereditary CV risk factor</li>
+                <li><strong>ApoB, hsCRP, and CAC testing</strong> recommended more frequently as superior biomarkers</li>
+                <li><strong>Specific LDL targets restored</strong> — removed in 2013, now back in 2026</li>
+                <li><strong>30-year risk projections</strong> for younger adults (replacing 10-year-only assessment)</li>
+                <li>Treatment now recommended for <strong>younger adults</strong> based on lifetime risk</li>
+              </ul>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* ACS Management Note */}
         <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800">
           <div className="flex items-start gap-2">
@@ -1120,7 +1254,7 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
 
         {/* Citation */}
         <p className="text-xs text-muted-foreground text-center pt-2 border-t">
-          Based on: LAI 2026 Update | ESC/EAS Guidelines on Dyslipidemias 2025 (Mach F, et al. Atherosclerosis. 2025;409:120479) | AHA/ACC Guideline on Blood Cholesterol 2018 (Grundy SM, et al. Circulation. 2019;139:e1082-e1143)
+          Based on: LAI 2026 Update | ESC/EAS Guidelines on Dyslipidemias 2025 (Mach F, et al. Atherosclerosis. 2025;409:120479) | AHA/ACC Cholesterol Guidelines 2026 (52 new recommendations) | AHA/ACC 2018 (Grundy SM, et al. Circulation. 2019;139:e1082-e1143)
         </p>
       </CardContent>
     </Card>
