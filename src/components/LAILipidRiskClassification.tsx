@@ -1254,7 +1254,7 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
 
         {/* Citation */}
         <p className="text-xs text-muted-foreground text-center pt-2 border-t">
-          Based on: LAI 2026 Update | ESC/EAS Guidelines on Dyslipidemias 2025 (Mach F, et al. Atherosclerosis. 2025;409:120479) | AHA/ACC Guideline on Blood Cholesterol 2018 (Grundy SM, et al. Circulation. 2019;139:e1082-e1143)
+          Based on: LAI 2026 Update | ESC/EAS Guidelines on Dyslipidemias 2025 (Mach F, et al. Atherosclerosis. 2025;409:120479) | AHA/ACC Cholesterol Guidelines 2026 (52 new recommendations) | AHA/ACC 2018 (Grundy SM, et al. Circulation. 2019;139:e1082-e1143)
         </p>
       </CardContent>
     </Card>
