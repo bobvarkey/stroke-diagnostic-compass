@@ -1060,38 +1060,69 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
               <p className="text-muted-foreground">Lp(a) represents a specific, highly inherited subset of atherogenic particles that are particularly dangerous — often described as a "hidden" risk factor that <strong>does not respond</strong> to standard diet or lifestyle changes. It is the <strong>strongest hereditary risk factor</strong> for heart disease.</p>
             </div>
 
+            <div className="p-2 bg-red-50 dark:bg-red-950/20 rounded border border-red-200 dark:border-red-800 text-xs">
+              <p className="text-red-800 dark:text-red-300"><strong>⚠️ Clinical Impact:</strong> Elevated levels of Lp(a) significantly increase the risk of <strong>heart disease, stroke, and aortic valve stenosis</strong>, even if your other cholesterol numbers are normal.</p>
+            </div>
+
             <div className="text-sm">
-              <p className="font-semibold text-purple-800 dark:text-purple-300 mb-2">Lp(a) Levels & Classification</p>
-              <div className="grid grid-cols-1 gap-1.5">
-                <div className="flex items-center gap-2 p-1.5 bg-green-100 dark:bg-green-900/30 rounded text-xs">
-                  <CheckCircle2 className="h-3 w-3 text-green-600 shrink-0" />
-                  <span><strong>Optimal:</strong> ≤14 mg/dL</span>
-                </div>
-                <div className="flex items-center gap-2 p-1.5 bg-green-50 dark:bg-green-900/20 rounded text-xs">
-                  <CheckCircle2 className="h-3 w-3 text-green-500 shrink-0" />
-                  <span><strong>Normal:</strong> ≤30 mg/dL (&lt;75 nmol/L) — Reference (low risk)</span>
-                </div>
-                <div className="flex items-center gap-2 p-1.5 bg-yellow-100 dark:bg-yellow-900/30 rounded text-xs">
-                  <AlertTriangle className="h-3 w-3 text-yellow-600 shrink-0" />
-                  <span><strong>Borderline:</strong> 30–49 mg/dL (75–124 nmol/L) — 1.2× ASCVD risk; 28% higher CV risk</span>
-                </div>
-                <div className="flex items-center gap-2 p-1.5 bg-orange-100 dark:bg-orange-900/30 rounded text-xs">
-                  <AlertTriangle className="h-3 w-3 text-orange-600 shrink-0" />
-                  <span><strong>Elevated:</strong> ≥50 mg/dL (≥125 nmol/L) — 1.4× ASCVD risk; 44% higher CV risk</span>
-                </div>
-                <div className="flex items-center gap-2 p-1.5 bg-red-100 dark:bg-red-900/30 rounded text-xs">
-                  <AlertTriangle className="h-3 w-3 text-red-600 shrink-0" />
-                  <span><strong>High:</strong> ≥100 mg/dL (≥250 nmol/L) — 2× ASCVD risk; 114% higher CV risk</span>
-                </div>
-                <div className="flex items-center gap-2 p-1.5 bg-red-200 dark:bg-red-900/40 rounded text-xs">
-                  <AlertTriangle className="h-3 w-3 text-red-700 shrink-0" />
-                  <span><strong>Very High:</strong> ≥150 mg/dL (≥350 nmol/L) — 3× ASCVD risk</span>
-                </div>
-                <div className="flex items-center gap-2 p-1.5 bg-red-300 dark:bg-red-900/50 rounded text-xs">
-                  <AlertTriangle className="h-3 w-3 text-red-800 shrink-0" />
-                  <span><strong>Extreme:</strong> ≥180 mg/dL (≥430 nmol/L) — 4× ASCVD risk</span>
-                </div>
+              <p className="font-semibold text-purple-800 dark:text-purple-300 mb-2">Lp(a) Risk Categories</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-muted/50">
+                      <th className="text-left p-2 border">Risk Category</th>
+                      <th className="text-left p-2 border">mg/dL (Mass)</th>
+                      <th className="text-left p-2 border">nmol/L (Particle Count)</th>
+                      <th className="text-left p-2 border">Relative Risk</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="bg-green-50 dark:bg-green-900/20">
+                      <td className="p-2 border font-medium">Optimal</td>
+                      <td className="p-2 border text-muted-foreground">≤14 mg/dL</td>
+                      <td className="p-2 border text-muted-foreground">—</td>
+                      <td className="p-2 border text-muted-foreground">Lowest</td>
+                    </tr>
+                    <tr className="bg-green-50/50 dark:bg-green-900/10">
+                      <td className="p-2 border font-medium">Normal (Lower Risk)</td>
+                      <td className="p-2 border text-muted-foreground">&lt;30 mg/dL</td>
+                      <td className="p-2 border text-muted-foreground">&lt;75 nmol/L</td>
+                      <td className="p-2 border text-muted-foreground">Reference</td>
+                    </tr>
+                    <tr className="bg-yellow-50 dark:bg-yellow-900/20">
+                      <td className="p-2 border font-medium">Borderline / Intermediate</td>
+                      <td className="p-2 border text-muted-foreground">30–50 mg/dL</td>
+                      <td className="p-2 border text-muted-foreground">75–125 nmol/L</td>
+                      <td className="p-2 border text-muted-foreground">1.2× (28% ↑ CV risk)</td>
+                    </tr>
+                    <tr className="bg-orange-50 dark:bg-orange-900/20">
+                      <td className="p-2 border font-medium">High Risk</td>
+                      <td className="p-2 border text-muted-foreground">&gt;50 mg/dL</td>
+                      <td className="p-2 border text-muted-foreground">&gt;125 nmol/L</td>
+                      <td className="p-2 border text-muted-foreground">1.4× (44% ↑ CV risk)</td>
+                    </tr>
+                    <tr className="bg-red-50 dark:bg-red-900/20">
+                      <td className="p-2 border font-medium">Very High</td>
+                      <td className="p-2 border text-muted-foreground">≥100 mg/dL</td>
+                      <td className="p-2 border text-muted-foreground">≥250 nmol/L</td>
+                      <td className="p-2 border text-muted-foreground">2× (114% ↑ CV risk)</td>
+                    </tr>
+                    <tr className="bg-red-100 dark:bg-red-900/30">
+                      <td className="p-2 border font-medium">Extreme</td>
+                      <td className="p-2 border text-muted-foreground">≥150 mg/dL</td>
+                      <td className="p-2 border text-muted-foreground">≥350 nmol/L</td>
+                      <td className="p-2 border text-muted-foreground">3×</td>
+                    </tr>
+                    <tr className="bg-red-200 dark:bg-red-900/40">
+                      <td className="p-2 border font-medium">Highest / Extreme Risk</td>
+                      <td className="p-2 border text-muted-foreground">&gt;180 mg/dL</td>
+                      <td className="p-2 border text-muted-foreground">&gt;430 nmol/L</td>
+                      <td className="p-2 border text-muted-foreground">4×</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+              <p className="text-xs text-muted-foreground mt-2 italic">📌 <strong>Particle Count (nmol/L) is considered more accurate</strong> than mass (mg/dL) because Lp(a) particles vary in size.</p>
             </div>
 
             <div className="p-2 bg-blue-100/50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800 text-xs">
