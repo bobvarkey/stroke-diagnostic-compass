@@ -1165,6 +1165,42 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
               </ul>
             </div>
 
+            <div className="text-sm space-y-2">
+              <p className="font-semibold text-amber-800 dark:text-amber-300">Key ApoB Reference Ranges</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-muted/50">
+                      <th className="text-left p-2 border">Category</th>
+                      <th className="text-left p-2 border">ApoB Level</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="p-2 border font-medium text-green-700 dark:text-green-400">Optimal</td>
+                      <td className="p-2 border text-muted-foreground">&lt;90 mg/dL</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium text-yellow-700 dark:text-yellow-400">Borderline High</td>
+                      <td className="p-2 border text-muted-foreground">90–109 mg/dL</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium text-red-700 dark:text-red-400">High Risk</td>
+                      <td className="p-2 border text-muted-foreground">≥110 mg/dL (often defined as ≥130 mg/dL)</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">Male Typical Range</td>
+                      <td className="p-2 border text-muted-foreground">66–133 mg/dL</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">Female Typical Range</td>
+                      <td className="p-2 border text-muted-foreground">60–117 mg/dL</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             <div className="p-2 bg-blue-100/50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800 text-xs">
               <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">🆕 AHA/ACC 2026 Highlights (52 New Recommendations)</p>
               <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
