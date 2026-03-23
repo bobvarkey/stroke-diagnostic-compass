@@ -1225,7 +1225,7 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
             </div>
 
             <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded border border-blue-200 dark:border-blue-800 text-xs">
-              <p className="text-blue-800 dark:text-blue-300"><strong>📌 Bottom Line:</strong> Lp(a) is genetically determined (>90% heritable) and resistant to lifestyle changes. Dedicated Lp(a)-lowering therapies (ASO/siRNA) are the most promising approach, with cardiovascular outcomes trials expected to report in 2025-2026. Until then, focus on aggressive LDL-C lowering and comprehensive risk factor management.</p>
+              <p className="text-blue-800 dark:text-blue-300"><strong>📌 Bottom Line:</strong> Lp(a) is genetically determined ({'>'}90% heritable) and resistant to lifestyle changes. Dedicated Lp(a)-lowering therapies (ASO/siRNA) are the most promising approach, with cardiovascular outcomes trials expected to report in 2025-2026. Until then, focus on aggressive LDL-C lowering and comprehensive risk factor management.</p>
             </div>
           </CollapsibleContent>
         </Collapsible>
