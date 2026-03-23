@@ -1132,6 +1132,104 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
           </CollapsibleContent>
         </Collapsible>
 
+        {/* Lp(a)-Targeted Therapies */}
+        <Collapsible open={expandedSections.has("lpa-therapy")} onOpenChange={() => toggleSection("lpa-therapy")}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-violet-50 dark:bg-violet-950/30 rounded-lg hover:bg-violet-100 dark:hover:bg-violet-950/50 transition-colors border border-violet-200 dark:border-violet-800">
+            <div className="flex items-center gap-2">
+              <Target className="h-4 w-4 text-violet-600" />
+              <span className="font-medium text-sm">Lp(a)-Targeted Therapies — Pipeline & Evidence</span>
+              <Badge variant="outline" className="text-xs border-violet-300 text-violet-700 dark:text-violet-300">Emerging</Badge>
+            </div>
+            <ChevronDown className={cn("h-4 w-4 transition-transform", expandedSections.has("lpa-therapy") && "rotate-180")} />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2 space-y-3 p-4 bg-violet-50/50 dark:bg-violet-950/20 rounded-lg border border-violet-200 dark:border-violet-800">
+
+            <div className="p-2 bg-yellow-50 dark:bg-yellow-950/20 rounded border border-yellow-200 dark:border-yellow-800 text-xs">
+              <p className="text-yellow-800 dark:text-yellow-300"><strong>⚠️ Key Point:</strong> Currently, <strong>no FDA-approved therapy specifically targets Lp(a)</strong>. Lp(a) does not respond meaningfully to statins, diet, or exercise. Several promising agents are in Phase III trials.</p>
+            </div>
+
+            <div className="text-sm space-y-2">
+              <p className="font-semibold text-violet-800 dark:text-violet-300">Emerging Lp(a)-Lowering Agents</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-muted/50">
+                      <th className="text-left p-2 border">Agent</th>
+                      <th className="text-left p-2 border">Mechanism</th>
+                      <th className="text-left p-2 border">Lp(a) Reduction</th>
+                      <th className="text-left p-2 border">Key Trial</th>
+                      <th className="text-left p-2 border">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="bg-violet-50/50 dark:bg-violet-900/10">
+                      <td className="p-2 border font-medium">Pelacarsen</td>
+                      <td className="p-2 border text-muted-foreground">ASO (antisense oligonucleotide) targeting hepatic apo(a) mRNA</td>
+                      <td className="p-2 border font-semibold text-green-600">~80%</td>
+                      <td className="p-2 border text-muted-foreground"><strong>Lp(a) HORIZON</strong> (Phase III, n=8,323; MACE outcomes; results expected 2025-2026)</td>
+                      <td className="p-2 border"><Badge variant="outline" className="text-xs border-blue-300 text-blue-700 dark:text-blue-300">Phase III</Badge></td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">Olpasiran</td>
+                      <td className="p-2 border text-muted-foreground">siRNA targeting apo(a) mRNA in hepatocytes</td>
+                      <td className="p-2 border font-semibold text-green-600">~95-101%</td>
+                      <td className="p-2 border text-muted-foreground"><strong>OCEAN(a)</strong> (Phase III, n=6,000+; MACE outcomes). <strong>OCEAN(a)-Dose</strong> showed 71-101% reduction dose-dependently</td>
+                      <td className="p-2 border"><Badge variant="outline" className="text-xs border-blue-300 text-blue-700 dark:text-blue-300">Phase III</Badge></td>
+                    </tr>
+                    <tr className="bg-violet-50/50 dark:bg-violet-900/10">
+                      <td className="p-2 border font-medium">Lepodisiran</td>
+                      <td className="p-2 border text-muted-foreground">siRNA targeting apo(a) mRNA; longer dosing interval</td>
+                      <td className="p-2 border font-semibold text-green-600">~94-97%</td>
+                      <td className="p-2 border text-muted-foreground"><strong>ACCLAIM-Lp(a)</strong> (Phase III; MACE outcomes)</td>
+                      <td className="p-2 border"><Badge variant="outline" className="text-xs border-blue-300 text-blue-700 dark:text-blue-300">Phase III</Badge></td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 border font-medium">Zerlasiran</td>
+                      <td className="p-2 border text-muted-foreground">siRNA; twice-yearly dosing</td>
+                      <td className="p-2 border font-semibold text-green-600">~90%</td>
+                      <td className="p-2 border text-muted-foreground">Phase II completed; Phase III planned</td>
+                      <td className="p-2 border"><Badge variant="outline" className="text-xs border-yellow-300 text-yellow-700 dark:text-yellow-300">Phase II</Badge></td>
+                    </tr>
+                    <tr className="bg-violet-50/50 dark:bg-violet-900/10">
+                      <td className="p-2 border font-medium">Muvalaplin</td>
+                      <td className="p-2 border text-muted-foreground">Oral small molecule; blocks apo(a)–apoB100 binding</td>
+                      <td className="p-2 border font-semibold text-green-600">~65%</td>
+                      <td className="p-2 border text-muted-foreground">First oral Lp(a)-lowering agent. Phase II data published.</td>
+                      <td className="p-2 border"><Badge variant="outline" className="text-xs border-yellow-300 text-yellow-700 dark:text-yellow-300">Phase II</Badge></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="p-3 bg-red-50 dark:bg-red-950/20 rounded border border-red-200 dark:border-red-800 text-xs space-y-2">
+              <p className="font-semibold text-red-800 dark:text-red-300">❌ Niacin — NOT Recommended for Lp(a) Lowering</p>
+              <ul className="list-disc list-inside text-muted-foreground space-y-1">
+                <li>Niacin reduces Lp(a) by ~20-30%, but this has <strong>NOT translated into clinical benefit</strong></li>
+                <li><strong>AIM-HIGH</strong> (2011): Niacin added to statin showed no MACE reduction despite improved lipid profile; trial stopped early for futility</li>
+                <li><strong>HPS2-THRIVE</strong> (2014): Niacin + laropiprant showed no CV benefit but <strong>increased serious adverse events</strong> (myopathy, infections, bleeding, new-onset diabetes)</li>
+                <li>AHA/ACC 2026: <strong>Niacin is not recommended</strong> for Lp(a) or general lipid management</li>
+                <li>Side effects include flushing, hepatotoxicity, hyperglycemia, and hyperuricemia</li>
+              </ul>
+            </div>
+
+            <div className="text-sm space-y-2">
+              <p className="font-semibold text-violet-800 dark:text-violet-300">Current Management While Awaiting Lp(a) Therapies</p>
+              <ul className="list-disc list-inside text-xs text-muted-foreground space-y-1">
+                <li><strong>Aggressively treat all modifiable risk factors</strong> — LDL-C, BP, glucose, smoking, weight</li>
+                <li><strong>Lower LDL-C targets</strong> — elevated Lp(a) should prompt more aggressive LDL-C goals (e.g., treat as "risk enhancer" per AHA 2026)</li>
+                <li><strong>PCSK9 inhibitors</strong> reduce Lp(a) by ~20-30% as a secondary effect (not primary indication)</li>
+                <li><strong>Aspirin</strong> may be considered for primary prevention in patients with Lp(a) ≥50 mg/dL (AHA 2026 — individualized decision)</li>
+                <li><strong>Lipoprotein apheresis</strong> — FDA-approved for refractory cases with Lp(a) ≥60 mg/dL + progressive CVD despite optimal therapy</li>
+              </ul>
+            </div>
+
+            <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded border border-blue-200 dark:border-blue-800 text-xs">
+              <p className="text-blue-800 dark:text-blue-300"><strong>📌 Bottom Line:</strong> Lp(a) is genetically determined ({'>'}90% heritable) and resistant to lifestyle changes. Dedicated Lp(a)-lowering therapies (ASO/siRNA) are the most promising approach, with cardiovascular outcomes trials expected to report in 2025-2026. Until then, focus on aggressive LDL-C lowering and comprehensive risk factor management.</p>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* ApoB Clinical Guide — AHA/ACC 2026 */}
         <Collapsible open={expandedSections.has("apob-guide")} onOpenChange={() => toggleSection("apob-guide")}>
           <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-950/50 transition-colors border border-amber-200 dark:border-amber-800">
