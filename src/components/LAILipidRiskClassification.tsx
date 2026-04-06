@@ -1344,6 +1344,22 @@ const LAILipidRiskClassification: React.FC<LAILipidRiskClassificationProps> = ({
           </CollapsibleContent>
         </Collapsible>
 
+        {/* LAI Extreme Risk Category Predictor */}
+        <Collapsible open={expandedSections.has("extreme-predictor")} onOpenChange={() => toggleSection("extreme-predictor")}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-rose-50 dark:bg-rose-950/30 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-950/50 transition-colors border border-rose-200 dark:border-rose-800">
+            <div className="flex items-center gap-2">
+              <Stethoscope className="h-4 w-4 text-rose-600" />
+              <span className="font-medium text-sm">LAI Extreme Risk Category Predictor</span>
+              <Badge variant="outline" className="text-xs border-rose-300 text-rose-700 dark:text-rose-300">EMR Tool</Badge>
+            </div>
+            <ChevronDown className={cn("h-4 w-4 transition-transform", expandedSections.has("extreme-predictor") && "rotate-180")} />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2 p-4 bg-rose-50/50 dark:bg-rose-950/20 rounded-lg border border-rose-200 dark:border-rose-800">
+            <p className="text-xs text-muted-foreground mb-4">Practical decision algorithm for EMR use. Classifies Very High Risk, Extreme Risk A, B, or C from entered ASCVD history and modifiers.</p>
+            <LAIExtremeRiskPredictor />
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* ACS Management Note */}
         <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800">
           <div className="flex items-start gap-2">
