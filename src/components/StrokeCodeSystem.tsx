@@ -564,30 +564,6 @@ export default function StrokeCodeSystem() {
               </div>
             </div>
 
-            {/* Contacts Preview */}
-            <div className="bg-white/50 dark:bg-black/20 rounded-lg p-4">
-              <h4 className="font-semibold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                Contacts to be called ({contacts.filter(c => c.is_active && (codeLevel === "code_1" || c.code_level === "code_2")).length})
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {contacts
-                  .filter(c => c.is_active && (codeLevel === "code_1" || c.code_level === "code_2"))
-                  .sort((a, b) => a.priority_order - b.priority_order)
-                  .map(contact => (
-                    <Badge 
-                      key={contact.id} 
-                      variant="outline" 
-                      className="flex items-center gap-1 py-1 px-2 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900"
-                      onClick={() => dialNumber(contact.phone_number)}
-                    >
-                      <Phone className="h-3 w-3" />
-                      {contact.name} ({ROLE_LABELS[contact.role]})
-                    </Badge>
-                  ))}
-              </div>
-            </div>
-
             {/* NSA Notification Status */}
             {settings?.nsa_enabled && (
               <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 flex items-center gap-3">
