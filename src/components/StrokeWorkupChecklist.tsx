@@ -5644,16 +5644,16 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   return (
     <div className="min-h-screen bg-black max-w-6xl mx-auto px-[max(0.75rem,env(safe-area-inset-left))] sm:px-4 md:px-6 py-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-4 space-y-5">
       {/* Header with Theme Toggle */}
-      <div className="relative text-center mb-4">
+      <div className="relative text-center mb-6">
         {/* Theme Toggle - Fixed Position */}
         <div className="absolute right-0 top-0">
           <ThemeToggle />
         </div>
 
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 leading-relaxed">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-relaxed">
           Acute Stroke Workup Checklist
         </h1>
-        <p className="text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed">
+        <p className="text-gray-300 text-base sm:text-lg md:text-xl leading-relaxed">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
       </div>
@@ -5661,29 +5661,29 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-6 h-14 sticky top-0 z-40 mb-5 bg-slate-900 rounded-none p-1 border-b border-slate-700 backdrop-blur-xl bg-black/90">
-          <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-semibold text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all hover:text-white">
-            <Zap className="h-4 w-4 shrink-0" />
+        <TabsList className="hidden sm:grid w-full grid-cols-6 h-20 sticky top-0 z-40 mb-5 bg-slate-900 rounded-none p-2 border-b border-slate-700 backdrop-blur-xl bg-black/90">
+          <TabsTrigger value="ischemic" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
+            <Zap className="h-5 w-5 shrink-0" />
             Ischemic
           </TabsTrigger>
-          <TabsTrigger value="hemorrhagic" className="flex items-center gap-1 text-xs font-semibold text-gray-300 data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all hover:text-white">
-            <Droplets className="h-4 w-4 shrink-0" />
+          <TabsTrigger value="hemorrhagic" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
+            <Droplets className="h-5 w-5 shrink-0" />
             ICH
           </TabsTrigger>
-          <TabsTrigger value="sah" className="flex items-center gap-1 text-xs font-semibold text-gray-300 data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all hover:text-white">
-            <Droplets className="h-4 w-4 shrink-0" />
+          <TabsTrigger value="sah" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
+            <Droplets className="h-5 w-5 shrink-0" />
             SAH
           </TabsTrigger>
-          <TabsTrigger value="sdh" className="flex items-center gap-1 text-xs font-semibold text-gray-300 data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all hover:text-white">
-            <Layers className="h-4 w-4 shrink-0" />
+          <TabsTrigger value="sdh" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
+            <Layers className="h-5 w-5 shrink-0" />
             SDH
           </TabsTrigger>
-          <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-semibold text-gray-300 data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all hover:text-white">
-            <Brain className="h-4 w-4 shrink-0" />
+          <TabsTrigger value="cvt" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
+            <Brain className="h-5 w-5 shrink-0" />
             CVT
           </TabsTrigger>
-          <TabsTrigger value="post-ivt" className="flex items-center gap-1 text-xs font-semibold text-gray-300 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all hover:text-white">
-            <AlertTriangle className="h-4 w-4 shrink-0" />
+          <TabsTrigger value="post-ivt" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
+            <AlertTriangle className="h-5 w-5 shrink-0" />
             Post IVT
           </TabsTrigger>
         </TabsList>
@@ -5691,8 +5691,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
         {/* Ischemic Stroke Tab Content */}
         <TabsContent value="ischemic" className="space-y-0">
           {/* Sticky Section Quick-Jump Bar */}
-          <div className="sticky top-14 z-30 bg-black/95 border-b border-slate-700 px-3 py-2 mb-6 backdrop-blur-xl overflow-x-auto">
-            <div className="flex gap-1 text-xs">
+          <div className="sticky top-14 z-30 bg-black/95 border-b border-slate-700 px-4 py-3 mb-6 backdrop-blur-xl overflow-x-auto">
+            <div className="flex gap-2 text-sm">
               {[
                 { id: "treatment-recommender", label: "Treatment" },
                 { id: "stroke-code", label: "Code" },
@@ -5714,9 +5714,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                     setActiveSectionId(section.id);
                     document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className={`px-3 py-1 rounded-lg whitespace-nowrap transition-all ${
+                  className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all font-medium text-base ${
                     activeSectionId === section.id
-                      ? "bg-blue-600 text-white"
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/50"
                       : "bg-slate-800 text-gray-300 hover:bg-slate-700"
                   }`}
                 >
