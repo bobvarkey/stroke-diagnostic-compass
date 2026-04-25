@@ -218,13 +218,14 @@ export default function StrokeCodeSystem() {
   }, []);
 
   const formatTimeElapsed = (startTime: string): string => {
-    if (!startTime) return "00:00";
+    if (!startTime) return "00:00:00";
     const start = new Date(startTime).getTime();
     const now = currentTime.getTime();
     const elapsed = Math.max(0, Math.floor((now - start) / 1000));
     const hours = Math.floor(elapsed / 3600);
     const minutes = Math.floor((elapsed % 3600) / 60);
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    const seconds = elapsed % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
   const handleActivateCode = async () => {
