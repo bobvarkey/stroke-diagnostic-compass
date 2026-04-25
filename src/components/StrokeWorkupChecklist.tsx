@@ -5604,7 +5604,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [strokeHistoryFactors, setStrokeHistoryFactors] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState("ischemic");
-  const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({ 
+  const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({
     patientId: patient?.patient_id || "",
     name: patient?.name || undefined,
     age: patient?.age?.toString() || undefined,
@@ -5612,6 +5612,20 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
     lastKnownWell: patient?.last_known_well ? patient.last_known_well.slice(0, 16) : undefined,
   });
   const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
+
+  // Navigation state for collapsible sections
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["treatment-recommender"]));
+  const [activeSectionId, setActiveSectionId] = useState("treatment-recommender");
+
+  const toggleSection = (sectionId: string) => {
+    const newExpanded = new Set(expandedSections);
+    if (newExpanded.has(sectionId)) {
+      newExpanded.delete(sectionId);
+    } else {
+      newExpanded.add(sectionId);
+    }
+    setExpandedSections(newExpanded);
+  };
 
   const handleCheck = (testId: string) => {
     const newChecked = new Set(checkedItems);
@@ -5647,7 +5661,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-6 h-14 mb-5 bg-slate-900 rounded-xl p-1 border border-slate-700">
+        <TabsList className="hidden sm:grid w-full grid-cols-6 h-14 sticky top-0 z-40 mb-5 bg-slate-900 rounded-none p-1 border-b border-slate-700 backdrop-blur-xl bg-black/90">
           <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-semibold text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all hover:text-white">
             <Zap className="h-4 w-4 shrink-0" />
             Ischemic
@@ -5675,37 +5689,42 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
         </TabsList>
 
         {/* Ischemic Stroke Tab Content */}
-        <TabsContent value="ischemic" className="space-y-6">
-          {/* Section Navigator */}
-          <SectionNavigator 
-            title="Ischemic Stroke Modules"
-            sections={[
-              { id: "treatment-recommender", label: "Treatment Pathway", icon: <Brain className="h-3.5 w-3.5 text-primary" /> },
-              { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
-              { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
-              { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
-              { id: "ivt-anticoag", label: "IVT & Anticoagulation", icon: <ShieldAlert className="h-3.5 w-3.5 text-orange-500" /> },
-              { id: "thrombolytic-dose", label: "Thrombolytic Dosing", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
-              { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
-              { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
-              { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
-              { id: "vascular-anatomy", label: "Vascular Anatomy", icon: <Heart className="h-3.5 w-3.5 text-red-400" /> },
-              { id: "aspects-calculator", label: "ASPECTS Calculator", icon: <Calculator className="h-3.5 w-3.5 text-teal-500" /> },
-              { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
-              { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
-              { id: "prevent-score", label: "PREVENT Score", icon: <ShieldAlert className="h-3.5 w-3.5 text-emerald-500" /> },
-              { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
-              { id: "prime-tool", label: "PRIME Tool", icon: <Calculator className="h-3.5 w-3.5 text-violet-500" /> },
-              { id: "lipid-risk", label: "Lipid Risk", icon: <Pill className="h-3.5 w-3.5 text-yellow-500" /> },
-              { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
-              { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
-              { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" /> },
-              { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
-            ]}
-            onNavigateToSection={(id) => {
-              // Sections are already rendered, just scroll
-            }}
-          />
+        <TabsContent value="ischemic" className="space-y-0">
+          {/* Sticky Section Quick-Jump Bar */}
+          <div className="sticky top-14 z-30 bg-black/95 border-b border-slate-700 px-3 py-2 mb-6 backdrop-blur-xl overflow-x-auto">
+            <div className="flex gap-1 text-xs">
+              {[
+                { id: "treatment-recommender", label: "Treatment" },
+                { id: "stroke-code", label: "Code" },
+                { id: "acute-algorithm", label: "Algorithm" },
+                { id: "tpa-eligibility", label: "tPA" },
+                { id: "ivt-anticoag", label: "IVT" },
+                { id: "thrombolytic-dose", label: "Dosing" },
+                { id: "treatment-decision", label: "Decisions" },
+                { id: "lvo-dashboard", label: "LVO" },
+                { id: "aspects-calculator", label: "ASPECTS" },
+                { id: "nihss-calculator", label: "NIHSS" },
+                { id: "gcs-calculator", label: "GCS" },
+                { id: "lab-investigations", label: "Labs" },
+                { id: "workup-checklist", label: "Checklist" },
+              ].map(section => (
+                <button
+                  key={section.id}
+                  onClick={() => {
+                    setActiveSectionId(section.id);
+                    document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className={`px-3 py-1 rounded-lg whitespace-nowrap transition-all ${
+                    activeSectionId === section.id
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-800 text-gray-300 hover:bg-slate-700"
+                  }`}
+                >
+                  {section.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Demographics Form */}
           <DemographicsForm demographics={demographics} onDemographicsChange={setDemographics} />
