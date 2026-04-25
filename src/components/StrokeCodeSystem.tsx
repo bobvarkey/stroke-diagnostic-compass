@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -140,6 +141,27 @@ export default function StrokeCodeSystem() {
   const [isLKWTimerRunning, setIsLKWTimerRunning] = useState(false);
   const [isArrivalTimerRunning, setIsArrivalTimerRunning] = useState(false);
   const [lkwInitialTime, setLkwInitialTime] = useState<string>("00:00");
+
+  // Checklist state for stroke team roles
+  const [checkedRoles, setCheckedRoles] = useState<Record<string, boolean>>({
+    neurology: false,
+    neurosurgery: false,
+    stroke_nurse: false,
+    icu: false,
+    radiology_console: false,
+    radiologist: false,
+    others: false,
+  });
+
+  const strokeTeamRoles = [
+    { id: 'neurology', label: 'Neurology' },
+    { id: 'neurosurgery', label: 'Neurosurgery' },
+    { id: 'stroke_nurse', label: 'Stroke Nurse' },
+    { id: 'icu', label: 'ICU' },
+    { id: 'radiology_console', label: 'Radiology Console' },
+    { id: 'radiologist', label: 'Radiologist' },
+    { id: 'others', label: 'Others' },
+  ];
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -681,120 +703,33 @@ export default function StrokeCodeSystem() {
 
           {/* Contacts Tab */}
           <TabsContent value="contacts" className="p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-lg">Stroke Team Contacts</h3>
-              <Dialog open={contactFormOpen} onOpenChange={(open) => { setContactFormOpen(open); if (!open) resetContactForm(); }}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="bg-red-600 hover:bg-red-700">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Add Contact
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{editingContact ? "Edit Contact" : "Add New Contact"}</DialogTitle>
-                    <DialogDescription>Configure stroke team contact details</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label>Name *</Label>
-                      <Input value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Dr. John Smith" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Phone Number *</Label>
-                      <Input value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+1234567890" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Role</Label>
-                      <Select value={contactRole} onValueChange={(v) => setContactRole(v as ContactRole)}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {ROLE_OPTIONS.map(role => (
-                            <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Code Level</Label>
-                      <Select value={contactCodeLevel} onValueChange={(v) => setContactCodeLevel(v as CodeLevel)}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="code_1">Code 1 Only (Critical)</SelectItem>
-                          <SelectItem value="code_2">All Codes (Standard)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Priority Order (lower = called first)</Label>
-                      <Input type="number" min={1} value={contactPriority} onChange={(e) => setContactPriority(parseInt(e.target.value) || 1)} />
-                    </div>
+            <div>
+              <h3 className="font-semibold text-lg mb-6">Stroke Team Notifications</h3>
+              <div className="space-y-3">
+                {strokeTeamRoles.map((role) => (
+                  <div key={role.id} className="flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                    <Checkbox
+                      id={role.id}
+                      checked={checkedRoles[role.id] || false}
+                      onCheckedChange={(checked) =>
+                        setCheckedRoles({ ...checkedRoles, [role.id]: checked === true })
+                      }
+                      className="h-5 w-5"
+                    />
+                    <Label
+                      htmlFor={role.id}
+                      className="flex-1 cursor-pointer font-medium text-base"
+                    >
+                      {role.label}
+                    </Label>
+                    {(checkedRoles[role.id]) && (
+                      <Badge variant="outline" className="bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700">
+                        ✓ Checked
+                      </Badge>
+                    )}
                   </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setContactFormOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSaveContact} className="bg-red-600 hover:bg-red-700">Save</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            <div className="rounded-lg border overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-red-50 dark:bg-red-950/30">
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Code Level</TableHead>
-                    <TableHead>Active</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {contacts.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                        No contacts configured. Add contacts to enable stroke code activation.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    contacts.map(contact => (
-                      <TableRow key={contact.id} className={!contact.is_active ? "opacity-50" : ""}>
-                        <TableCell className="font-mono">{contact.priority_order}</TableCell>
-                        <TableCell className="font-medium">{contact.name}</TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{ROLE_LABELS[contact.role]}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button variant="link" size="sm" className="p-0 h-auto" onClick={() => dialNumber(contact.phone_number)}>
-                            <Phone className="h-3 w-3 mr-1" />
-                            {contact.phone_number}
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={contact.code_level === "code_1" ? "destructive" : "outline"}>
-                            {contact.code_level === "code_1" ? "Code 1 Only" : "All Codes"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Switch checked={contact.is_active} onCheckedChange={() => handleToggleContactActive(contact)} />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="icon" onClick={() => openEditContact(contact)}>
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleDeleteContact(contact.id)}>
-                              <Trash2 className="h-4 w-4 text-red-500" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+                ))}
+              </div>
             </div>
           </TabsContent>
         </Tabs>
