@@ -139,6 +139,7 @@ export default function StrokeCodeSystem() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isLKWTimerRunning, setIsLKWTimerRunning] = useState(false);
   const [isArrivalTimerRunning, setIsArrivalTimerRunning] = useState(false);
+  const [lkwInitialTime, setLkwInitialTime] = useState<string>("00:00");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -544,13 +545,24 @@ export default function StrokeCodeSystem() {
                 <div className="text-5xl md:text-6xl font-bold text-red-600 dark:text-red-400 font-mono tracking-wider mb-4">
                   {formatTimeElapsed(lastKnownWellTime)}
                 </div>
+                {!isLKWTimerRunning && (
+                  <input
+                    type="time"
+                    value={lkwInitialTime}
+                    onChange={(e) => setLkwInitialTime(e.target.value)}
+                    className="w-full mb-3 p-2 rounded border border-red-300 dark:border-red-600 dark:bg-red-900/30 text-center font-mono"
+                  />
+                )}
                 <Button
                   onClick={() => {
                     if (isLKWTimerRunning) {
                       setIsLKWTimerRunning(false);
                       setLastKnownWellTime("");
                     } else {
-                      setLastKnownWellTime(new Date().toISOString());
+                      const [hours, minutes] = lkwInitialTime.split(':').map(Number);
+                      const offsetSeconds = hours * 3600 + minutes * 60;
+                      const startTime = new Date(currentTime.getTime() - offsetSeconds * 1000);
+                      setLastKnownWellTime(startTime.toISOString());
                       setIsLKWTimerRunning(true);
                     }
                   }}
