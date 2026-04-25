@@ -133,6 +133,11 @@ export default function StrokeCodeSystem() {
   const [voiceMessage1, setVoiceMessage1] = useState("");
   const [voiceMessage2, setVoiceMessage2] = useState("");
 
+  // Timer state
+  const [lastKnownWellTime, setLastKnownWellTime] = useState<string>("");
+  const [arrivalTime, setArrivalTime] = useState<string>("");
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
@@ -179,6 +184,23 @@ export default function StrokeCodeSystem() {
       fetchCallLogs(selectedActivation.id);
     }
   }, [selectedActivation, fetchCallLogs]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTimeElapsed = (startTime: string): string => {
+    if (!startTime) return "00:00";
+    const start = new Date(startTime).getTime();
+    const now = currentTime.getTime();
+    const elapsed = Math.max(0, Math.floor((now - start) / 1000));
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   const handleActivateCode = async () => {
     if (!patientId.trim() || !location.trim()) {
@@ -473,7 +495,7 @@ export default function StrokeCodeSystem() {
       </CardHeader>
       <CardContent className="p-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-4 rounded-none border-b bg-red-100/50 dark:bg-red-900/30">
+          <TabsList className="w-full grid grid-cols-2 rounded-none border-b bg-red-100/50 dark:bg-red-900/30">
             <TabsTrigger value="activate" className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
               Activate Code
@@ -481,14 +503,6 @@ export default function StrokeCodeSystem() {
             <TabsTrigger value="contacts" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Contacts
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Settings
-            </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2">
-              <History className="h-4 w-4" />
-              Audit Trail
             </TabsTrigger>
           </TabsList>
 
@@ -518,6 +532,39 @@ export default function StrokeCodeSystem() {
                   <span className="text-xs font-normal opacity-80">Standard stroke team</span>
                 </div>
               </Button>
+            </div>
+
+            {/* Stroke Timers */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Last Known Well Timer */}
+              <div className="bg-gradient-to-br from-red-100 dark:from-red-950 to-red-50 dark:to-red-900 border-2 border-red-400 dark:border-red-600 rounded-lg p-6 text-center">
+                <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-3">Time Since Symptom Onset (LKW)</p>
+                <input
+                  type="datetime-local"
+                  value={lastKnownWellTime}
+                  onChange={(e) => setLastKnownWellTime(e.target.value)}
+                  className="w-full mb-3 p-2 rounded border border-red-300 dark:border-red-600 dark:bg-red-900/30 text-center font-mono"
+                />
+                <div className="text-5xl md:text-6xl font-bold text-red-600 dark:text-red-400 font-mono tracking-wider">
+                  {formatTimeElapsed(lastKnownWellTime)}
+                </div>
+                <p className="text-xs text-red-600 dark:text-red-400 mt-3">mm:ss</p>
+              </div>
+
+              {/* Arrival to Stroke Center Timer */}
+              <div className="bg-gradient-to-br from-amber-100 dark:from-amber-950 to-amber-50 dark:to-amber-900 border-2 border-amber-400 dark:border-amber-600 rounded-lg p-6 text-center">
+                <p className="text-sm font-medium text-amber-700 dark:text-amber-300 mb-3">Time Since Arrival to Stroke Center</p>
+                <input
+                  type="datetime-local"
+                  value={arrivalTime}
+                  onChange={(e) => setArrivalTime(e.target.value)}
+                  className="w-full mb-3 p-2 rounded border border-amber-300 dark:border-amber-600 dark:bg-amber-900/30 text-center font-mono"
+                />
+                <div className="text-5xl md:text-6xl font-bold text-amber-600 dark:text-amber-400 font-mono tracking-wider">
+                  {formatTimeElapsed(arrivalTime)}
+                </div>
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">mm:ss</p>
+              </div>
             </div>
 
             {/* Activation Form */}
@@ -722,92 +769,11 @@ export default function StrokeCodeSystem() {
               </Table>
             </div>
           </TabsContent>
-
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="p-6 space-y-6">
-            <div className="grid gap-6">
-              {/* Facility Settings */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Building className="h-4 w-4" />
-                    Facility Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Facility ID</Label>
-                    <Input value={facilityId} onChange={(e) => setFacilityId(e.target.value)} placeholder="FACILITY-001" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* NSA Integration */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Bell className="h-4 w-4" />
-                    National Stroke Association Integration
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Enable NSA Alerts</Label>
-                      <p className="text-sm text-muted-foreground">Automatically notify NSA on every code activation</p>
-                    </div>
-                    <Switch checked={nsaEnabled} onCheckedChange={setNsaEnabled} />
-                  </div>
-                  {nsaEnabled && (
-                    <div className="space-y-2">
-                      <Label>NSA Phone Number</Label>
-                      <Input value={nsaPhone} onChange={(e) => setNsaPhone(e.target.value)} placeholder="+1234567890" />
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Voice Messages */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Phone className="h-4 w-4" />
-                    Voice Messages
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Code 1 Voice Message</Label>
-                    <Textarea 
-                      value={voiceMessage1} 
-                      onChange={(e) => setVoiceMessage1(e.target.value)} 
-                      placeholder="Stroke Code 1 activated. This is an emergency. Please respond immediately."
-                      rows={2}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Code 2 Voice Message</Label>
-                    <Textarea 
-                      value={voiceMessage2} 
-                      onChange={(e) => setVoiceMessage2(e.target.value)} 
-                      placeholder="Stroke Code 2 activated. Please respond as soon as possible."
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Button onClick={handleSaveSettings} className="bg-red-600 hover:bg-red-700">
-                Save Settings
-              </Button>
-            </div>
-          </TabsContent>
-
-          {/* Audit Trail Tab */}
-          <TabsContent value="history" className="p-6 space-y-4">
-            <h3 className="font-semibold text-lg">Activation History</h3>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+}
               {/* Activations List */}
               <Card>
                 <CardHeader className="pb-2">
