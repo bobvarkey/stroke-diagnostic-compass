@@ -11,6 +11,7 @@ import { ChevronUp, Users, LogOut, Shield, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Json } from "@/integrations/supabase/types";
+import { LandingPage } from "@/components/LandingPage";
 
 interface Patient {
   id: string;
@@ -53,6 +54,7 @@ const Index = () => {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
   const [isDemoMode, setIsDemoMode] = useState(true);
+  const [showLandingPage, setShowLandingPage] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -143,9 +145,10 @@ const Index = () => {
     setIsDemoMode(true);
     setSelectedPatient(DEMO_PATIENT);
     setPatientData({});
-    toast({ 
-      title: 'Demo Mode Active', 
-      description: 'Exploring with sample patient data. Changes will not be saved.' 
+    setShowLandingPage(false);
+    toast({
+      title: 'Demo Mode Active',
+      description: 'Exploring with sample patient data. Changes will not be saved.'
     });
   };
 
@@ -157,6 +160,7 @@ const Index = () => {
     setIsDemoMode(true);
     setSelectedPatient(DEMO_PATIENT);
     setPatientData({});
+    setShowLandingPage(false);
   };
 
   // Show loading state
@@ -170,6 +174,16 @@ const Index = () => {
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
+    );
+  }
+
+  // Show landing page if enabled
+  if (showLandingPage) {
+    return (
+      <LandingPage
+        onExploreClick={() => setShowLandingPage(false)}
+        onSelectAssessment={() => setShowLandingPage(false)}
+      />
     );
   }
 
