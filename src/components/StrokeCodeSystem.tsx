@@ -137,6 +137,8 @@ export default function StrokeCodeSystem() {
   const [lastKnownWellTime, setLastKnownWellTime] = useState<string>("");
   const [arrivalTime, setArrivalTime] = useState<string>("");
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isLKWTimerRunning, setIsLKWTimerRunning] = useState(false);
+  const [isArrivalTimerRunning, setIsArrivalTimerRunning] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -539,31 +541,45 @@ export default function StrokeCodeSystem() {
               {/* Last Known Well Timer */}
               <div className="bg-gradient-to-br from-red-100 dark:from-red-950 to-red-50 dark:to-red-900 border-2 border-red-400 dark:border-red-600 rounded-lg p-6 text-center">
                 <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-3">Time Since Symptom Onset (LKW)</p>
-                <input
-                  type="datetime-local"
-                  value={lastKnownWellTime}
-                  onChange={(e) => setLastKnownWellTime(e.target.value)}
-                  className="w-full mb-3 p-2 rounded border border-red-300 dark:border-red-600 dark:bg-red-900/30 text-center font-mono"
-                />
-                <div className="text-5xl md:text-6xl font-bold text-red-600 dark:text-red-400 font-mono tracking-wider">
+                <div className="text-5xl md:text-6xl font-bold text-red-600 dark:text-red-400 font-mono tracking-wider mb-4">
                   {formatTimeElapsed(lastKnownWellTime)}
                 </div>
-                <p className="text-xs text-red-600 dark:text-red-400 mt-3">mm:ss</p>
+                <Button
+                  onClick={() => {
+                    if (isLKWTimerRunning) {
+                      setIsLKWTimerRunning(false);
+                      setLastKnownWellTime("");
+                    } else {
+                      setLastKnownWellTime(new Date().toISOString());
+                      setIsLKWTimerRunning(true);
+                    }
+                  }}
+                  className={`w-full font-bold ${isLKWTimerRunning ? "bg-red-600 hover:bg-red-700" : "bg-red-500 hover:bg-red-600"}`}
+                >
+                  {isLKWTimerRunning ? "Stop Timer" : "Start Timer"}
+                </Button>
               </div>
 
               {/* Arrival to Stroke Center Timer */}
               <div className="bg-gradient-to-br from-amber-100 dark:from-amber-950 to-amber-50 dark:to-amber-900 border-2 border-amber-400 dark:border-amber-600 rounded-lg p-6 text-center">
                 <p className="text-sm font-medium text-amber-700 dark:text-amber-300 mb-3">Time Since Arrival to Stroke Center</p>
-                <input
-                  type="datetime-local"
-                  value={arrivalTime}
-                  onChange={(e) => setArrivalTime(e.target.value)}
-                  className="w-full mb-3 p-2 rounded border border-amber-300 dark:border-amber-600 dark:bg-amber-900/30 text-center font-mono"
-                />
-                <div className="text-5xl md:text-6xl font-bold text-amber-600 dark:text-amber-400 font-mono tracking-wider">
+                <div className="text-5xl md:text-6xl font-bold text-amber-600 dark:text-amber-400 font-mono tracking-wider mb-4">
                   {formatTimeElapsed(arrivalTime)}
                 </div>
-                <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">mm:ss</p>
+                <Button
+                  onClick={() => {
+                    if (isArrivalTimerRunning) {
+                      setIsArrivalTimerRunning(false);
+                      setArrivalTime("");
+                    } else {
+                      setArrivalTime(new Date().toISOString());
+                      setIsArrivalTimerRunning(true);
+                    }
+                  }}
+                  className={`w-full font-bold ${isArrivalTimerRunning ? "bg-amber-600 hover:bg-amber-700" : "bg-amber-500 hover:bg-amber-600"}`}
+                >
+                  {isArrivalTimerRunning ? "Stop Timer" : "Start Timer"}
+                </Button>
               </div>
             </div>
 
