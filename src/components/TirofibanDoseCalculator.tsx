@@ -1,0 +1,302 @@
+import React, { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Switch } from "@/components/ui/switch";
+import { Syringe, AlertTriangle, Info, Calculator, Activity, FlaskConical } from "lucide-react";
+import ModuleCommentBox from "./ModuleCommentBox";
+
+/**
+ * Tirofiban Dosing Calculator for Acute Ischemic Stroke
+ *
+ * Standard AIS protocol (off-label, used in SaTIS, TREND, ESCAPIST,
+ * ADVENT, ASSET-IT, RESCUE BT trials & Chinese Stroke Association guidelines):
+ *   Loading: 0.4 mcg/kg/min IV over 30 min
+ *   Maintenance: 0.1 mcg/kg/min continuous IV for 24–72 h
+ *
+ * Renal: CrCl < 30 mL/min → reduce both rates by 50%.
+ * IA rescue (during EVT): 0.25–1 mg IA bolus, may repeat q5 min, max ~1 mg.
+ * SAO/progressive stroke consensus: cap total loading dose at 1 mg.
+ */
+export default function TirofibanDoseCalculator() {
+  const [weight, setWeight] = useState<string>("");
+  const [renalImpaired, setRenalImpaired] = useState(false); // CrCl <30
+  const [activeMode, setActiveMode] = useState<"iv" | "ia" | "post_ivt">("iv");
+  const [comments, setComments] = useState("");
+
+  const weightNum = parseFloat(weight) || 0;
+  const isValidWeight = weightNum >= 30 && weightNum <= 200;
+  const factor = renalImpaired ? 0.5 : 1;
+
+  // Standard concentration: 50 mcg/mL (0.05 mg/mL) ready-to-use bag
+  const CONC_MCG_PER_ML = 50;
+
+  const ivDose = useMemo(() => {
+    if (!isValidWeight) return null;
+    const loadRate = 0.4 * factor; // mcg/kg/min
+    const maintRate = 0.1 * factor; // mcg/kg/min
+
+    // Loading: rate × weight × 30 min
+    const loadingTotalMcg = loadRate * weightNum * 30;
+    const loadingTotalMg = loadingTotalMcg / 1000;
+    const loadingMlPerHr = (loadRate * weightNum * 60) / CONC_MCG_PER_ML; // mL/hr during 30 min
+    const loadingVolumeMl = loadingTotalMcg / CONC_MCG_PER_ML;
+
+    // Maintenance: per hour
+    const maintMcgPerHr = maintRate * weightNum * 60;
+    const maintMlPerHr = maintMcgPerHr / CONC_MCG_PER_ML;
+    const maint24hMg = (maintMcgPerHr * 24) / 1000;
+
+    // SAO cap: total loading should not exceed 1 mg
+    const cappedLoadingMg = Math.min(loadingTotalMg, 1);
+
+    return {
+      loadRate: loadRate.toFixed(2),
+      maintRate: maintRate.toFixed(2),
+      loadingTotalMg: loadingTotalMg.toFixed(3),
+      loadingVolumeMl: loadingVolumeMl.toFixed(2),
+      loadingMlPerHr: loadingMlPerHr.toFixed(1),
+      maintMcgPerHr: maintMcgPerHr.toFixed(1),
+      maintMlPerHr: maintMlPerHr.toFixed(2),
+      maint24hMg: maint24hMg.toFixed(2),
+      cappedLoadingMg: cappedLoadingMg.toFixed(3),
+      cappedTriggered: loadingTotalMg > 1,
+    };
+  }, [weightNum, isValidWeight, factor]);
+
+  return (
+    <Card className="border-cyan-300 dark:border-cyan-700 bg-gradient-to-br from-cyan-50 dark:from-cyan-950/30 to-background">
+      <CardHeader className="bg-cyan-100/50 dark:bg-cyan-900/30">
+        <CardTitle className="flex items-center gap-2 text-cyan-800 dark:text-cyan-300">
+          <Syringe className="h-5 w-5" />
+          Tirofiban Infusion Dose Calculator (Acute Ischemic Stroke)
+        </CardTitle>
+        <p className="text-xs text-cyan-700/80 dark:text-cyan-400/80 mt-1">
+          GP IIb/IIIa inhibitor — off-label in AIS. Doses lower than cardiac protocols.
+          Based on SaTIS, TREND, ESCAPIST, ADVENT, ASSET-IT, RESCUE BT.
+        </p>
+      </CardHeader>
+      <CardContent className="pt-6 space-y-6">
+        {/* Inputs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="tiro-weight" className="text-cyan-700 dark:text-cyan-400 font-medium">
+              Patient Weight (kg)
+            </Label>
+            <Input
+              id="tiro-weight"
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder="Enter weight in kg"
+              min="30"
+              max="200"
+              className="mt-1 border-cyan-200 dark:border-cyan-700"
+            />
+          </div>
+          <div className="flex items-center justify-between gap-3 p-3 rounded-lg border border-cyan-200 dark:border-cyan-700 bg-background/60">
+            <div>
+              <Label className="text-cyan-700 dark:text-cyan-400 font-medium text-sm">
+                Renal impairment (CrCl &lt; 30 mL/min)
+              </Label>
+              <p className="text-xs text-muted-foreground">Reduces both rates by 50%</p>
+            </div>
+            <Switch checked={renalImpaired} onCheckedChange={setRenalImpaired} />
+          </div>
+        </div>
+
+        {renalImpaired && (
+          <Alert className="border-amber-300 bg-amber-50 dark:bg-amber-950/30">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-700 dark:text-amber-400 text-sm">
+              <strong>Renal dose adjustment active:</strong> Loading 0.2 mcg/kg/min · Maintenance 0.05 mcg/kg/min
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Mode tabs */}
+        <Tabs value={activeMode} onValueChange={(v) => setActiveMode(v as typeof activeMode)}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="iv" className="data-[state=active]:bg-cyan-600 data-[state=active]:text-white text-xs sm:text-sm">
+              Standard IV
+            </TabsTrigger>
+            <TabsTrigger value="post_ivt" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm">
+              Post-IVT/EVT
+            </TabsTrigger>
+            <TabsTrigger value="ia" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+              IA Rescue
+            </TabsTrigger>
+          </TabsList>
+
+          {/* IV Standard */}
+          <TabsContent value="iv" className="space-y-4">
+            <div className="p-4 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200 dark:border-cyan-800">
+              <div className="flex items-center gap-2 mb-2">
+                <Info className="h-4 w-4 text-cyan-600" />
+                <span className="font-medium text-cyan-800 dark:text-cyan-300">Standard AIS IV Protocol</span>
+              </div>
+              <ul className="text-sm text-cyan-700 dark:text-cyan-400 space-y-1 list-disc list-inside">
+                <li>Loading: <strong>0.4 mcg/kg/min IV × 30 min</strong></li>
+                <li>Maintenance: <strong>0.1 mcg/kg/min continuous IV</strong></li>
+                <li>Duration: 24–72 hours typically</li>
+                <li>Standard concentration: 50 mcg/mL (ready-to-use bag)</li>
+                <li>SAO / progressive stroke: cap total loading at <strong>1 mg</strong></li>
+              </ul>
+            </div>
+
+            {isValidWeight && ivDose ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
+                    <Badge className="mb-2 bg-amber-600">Loading Infusion</Badge>
+                    <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
+                      {ivDose.loadingTotalMg} mg
+                    </div>
+                    <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                      total over 30 min ({ivDose.loadRate} mcg/kg/min × {weightNum} kg)
+                    </div>
+                    <div className="text-xs text-amber-700 dark:text-amber-400 mt-2">
+                      = <strong>{ivDose.loadingVolumeMl} mL</strong> @ 50 mcg/mL<br />
+                      Pump rate: <strong>{ivDose.loadingMlPerHr} mL/hr</strong> × 30 min
+                    </div>
+                    {ivDose.cappedTriggered && (
+                      <div className="mt-2 p-2 bg-amber-200/60 dark:bg-amber-800/40 rounded text-[11px] text-amber-800 dark:text-amber-200">
+                        ⚠ SAO cap: total loading should not exceed <strong>1 mg</strong> ({ivDose.cappedLoadingMg} mg suggested cap).
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-4 bg-green-100 dark:bg-green-900/40 rounded-lg border-2 border-green-400">
+                    <Badge className="mb-2 bg-green-600">Maintenance Infusion</Badge>
+                    <div className="text-2xl font-bold text-green-700 dark:text-green-300">
+                      {ivDose.maintMlPerHr} mL/hr
+                    </div>
+                    <div className="text-xs text-green-600 dark:text-green-400 mt-1">
+                      = {ivDose.maintMcgPerHr} mcg/hr ({ivDose.maintRate} mcg/kg/min × {weightNum} kg)
+                    </div>
+                    <div className="text-xs text-green-700 dark:text-green-400 mt-2">
+                      24-h total: <strong>{ivDose.maint24hMg} mg</strong><br />
+                      Continue 24–72 h per protocol
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-muted/50 rounded-lg text-center text-muted-foreground">
+                <Calculator className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                Enter a valid weight (30–200 kg) to calculate dose
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Post IVT / EVT */}
+          <TabsContent value="post_ivt" className="space-y-4">
+            <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="h-4 w-4 text-blue-600" />
+                <span className="font-medium text-blue-800 dark:text-blue-300">Post-Thrombolysis / Post-EVT (ADVENT, ASSET-IT)</span>
+              </div>
+              <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1 list-disc list-inside">
+                <li>Initiate <strong>within 6 h</strong> of thrombolysis</li>
+                <li>Same regimen: 0.4 mcg/kg/min × 30 min → 0.1 mcg/kg/min</li>
+                <li>Maintain for <strong>24 hours</strong> typically</li>
+                <li>Bridge to oral antiplatelet (ASA ± clopidogrel) at end of infusion</li>
+                <li>Hold if any sICH suspicion — obtain immediate non-contrast CT</li>
+              </ul>
+            </div>
+
+            {isValidWeight && ivDose && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-lg border-2 border-blue-400">
+                  <Badge className="mb-2 bg-blue-600">Loading (30 min)</Badge>
+                  <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                    {ivDose.loadingMlPerHr} mL/hr
+                  </div>
+                  <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    Total {ivDose.loadingTotalMg} mg ({ivDose.loadingVolumeMl} mL)
+                  </div>
+                </div>
+                <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-lg border-2 border-blue-400">
+                  <Badge className="mb-2 bg-blue-600">Maintenance × 24 h</Badge>
+                  <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                    {ivDose.maintMlPerHr} mL/hr
+                  </div>
+                  <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    24-h total: {ivDose.maint24hMg} mg
+                  </div>
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* IA Rescue */}
+          <TabsContent value="ia" className="space-y-4">
+            <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
+              <div className="flex items-center gap-2 mb-2">
+                <FlaskConical className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-purple-800 dark:text-purple-300">Intra-Arterial Rescue (during EVT)</span>
+              </div>
+              <ul className="text-sm text-purple-700 dark:text-purple-400 space-y-1 list-disc list-inside">
+                <li>Small IA boluses: <strong>0.25–0.5 mg</strong> via microcatheter</li>
+                <li>May repeat <strong>every 5 minutes</strong> as needed</li>
+                <li>Maximum total IA dose: ~<strong>1 mg</strong> (weight-based, do not exceed)</li>
+                <li>Indications: re-occlusion, in-stent thrombosis, distal emboli, no-reflow</li>
+                <li>Consider follow-on IV maintenance infusion (0.1 mcg/kg/min × 24 h)</li>
+              </ul>
+            </div>
+
+            {isValidWeight && (
+              <div className="p-4 bg-purple-100 dark:bg-purple-900/40 rounded-lg border-2 border-purple-400 text-center">
+                <Badge className="mb-2 bg-purple-600">IA Bolus Range</Badge>
+                <div className="text-3xl font-bold text-purple-700 dark:text-purple-300">
+                  0.25 – 1 mg
+                </div>
+                <div className="text-xs text-purple-600 dark:text-purple-400 mt-2">
+                  Per bolus 0.25–0.5 mg • Repeat q5 min • Max cumulative ~1 mg
+                </div>
+                <div className="text-xs text-purple-700 dark:text-purple-400 mt-3">
+                  Dilute to 50 mcg/mL → 1 mg = <strong>20 mL</strong>; 0.25 mg = <strong>5 mL</strong>; 0.5 mg = <strong>10 mL</strong>
+                </div>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+
+        {/* Safety / Monitoring */}
+        <Alert className="border-red-300 bg-red-50 dark:bg-red-950/30">
+          <AlertTriangle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-700 dark:text-red-400 text-sm">
+            <strong>Safety & Monitoring:</strong>
+            <ul className="list-disc list-inside mt-1 space-y-1">
+              <li>Check <strong>platelets & hemoglobin at 2–6 h</strong> after starting, then daily — risk of acute thrombocytopenia</li>
+              <li>Hold for platelets &lt; 90 × 10⁹/L or active bleeding</li>
+              <li>Maintain BP &lt; 180/105 mmHg throughout infusion</li>
+              <li>Avoid concomitant anticoagulants unless specifically indicated</li>
+              <li>Renal dosing: CrCl &lt; 30 mL/min → halve both rates (toggle above)</li>
+              <li>Off-label in AIS — document indication and informed consent per local policy</li>
+            </ul>
+          </AlertDescription>
+        </Alert>
+
+        {/* Evidence */}
+        <div className="p-3 bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700 rounded-lg">
+          <p className="text-xs text-cyan-700 dark:text-cyan-400">
+            <strong>Evidence:</strong> RESCUE BT (NEJM 2023;388:2025-2036) — IV tirofiban improved 90-day functional outcome
+            in selected AIS patients undergoing EVT without significantly increasing sICH. Also supported by SaTIS, TREND,
+            ESCAPIST, ADVENT, ASSET-IT, and Chinese Stroke Association consensus guidelines.
+          </p>
+        </div>
+
+        <ModuleCommentBox
+          value={comments}
+          onChange={setComments}
+          placeholder="Document tirofiban indication, dose, renal status, platelet monitoring plan..."
+          label="Tirofiban Decision Notes"
+        />
+      </CardContent>
+    </Card>
+  );
+}
