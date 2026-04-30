@@ -99,6 +99,58 @@ export default function CangrelorDoseCalculator() {
     if (!mg || !ml || mg <= 0 || ml <= 0) return 0;
     return (mg * 1000) / ml; // mg→mcg / mL
   }, [vialMg, diluentMl]);
+  const finalConcMgPerMl = finalConcMcgPerMl / 1000;
+
+  // Inline validation: unit / concentration / vial-vs-diluent sanity
+  const dosingWarnings = useMemo(() => {
+    const warnings: { level: "error" | "warn" | "info"; msg: string }[] = [];
+    const mg = parseFloat(vialMg);
+    const ml = parseFloat(diluentMl);
+
+    // Vial strength sanity (Cangrelor vial = 50 mg lyophilized)
+    if (vialMg !== "" && (isNaN(mg) || mg <= 0)) {
+      warnings.push({ level: "error", msg: "Vial strength must be a positive number in mg." });
+    } else if (!isNaN(mg) && mg > 0) {
+      if (mg < 5) warnings.push({ level: "warn", msg: `Vial strength ${mg} mg looks too low — did you enter mcg instead of mg? (Standard cangrelor vial = 50 mg)` });
+      if (mg > 200) warnings.push({ level: "warn", msg: `Vial strength ${mg} mg exceeds typical 50 mg vial — confirm you are not entering total bag mass.` });
+    }
+
+    // Diluent volume sanity
+    if (diluentMl !== "" && (isNaN(ml) || ml <= 0)) {
+      warnings.push({ level: "error", msg: "Diluent volume must be a positive number in mL." });
+    } else if (!isNaN(ml) && ml > 0) {
+      if (ml < 20) warnings.push({ level: "warn", msg: `Diluent ${ml} mL is unusually small — did you confuse vial reconstitution volume (5 mL) with the infusion bag (typically 250 mL)?` });
+      if (ml > 500) warnings.push({ level: "warn", msg: `Diluent ${ml} mL is unusually large — final concentration will be very dilute and pump rates may exceed device limits.` });
+    }
+
+    // Cross-field concentration sanity (mcg/mL vs mg/mL unit checks)
+    if (finalConcMcgPerMl > 0) {
+      if (finalConcMcgPerMl < 50) {
+        warnings.push({ level: "warn", msg: `Final concentration ${Math.round(finalConcMcgPerMl)} mcg/mL (${finalConcMgPerMl.toFixed(3)} mg/mL) is unusually dilute — pump rate will be high. Standard is 200 mcg/mL (0.2 mg/mL).` });
+      } else if (finalConcMcgPerMl > 1000) {
+        warnings.push({ level: "error", msg: `Final concentration ${Math.round(finalConcMcgPerMl)} mcg/mL (${finalConcMgPerMl.toFixed(2)} mg/mL) is dangerously concentrated — likely a unit error (mg vs mcg) or wrong bag size.` });
+      } else if (Math.abs(finalConcMcgPerMl - 200) > 20) {
+        warnings.push({ level: "info", msg: `Final concentration ${Math.round(finalConcMcgPerMl)} mcg/mL differs from the 200 mcg/mL (0.2 mg/mL) standard — confirm pump library entry.` });
+      }
+    }
+
+    // Vial vs diluent ratio plausibility (catches swapped fields)
+    if (!isNaN(mg) && !isNaN(ml) && mg > 0 && ml > 0 && mg > ml) {
+      warnings.push({ level: "warn", msg: `Vial mass (${mg} mg) exceeds diluent volume (${ml} mL) — fields may be swapped. Cangrelor is typically 50 mg in 250 mL.` });
+    }
+
+    // Weight sanity
+    if (weight !== "") {
+      const w = parseFloat(weight);
+      if (isNaN(w) || w <= 0) warnings.push({ level: "error", msg: "Weight must be a positive number in kg." });
+      else if (w < 30) warnings.push({ level: "warn", msg: `Weight ${w} kg is below adult range — pediatric dosing not validated for cangrelor.` });
+      else if (w > 200) warnings.push({ level: "warn", msg: `Weight ${w} kg exceeds 200 kg — consider capping at 200 kg actual body weight; consult pharmacy.` });
+    }
+
+    return warnings;
+  }, [vialMg, diluentMl, finalConcMcgPerMl, finalConcMgPerMl, weight]);
+
+  const hasErrors = dosingWarnings.some((w) => w.level === "error");
 
   const durationHours = useMemo(() => {
     if (durationPreset === "custom") return parseFloat(customHours) || 0;
