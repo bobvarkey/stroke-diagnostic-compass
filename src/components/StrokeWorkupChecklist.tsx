@@ -5758,6 +5758,38 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   subtitle="Weight-based thrombolytic dosing calculator"
                   icon={<Syringe className="h-4 w-4 text-amber-600" />}
                 >
+                  <DrugSafetyCard
+                    data={{
+                      drug: "Alteplase (tPA) & Tenecteplase (TNK)",
+                      accentClass: "border-amber-300 bg-amber-50/40 dark:bg-amber-950/20",
+                      evidence: "AHA/ASA 2026 • NINDS • EXTEND-IA TNK",
+                      dosing: [
+                        "Alteplase: 0.9 mg/kg IV (max 90 mg) — 10% bolus over 1 min, 90% infusion",
+                        "Tenecteplase: 0.25 mg/kg IV single bolus (max 25 mg) over 5 sec",
+                        "IA tPA (post-EVT, CHOICE-2): 0.225 mg/kg, max 20 mg",
+                        "Reconstitute alteplase to 1 mg/mL; TNK to 5 mg/mL",
+                      ],
+                      duration: [
+                        "Alteplase infusion: 60 minutes total",
+                        "TNK: single bolus — no infusion",
+                        "IA tPA: 10–15 min via microcatheter distal to clot",
+                        "Window: ≤4.5 h LKW (extended to 9 h if perfusion mismatch)",
+                      ],
+                      contraindications: [
+                        "BP >185/110 uncontrolled • Active internal bleeding",
+                        "Recent ICH, intracranial surgery, or stroke <3 mo",
+                        "Platelets <100k • INR >1.7 • aPTT prolonged",
+                        "DOAC use within 48 h (unless reversed)",
+                        "Glucose <50 or >400 mg/dL • Endocarditis",
+                      ],
+                      monitoring: [
+                        "BP q15min × 2 h, q30min × 6 h, q1h × 16 h (target <180/105)",
+                        "Neuro checks (NIHSS) on same schedule as BP",
+                        "Watch for orolingual angioedema (3rd–4th h)",
+                        "Hold antiplatelets/anticoagulants × 24 h; repeat CT before starting",
+                      ],
+                    }}
+                  />
                   <ThrombolyticDoseCalculator />
                 </CollapsibleModule>
 
