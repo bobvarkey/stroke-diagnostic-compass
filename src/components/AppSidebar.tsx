@@ -196,71 +196,42 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
 
   const handleClick = (sectionId: string) => {
     onSectionClick?.(sectionId);
-    
-    // Close sidebar on mobile after clicking a link
+
     if (isMobile) {
       setOpenMobile(false);
     }
 
-    // Switch to the correct tab if needed
-    const tabMap: Record<string, string> = {
-      "post-ivt-hemorrhage": "post-ivt",
-      "cvt-management": "cvt",
-    };
-    const hemorrhagicSections = ["ich-score"];
-    const targetTab = tabMap[sectionId] 
-      || (hemorrhagicSections.includes(sectionId) ? "hemorrhagic" : "ischemic");
-    
-    // Find and click the correct tab trigger
-    const tabTrigger = document.querySelector(`[data-state][role="tab"][value="${targetTab}"]`) as HTMLElement;
-    if (tabTrigger && tabTrigger.getAttribute("data-state") !== "active") {
-      tabTrigger.click();
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    
-    // Dispatch a custom event so LazySection can force-mount the target
-    window.dispatchEvent(new CustomEvent('force-mount-section', { detail: sectionId }));
-    
-    // Scroll to the target section with repeated corrections for layout shifts
-    const scrollToTarget = (behavior: ScrollBehavior = 'smooth') => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior, block: 'start' });
-      }
-    };
-    
-    // Instant jump first to get close, then smooth corrections
-    setTimeout(() => scrollToTarget('instant'), 100);
-    setTimeout(() => scrollToTarget('instant'), 400);
-    setTimeout(() => scrollToTarget('smooth'), 800);
-    setTimeout(() => scrollToTarget('smooth'), 1500);
-    setTimeout(() => scrollToTarget('smooth'), 2500);
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r glass-subtle">
-      <SidebarHeader className="border-b p-3 sm:p-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent-purple flex items-center justify-center">
-            <Stethoscope className="h-4 w-4 text-primary-foreground" />
+    <Sidebar collapsible="icon" className="border-r border-slate-800 bg-slate-950/95 shadow-lg shadow-slate-950/10">
+      <SidebarHeader className="border-b border-slate-800/80 bg-slate-950/95 p-3 sm:p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 ring-1 ring-slate-700/60">
+            <Stethoscope className="h-5 w-5 text-sky-400" />
           </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-bold text-sm gradient-text">Stroke Workup</span>
-              <span className="text-[10px] text-muted-foreground">Quick Navigation</span>
+              <span className="text-sm font-semibold text-slate-100">Stroke Workup</span>
+              <span className="text-xs text-slate-500">Quick navigation</span>
             </div>
           )}
         </div>
       </SidebarHeader>
 
       <SidebarContent>
-        <ScrollArea className="h-[calc(100vh-140px)]">
+        <ScrollArea className="h-[calc(100vh-148px)] px-2 py-3">
           {navGroups.map((group) => (
-            <Collapsible key={group.title} defaultOpen={group.defaultOpen} className="group/collapsible">
+            <Collapsible key={group.title} defaultOpen={group.defaultOpen} className="group/collapsible mb-3 last:mb-0">
               <SidebarGroup>
                 <CollapsibleTrigger asChild>
-                  <SidebarGroupLabel className="cursor-pointer hover:bg-accent/50 rounded-md transition-colors flex items-center justify-between pr-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground">
+                  <SidebarGroupLabel className="cursor-pointer rounded-2xl px-3 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-slate-500 transition-colors hover:bg-slate-900 hover:text-slate-100">
                     <span>{group.title}</span>
-                    <ChevronDown className="h-3.5 w-3.5 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
                   </SidebarGroupLabel>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -272,13 +243,16 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
                             onClick={() => handleClick(item.id)}
                             isActive={activeSection === item.id}
                             tooltip={item.label}
+                            aria-current={activeSection === item.id ? "page" : undefined}
                             className={cn(
-                              "transition-all min-h-[44px] md:min-h-0 rounded-lg",
-                              activeSection === item.id && "bg-primary/10 text-primary font-medium shadow-sm"
+                              "group/menu-button rounded-2xl px-3 py-3 text-sm font-medium text-slate-300 transition duration-200",
+                              "hover:bg-slate-900/80 hover:text-slate-100",
+                              activeSection === item.id &&
+                                "bg-slate-900 text-slate-100 font-semibold shadow-[0_0_0_2px_rgba(56,189,248,0.12)]",
                             )}
                           >
-                            {item.icon}
-                            <span className="truncate text-sm">{item.label}</span>
+                            <span className={cn("flex h-10 w-10 items-center justify-center rounded-2xl transition", activeSection === item.id ? "bg-slate-800 text-sky-300" : "bg-slate-900 text-slate-400")}>{item.icon}</span>
+                            <span className="truncate text-left">{item.label}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
@@ -291,10 +265,10 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
         </ScrollArea>
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-2">
+      <SidebarFooter className="border-t border-slate-800/70 p-3">
         {!collapsed && (
-          <div className="text-xs text-muted-foreground text-center font-medium">
-            <span className="gradient-text">AHA 2026</span> Guidelines
+          <div className="text-xs text-slate-500 text-center font-medium">
+            Guided workflow · low-glare palette
           </div>
         )}
       </SidebarFooter>

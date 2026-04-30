@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,70 +11,70 @@
 
 @layer base {
   :root {
-    --background: 220 25% 97%;
-    --foreground: 222 47% 11%;
+    --background: 221 16% 10%;
+    --foreground: 210 18% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 221 18% 15%;
+    --card-foreground: 210 18% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 221 20% 13%;
+    --popover-foreground: 210 18% 96%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 200 90% 63%;
+    --primary-foreground: 222 47% 100%;
 
-    --secondary: 270 60% 95%;
-    --secondary-foreground: 270 60% 30%;
+    --secondary: 222 34% 14%;
+    --secondary-foreground: 210 18% 96%;
 
-    --muted: 220 20% 95%;
-    --muted-foreground: 220 15% 46%;
+    --muted: 222 22% 15%;
+    --muted-foreground: 210 18% 76%;
 
-    --accent: 190 80% 92%;
-    --accent-foreground: 190 80% 20%;
+    --accent: 190 60% 18%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 355 75% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 90%;
-    --input: 220 20% 93%;
-    --ring: 217 91% 60%;
+    --border: 223 20% 18%;
+    --input: 221 18% 18%;
+    --ring: 205 95% 50%;
 
-    --medical-header: 217 91% 45%;
-    --medical-section: 220 25% 97%;
-    --medical-complete: 142 71% 45%;
-    --medical-pending: 38 92% 50%;
+    --medical-header: 213 90% 60%;
+    --medical-section: 223 18% 13%;
+    --medical-complete: 162 80% 45%;
+    --medical-pending: 42 92% 55%;
 
     --radius: 0.75rem;
 
     /* Glassmorphic tokens */
-    --glass-bg: 0 0% 100% / 0.65;
-    --glass-border: 0 0% 100% / 0.3;
-    --glass-shadow: 220 60% 50% / 0.08;
+    --glass-bg: 221 18% 16% / 0.85;
+    --glass-border: 0 0% 100% / 0.06;
+    --glass-shadow: 222 20% 8% / 0.28;
     --glass-blur: 16px;
 
     /* Vibrant accent palette */
-    --accent-blue: 217 91% 60%;
-    --accent-purple: 270 70% 60%;
-    --accent-pink: 330 80% 60%;
-    --accent-teal: 175 70% 42%;
-    --accent-amber: 38 92% 50%;
-    --accent-emerald: 160 84% 39%;
-    --accent-rose: 350 89% 60%;
+    --accent-blue: 200 90% 63%;
+    --accent-purple: 264 100% 64%;
+    --accent-pink: 325 85% 68%;
+    --accent-teal: 178 70% 45%;
+    --accent-amber: 38 92% 55%;
+    --accent-emerald: 160 85% 45%;
+    --accent-rose: 345 85% 62%;
 
     /* Gradient tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(270 70% 60%));
-    --gradient-warm: linear-gradient(135deg, hsl(330 80% 60%), hsl(38 92% 50%));
-    --gradient-cool: linear-gradient(135deg, hsl(175 70% 42%), hsl(217 91% 60%));
-    --gradient-surface: linear-gradient(135deg, hsl(220 25% 97%), hsl(270 60% 97%));
+    --gradient-primary: linear-gradient(135deg, hsl(200 90% 63%), hsl(264 100% 64%));
+    --gradient-warm: linear-gradient(135deg, hsl(330 80% 62%), hsl(38 92% 50%));
+    --gradient-cool: linear-gradient(135deg, hsl(178 70% 45%), hsl(200 90% 63%));
+    --gradient-surface: linear-gradient(180deg, hsl(221 16% 10%), hsl(218 18% 13%));
 
-    --sidebar-background: 240 20% 98%;
-    --sidebar-foreground: 222 47% 20%;
-    --sidebar-primary: 217 91% 55%;
+    --sidebar-background: 224 22% 13%;
+    --sidebar-foreground: 210 18% 94%;
+    --sidebar-primary: 204 94% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 50% 95%;
-    --sidebar-accent-foreground: 270 50% 25%;
-    --sidebar-border: 220 20% 92%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 200 80% 28%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 222 18% 17%;
+    --sidebar-ring: 205 95% 50%;
   }
 
   .dark {
@@ -138,11 +140,20 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background-image: var(--gradient-surface);
     background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  section[id], [id] {
+    scroll-margin-top: 5rem;
   }
 }
 
