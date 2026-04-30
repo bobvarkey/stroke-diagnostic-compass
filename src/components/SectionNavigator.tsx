@@ -21,16 +21,25 @@ const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, on
 
   const scrollToSection = (id: string) => {
     onNavigateToSection(id);
-    // Smooth scroll to section
-    setTimeout(() => {
+
+    // Force-mount the LazySection containing the target so it has real height
+    window.dispatchEvent(new CustomEvent('force-mount-section', { detail: id }));
+
+    const headerOffset = 80;
+    const scrollToTarget = (behavior: ScrollBehavior = 'smooth') => {
       const element = document.getElementById(id);
-      if (element) {
-        const headerOffset = 70;
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
-        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-      }
-    }, 100);
+      if (!element) return;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior });
+    };
+
+    // Repeat corrections to handle layout shifts as lazy content mounts
+    setTimeout(() => scrollToTarget('instant'), 100);
+    setTimeout(() => scrollToTarget('instant'), 400);
+    setTimeout(() => scrollToTarget('smooth'), 800);
+    setTimeout(() => scrollToTarget('smooth'), 1500);
+    setTimeout(() => scrollToTarget('smooth'), 2500);
   };
 
   const scrollToTop = () => {
