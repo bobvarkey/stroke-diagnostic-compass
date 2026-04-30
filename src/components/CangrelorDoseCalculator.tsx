@@ -180,7 +180,7 @@ export default function CangrelorDoseCalculator() {
       totalMl: Math.round(totalMl),
       vialsUsed,
     };
-  }, [weightNum, isValid, spec, finalConcMcgPerMl, durationHours, vialMg]);
+  }, [weightNum, isValid, spec, finalConcMcgPerMl, durationHours, vialMg, hasErrors]);
 
   // Build infusion schedule timeline
   const schedule = useMemo(() => {
