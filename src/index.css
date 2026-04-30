@@ -11,46 +11,46 @@
 
 @layer base {
   :root {
-    --background: 221 16% 10%;
-    --foreground: 210 18% 96%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 221 18% 15%;
-    --card-foreground: 210 18% 96%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 221 20% 13%;
-    --popover-foreground: 210 18% 96%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 200 90% 63%;
-    --primary-foreground: 222 47% 100%;
+    --primary: 150 85% 44%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 34% 14%;
-    --secondary-foreground: 210 18% 96%;
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 222 22% 15%;
-    --muted-foreground: 210 18% 76%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 190 60% 18%;
+    --accent: 150 98% 35%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 355 75% 52%;
+    --destructive: 355 75% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 223 20% 18%;
-    --input: 221 18% 18%;
-    --ring: 205 95% 50%;
+    --border: 0 0% 16%;
+    --input: 0 0% 10%;
+    --ring: 150 85% 50%;
 
     --medical-header: 213 90% 60%;
     --medical-section: 223 18% 13%;
     --medical-complete: 162 80% 45%;
     --medical-pending: 42 92% 55%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Glassmorphic tokens */
-    --glass-bg: 221 18% 16% / 0.85;
+    --glass-bg: 0 0% 10% / 0.88;
     --glass-border: 0 0% 100% / 0.06;
-    --glass-shadow: 222 20% 8% / 0.28;
-    --glass-blur: 16px;
+    --glass-shadow: 0 0% 0% / 0.35;
+    --glass-blur: 18px;
 
     /* Vibrant accent palette */
     --accent-blue: 200 90% 63%;
@@ -62,54 +62,54 @@
     --accent-rose: 345 85% 62%;
 
     /* Gradient tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(200 90% 63%), hsl(264 100% 64%));
+    --gradient-primary: linear-gradient(135deg, hsl(147 98% 35%), hsl(150 85% 45%));
     --gradient-warm: linear-gradient(135deg, hsl(330 80% 62%), hsl(38 92% 50%));
     --gradient-cool: linear-gradient(135deg, hsl(178 70% 45%), hsl(200 90% 63%));
-    --gradient-surface: linear-gradient(180deg, hsl(221 16% 10%), hsl(218 18% 13%));
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 0%), hsl(0 0% 8%));
 
-    --sidebar-background: 224 22% 13%;
-    --sidebar-foreground: 210 18% 94%;
-    --sidebar-primary: 204 94% 55%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 150 85% 44%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 80% 28%;
+    --sidebar-accent: 150 85% 44%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 18% 17%;
-    --sidebar-ring: 205 95% 50%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 150 85% 50%;
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 95%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 95%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 222 47% 9%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 217 91% 65%;
-    --primary-foreground: 222 47% 6%;
+    --primary: 150 85% 44%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 40% 18%;
-    --secondary-foreground: 270 60% 85%;
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 222 30% 14%;
-    --muted-foreground: 220 15% 60%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 190 50% 15%;
-    --accent-foreground: 190 80% 80%;
+    --accent: 150 98% 35%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 95%;
+    --destructive: 355 75% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 16%;
-    --input: 222 30% 14%;
-    --ring: 217 91% 65%;
+    --border: 0 0% 16%;
+    --input: 0 0% 10%;
+    --ring: 150 85% 50%;
 
     /* Glassmorphic dark tokens */
-    --glass-bg: 222 47% 10% / 0.7;
+    --glass-bg: 0 0% 10% / 0.88;
     --glass-border: 0 0% 100% / 0.08;
-    --glass-shadow: 217 91% 60% / 0.1;
+    --glass-shadow: 0 0% 0% / 0.35;
 
     --accent-blue: 217 91% 65%;
     --accent-purple: 270 70% 65%;
@@ -119,19 +119,19 @@
     --accent-emerald: 160 84% 45%;
     --accent-rose: 350 89% 65%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 50%), hsl(270 70% 50%));
+    --gradient-primary: linear-gradient(135deg, hsl(150 98% 35%), hsl(150 85% 45%));
     --gradient-warm: linear-gradient(135deg, hsl(330 80% 50%), hsl(38 92% 45%));
     --gradient-cool: linear-gradient(135deg, hsl(175 70% 35%), hsl(217 91% 50%));
-    --gradient-surface: linear-gradient(135deg, hsl(222 47% 6%), hsl(270 40% 8%));
+    --gradient-surface: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 8%));
 
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 30% 85%;
-    --sidebar-primary: 217 91% 65%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 150 85% 44%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 40% 15%;
-    --sidebar-accent-foreground: 270 60% 85%;
-    --sidebar-border: 222 30% 14%;
-    --sidebar-ring: 217 91% 65%;
+    --sidebar-accent: 150 85% 44%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 150 85% 50%;
   }
 }
 
@@ -147,9 +147,23 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background-image: var(--gradient-surface);
+    font-size: 18px;
+    line-height: 1.8;
+    font-weight: 500;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    color: #ffffff;
+    background-color: #000000;
+    background-image:
+      radial-gradient(circle at top center, rgba(99, 102, 241, 0.18), transparent 22%),
+      radial-gradient(circle at 20% 90%, rgba(16, 185, 129, 0.16), transparent 18%),
+      linear-gradient(180deg, #05060b 0%, #0c0f19 100%);
     background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  body, button, input, textarea, select, a, span, p, li, label {
+    color: #ffffff;
   }
 
   section[id], [id] {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, memo } from "react";
+import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import LazySection from "./LazySection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -5602,13 +5602,41 @@ interface Patient {
 
 interface StrokeWorkupChecklistProps {
   patient?: Patient;
+  activeSection?: string;
   onPatientDataChange?: (data: Record<string, unknown>) => void;
 }
 
-export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: StrokeWorkupChecklistProps) {
+export default function StrokeWorkupChecklist({ patient, activeSection, onPatientDataChange }: StrokeWorkupChecklistProps) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [strokeHistoryFactors, setStrokeHistoryFactors] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState("ischemic");
+
+  useEffect(() => {
+    if (!activeSection) return;
+
+    const sectionToTab: Record<string, string> = {
+      "stroke-code": "ischemic",
+      "acute-algorithm": "ischemic",
+      "tpa-eligibility": "ischemic",
+      "thrombolytics-anticoag": "ischemic",
+      "post-ivt-hemorrhage": "post-ivt",
+      "cvt-management": "cvt",
+    };
+
+    const targetTab = sectionToTab[activeSection];
+    if (targetTab && targetTab !== activeTab) {
+      setActiveTab(targetTab);
+    }
+  }, [activeSection, activeTab]);
+
+  useEffect(() => {
+    if (!activeSection) return;
+    const target = document.getElementById(activeSection);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+    }
+  }, [activeSection, activeTab]);
+
   const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({ 
     patientId: patient?.patient_id || "",
     name: patient?.name || undefined,

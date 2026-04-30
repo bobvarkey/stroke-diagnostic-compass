@@ -73,7 +73,7 @@ const navGroups: NavGroup[] = [
         icon: <Zap className="h-4 w-4 text-amber-500" /> 
       },
       { 
-        id: "thrombolytic-dose", 
+        id: "thrombolytics-anticoag", 
         label: "Thrombolytic Dosing", 
         icon: <Beaker className="h-4 w-4 text-amber-600" /> 
       },

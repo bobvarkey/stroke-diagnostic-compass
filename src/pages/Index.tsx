@@ -59,11 +59,7 @@ const Index = () => {
       setShowScrollTop(window.scrollY > 400);
       
       const sections = [
-        "stroke-code", "acute-algorithm", "tpa-eligibility", "thrombolytic-dose", "post-ivt-hemorrhage", "cvt-management",
-        "lvo-dashboard", "treatment-decision",
-        "ctp-penumbra", "aspects-calculator", "collateral-grading", "vascular-anatomy",
-        "nihss-calculator", "gcs-calculator", "prevent-score", "kdigo-heatmap",
-        "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "workup-checklist"
+          "stroke-code", "acute-algorithm", "tpa-eligibility", "thrombolytics-anticoag", "post-ivt-hemorrhage", "cvt-management",
       ];
       
       for (const sectionId of sections) {
@@ -81,6 +77,10 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSectionClick = (sectionId: string) => {
+    setActiveSection(sectionId);
+  };
 
   // Auto-save patient data when it changes (skip in demo mode)
   const savePatientData = useCallback(async (data: Record<string, unknown>) => {
@@ -247,6 +247,7 @@ const Index = () => {
           <main className="flex-1 relative">
             <StrokeWorkupChecklist 
               patient={selectedPatient}
+              activeSection={activeSection}
               onPatientDataChange={setPatientData}
             />
           </main>
