@@ -186,7 +186,8 @@ const Index = () => {
   // Show main workup interface with selected patient
   return (
     <SidebarProvider defaultOpen={false}>
-      {/* Background orbs for glassmorphic effect */}
+      {/* Background orbs and starfield overlay */}
+      <div className="bg-stars" />
       <div className="bg-orb bg-orb-1" />
       <div className="bg-orb bg-orb-2" />
       <div className="bg-orb bg-orb-3" />
