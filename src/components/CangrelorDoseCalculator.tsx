@@ -291,9 +291,28 @@ export default function CangrelorDoseCalculator() {
         {finalConcMcgPerMl > 0 && (
           <div className="p-2 rounded-md bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-400">
             <strong>Live final concentration:</strong> {Math.round(finalConcMcgPerMl)} mcg/mL
-            {finalConcMcgPerMl !== 200 && (
-              <span className="ml-2 text-amber-600">⚠ Differs from standard 200 mcg/mL — verify pump library</span>
-            )}
+            <span className="ml-2 opacity-80">({finalConcMgPerMl.toFixed(3)} mg/mL)</span>
+          </div>
+        )}
+
+        {/* Inline dosing / unit validation warnings */}
+        {dosingWarnings.length > 0 && (
+          <div className="space-y-1.5">
+            {dosingWarnings.map((w, i) => {
+              const styles =
+                w.level === "error"
+                  ? "bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-700 text-red-800 dark:text-red-300"
+                  : w.level === "warn"
+                  ? "bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300"
+                  : "bg-sky-50 dark:bg-sky-950/30 border-sky-300 dark:border-sky-700 text-sky-800 dark:text-sky-300";
+              const label = w.level === "error" ? "Error" : w.level === "warn" ? "Check" : "Note";
+              return (
+                <div key={i} className={`flex items-start gap-2 p-2 rounded-md border text-xs ${styles}`}>
+                  <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <div><strong>{label}:</strong> {w.msg}</div>
+                </div>
+              );
+            })}
           </div>
         )}
 
