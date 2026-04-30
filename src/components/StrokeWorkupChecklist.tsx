@@ -45,6 +45,7 @@ import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import TirofibanDoseCalculator from "./TirofibanDoseCalculator";
 import CangrelorDoseCalculator from "./CangrelorDoseCalculator";
 import DrugSafetyCard from "./DrugSafetyCard";
+import InfusionDurationPicker from "./InfusionDurationPicker";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
