@@ -201,9 +201,13 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
       setOpenMobile(false);
     }
 
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    const target = document.getElementById(sectionId);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+      window.setTimeout(() => {
+        const corrected = document.getElementById(sectionId);
+        corrected?.scrollIntoView({ behavior: "instant", block: "start", inline: "nearest" });
+      }, 250);
     }
   };
 
