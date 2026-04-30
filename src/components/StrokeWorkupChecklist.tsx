@@ -45,6 +45,7 @@ import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import TirofibanDoseCalculator from "./TirofibanDoseCalculator";
 import CangrelorDoseCalculator from "./CangrelorDoseCalculator";
 import DrugSafetyCard from "./DrugSafetyCard";
+import InfusionDurationPicker from "./InfusionDurationPicker";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
@@ -5790,6 +5791,21 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                       ],
                     }}
                   />
+                  <InfusionDurationPicker
+                    drugName="Alteplase / TNK"
+                    defaultPreset="alteplase-60min"
+                    presets={[
+                      { value: "alteplase-60min", label: "Alteplase standard (60 min infusion)", hours: 1, context: "0.9 mg/kg total: 10% bolus then 90% over 60 min" },
+                      { value: "tnk-bolus", label: "TNK single bolus (no infusion)", hours: 0.1, context: "0.25 mg/kg single IV bolus over 5 sec — observation only" },
+                      { value: "ia-tpa", label: "IA tPA (post-EVT, 10–15 min)", hours: 0.25, context: "0.225 mg/kg via microcatheter distal to clot" },
+                      { value: "post-ivt-monitoring", label: "Post-IVT monitoring window (24 h)", hours: 24, context: "BP & neuro checks; no antithrombotics × 24 h" },
+                    ]}
+                    scheduleTemplate={[
+                      { tHours: 0, event: "Start IVT — bolus + infusion / TNK push" },
+                      { tHours: "end", event: "Infusion complete — start q15min BP × 2 h, then taper monitoring" },
+                      { tHours: "endPlus1", event: "Continue ICU/stroke unit monitoring; obtain 24-h NCCT before any antiplatelet" },
+                    ]}
+                  />
                   <ThrombolyticDoseCalculator />
                 </CollapsibleModule>
 
@@ -5830,6 +5846,24 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                         "Repeat NCCT at 24 h or with neuro deterioration",
                       ],
                     }}
+                  />
+                  <InfusionDurationPicker
+                    drugName="Tirofiban"
+                    defaultPreset="post-evt-24h"
+                    presets={[
+                      { value: "loading-30min", label: "Loading only (30 min)", hours: 0.5, context: "0.4 mcg/kg/min × 30 min — usually followed by maintenance" },
+                      { value: "post-evt-12h", label: "Post-EVT bridge (12 h)", hours: 12, context: "Loading + maintenance bridge to oral DAPT" },
+                      { value: "post-evt-24h", label: "Post-EVT/stenting (24 h)", hours: 24, context: "Standard RESCUE BT-style protocol" },
+                      { value: "extended-72h", label: "Extended (72 h max)", hours: 72, context: "Refractory occlusion — escalating bleeding risk" },
+                      { value: "post-ivt-delay", label: "Post-IVT — wait then start", hours: 24, context: "Hold ≥24 h after alteplase, then start lower-dose tirofiban" },
+                    ]}
+                    scheduleTemplate={[
+                      { tHours: 0, event: "Start loading 0.4 mcg/kg/min × 30 min" },
+                      { tHours: 0.5, event: "Transition to maintenance 0.1 mcg/kg/min" },
+                      { tHours: 2, event: "Check platelets + Hb (rule out HIT-like reaction)" },
+                      { tHours: "end", event: "Stop infusion; load oral DAPT (clopidogrel 300–600 mg + aspirin 162–325 mg) before stop" },
+                      { tHours: "endPlus1", event: "Verify oral DAPT on board; repeat NCCT if neuro change" },
+                    ]}
                   />
                   <TirofibanDoseCalculator />
                 </CollapsibleModule>
