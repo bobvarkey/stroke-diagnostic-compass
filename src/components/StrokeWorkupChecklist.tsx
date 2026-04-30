@@ -5847,6 +5847,40 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   subtitle="VKA reversal, DOAC management, Idarucizumab/Andexanet"
                   icon={<ShieldAlert className="h-4 w-4 text-orange-600" />}
                 >
+                  <DrugSafetyCard
+                    data={{
+                      drug: "IV Anticoagulation Reversal Agents",
+                      accentClass: "border-orange-300 bg-orange-50/40 dark:bg-orange-950/20",
+                      evidence: "ESO 2021 • RE-VERSE AD • ANNEXA-4",
+                      dosing: [
+                        "4F-PCC (Kcentra) for VKA: 25–50 IU/kg IV based on INR (cap 5000 IU)",
+                        "Idarucizumab (Praxbind) for dabigatran: 5 g IV (2× 2.5 g) over 5–10 min",
+                        "Andexanet for apixaban/rivaroxaban: low 400 mg + 4 mg/min × 2 h, OR high 800 mg + 8 mg/min × 2 h",
+                        "Vitamin K 10 mg slow IV with 4F-PCC (sustained reversal)",
+                        "Heparin reversal: Protamine 1 mg per 100 U heparin (max 50 mg)",
+                      ],
+                      duration: [
+                        "4F-PCC: single infusion at 0.12 mL/kg/min (max 8.4 mL/min)",
+                        "Idarucizumab: 2 sequential boluses ≤15 min apart",
+                        "Andexanet: bolus over 15–30 min + 2-h continuous infusion",
+                        "Recheck coagulation 15–30 min post-reversal before IVT",
+                      ],
+                      contraindications: [
+                        "DOAC <48 h without reversal — IVT contraindicated (AHA/ASA)",
+                        "VKA with INR >1.7 — IVT contraindicated unless reversed",
+                        "Andexanet: caution in DIC, recent thrombotic event (rebound risk)",
+                        "4F-PCC: history of HIT, DIC, recent MI/PE",
+                        "Idarucizumab: hereditary fructose intolerance (sorbitol excipient)",
+                      ],
+                      monitoring: [
+                        "INR at 30 min, 6 h, 24 h after 4F-PCC + vitamin K",
+                        "dTT or ecarin clotting time after idarucizumab (if available)",
+                        "Anti-Xa levels for andexanet response (research labs)",
+                        "Serial neuro checks + repeat NCCT at 24 h",
+                        "Monitor for thromboembolism × 30 days (especially andexanet)",
+                      ],
+                    }}
+                  />
                   <IVTAnticoagulationGuide />
                 </CollapsibleModule>
               </CardContent>
