@@ -23,6 +23,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
+import CollapsibleModule from "./CollapsibleModule";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
@@ -5685,8 +5686,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
-              { id: "ivt-anticoag", label: "IVT & Anticoagulation", icon: <ShieldAlert className="h-3.5 w-3.5 text-orange-500" /> },
-              { id: "thrombolytic-dose", label: "Thrombolytic Dosing", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
+              { id: "thrombolytics-anticoag", label: "Thrombolytics & Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
@@ -5738,19 +5738,44 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <TPAEligibilityChecklist />
           </LazySection>
 
-          {/* IVT in Anticoagulated Patients */}
-          <LazySection id="ivt-anticoag">
-            <IVTAnticoagulationGuide />
-          </LazySection>
+          {/* Thrombolytics & Anticoagulants — grouped collapsibles per drug */}
+          <LazySection id="thrombolytics-anticoag">
+            <Card className="border-amber-300 dark:border-amber-700 bg-gradient-to-br from-amber-50/50 dark:from-amber-950/20 to-background">
+              <CardHeader className="bg-amber-100/40 dark:bg-amber-900/20">
+                <CardTitle className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
+                  <Beaker className="h-5 w-5" />
+                  Thrombolytics & Anticoagulants
+                </CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Expand each drug for dosing protocols, weight-based calculators, and anticoagulation guidance
+                </p>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-3">
+                <CollapsibleModule
+                  title="Alteplase / Tenecteplase / IA tPA"
+                  subtitle="Weight-based thrombolytic dosing calculator"
+                  icon={<Syringe className="h-4 w-4 text-amber-600" />}
+                >
+                  <ThrombolyticDoseCalculator />
+                </CollapsibleModule>
 
-          {/* Thrombolytic Dose Calculator */}
-          <LazySection id="thrombolytic-dose">
-            <ThrombolyticDoseCalculator />
-          </LazySection>
+                <CollapsibleModule
+                  title="Tirofiban (GP IIb/IIIa Inhibitor)"
+                  subtitle="Infusion dosing for AIS with renal adjustment"
+                  icon={<Syringe className="h-4 w-4 text-blue-600" />}
+                >
+                  <TirofibanDoseCalculator />
+                </CollapsibleModule>
 
-          {/* Tirofiban Dose Calculator */}
-          <LazySection id="tirofiban-dose">
-            <TirofibanDoseCalculator />
+                <CollapsibleModule
+                  title="IVT in Anticoagulated Patients"
+                  subtitle="VKA reversal, DOAC management, Idarucizumab/Andexanet"
+                  icon={<ShieldAlert className="h-4 w-4 text-orange-600" />}
+                >
+                  <IVTAnticoagulationGuide />
+                </CollapsibleModule>
+              </CardContent>
+            </Card>
           </LazySection>
 
           {/* Treatment Choice Consequence Matrix */}
