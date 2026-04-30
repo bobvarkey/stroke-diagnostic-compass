@@ -6243,20 +6243,28 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           />
 
           {/* Acute ICH Management */}
-          <AcuteICHManagement />
+          <div id="acute-ich">
+            <AcuteICHManagement />
+          </div>
 
           {/* ICH Score Calculator - Interactive Version */}
-          <InteractiveICHScoreCalculator 
-            onScoreChange={useCallback((score) => {
-              setCalculatedScores(prev => ({ ...prev, ichScore: score }));
-            }, [])}
-          />
+          <div id="ich-score">
+            <InteractiveICHScoreCalculator 
+              onScoreChange={useCallback((score) => {
+                setCalculatedScores(prev => ({ ...prev, ichScore: score }));
+              }, [])}
+            />
+          </div>
 
           {/* FUNC Score Calculator */}
-          <FUNCScoreCalculator />
+          <div id="func-score">
+            <FUNCScoreCalculator />
+          </div>
 
           {/* SAH Grading Scales */}
-          <SAHGradingScales />
+          <div id="sah-grading">
+            <SAHGradingScales />
+          </div>
 
           {/* Hunt and Hess Calculator */}
           <HuntHessCalculator />
@@ -6265,19 +6273,25 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <WFNSCalculator />
 
           {/* Fisher Scale Calculator */}
-          <FisherScaleCalculator 
-            onScoreChange={(scores) => {
-              setCalculatedScores(prev => ({ 
-                ...prev, 
-                fisher: scores.fisher,
-                modifiedFisher: scores.modifiedFisher 
-              }));
-            }}
-          />
-          <VisualNIHSSCalculator />
+          <div id="fisher-scale">
+            <FisherScaleCalculator 
+              onScoreChange={(scores) => {
+                setCalculatedScores(prev => ({ 
+                  ...prev, 
+                  fisher: scores.fisher,
+                  modifiedFisher: scores.modifiedFisher 
+                }));
+              }}
+            />
+          </div>
+          <div id="nihss-calculator">
+            <VisualNIHSSCalculator />
+          </div>
 
           {/* Visual GCS Calculator - also relevant for ICH */}
-          <VisualGCSCalculator />
+          <div id="gcs-calculator">
+            <VisualGCSCalculator />
+          </div>
 
           {/* FOUR Score Calculator - also relevant for ICH */}
           <VisualFOURScoreCalculator />
