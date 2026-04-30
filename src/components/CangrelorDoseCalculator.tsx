@@ -99,6 +99,58 @@ export default function CangrelorDoseCalculator() {
     if (!mg || !ml || mg <= 0 || ml <= 0) return 0;
     return (mg * 1000) / ml; // mg→mcg / mL
   }, [vialMg, diluentMl]);
+  const finalConcMgPerMl = finalConcMcgPerMl / 1000;
+
+  // Inline validation: unit / concentration / vial-vs-diluent sanity
+  const dosingWarnings = useMemo(() => {
+    const warnings: { level: "error" | "warn" | "info"; msg: string }[] = [];
+    const mg = parseFloat(vialMg);
+    const ml = parseFloat(diluentMl);
+
+    // Vial strength sanity (Cangrelor vial = 50 mg lyophilized)
+    if (vialMg !== "" && (isNaN(mg) || mg <= 0)) {
+      warnings.push({ level: "error", msg: "Vial strength must be a positive number in mg." });
+    } else if (!isNaN(mg) && mg > 0) {
+      if (mg < 5) warnings.push({ level: "warn", msg: `Vial strength ${mg} mg looks too low — did you enter mcg instead of mg? (Standard cangrelor vial = 50 mg)` });
+      if (mg > 200) warnings.push({ level: "warn", msg: `Vial strength ${mg} mg exceeds typical 50 mg vial — confirm you are not entering total bag mass.` });
+    }
+
+    // Diluent volume sanity
+    if (diluentMl !== "" && (isNaN(ml) || ml <= 0)) {
+      warnings.push({ level: "error", msg: "Diluent volume must be a positive number in mL." });
+    } else if (!isNaN(ml) && ml > 0) {
+      if (ml < 20) warnings.push({ level: "warn", msg: `Diluent ${ml} mL is unusually small — did you confuse vial reconstitution volume (5 mL) with the infusion bag (typically 250 mL)?` });
+      if (ml > 500) warnings.push({ level: "warn", msg: `Diluent ${ml} mL is unusually large — final concentration will be very dilute and pump rates may exceed device limits.` });
+    }
+
+    // Cross-field concentration sanity (mcg/mL vs mg/mL unit checks)
+    if (finalConcMcgPerMl > 0) {
+      if (finalConcMcgPerMl < 50) {
+        warnings.push({ level: "warn", msg: `Final concentration ${Math.round(finalConcMcgPerMl)} mcg/mL (${finalConcMgPerMl.toFixed(3)} mg/mL) is unusually dilute — pump rate will be high. Standard is 200 mcg/mL (0.2 mg/mL).` });
+      } else if (finalConcMcgPerMl > 1000) {
+        warnings.push({ level: "error", msg: `Final concentration ${Math.round(finalConcMcgPerMl)} mcg/mL (${finalConcMgPerMl.toFixed(2)} mg/mL) is dangerously concentrated — likely a unit error (mg vs mcg) or wrong bag size.` });
+      } else if (Math.abs(finalConcMcgPerMl - 200) > 20) {
+        warnings.push({ level: "info", msg: `Final concentration ${Math.round(finalConcMcgPerMl)} mcg/mL differs from the 200 mcg/mL (0.2 mg/mL) standard — confirm pump library entry.` });
+      }
+    }
+
+    // Vial vs diluent ratio plausibility (catches swapped fields)
+    if (!isNaN(mg) && !isNaN(ml) && mg > 0 && ml > 0 && mg > ml) {
+      warnings.push({ level: "warn", msg: `Vial mass (${mg} mg) exceeds diluent volume (${ml} mL) — fields may be swapped. Cangrelor is typically 50 mg in 250 mL.` });
+    }
+
+    // Weight sanity
+    if (weight !== "") {
+      const w = parseFloat(weight);
+      if (isNaN(w) || w <= 0) warnings.push({ level: "error", msg: "Weight must be a positive number in kg." });
+      else if (w < 30) warnings.push({ level: "warn", msg: `Weight ${w} kg is below adult range — pediatric dosing not validated for cangrelor.` });
+      else if (w > 200) warnings.push({ level: "warn", msg: `Weight ${w} kg exceeds 200 kg — consider capping at 200 kg actual body weight; consult pharmacy.` });
+    }
+
+    return warnings;
+  }, [vialMg, diluentMl, finalConcMcgPerMl, finalConcMgPerMl, weight]);
+
+  const hasErrors = dosingWarnings.some((w) => w.level === "error");
 
   const durationHours = useMemo(() => {
     if (durationPreset === "custom") return parseFloat(customHours) || 0;
@@ -106,7 +158,7 @@ export default function CangrelorDoseCalculator() {
   }, [durationPreset, customHours]);
 
   const calc = useMemo(() => {
-    if (!isValid || finalConcMcgPerMl <= 0) return null;
+    if (!isValid || finalConcMcgPerMl <= 0 || hasErrors) return null;
     const bolusMcg = spec.bolusPerKg * weightNum;
     const infusionMcgMin = spec.infusionPerKg * weightNum;
     const infusionMcgHr = infusionMcgMin * 60;
@@ -128,7 +180,7 @@ export default function CangrelorDoseCalculator() {
       totalMl: Math.round(totalMl),
       vialsUsed,
     };
-  }, [weightNum, isValid, spec, finalConcMcgPerMl, durationHours, vialMg]);
+  }, [weightNum, isValid, spec, finalConcMcgPerMl, durationHours, vialMg, hasErrors]);
 
   // Build infusion schedule timeline
   const schedule = useMemo(() => {
@@ -239,9 +291,28 @@ export default function CangrelorDoseCalculator() {
         {finalConcMcgPerMl > 0 && (
           <div className="p-2 rounded-md bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-400">
             <strong>Live final concentration:</strong> {Math.round(finalConcMcgPerMl)} mcg/mL
-            {finalConcMcgPerMl !== 200 && (
-              <span className="ml-2 text-amber-600">⚠ Differs from standard 200 mcg/mL — verify pump library</span>
-            )}
+            <span className="ml-2 opacity-80">({finalConcMgPerMl.toFixed(3)} mg/mL)</span>
+          </div>
+        )}
+
+        {/* Inline dosing / unit validation warnings */}
+        {dosingWarnings.length > 0 && (
+          <div className="space-y-1.5">
+            {dosingWarnings.map((w, i) => {
+              const styles =
+                w.level === "error"
+                  ? "bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-700 text-red-800 dark:text-red-300"
+                  : w.level === "warn"
+                  ? "bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300"
+                  : "bg-sky-50 dark:bg-sky-950/30 border-sky-300 dark:border-sky-700 text-sky-800 dark:text-sky-300";
+              const label = w.level === "error" ? "Error" : w.level === "warn" ? "Check" : "Note";
+              return (
+                <div key={i} className={`flex items-start gap-2 p-2 rounded-md border text-xs ${styles}`}>
+                  <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <div><strong>{label}:</strong> {w.msg}</div>
+                </div>
+              );
+            })}
           </div>
         )}
 
