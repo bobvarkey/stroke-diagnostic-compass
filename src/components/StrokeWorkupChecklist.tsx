@@ -5798,6 +5798,39 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   subtitle="Infusion dosing for AIS with renal adjustment"
                   icon={<Syringe className="h-4 w-4 text-blue-600" />}
                 >
+                  <DrugSafetyCard
+                    data={{
+                      drug: "Tirofiban",
+                      accentClass: "border-blue-300 bg-blue-50/40 dark:bg-blue-950/20",
+                      evidence: "RESCUE BT (NEJM 2023) • CSA Guidelines",
+                      dosing: [
+                        "Loading: 0.4 mcg/kg/min × 30 min (cap 1 mg total in SAO stroke)",
+                        "Maintenance: 0.1 mcg/kg/min IV continuous",
+                        "CrCl <30 mL/min: reduce both loading & maintenance by 50%",
+                        "Standard concentration: 50 mcg/mL (ready-to-use bag)",
+                      ],
+                      duration: [
+                        "Maintenance infusion: 12–24 h typical (up to 72 h in select cases)",
+                        "Post-IVT: wait ≥24 h after alteplase (or use lower dose)",
+                        "Post-EVT/stenting: bridge until oral DAPT effective (4–6 h overlap)",
+                        "Stop ≥4 h before invasive procedures",
+                      ],
+                      contraindications: [
+                        "Active bleeding or hemorrhagic stroke",
+                        "Platelets <100k or known thrombocytopenia",
+                        "Major surgery/trauma <6 weeks • GI bleed <30 days",
+                        "Severe HTN (SBP >180/DBP >110) uncontrolled",
+                        "Concurrent IV anticoagulation (relative)",
+                      ],
+                      monitoring: [
+                        "Platelet count + Hb at baseline, 2–6 h, then daily",
+                        "Stop if platelets drop >50% or <90k (HIT-like reaction)",
+                        "Serial NIHSS q2h × 12 h, then q4h",
+                        "BP q15min × 1 h after start, then q1h",
+                        "Repeat NCCT at 24 h or with neuro deterioration",
+                      ],
+                    }}
+                  />
                   <TirofibanDoseCalculator />
                 </CollapsibleModule>
 
