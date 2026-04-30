@@ -41,6 +41,7 @@ import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
+import TirofibanDoseCalculator from "./TirofibanDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
@@ -5745,6 +5746,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Thrombolytic Dose Calculator */}
           <LazySection id="thrombolytic-dose">
             <ThrombolyticDoseCalculator />
+          </LazySection>
+
+          {/* Tirofiban Dose Calculator */}
+          <LazySection id="tirofiban-dose">
+            <TirofibanDoseCalculator />
           </LazySection>
 
           {/* Treatment Choice Consequence Matrix */}
