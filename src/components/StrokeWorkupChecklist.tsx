@@ -5791,6 +5791,21 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                       ],
                     }}
                   />
+                  <InfusionDurationPicker
+                    drugName="Alteplase / TNK"
+                    defaultPreset="alteplase-60min"
+                    presets={[
+                      { value: "alteplase-60min", label: "Alteplase standard (60 min infusion)", hours: 1, context: "0.9 mg/kg total: 10% bolus then 90% over 60 min" },
+                      { value: "tnk-bolus", label: "TNK single bolus (no infusion)", hours: 0.1, context: "0.25 mg/kg single IV bolus over 5 sec — observation only" },
+                      { value: "ia-tpa", label: "IA tPA (post-EVT, 10–15 min)", hours: 0.25, context: "0.225 mg/kg via microcatheter distal to clot" },
+                      { value: "post-ivt-monitoring", label: "Post-IVT monitoring window (24 h)", hours: 24, context: "BP & neuro checks; no antithrombotics × 24 h" },
+                    ]}
+                    scheduleTemplate={[
+                      { tHours: 0, event: "Start IVT — bolus + infusion / TNK push" },
+                      { tHours: "end", event: "Infusion complete — start q15min BP × 2 h, then taper monitoring" },
+                      { tHours: "endPlus1", event: "Continue ICU/stroke unit monitoring; obtain 24-h NCCT before any antiplatelet" },
+                    ]}
+                  />
                   <ThrombolyticDoseCalculator />
                 </CollapsibleModule>
 
