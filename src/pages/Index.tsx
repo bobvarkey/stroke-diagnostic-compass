@@ -187,7 +187,7 @@ const Index = () => {
   return (
     <SidebarProvider defaultOpen={false}>
       {/* Background orbs and starfield overlay */}
-      <div className="bg-stars" />
+      {/* <div className="bg-stars" /> */}
       <div className="bg-orb bg-orb-1" />
       <div className="bg-orb bg-orb-2" />
       <div className="bg-orb bg-orb-3" />
@@ -195,7 +195,7 @@ const Index = () => {
       <div className="min-h-screen flex w-full relative z-10">
         <AppSidebar activeSection={activeSection} onSectionClick={setActiveSection} />
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b px-2 sm:px-4 glass-strong safe-top">
+          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b px-2 sm:px-4 glass-aquamarine safe-top">
             <SidebarTrigger className="-ml-1" />
             
             {/* Patient info */}

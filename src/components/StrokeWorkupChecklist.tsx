@@ -5664,15 +5664,16 @@ export default function StrokeWorkupChecklist({ patient, activeSection, onPatien
     <div className="max-w-6xl mx-auto px-[max(0.75rem,env(safe-area-inset-left))] sm:px-4 md:px-6 py-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-4 space-y-5">
       {/* Header with Theme Toggle */}
       <div className="relative text-center mb-4">
+        <div className="pointer-events-none absolute inset-x-1/4 -top-4 h-28 rounded-full bg-white/10 blur-3xl opacity-70" />
         {/* Theme Toggle - Fixed Position */}
         <div className="absolute right-0 top-0">
           <ThemeToggle />
         </div>
         
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text mb-2 leading-relaxed">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text mb-2 leading-relaxed relative z-10">
           Acute Stroke Workup Checklist
         </h1>
-        <p className="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed">
+        <p className="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed relative z-10">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
       </div>

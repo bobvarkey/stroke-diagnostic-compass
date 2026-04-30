@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Preview from "./pages/Preview";
 import NotFound from "./pages/NotFound";
+import FloatingBackToHome from "./components/FloatingBackToHome";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <FloatingBackToHome />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/preview" element={<Preview />} />
