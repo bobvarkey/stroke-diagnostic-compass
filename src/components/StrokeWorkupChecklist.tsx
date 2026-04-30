@@ -43,6 +43,7 @@ import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import TirofibanDoseCalculator from "./TirofibanDoseCalculator";
+import CangrelorDoseCalculator from "./CangrelorDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
@@ -5765,6 +5766,14 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   icon={<Syringe className="h-4 w-4 text-blue-600" />}
                 >
                   <TirofibanDoseCalculator />
+                </CollapsibleModule>
+
+                <CollapsibleModule
+                  title="Cangrelor (IV P2Y12 Inhibitor)"
+                  subtitle="Reversible IV antiplatelet for emergent stenting in AIS"
+                  icon={<Syringe className="h-4 w-4 text-rose-600" />}
+                >
+                  <CangrelorDoseCalculator />
                 </CollapsibleModule>
 
                 <CollapsibleModule
