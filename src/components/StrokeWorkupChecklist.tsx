@@ -44,6 +44,7 @@ import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import TirofibanDoseCalculator from "./TirofibanDoseCalculator";
 import CangrelorDoseCalculator from "./CangrelorDoseCalculator";
+import DrugSafetyCard from "./DrugSafetyCard";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
@@ -5757,6 +5758,38 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   subtitle="Weight-based thrombolytic dosing calculator"
                   icon={<Syringe className="h-4 w-4 text-amber-600" />}
                 >
+                  <DrugSafetyCard
+                    data={{
+                      drug: "Alteplase (tPA) & Tenecteplase (TNK)",
+                      accentClass: "border-amber-300 bg-amber-50/40 dark:bg-amber-950/20",
+                      evidence: "AHA/ASA 2026 • NINDS • EXTEND-IA TNK",
+                      dosing: [
+                        "Alteplase: 0.9 mg/kg IV (max 90 mg) — 10% bolus over 1 min, 90% infusion",
+                        "Tenecteplase: 0.25 mg/kg IV single bolus (max 25 mg) over 5 sec",
+                        "IA tPA (post-EVT, CHOICE-2): 0.225 mg/kg, max 20 mg",
+                        "Reconstitute alteplase to 1 mg/mL; TNK to 5 mg/mL",
+                      ],
+                      duration: [
+                        "Alteplase infusion: 60 minutes total",
+                        "TNK: single bolus — no infusion",
+                        "IA tPA: 10–15 min via microcatheter distal to clot",
+                        "Window: ≤4.5 h LKW (extended to 9 h if perfusion mismatch)",
+                      ],
+                      contraindications: [
+                        "BP >185/110 uncontrolled • Active internal bleeding",
+                        "Recent ICH, intracranial surgery, or stroke <3 mo",
+                        "Platelets <100k • INR >1.7 • aPTT prolonged",
+                        "DOAC use within 48 h (unless reversed)",
+                        "Glucose <50 or >400 mg/dL • Endocarditis",
+                      ],
+                      monitoring: [
+                        "BP q15min × 2 h, q30min × 6 h, q1h × 16 h (target <180/105)",
+                        "Neuro checks (NIHSS) on same schedule as BP",
+                        "Watch for orolingual angioedema (3rd–4th h)",
+                        "Hold antiplatelets/anticoagulants × 24 h; repeat CT before starting",
+                      ],
+                    }}
+                  />
                   <ThrombolyticDoseCalculator />
                 </CollapsibleModule>
 
@@ -5765,6 +5798,39 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   subtitle="Infusion dosing for AIS with renal adjustment"
                   icon={<Syringe className="h-4 w-4 text-blue-600" />}
                 >
+                  <DrugSafetyCard
+                    data={{
+                      drug: "Tirofiban",
+                      accentClass: "border-blue-300 bg-blue-50/40 dark:bg-blue-950/20",
+                      evidence: "RESCUE BT (NEJM 2023) • CSA Guidelines",
+                      dosing: [
+                        "Loading: 0.4 mcg/kg/min × 30 min (cap 1 mg total in SAO stroke)",
+                        "Maintenance: 0.1 mcg/kg/min IV continuous",
+                        "CrCl <30 mL/min: reduce both loading & maintenance by 50%",
+                        "Standard concentration: 50 mcg/mL (ready-to-use bag)",
+                      ],
+                      duration: [
+                        "Maintenance infusion: 12–24 h typical (up to 72 h in select cases)",
+                        "Post-IVT: wait ≥24 h after alteplase (or use lower dose)",
+                        "Post-EVT/stenting: bridge until oral DAPT effective (4–6 h overlap)",
+                        "Stop ≥4 h before invasive procedures",
+                      ],
+                      contraindications: [
+                        "Active bleeding or hemorrhagic stroke",
+                        "Platelets <100k or known thrombocytopenia",
+                        "Major surgery/trauma <6 weeks • GI bleed <30 days",
+                        "Severe HTN (SBP >180/DBP >110) uncontrolled",
+                        "Concurrent IV anticoagulation (relative)",
+                      ],
+                      monitoring: [
+                        "Platelet count + Hb at baseline, 2–6 h, then daily",
+                        "Stop if platelets drop >50% or <90k (HIT-like reaction)",
+                        "Serial NIHSS q2h × 12 h, then q4h",
+                        "BP q15min × 1 h after start, then q1h",
+                        "Repeat NCCT at 24 h or with neuro deterioration",
+                      ],
+                    }}
+                  />
                   <TirofibanDoseCalculator />
                 </CollapsibleModule>
 
@@ -5781,6 +5847,40 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   subtitle="VKA reversal, DOAC management, Idarucizumab/Andexanet"
                   icon={<ShieldAlert className="h-4 w-4 text-orange-600" />}
                 >
+                  <DrugSafetyCard
+                    data={{
+                      drug: "IV Anticoagulation Reversal Agents",
+                      accentClass: "border-orange-300 bg-orange-50/40 dark:bg-orange-950/20",
+                      evidence: "ESO 2021 • RE-VERSE AD • ANNEXA-4",
+                      dosing: [
+                        "4F-PCC (Kcentra) for VKA: 25–50 IU/kg IV based on INR (cap 5000 IU)",
+                        "Idarucizumab (Praxbind) for dabigatran: 5 g IV (2× 2.5 g) over 5–10 min",
+                        "Andexanet for apixaban/rivaroxaban: low 400 mg + 4 mg/min × 2 h, OR high 800 mg + 8 mg/min × 2 h",
+                        "Vitamin K 10 mg slow IV with 4F-PCC (sustained reversal)",
+                        "Heparin reversal: Protamine 1 mg per 100 U heparin (max 50 mg)",
+                      ],
+                      duration: [
+                        "4F-PCC: single infusion at 0.12 mL/kg/min (max 8.4 mL/min)",
+                        "Idarucizumab: 2 sequential boluses ≤15 min apart",
+                        "Andexanet: bolus over 15–30 min + 2-h continuous infusion",
+                        "Recheck coagulation 15–30 min post-reversal before IVT",
+                      ],
+                      contraindications: [
+                        "DOAC <48 h without reversal — IVT contraindicated (AHA/ASA)",
+                        "VKA with INR >1.7 — IVT contraindicated unless reversed",
+                        "Andexanet: caution in DIC, recent thrombotic event (rebound risk)",
+                        "4F-PCC: history of HIT, DIC, recent MI/PE",
+                        "Idarucizumab: hereditary fructose intolerance (sorbitol excipient)",
+                      ],
+                      monitoring: [
+                        "INR at 30 min, 6 h, 24 h after 4F-PCC + vitamin K",
+                        "dTT or ecarin clotting time after idarucizumab (if available)",
+                        "Anti-Xa levels for andexanet response (research labs)",
+                        "Serial neuro checks + repeat NCCT at 24 h",
+                        "Monitor for thromboembolism × 30 days (especially andexanet)",
+                      ],
+                    }}
+                  />
                   <IVTAnticoagulationGuide />
                 </CollapsibleModule>
               </CardContent>
