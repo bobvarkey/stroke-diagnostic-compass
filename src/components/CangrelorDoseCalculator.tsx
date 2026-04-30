@@ -158,7 +158,7 @@ export default function CangrelorDoseCalculator() {
   }, [durationPreset, customHours]);
 
   const calc = useMemo(() => {
-    if (!isValid || finalConcMcgPerMl <= 0) return null;
+    if (!isValid || finalConcMcgPerMl <= 0 || hasErrors) return null;
     const bolusMcg = spec.bolusPerKg * weightNum;
     const infusionMcgMin = spec.infusionPerKg * weightNum;
     const infusionMcgHr = infusionMcgMin * 60;
