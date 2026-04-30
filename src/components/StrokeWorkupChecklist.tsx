@@ -5847,6 +5847,24 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                       ],
                     }}
                   />
+                  <InfusionDurationPicker
+                    drugName="Tirofiban"
+                    defaultPreset="post-evt-24h"
+                    presets={[
+                      { value: "loading-30min", label: "Loading only (30 min)", hours: 0.5, context: "0.4 mcg/kg/min × 30 min — usually followed by maintenance" },
+                      { value: "post-evt-12h", label: "Post-EVT bridge (12 h)", hours: 12, context: "Loading + maintenance bridge to oral DAPT" },
+                      { value: "post-evt-24h", label: "Post-EVT/stenting (24 h)", hours: 24, context: "Standard RESCUE BT-style protocol" },
+                      { value: "extended-72h", label: "Extended (72 h max)", hours: 72, context: "Refractory occlusion — escalating bleeding risk" },
+                      { value: "post-ivt-delay", label: "Post-IVT — wait then start", hours: 24, context: "Hold ≥24 h after alteplase, then start lower-dose tirofiban" },
+                    ]}
+                    scheduleTemplate={[
+                      { tHours: 0, event: "Start loading 0.4 mcg/kg/min × 30 min" },
+                      { tHours: 0.5, event: "Transition to maintenance 0.1 mcg/kg/min" },
+                      { tHours: 2, event: "Check platelets + Hb (rule out HIT-like reaction)" },
+                      { tHours: "end", event: "Stop infusion; load oral DAPT (clopidogrel 300–600 mg + aspirin 162–325 mg) before stop" },
+                      { tHours: "endPlus1", event: "Verify oral DAPT on board; repeat NCCT if neuro change" },
+                    ]}
+                  />
                   <TirofibanDoseCalculator />
                 </CollapsibleModule>
 
