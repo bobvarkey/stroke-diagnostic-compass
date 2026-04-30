@@ -43,6 +43,7 @@ import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import TirofibanDoseCalculator from "./TirofibanDoseCalculator";
+import CangrelorDoseCalculator from "./CangrelorDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
@@ -5686,7 +5687,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
-              { id: "thrombolytics-anticoag", label: "Thrombolytics & Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
+              { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
@@ -5744,7 +5745,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               <CardHeader className="bg-amber-100/40 dark:bg-amber-900/20">
                 <CardTitle className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
                   <Beaker className="h-5 w-5" />
-                  Thrombolytics & Anticoagulants
+                  Thrombolytics and Anticoagulants
                 </CardTitle>
                 <p className="text-xs text-muted-foreground mt-1">
                   Expand each drug for dosing protocols, weight-based calculators, and anticoagulation guidance
@@ -5765,6 +5766,14 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                   icon={<Syringe className="h-4 w-4 text-blue-600" />}
                 >
                   <TirofibanDoseCalculator />
+                </CollapsibleModule>
+
+                <CollapsibleModule
+                  title="Cangrelor (IV P2Y12 Inhibitor)"
+                  subtitle="Reversible IV antiplatelet for emergent stenting in AIS"
+                  icon={<Syringe className="h-4 w-4 text-rose-600" />}
+                >
+                  <CangrelorDoseCalculator />
                 </CollapsibleModule>
 
                 <CollapsibleModule
