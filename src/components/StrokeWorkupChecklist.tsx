@@ -23,6 +23,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
+import CollapsibleModule from "./CollapsibleModule";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
