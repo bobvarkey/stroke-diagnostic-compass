@@ -297,6 +297,24 @@ export default function TirofibanDoseCalculator() {
               </ul>
             </div>
 
+            {renalImpaired && (
+              <Alert className="border-amber-400 bg-amber-100/60 dark:bg-amber-900/30">
+                <AlertTriangle className="h-4 w-4 text-amber-700" />
+                <AlertDescription className="text-xs text-amber-800 dark:text-amber-300">
+                  <strong>Renal adjustment applied to INSTANT regimen:</strong> Loading 0.15 mcg/kg/min · Maintenance 0.0375 mcg/kg/min (50% reduction for CrCl &lt; 30 mL/min). INSTANT trial excluded severe renal impairment — use with caution and document rationale.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {isValidWeight && instantDose && parseFloat(instantDose.loadingTotalMg) > 1 && (
+              <Alert className="border-red-300 bg-red-50 dark:bg-red-950/30">
+                <AlertTriangle className="h-4 w-4 text-red-600" />
+                <AlertDescription className="text-xs text-red-700 dark:text-red-400">
+                  <strong>Loading dose cap warning:</strong> Calculated loading {instantDose.loadingTotalMg} mg exceeds the conservative 1 mg ceiling used in SAO/AIS protocols. Consider capping loading at 1 mg.
+                </AlertDescription>
+              </Alert>
+            )}
+
             {isValidWeight && instantDose ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
@@ -330,6 +348,89 @@ export default function TirofibanDoseCalculator() {
                 Enter a valid weight (30–200 kg) to calculate INSTANT regimen
               </div>
             )}
+
+            {isValidWeight && instantDose && (() => {
+              const startDate = instantStart ? new Date(instantStart) : new Date();
+              if (isNaN(startDate.getTime())) return null;
+              const loadEnd = addMinutes(startDate, 30);
+              const stop = addMinutes(loadEnd, 47.5 * 60);
+              const platelet1 = addMinutes(startDate, 2 * 60);
+              const platelet2 = addMinutes(startDate, 6 * 60);
+              const checkpoints = [6, 12, 24, 36].map((h) => ({ h, t: addMinutes(startDate, h * 60) }));
+              const cumMg = (parseFloat(instantDose.loadingTotalMg) + parseFloat(instantDose.maintTotalMg)).toFixed(2);
+              const cumMl = (parseFloat(instantDose.loadingVolumeMl) + parseFloat(instantDose.maintTotalMl)).toFixed(1);
+              return (
+                <div className="rounded-lg border-2 border-amber-300 dark:border-amber-700 bg-background/60 p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-amber-600" />
+                    <span className="font-semibold text-amber-800 dark:text-amber-300 text-sm">
+                      INSTANT Infusion Timeline & Pump Schedule
+                    </span>
+                  </div>
+                  <div>
+                    <Label htmlFor="instant-start" className="text-xs text-amber-700 dark:text-amber-400">
+                      Start time (loading bolus begins)
+                    </Label>
+                    <Input
+                      id="instant-start"
+                      type="datetime-local"
+                      value={instantStart}
+                      onChange={(e) => setInstantStart(e.target.value)}
+                      className="mt-1 border-amber-200 dark:border-amber-700 max-w-xs"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">
+                          <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Step</th>
+                          <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Time</th>
+                          <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Pump rate</th>
+                          <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-amber-900 dark:text-amber-200">
+                        <tr>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">1. Start loading</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(startDate)}</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{instantDose.loadingMlPerHr} mL/hr</strong></td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">{instantDose.loadRate} mcg/kg/min × 30 min</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">2. Switch to maintenance</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(loadEnd)}</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{instantDose.maintMlPerHr} mL/hr</strong></td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">Drop to {instantDose.maintRate} mcg/kg/min</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">3. Platelets / Hb</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(platelet1)} · {formatTime(platelet2)}</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">—</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">CBC at 2 h & 6 h; hold if plt &lt; 90</td>
+                        </tr>
+                        {checkpoints.map((cp) => (
+                          <tr key={cp.h}>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">Checkpoint {cp.h} h</td>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(cp.t)}</td>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800">{instantDose.maintMlPerHr} mL/hr</td>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800">NIHSS, BP &lt; 180/105, bleeding survey</td>
+                          </tr>
+                        ))}
+                        <tr className="bg-amber-50 dark:bg-amber-950/40">
+                          <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">Stop infusion</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{formatTime(stop)}</strong></td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">0 mL/hr</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">End at 48 h total; bridge to oral antiplatelet</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="text-[11px] text-amber-700 dark:text-amber-400">
+                    Cumulative dose at stop: <strong>{cumMg} mg</strong> ({cumMl} mL @ 50 mcg/mL){renalImpaired && " — renal-adjusted (50%)"}
+                  </div>
+                </div>
+              );
+            })()}
 
             <Alert className="border-amber-300 bg-amber-50/50 dark:bg-amber-950/20">
               <Info className="h-4 w-4 text-amber-600" />
