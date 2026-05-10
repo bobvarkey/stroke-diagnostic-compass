@@ -24,7 +24,7 @@ import ModuleCommentBox from "./ModuleCommentBox";
 export default function TirofibanDoseCalculator() {
   const [weight, setWeight] = useState<string>("");
   const [renalImpaired, setRenalImpaired] = useState(false); // CrCl <30
-  const [activeMode, setActiveMode] = useState<"iv" | "ia" | "post_ivt">("iv");
+  const [activeMode, setActiveMode] = useState<"iv" | "ia" | "post_ivt" | "instant">("iv");
   const [comments, setComments] = useState("");
 
   const weightNum = parseFloat(weight) || 0;
