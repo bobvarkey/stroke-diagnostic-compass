@@ -26,6 +26,17 @@ export default function TirofibanDoseCalculator() {
   const [renalImpaired, setRenalImpaired] = useState(false); // CrCl <30
   const [activeMode, setActiveMode] = useState<"iv" | "ia" | "post_ivt" | "instant">("iv");
   const [comments, setComments] = useState("");
+  const [instantStart, setInstantStart] = useState<string>(() => {
+    const d = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  });
+
+  const formatTime = (date: Date) => {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${pad(date.getHours())}:${pad(date.getMinutes())} (${pad(date.getDate())}/${pad(date.getMonth() + 1)})`;
+  };
+  const addMinutes = (base: Date, mins: number) => new Date(base.getTime() + mins * 60000);
 
   const weightNum = parseFloat(weight) || 0;
   const isValidWeight = weightNum >= 30 && weightNum <= 200;
