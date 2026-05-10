@@ -267,6 +267,70 @@ export default function TirofibanDoseCalculator() {
           </TabsContent>
 
           {/* IA Rescue */}
+          {/* INSTANT post-TNK regimen */}
+          <TabsContent value="instant" className="space-y-4">
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="h-4 w-4 text-amber-600" />
+                <span className="font-medium text-amber-800 dark:text-amber-300">
+                  Post-Tenecteplase — INSTANT Trial Regimen (JAMA 2026)
+                </span>
+              </div>
+              <ul className="text-sm text-amber-700 dark:text-amber-400 space-y-1 list-disc list-inside">
+                <li>Population: AIS <strong>without</strong> large/medium vessel occlusion or cardioembolic source, with insufficient response to IV TNK</li>
+                <li>Loading: <strong>0.3 mcg/kg/min IV × 30 min</strong> (lower than standard 0.4)</li>
+                <li>Maintenance: <strong>0.075 mcg/kg/min</strong> continuous IV (lower than standard 0.1)</li>
+                <li>Duration: <strong>up to 47.5 hours</strong></li>
+                <li>Standard concentration: 50 mcg/mL ready-to-use bag</li>
+                <li>Outcome: 63.8% vs 52.2% excellent mRS 0–1 at 90 d (RR 1.22; P = .03)</li>
+              </ul>
+            </div>
+
+            {isValidWeight && instantDose ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
+                  <Badge className="mb-2 bg-amber-600">Loading (30 min)</Badge>
+                  <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
+                    {instantDose.loadingMlPerHr} mL/hr
+                  </div>
+                  <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                    {instantDose.loadRate} mcg/kg/min × {weightNum} kg
+                  </div>
+                  <div className="text-xs text-amber-700 dark:text-amber-400 mt-2">
+                    Total: <strong>{instantDose.loadingTotalMg} mg</strong> ({instantDose.loadingVolumeMl} mL @ 50 mcg/mL)
+                  </div>
+                </div>
+                <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
+                  <Badge className="mb-2 bg-amber-600">Maintenance × up to 47.5 h</Badge>
+                  <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
+                    {instantDose.maintMlPerHr} mL/hr
+                  </div>
+                  <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                    = {instantDose.maintMcgPerHr} mcg/hr ({instantDose.maintRate} mcg/kg/min)
+                  </div>
+                  <div className="text-xs text-amber-700 dark:text-amber-400 mt-2">
+                    47.5-h total: <strong>{instantDose.maintTotalMg} mg</strong> ({instantDose.maintTotalMl} mL)
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-muted/50 rounded-lg text-center text-muted-foreground">
+                <Calculator className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                Enter a valid weight (30–200 kg) to calculate INSTANT regimen
+              </div>
+            )}
+
+            <Alert className="border-amber-300 bg-amber-50/50 dark:bg-amber-950/20">
+              <Info className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-xs text-amber-700 dark:text-amber-400">
+                <strong>Reference:</strong> INSTANT Trial Investigators. Intravenous tirofiban after tenecteplase in
+                acute ischemic stroke: the INSTANT randomized clinical trial. <em>JAMA</em>. Published online May 8, 2026.
+                doi:10.1001/jama.2026.5245
+              </AlertDescription>
+            </Alert>
+          </TabsContent>
+
+          {/* IA Rescue */}
           <TabsContent value="ia" className="space-y-4">
             <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
               <div className="flex items-center gap-2 mb-2">
