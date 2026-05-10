@@ -67,6 +67,37 @@ export default function TirofibanDoseCalculator() {
     };
   }, [weightNum, isValidWeight, factor]);
 
+  // INSTANT trial regimen (JAMA 2026): post-IV tenecteplase tirofiban for AIS
+  // without large/medium vessel occlusion or cardioembolic source.
+  // 30-min 0.3 mcg/kg/min bolus + 0.075 mcg/kg/min continuous infusion up to 47.5 h
+  const instantDose = useMemo(() => {
+    if (!isValidWeight) return null;
+    const loadRate = 0.3 * factor; // mcg/kg/min over 30 min
+    const maintRate = 0.075 * factor; // mcg/kg/min
+
+    const loadingTotalMcg = loadRate * weightNum * 30;
+    const loadingTotalMg = loadingTotalMcg / 1000;
+    const loadingVolumeMl = loadingTotalMcg / CONC_MCG_PER_ML;
+    const loadingMlPerHr = (loadRate * weightNum * 60) / CONC_MCG_PER_ML;
+
+    const maintMcgPerHr = maintRate * weightNum * 60;
+    const maintMlPerHr = maintMcgPerHr / CONC_MCG_PER_ML;
+    const maintTotalMg = (maintMcgPerHr * 47.5) / 1000;
+    const maintTotalMl = maintMlPerHr * 47.5;
+
+    return {
+      loadRate: loadRate.toFixed(3),
+      maintRate: maintRate.toFixed(4),
+      loadingTotalMg: loadingTotalMg.toFixed(3),
+      loadingVolumeMl: loadingVolumeMl.toFixed(2),
+      loadingMlPerHr: loadingMlPerHr.toFixed(2),
+      maintMcgPerHr: maintMcgPerHr.toFixed(2),
+      maintMlPerHr: maintMlPerHr.toFixed(2),
+      maintTotalMg: maintTotalMg.toFixed(2),
+      maintTotalMl: maintTotalMl.toFixed(1),
+    };
+  }, [weightNum, isValidWeight, factor]);
+
   return (
     <Card className="border-cyan-300 dark:border-cyan-700 bg-gradient-to-br from-cyan-50 dark:from-cyan-950/30 to-background">
       <CardHeader className="bg-cyan-100/50 dark:bg-cyan-900/30">
