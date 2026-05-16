@@ -46,6 +46,27 @@ export default function TirofibanDoseCalculator() {
 
   const weightNum = parseFloat(weight) || 0;
   const isValidWeight = weightNum >= 30 && weightNum <= 200;
+
+  // Cockcroft-Gault CrCl (mL/min) — uses actual body weight from main weight field
+  const ageNum = parseFloat(age) || 0;
+  const scrNum = parseFloat(scr) || 0;
+  const crclCalc = useMemo(() => {
+    if (!ageNum || !scrNum || !weightNum) return null;
+    const raw = ((140 - ageNum) * weightNum) / (72 * scrNum);
+    const val = sex === "female" ? raw * 0.85 : raw;
+    return Math.round(val * 10) / 10;
+  }, [ageNum, scrNum, weightNum, sex]);
+
+  const renalImpaired = renalManualOverride
+    ? renalImpairedManual
+    : crclCalc !== null
+      ? crclCalc < 30
+      : false;
+  const setRenalImpaired = (v: boolean) => {
+    setRenalManualOverride(true);
+    setRenalImpairedManual(v);
+  };
+
   const factor = renalImpaired ? 0.5 : 1;
 
   // Standard concentration: 50 mcg/mL (0.05 mg/mL) ready-to-use bag
