@@ -23,9 +23,15 @@ import ModuleCommentBox from "./ModuleCommentBox";
  */
 export default function TirofibanDoseCalculator() {
   const [weight, setWeight] = useState<string>("");
-  const [renalImpaired, setRenalImpaired] = useState(false); // CrCl <30
+  const [renalManualOverride, setRenalManualOverride] = useState(false);
+  const [renalImpairedManual, setRenalImpairedManual] = useState(false);
   const [activeMode, setActiveMode] = useState<"iv" | "ia" | "post_ivt" | "instant">("iv");
   const [comments, setComments] = useState("");
+
+  // CrCl (Cockcroft-Gault) inputs
+  const [age, setAge] = useState<string>("");
+  const [sex, setSex] = useState<"male" | "female">("male");
+  const [scr, setScr] = useState<string>(""); // mg/dL
   const [instantStart, setInstantStart] = useState<string>(() => {
     const d = new Date();
     const pad = (n: number) => String(n).padStart(2, "0");
