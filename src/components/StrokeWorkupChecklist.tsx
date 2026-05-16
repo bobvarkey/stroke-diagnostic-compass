@@ -25,6 +25,7 @@ import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import CollapsibleModule from "./CollapsibleModule";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
+import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendation";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
