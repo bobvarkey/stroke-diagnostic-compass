@@ -23,9 +23,15 @@ import ModuleCommentBox from "./ModuleCommentBox";
  */
 export default function TirofibanDoseCalculator() {
   const [weight, setWeight] = useState<string>("");
-  const [renalImpaired, setRenalImpaired] = useState(false); // CrCl <30
+  const [renalManualOverride, setRenalManualOverride] = useState(false);
+  const [renalImpairedManual, setRenalImpairedManual] = useState(false);
   const [activeMode, setActiveMode] = useState<"iv" | "ia" | "post_ivt" | "instant">("iv");
   const [comments, setComments] = useState("");
+
+  // CrCl (Cockcroft-Gault) inputs
+  const [age, setAge] = useState<string>("");
+  const [sex, setSex] = useState<"male" | "female">("male");
+  const [scr, setScr] = useState<string>(""); // mg/dL
   const [instantStart, setInstantStart] = useState<string>(() => {
     const d = new Date();
     const pad = (n: number) => String(n).padStart(2, "0");
@@ -40,6 +46,27 @@ export default function TirofibanDoseCalculator() {
 
   const weightNum = parseFloat(weight) || 0;
   const isValidWeight = weightNum >= 30 && weightNum <= 200;
+
+  // Cockcroft-Gault CrCl (mL/min) — uses actual body weight from main weight field
+  const ageNum = parseFloat(age) || 0;
+  const scrNum = parseFloat(scr) || 0;
+  const crclCalc = useMemo(() => {
+    if (!ageNum || !scrNum || !weightNum) return null;
+    const raw = ((140 - ageNum) * weightNum) / (72 * scrNum);
+    const val = sex === "female" ? raw * 0.85 : raw;
+    return Math.round(val * 10) / 10;
+  }, [ageNum, scrNum, weightNum, sex]);
+
+  const renalImpaired = renalManualOverride
+    ? renalImpairedManual
+    : crclCalc !== null
+      ? crclCalc < 30
+      : false;
+  const setRenalImpaired = (v: boolean) => {
+    setRenalManualOverride(true);
+    setRenalImpairedManual(v);
+  };
+
   const factor = renalImpaired ? 0.5 : 1;
 
   // Standard concentration: 50 mcg/mL (0.05 mg/mL) ready-to-use bag
@@ -144,10 +171,80 @@ export default function TirofibanDoseCalculator() {
               <Label className="text-cyan-700 dark:text-cyan-400 font-medium text-sm">
                 Renal impairment (CrCl &lt; 30 mL/min)
               </Label>
-              <p className="text-xs text-muted-foreground">Reduces both rates by 50%</p>
+              <p className="text-xs text-muted-foreground">
+                {renalManualOverride
+                  ? "Manual override active"
+                  : crclCalc !== null
+                    ? `Auto from CrCl ${crclCalc} mL/min`
+                    : "Enter age & creatinine to auto-detect"}
+              </p>
             </div>
             <Switch checked={renalImpaired} onCheckedChange={setRenalImpaired} />
           </div>
+        </div>
+
+        {/* CrCl (Cockcroft-Gault) calculator */}
+        <div className="p-3 rounded-lg border border-cyan-200 dark:border-cyan-700 bg-background/60 space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Calculator className="h-4 w-4 text-cyan-600" />
+              <span className="text-sm font-medium text-cyan-800 dark:text-cyan-300">
+                Creatinine Clearance (Cockcroft-Gault)
+              </span>
+            </div>
+            {crclCalc !== null && (
+              <Badge
+                className={
+                  crclCalc < 30
+                    ? "bg-red-600"
+                    : crclCalc < 60
+                      ? "bg-amber-600"
+                      : "bg-green-600"
+                }
+              >
+                CrCl {crclCalc} mL/min
+              </Badge>
+            )}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div>
+              <Label htmlFor="tiro-age" className="text-xs">Age (yr)</Label>
+              <Input id="tiro-age" type="number" min="18" max="120" value={age}
+                onChange={(e) => setAge(e.target.value)} placeholder="e.g. 68" className="mt-1 h-9" />
+            </div>
+            <div>
+              <Label htmlFor="tiro-scr" className="text-xs">S. Creatinine (mg/dL)</Label>
+              <Input id="tiro-scr" type="number" step="0.1" min="0.1" max="15" value={scr}
+                onChange={(e) => setScr(e.target.value)} placeholder="e.g. 1.2" className="mt-1 h-9" />
+            </div>
+            <div>
+              <Label className="text-xs">Sex</Label>
+              <div className="mt-1 inline-flex rounded-md border border-cyan-200 dark:border-cyan-700 overflow-hidden h-9">
+                <button type="button" onClick={() => setSex("male")}
+                  className={`px-3 text-xs font-medium ${sex === "male" ? "bg-cyan-600 text-white" : "bg-background"}`}>
+                  Male
+                </button>
+                <button type="button" onClick={() => setSex("female")}
+                  className={`px-3 text-xs font-medium ${sex === "female" ? "bg-cyan-600 text-white" : "bg-background"}`}>
+                  Female (×0.85)
+                </button>
+              </div>
+            </div>
+          </div>
+          {crclCalc !== null && (
+            <div className="text-[11px] text-muted-foreground">
+              Formula: ((140 − {ageNum}) × {weightNum} kg) / (72 × {scrNum}){sex === "female" ? " × 0.85" : ""} ={" "}
+              <strong>{crclCalc} mL/min</strong>
+              {crclCalc < 30 && " — severe impairment, halved rates applied"}
+              {crclCalc >= 30 && crclCalc < 60 && " — moderate impairment, monitor closely"}
+            </div>
+          )}
+          {renalManualOverride && (
+            <button type="button" onClick={() => setRenalManualOverride(false)}
+              className="text-[11px] underline text-cyan-700 dark:text-cyan-400">
+              Clear manual override & use calculated CrCl
+            </button>
+          )}
         </div>
 
         {renalImpaired && (
@@ -387,40 +484,80 @@ export default function TirofibanDoseCalculator() {
                           <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Time</th>
                           <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Pump rate</th>
                           <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Action</th>
+                          <th className="p-2 text-left border border-amber-200 dark:border-amber-800 min-w-[220px]">Bleeding / Neuro / Stop prompts</th>
                         </tr>
                       </thead>
-                      <tbody className="text-amber-900 dark:text-amber-200">
+                      <tbody className="text-amber-900 dark:text-amber-200 align-top">
                         <tr>
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">1. Start loading</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(startDate)}</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{instantDose.loadingMlPerHr} mL/hr</strong></td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{instantDose.loadRate} mcg/kg/min × 30 min</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ Baseline BP, HR, SpO₂; target SBP &lt;180 / DBP &lt;105</div>
+                              <div>☐ Baseline NIHSS &amp; GCS documented</div>
+                              <div>☐ IV access ×2; group &amp; save sent</div>
+                              <div className="text-red-700 dark:text-red-400">STOP if SBP ≥185 / DBP ≥110 despite Rx, GCS drop ≥2, or any overt bleeding</div>
+                            </div>
+                          </td>
                         </tr>
                         <tr>
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">2. Switch to maintenance</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(loadEnd)}</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{instantDose.maintMlPerHr} mL/hr</strong></td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">Drop to {instantDose.maintRate} mcg/kg/min</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ BP q15 min ×1 h then q30 min; keep &lt;180/105</div>
+                              <div>☐ NIHSS check; document any change ≥2 pts</div>
+                              <div>☐ Inspect puncture sites, gums, urine, stool</div>
+                              <div className="text-red-700 dark:text-red-400">HOLD if new headache, vomiting, focal worsening → urgent NCCT</div>
+                            </div>
+                          </td>
                         </tr>
                         <tr>
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">3. Platelets / Hb</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(platelet1)} · {formatTime(platelet2)}</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">—</td>
-                          <td className="p-2 border border-amber-200 dark:border-amber-800">CBC at 2 h & 6 h; hold if plt &lt; 90</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">CBC at 2 h &amp; 6 h</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ Platelets, Hb, fibrinogen</div>
+                              <div className="text-red-700 dark:text-red-400">STOP if platelets &lt;90 ×10⁹/L, Hb fall ≥2 g/dL, or fibrinogen &lt;150 mg/dL</div>
+                              <div>☐ If thrombocytopenia: confirm on citrate tube; transfuse platelets if &lt;50 or bleeding</div>
+                            </div>
+                          </td>
                         </tr>
                         {checkpoints.map((cp) => (
                           <tr key={cp.h}>
                             <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">Checkpoint {cp.h} h</td>
                             <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(cp.t)}</td>
                             <td className="p-2 border border-amber-200 dark:border-amber-800">{instantDose.maintMlPerHr} mL/hr</td>
-                            <td className="p-2 border border-amber-200 dark:border-amber-800">NIHSS, BP &lt; 180/105, bleeding survey</td>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800">NIHSS, BP, bleeding survey</td>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800">
+                              <div className="space-y-1">
+                                <div>☐ BP &lt;180/105 (treat with labetalol/nicardipine)</div>
+                                <div>☐ NIHSS &amp; GCS — alert if Δ ≥2</div>
+                                <div>☐ Skin/mucosa/IV sites; check Hb &amp; platelets daily</div>
+                                {cp.h === 24 && <div>☐ Repeat NCCT at 24 h (per IVT protocol)</div>}
+                                <div className="text-red-700 dark:text-red-400">STOP &amp; CT if sudden HA, vomiting, pupil change, NIHSS ↑≥4, or new bleeding</div>
+                              </div>
+                            </td>
                           </tr>
                         ))}
                         <tr className="bg-amber-50 dark:bg-amber-950/40">
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">Stop infusion</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{formatTime(stop)}</strong></td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">0 mL/hr</td>
-                          <td className="p-2 border border-amber-200 dark:border-amber-800">End at 48 h total; bridge to oral antiplatelet</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">End at 48 h; bridge to oral antiplatelet</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ Final NIHSS, mRS, bleeding audit</div>
+                              <div>☐ Overlap with ASA ± clopidogrel before stopping (tirofiban t½ ~2 h — antiplatelet effect resolves in 4–8 h)</div>
+                              <div>☐ Continue BP &lt;180/105 ×24 h; CBC at 24 h post-stop</div>
+                            </div>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
