@@ -484,40 +484,80 @@ export default function TirofibanDoseCalculator() {
                           <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Time</th>
                           <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Pump rate</th>
                           <th className="p-2 text-left border border-amber-200 dark:border-amber-800">Action</th>
+                          <th className="p-2 text-left border border-amber-200 dark:border-amber-800 min-w-[220px]">Bleeding / Neuro / Stop prompts</th>
                         </tr>
                       </thead>
-                      <tbody className="text-amber-900 dark:text-amber-200">
+                      <tbody className="text-amber-900 dark:text-amber-200 align-top">
                         <tr>
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">1. Start loading</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(startDate)}</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{instantDose.loadingMlPerHr} mL/hr</strong></td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{instantDose.loadRate} mcg/kg/min × 30 min</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ Baseline BP, HR, SpO₂; target SBP &lt;180 / DBP &lt;105</div>
+                              <div>☐ Baseline NIHSS &amp; GCS documented</div>
+                              <div>☐ IV access ×2; group &amp; save sent</div>
+                              <div className="text-red-700 dark:text-red-400">STOP if SBP ≥185 / DBP ≥110 despite Rx, GCS drop ≥2, or any overt bleeding</div>
+                            </div>
+                          </td>
                         </tr>
                         <tr>
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">2. Switch to maintenance</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(loadEnd)}</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{instantDose.maintMlPerHr} mL/hr</strong></td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">Drop to {instantDose.maintRate} mcg/kg/min</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ BP q15 min ×1 h then q30 min; keep &lt;180/105</div>
+                              <div>☐ NIHSS check; document any change ≥2 pts</div>
+                              <div>☐ Inspect puncture sites, gums, urine, stool</div>
+                              <div className="text-red-700 dark:text-red-400">HOLD if new headache, vomiting, focal worsening → urgent NCCT</div>
+                            </div>
+                          </td>
                         </tr>
                         <tr>
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">3. Platelets / Hb</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(platelet1)} · {formatTime(platelet2)}</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">—</td>
-                          <td className="p-2 border border-amber-200 dark:border-amber-800">CBC at 2 h & 6 h; hold if plt &lt; 90</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">CBC at 2 h &amp; 6 h</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ Platelets, Hb, fibrinogen</div>
+                              <div className="text-red-700 dark:text-red-400">STOP if platelets &lt;90 ×10⁹/L, Hb fall ≥2 g/dL, or fibrinogen &lt;150 mg/dL</div>
+                              <div>☐ If thrombocytopenia: confirm on citrate tube; transfuse platelets if &lt;50 or bleeding</div>
+                            </div>
+                          </td>
                         </tr>
                         {checkpoints.map((cp) => (
                           <tr key={cp.h}>
                             <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">Checkpoint {cp.h} h</td>
                             <td className="p-2 border border-amber-200 dark:border-amber-800">{formatTime(cp.t)}</td>
                             <td className="p-2 border border-amber-200 dark:border-amber-800">{instantDose.maintMlPerHr} mL/hr</td>
-                            <td className="p-2 border border-amber-200 dark:border-amber-800">NIHSS, BP &lt; 180/105, bleeding survey</td>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800">NIHSS, BP, bleeding survey</td>
+                            <td className="p-2 border border-amber-200 dark:border-amber-800">
+                              <div className="space-y-1">
+                                <div>☐ BP &lt;180/105 (treat with labetalol/nicardipine)</div>
+                                <div>☐ NIHSS &amp; GCS — alert if Δ ≥2</div>
+                                <div>☐ Skin/mucosa/IV sites; check Hb &amp; platelets daily</div>
+                                {cp.h === 24 && <div>☐ Repeat NCCT at 24 h (per IVT protocol)</div>}
+                                <div className="text-red-700 dark:text-red-400">STOP &amp; CT if sudden HA, vomiting, pupil change, NIHSS ↑≥4, or new bleeding</div>
+                              </div>
+                            </td>
                           </tr>
                         ))}
                         <tr className="bg-amber-50 dark:bg-amber-950/40">
                           <td className="p-2 border border-amber-200 dark:border-amber-800 font-medium">Stop infusion</td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800"><strong>{formatTime(stop)}</strong></td>
                           <td className="p-2 border border-amber-200 dark:border-amber-800">0 mL/hr</td>
-                          <td className="p-2 border border-amber-200 dark:border-amber-800">End at 48 h total; bridge to oral antiplatelet</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">End at 48 h; bridge to oral antiplatelet</td>
+                          <td className="p-2 border border-amber-200 dark:border-amber-800">
+                            <div className="space-y-1">
+                              <div>☐ Final NIHSS, mRS, bleeding audit</div>
+                              <div>☐ Overlap with ASA ± clopidogrel before stopping (tirofiban t½ ~2 h — antiplatelet effect resolves in 4–8 h)</div>
+                              <div>☐ Continue BP &lt;180/105 ×24 h; CBC at 24 h post-stop</div>
+                            </div>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
