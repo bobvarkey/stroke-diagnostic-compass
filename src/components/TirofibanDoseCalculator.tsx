@@ -171,10 +171,80 @@ export default function TirofibanDoseCalculator() {
               <Label className="text-cyan-700 dark:text-cyan-400 font-medium text-sm">
                 Renal impairment (CrCl &lt; 30 mL/min)
               </Label>
-              <p className="text-xs text-muted-foreground">Reduces both rates by 50%</p>
+              <p className="text-xs text-muted-foreground">
+                {renalManualOverride
+                  ? "Manual override active"
+                  : crclCalc !== null
+                    ? `Auto from CrCl ${crclCalc} mL/min`
+                    : "Enter age & creatinine to auto-detect"}
+              </p>
             </div>
             <Switch checked={renalImpaired} onCheckedChange={setRenalImpaired} />
           </div>
+        </div>
+
+        {/* CrCl (Cockcroft-Gault) calculator */}
+        <div className="p-3 rounded-lg border border-cyan-200 dark:border-cyan-700 bg-background/60 space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Calculator className="h-4 w-4 text-cyan-600" />
+              <span className="text-sm font-medium text-cyan-800 dark:text-cyan-300">
+                Creatinine Clearance (Cockcroft-Gault)
+              </span>
+            </div>
+            {crclCalc !== null && (
+              <Badge
+                className={
+                  crclCalc < 30
+                    ? "bg-red-600"
+                    : crclCalc < 60
+                      ? "bg-amber-600"
+                      : "bg-green-600"
+                }
+              >
+                CrCl {crclCalc} mL/min
+              </Badge>
+            )}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div>
+              <Label htmlFor="tiro-age" className="text-xs">Age (yr)</Label>
+              <Input id="tiro-age" type="number" min="18" max="120" value={age}
+                onChange={(e) => setAge(e.target.value)} placeholder="e.g. 68" className="mt-1 h-9" />
+            </div>
+            <div>
+              <Label htmlFor="tiro-scr" className="text-xs">S. Creatinine (mg/dL)</Label>
+              <Input id="tiro-scr" type="number" step="0.1" min="0.1" max="15" value={scr}
+                onChange={(e) => setScr(e.target.value)} placeholder="e.g. 1.2" className="mt-1 h-9" />
+            </div>
+            <div>
+              <Label className="text-xs">Sex</Label>
+              <div className="mt-1 inline-flex rounded-md border border-cyan-200 dark:border-cyan-700 overflow-hidden h-9">
+                <button type="button" onClick={() => setSex("male")}
+                  className={`px-3 text-xs font-medium ${sex === "male" ? "bg-cyan-600 text-white" : "bg-background"}`}>
+                  Male
+                </button>
+                <button type="button" onClick={() => setSex("female")}
+                  className={`px-3 text-xs font-medium ${sex === "female" ? "bg-cyan-600 text-white" : "bg-background"}`}>
+                  Female (×0.85)
+                </button>
+              </div>
+            </div>
+          </div>
+          {crclCalc !== null && (
+            <div className="text-[11px] text-muted-foreground">
+              Formula: ((140 − {ageNum}) × {weightNum} kg) / (72 × {scrNum}){sex === "female" ? " × 0.85" : ""} ={" "}
+              <strong>{crclCalc} mL/min</strong>
+              {crclCalc < 30 && " — severe impairment, halved rates applied"}
+              {crclCalc >= 30 && crclCalc < 60 && " — moderate impairment, monitor closely"}
+            </div>
+          )}
+          {renalManualOverride && (
+            <button type="button" onClick={() => setRenalManualOverride(false)}
+              className="text-[11px] underline text-cyan-700 dark:text-cyan-400">
+              Clear manual override & use calculated CrCl
+            </button>
+          )}
         </div>
 
         {renalImpaired && (
