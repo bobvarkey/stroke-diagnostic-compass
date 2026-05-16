@@ -5727,6 +5727,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <StrokeTreatmentRecommender />
           </LazySection>
 
+          {/* Recurrent stroke on aspirin + clopidogrel — switch-to-Ticagrelor pathway */}
+          <LazySection id="recurrent-dapt">
+            <RecurrentStrokeDAPTRecommendation />
+          </LazySection>
+
           {/* Stroke Code System */}
           <LazySection id="stroke-code">
             <StrokeCodeSystem />
