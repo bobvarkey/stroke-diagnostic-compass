@@ -25,6 +25,7 @@ import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import CollapsibleModule from "./CollapsibleModule";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
+import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendation";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
@@ -5691,6 +5692,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
+              { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
               { id: "vascular-anatomy", label: "Vascular Anatomy", icon: <Heart className="h-3.5 w-3.5 text-red-400" /> },
@@ -5723,6 +5725,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Treatment Pathway Recommender */}
           <LazySection id="treatment-recommender">
             <StrokeTreatmentRecommender />
+          </LazySection>
+
+          {/* Recurrent stroke on aspirin + clopidogrel — switch-to-Ticagrelor pathway */}
+          <LazySection id="recurrent-dapt">
+            <RecurrentStrokeDAPTRecommendation />
           </LazySection>
 
           {/* Stroke Code System */}
