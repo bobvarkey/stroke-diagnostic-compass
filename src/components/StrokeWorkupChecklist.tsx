@@ -28,6 +28,7 @@ import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendation";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
+import MeVOOrientalTrial from "./MeVOOrientalTrial";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
 import LipidTherapyIntensificationGuide from "./LipidTherapyIntensificationGuide";
 import ETICIScoreCalculator from "./ETICIScoreCalculator";
@@ -5931,6 +5932,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Treatment Choice Consequence Matrix */}
           <LazySection id="treatment-decision">
             <TreatmentDecisionAid />
+          </LazySection>
+
+          {/* ORIENTAL-MeVO Trial */}
+          <LazySection id="mevo-oriental">
+            <MeVOOrientalTrial />
           </LazySection>
 
           {/* LVO Decision Dashboard - Integrated Treatment Recommendation (includes Collateral Grading, HeadsUp, eTICI, TAL) */}

@@ -63,7 +63,8 @@ const Index = () => {
         "lvo-dashboard", "treatment-decision",
         "ctp-penumbra", "aspects-calculator", "collateral-grading", "vascular-anatomy",
         "nihss-calculator", "gcs-calculator", "prevent-score", "kdigo-heatmap",
-        "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "workup-checklist"
+        "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "workup-checklist",
+        "mevo-oriental"
       ];
       
       for (const sectionId of sections) {
