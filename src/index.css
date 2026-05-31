@@ -9,70 +9,70 @@
 
 @layer base {
   :root {
-    --background: 220 25% 97%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 100%;
 
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 60% 95%;
-    --secondary-foreground: 270 60% 30%;
+    --secondary: 270 40% 18%;
+    --secondary-foreground: 270 60% 85%;
 
-    --muted: 220 20% 95%;
-    --muted-foreground: 220 15% 46%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 190 80% 92%;
-    --accent-foreground: 190 80% 20%;
+    --accent: 190 50% 20%;
+    --accent-foreground: 190 80% 80%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 90%;
-    --input: 220 20% 93%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
     --ring: 217 91% 60%;
 
-    --medical-header: 217 91% 45%;
-    --medical-section: 220 25% 97%;
-    --medical-complete: 142 71% 45%;
-    --medical-pending: 38 92% 50%;
+    --medical-header: 217 91% 60%;
+    --medical-section: 0 0% 10%;
+    --medical-complete: 142 71% 50%;
+    --medical-pending: 38 92% 55%;
 
     --radius: 0.75rem;
 
-    /* Glassmorphic tokens */
-    --glass-bg: 0 0% 100% / 0.65;
-    --glass-border: 0 0% 100% / 0.3;
-    --glass-shadow: 220 60% 50% / 0.08;
+    /* Glassmorphic tokens - darker for black theme */
+    --glass-bg: 0 0% 10% / 0.8;
+    --glass-border: 0 0% 100% / 0.1;
+    --glass-shadow: 217 91% 60% / 0.15;
     --glass-blur: 16px;
 
-    /* Vibrant accent palette */
-    --accent-blue: 217 91% 60%;
-    --accent-purple: 270 70% 60%;
-    --accent-pink: 330 80% 60%;
-    --accent-teal: 175 70% 42%;
-    --accent-amber: 38 92% 50%;
-    --accent-emerald: 160 84% 39%;
-    --accent-rose: 350 89% 60%;
+    /* Vibrant accent palette - keep colors vivid against black */
+    --accent-blue: 217 91% 65%;
+    --accent-purple: 270 70% 65%;
+    --accent-pink: 330 80% 65%;
+    --accent-teal: 175 70% 50%;
+    --accent-amber: 38 92% 55%;
+    --accent-emerald: 160 84% 50%;
+    --accent-rose: 350 89% 65%;
 
     /* Gradient tokens */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(270 70% 60%));
-    --gradient-warm: linear-gradient(135deg, hsl(330 80% 60%), hsl(38 92% 50%));
-    --gradient-cool: linear-gradient(135deg, hsl(175 70% 42%), hsl(217 91% 60%));
-    --gradient-surface: linear-gradient(135deg, hsl(220 25% 97%), hsl(270 60% 97%));
+    --gradient-warm: linear-gradient(135deg, hsl(330 80% 60%), hsl(38 92% 55%));
+    --gradient-cool: linear-gradient(135deg, hsl(175 70% 50%), hsl(217 91% 60%));
+    --gradient-surface: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 12%));
 
-    --sidebar-background: 240 20% 98%;
-    --sidebar-foreground: 222 47% 20%;
-    --sidebar-primary: 217 91% 55%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 217 91% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 50% 95%;
-    --sidebar-accent-foreground: 270 50% 25%;
-    --sidebar-border: 220 20% 92%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 270 40% 20%;
+    --sidebar-accent-foreground: 270 60% 85%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 217 91% 65%;
   }
 
   .dark {
@@ -140,8 +140,8 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image: var(--gradient-surface);
-    background-attachment: fixed;
+    background-color: #000000;
+    background-image: none;
     min-height: 100vh;
   }
 }
@@ -281,4 +281,66 @@ html {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT BACKGROUND TEXT COLORS — Ensure dark text on light bg-*-50
+   ═══════════════════════════════════════════════════════════════ */
+[class*="bg-white"],
+[class*="bg-slate-50"],
+[class*="bg-gray-50"],
+[class*="bg-zinc-50"],
+[class*="bg-neutral-50"],
+[class*="bg-stone-50"],
+[class*="bg-red-50"],
+[class*="bg-orange-50"],
+[class*="bg-amber-50"],
+[class*="bg-yellow-50"],
+[class*="bg-lime-50"],
+[class*="bg-green-50"],
+[class*="bg-emerald-50"],
+[class*="bg-teal-50"],
+[class*="bg-cyan-50"],
+[class*="bg-sky-50"],
+[class*="bg-blue-50"],
+[class*="bg-indigo-50"],
+[class*="bg-violet-50"],
+[class*="bg-purple-50"],
+[class*="bg-fuchsia-50"],
+[class*="bg-pink-50"],
+[class*="bg-rose-50"],
+[class*="bg-medical-section"] {
+  color: hsl(222 47% 11%);
+}
+
+/* Preserve white text on colored badges/buttons */
+[class*="bg-white"][class*="text-white"],
+[class*="bg-red-500"],
+[class*="bg-orange-500"],
+[class*="bg-amber-500"],
+[class*="bg-yellow-500"],
+[class*="bg-green-500"],
+[class*="bg-emerald-500"],
+[class*="bg-teal-500"],
+[class*="bg-cyan-500"],
+[class*="bg-sky-500"],
+[class*="bg-blue-500"],
+[class*="bg-indigo-500"],
+[class*="bg-violet-500"],
+[class*="bg-purple-500"],
+[class*="bg-fuchsia-500"],
+[class*="bg-pink-500"],
+[class*="bg-rose-500"],
+[class*="bg-slate-500"],
+[class*="bg-gray-500"],
+[class*="bg-zinc-500"],
+[class*="bg-neutral-500"],
+[class*="bg-stone-500"] {
+  color: inherit;
+}
+
+/* Specific overrides for badges and buttons with white text */
+[class*="bg-"][class*="text-white"],
+[class*="bg-"][class*="text-primary-foreground"] {
+  color: white !important;
 }
