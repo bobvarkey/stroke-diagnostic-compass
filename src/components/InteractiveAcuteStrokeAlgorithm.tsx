@@ -14,6 +14,7 @@ import evtDecisionTree2026 from "@/assets/evt-decision-tree-2026.jpeg";
 import antiplateletAlgorithm2026 from "@/assets/antiplatelet-algorithm-2026.jpeg";
 import cancerStrokeClassification from "@/assets/cancer-stroke-classification.jpeg";
 import InteractiveEVTDecisionTree from "./InteractiveEVTDecisionTree";
+import MeVOOrientalTrial from "./MeVOOrientalTrial";
 
 interface AlgorithmInputs {
   lastKnownWell: string;
@@ -453,14 +454,8 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                   </p>
                 </div>
                 
-                {/* ORIENTA-MeVO */}
-                <div className="p-3 bg-white/60 dark:bg-gray-800/60 rounded border-l-4 border-cyan-500">
-                  <span className="font-bold text-cyan-700 dark:text-cyan-400">ORIENTA-MeVO</span>
-                  <span className="ml-1 px-1.5 py-0.5 bg-cyan-500 text-white text-xs rounded">MeVO</span>
-                  <p className="text-gray-700 dark:text-gray-300 mt-1">
-                    <strong>EVT for medium vessel occlusions</strong> improved 90-day functional outcomes without excess sICH in a Chinese population.
-                  </p>
-                </div>
+                {/* ORIENTAL-MeVO Trial Summary */}
+                <MeVOOrientalTrial />
               </div>
             </div>
 

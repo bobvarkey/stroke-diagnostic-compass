@@ -65,7 +65,7 @@ const decisionScenarios: DecisionScenario[] = [
   },
   {
     id: "lvo-medical-vs-evt",
-    title: "LVO: Medical Management vs EVT",
+    title: "All LVO; Medical management vs EVT",
     subtitle: "Large Vessel Occlusion Treatment Comparison",
     image: lvoMedicalVsEvt,
     description: "In patients with large vessel occlusion (LVO), comparison between best medical management alone versus endovascular thrombectomy (EVT).",
@@ -101,7 +101,7 @@ const decisionScenarios: DecisionScenario[] = [
   },
   {
     id: "late-lvo-medical-vs-evt",
-    title: "Late LVO: Medical vs Late EVT",
+    title: "Late LVO (at 6-24 hours): Medical Rx vs Late EVT",
     subtitle: "Extended Window (6-24 hours) Thrombectomy",
     image: lateThrombectomyLvo,
     description: "For patients with LVO presenting in extended window (6-24 hours), comparison between medical management alone versus late mechanical thrombectomy in selected patients with favorable imaging.",
