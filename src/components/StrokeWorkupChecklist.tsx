@@ -23,6 +23,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
+import IVTManagementCombined from "./IVTManagementCombined";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
@@ -5697,9 +5698,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                 { id: "treatment-recommender", label: "Treatment" },
                 { id: "stroke-code", label: "Code" },
                 { id: "acute-algorithm", label: "Algorithm" },
-                { id: "tpa-eligibility", label: "tPA" },
-                { id: "ivt-anticoag", label: "IVT" },
-                { id: "thrombolytic-dose", label: "Dosing" },
+                { id: "ivt-management", label: "IVT" },
                 { id: "treatment-decision", label: "Decisions" },
                 { id: "lvo-dashboard", label: "LVO" },
                 { id: "aspects-calculator", label: "ASPECTS" },
@@ -5751,19 +5750,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <InteractiveAcuteStrokeAlgorithm />
           </LazySection>
 
-          {/* tPA Eligibility Checklist */}
-          <LazySection id="tpa-eligibility">
-            <TPAEligibilityChecklist />
-          </LazySection>
-
-          {/* IVT in Anticoagulated Patients */}
-          <LazySection id="ivt-anticoag">
-            <IVTAnticoagulationGuide />
-          </LazySection>
-
-          {/* Thrombolytic Dose Calculator */}
-          <LazySection id="thrombolytic-dose">
-            <ThrombolyticDoseCalculator />
+          {/* IVT Management Combined */}
+          <LazySection id="ivt-management">
+            <IVTManagementCombined />
           </LazySection>
 
           {/* Treatment Choice Consequence Matrix */}

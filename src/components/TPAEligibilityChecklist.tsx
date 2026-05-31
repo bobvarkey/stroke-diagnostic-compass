@@ -4,12 +4,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
-  CheckCircle2, 
-  XCircle, 
-  AlertTriangle, 
-  Clock, 
-  ChevronDown, 
+import {
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Clock,
+  ChevronDown,
   Syringe,
   ShieldAlert,
   ShieldCheck,
@@ -18,7 +18,9 @@ import {
   Eye,
   Hand,
   MessageSquare,
-  Brain
+  Brain,
+  Link as LinkIcon,
+  ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ModuleCommentBox from "./ModuleCommentBox";
@@ -26,8 +28,10 @@ import ModuleCommentBox from "./ModuleCommentBox";
 interface Criterion {
   id: string;
   label: string;
-  description?: string;
+  description?: React.ReactNode;
   severity: "absolute" | "relative" | "inclusion";
+  linkTo?: string;
+  linkLabel?: string;
 }
 
 const inclusionCriteria: Criterion[] = [
@@ -45,9 +49,9 @@ const absoluteContraindications: Criterion[] = [
   { id: "abs_brain_surgery", label: "Intracranial/intraspinal surgery within 3 months", severity: "absolute" },
   { id: "abs_head_trauma", label: "Serious head trauma within 3 months", severity: "absolute" },
   { id: "abs_arterial_puncture", label: "Arterial puncture at noncompressible site within 7 days", severity: "absolute" },
-  { id: "abs_anticoag", label: "Current anticoagulation with INR >1.7 or PT >15 seconds", severity: "absolute" },
-  { id: "abs_heparin", label: "Heparin received within 48 hours with elevated aPTT", severity: "absolute" },
-  { id: "abs_doac_48h", label: "DOAC use within 48 hours (or elevated drug levels)", description: "Includes dabigatran, rivaroxaban, apixaban, edoxaban", severity: "absolute" },
+  { id: "abs_anticoag", label: "Current anticoagulation with INR >1.7 or PT >15 seconds", severity: "absolute", linkTo: "ivt-anticoagulation", linkLabel: "View IVT in Anticoagulated Patients Guide" },
+  { id: "abs_heparin", label: "Heparin received within 48 hours with elevated aPTT", severity: "absolute", linkTo: "ivt-anticoagulation", linkLabel: "View IVT in Anticoagulated Patients Guide" },
+  { id: "abs_doac_48h", label: "DOAC use within 48 hours (or elevated drug levels)", description: "Includes dabigatran, rivaroxaban, apixaban, edoxaban", severity: "absolute", linkTo: "ivt-anticoagulation", linkLabel: "View IVT in Anticoagulated Patients Guide" },
   { id: "abs_platelets", label: "Platelet count <100,000/mm³", severity: "absolute" },
   { id: "abs_endocarditis", label: "Infective endocarditis", severity: "absolute" },
   { id: "abs_aortic_dissection", label: "Known or suspected aortic arch dissection", severity: "absolute" },
@@ -217,6 +221,18 @@ const TPAEligibilityChecklist: React.FC = () => {
             <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
               {criterion.description}
             </p>
+          )}
+          {criterion.linkTo && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                window.dispatchEvent(new CustomEvent('navigate-to-section', { detail: criterion.linkTo }));
+              }}
+              className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+            >
+              <ExternalLink className="h-3 w-3" />
+              {criterion.linkLabel}
+            </button>
           )}
         </div>
       </div>

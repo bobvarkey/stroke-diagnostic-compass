@@ -67,15 +67,10 @@ const navGroups: NavGroup[] = [
         label: "Acute Stroke Algorithm", 
         icon: <AlertTriangle className="h-4 w-4 text-red-500" /> 
       },
-      { 
-        id: "tpa-eligibility", 
-        label: "tPA Eligibility", 
-        icon: <Zap className="h-4 w-4 text-amber-500" /> 
-      },
-      { 
-        id: "thrombolytic-dose", 
-        label: "Thrombolytic Dosing", 
-        icon: <Beaker className="h-4 w-4 text-amber-600" /> 
+      {
+        id: "ivt-management",
+        label: "IVT Management",
+        icon: <Zap className="h-4 w-4 text-amber-500" />
       },
       { 
         id: "post-ivt-hemorrhage", 
