@@ -6,9 +6,10 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  TestTube, Camera, Upload, Loader2, Check, AlertTriangle, 
-  Plus, Trash2, FileText, Sparkles 
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+  TestTube, Camera, Upload, Loader2, Check, AlertTriangle,
+  Plus, Trash2, FileText, Sparkles, ChevronDown
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -244,20 +245,29 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
     }
   };
 
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <Card className="border-purple-400/50 dark:border-purple-600/50">
-      <CardHeader className="bg-gradient-to-r from-purple-100/50 to-indigo-100/50 dark:from-purple-900/30 dark:to-indigo-900/30">
-        <CardTitle className="flex items-center gap-2 text-purple-800 dark:text-purple-300">
-          <TestTube className="h-5 w-5" />
-          Lab Investigations
-          {labs.length > 0 && (
-            <Badge variant="secondary" className="ml-2">
-              {labs.length} recorded
-            </Badge>
-          )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6">
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-purple-400/50 dark:border-purple-600/50">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-gradient-to-r from-purple-100/50 to-indigo-100/50 dark:from-purple-900/30 dark:to-indigo-900/30 cursor-pointer">
+            <CardTitle className="flex items-center justify-between text-purple-800 dark:text-purple-300">
+              <div className="flex items-center gap-2">
+                <TestTube className="h-5 w-5" />
+                Lab Investigations
+                {labs.length > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {labs.length} recorded
+                  </Badge>
+                )}
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6">
         <Tabs defaultValue="manual" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="manual" className="flex items-center gap-2">
@@ -414,6 +424,8 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
           </div>
         )}
       </CardContent>
+        </CollapsibleContent>
     </Card>
+  </Collapsible>
   );
 }
