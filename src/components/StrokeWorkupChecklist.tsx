@@ -5919,6 +5919,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             })}
           </div>
           </CollapsibleContent>
+          </Card>
           </Collapsible>
 
           {/* Discharge Summary Template */}
