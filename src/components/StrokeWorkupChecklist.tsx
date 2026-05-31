@@ -5848,12 +5848,16 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </LazySection>
 
           {/* Progress Overview & Workup Checklist */}
-          <div id="workup-checklist">
+          <Collapsible id="workup-checklist">
           <Card className="bg-medical-section border-medical-header/20">
+            <CollapsibleTrigger className="w-full">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-medical-header">
-                <Activity className="h-5 w-5" />
-                Progress Overview
+              <CardTitle className="flex items-center justify-between text-medical-header">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" />
+                  Progress Overview
+                </div>
+                <ChevronDown className="h-5 w-5 transition-transform" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -5868,10 +5872,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                 </div>
                 <Progress value={completionPercentage} className="h-2" />
               </div>
-            </CardContent>
-          </Card>
+            </CardContent>            </CollapsibleTrigger>
 
-          <div className="grid gap-6">
+          <CollapsibleContent>
+          <div className="grid gap-6 pt-6 px-6 pb-6">
             {categories.map((category) => {
               const categoryTests = strokeTests.filter(test => test.category === category);
               const categoryCompleted = categoryTests.filter(test => checkedItems.has(test.id)).length;
@@ -5925,7 +5929,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               );
             })}
           </div>
-          </div>
+          </CollapsibleContent>
+          </Collapsible>
 
           {/* Discharge Summary Template */}
           <Collapsible>
