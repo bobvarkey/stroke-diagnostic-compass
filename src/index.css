@@ -446,3 +446,96 @@ html {
   color: hsl(222 47% 8%);
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   INTERACTIVE ELEMENTS — white text on dark surfaces (links,
+   buttons, badges, hover states). Light-surface overrides follow.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Default: links, buttons, badges, [role=button] inherit surface color */
+:where(a, button, [role="button"], [data-slot="badge"], .badge) {
+  color: inherit;
+}
+
+/* Force white text for interactive children on dark theme/dark palette surfaces */
+:where(
+  [class*="bg-background"],
+  [class*="bg-card"],
+  [class*="bg-popover"],
+  [class*="bg-muted"],
+  [class*="bg-primary"],
+  [class*="bg-secondary"],
+  [class*="bg-accent"],
+  [class*="bg-destructive"],
+  [class*="bg-sidebar"],
+  [class*="bg-medical-section"],
+  [class*="bg-medical-header"],
+  [class*="bg-black"],
+  [class^="bg-slate-9"], [class*=" bg-slate-9"],
+  [class^="bg-slate-8"], [class*=" bg-slate-8"],
+  [class^="bg-slate-7"], [class*=" bg-slate-7"],
+  [class^="bg-gray-9"],  [class*=" bg-gray-9"],
+  [class^="bg-gray-8"],  [class*=" bg-gray-8"],
+  [class^="bg-zinc-9"],  [class*=" bg-zinc-9"],
+  [class^="bg-zinc-8"],  [class*=" bg-zinc-8"],
+  [class^="bg-neutral-9"], [class*=" bg-neutral-9"],
+  [class^="bg-neutral-8"], [class*=" bg-neutral-8"],
+  [class^="bg-stone-9"], [class*=" bg-stone-9"],
+  [class^="bg-stone-8"], [class*=" bg-stone-8"]
+)
+  :where(a:not([class*="text-"]),
+         button:not([class*="text-"]),
+         [role="button"]:not([class*="text-"]),
+         [data-slot="badge"]:not([class*="text-"]),
+         .badge:not([class*="text-"])) {
+  color: hsl(0 0% 100%);
+}
+
+/* Hover/focus on dark surfaces — keep white */
+:where(
+  [class*="bg-background"],
+  [class*="bg-card"],
+  [class*="bg-popover"],
+  [class*="bg-muted"],
+  [class*="bg-primary"],
+  [class*="bg-secondary"],
+  [class*="bg-accent"],
+  [class*="bg-destructive"],
+  [class*="bg-sidebar"],
+  [class*="bg-medical-section"],
+  [class*="bg-black"]
+)
+  :where(a:hover, a:focus-visible, button:hover, button:focus-visible,
+         [role="button"]:hover, [role="button"]:focus-visible):not([class*="text-"]) {
+  color: hsl(0 0% 100%);
+}
+
+/* Light surface overrides — links/buttons/badges → near-black text */
+:where(
+  [class*="bg-white"],
+  [class^="bg-slate-50"],  [class*=" bg-slate-50"],
+  [class^="bg-slate-100"], [class*=" bg-slate-100"],
+  [class^="bg-slate-200"], [class*=" bg-slate-200"],
+  [class^="bg-gray-50"],   [class*=" bg-gray-50"],
+  [class^="bg-gray-100"],  [class*=" bg-gray-100"],
+  [class^="bg-gray-200"],  [class*=" bg-gray-200"],
+  [class^="bg-zinc-50"],   [class*=" bg-zinc-50"],
+  [class^="bg-zinc-100"],  [class*=" bg-zinc-100"],
+  [class^="bg-zinc-200"],  [class*=" bg-zinc-200"],
+  [class^="bg-neutral-50"],[class*=" bg-neutral-50"],
+  [class^="bg-neutral-100"],[class*=" bg-neutral-100"],
+  [class^="bg-neutral-200"],[class*=" bg-neutral-200"],
+  [class^="bg-stone-50"],  [class*=" bg-stone-50"],
+  [class^="bg-stone-100"], [class*=" bg-stone-100"],
+  [class^="bg-stone-200"], [class*=" bg-stone-200"],
+  [class*="-50"][class*="bg-"][class*="bg-red-50"],
+  [class*="-50"][class*="bg-"][class*="bg-blue-50"],
+  [class*="-100"][class*="bg-"][class*="bg-amber-100"]
+)
+  :where(a:not([class*="text-"]),
+         button:not([class*="text-"]),
+         [role="button"]:not([class*="text-"]),
+         [data-slot="badge"]:not([class*="text-"]),
+         .badge:not([class*="text-"])) {
+  color: hsl(222 47% 8%);
+}
