@@ -73,8 +73,8 @@ const navGroups: NavGroup[] = [
         icon: <Zap className="h-4 w-4 text-amber-500" /> 
       },
       { 
-        id: "thrombolytic-dose", 
-        label: "Thrombolytic Dosing", 
+        id: "thrombolytics-anticoag", 
+        label: "Thrombolytics & Anticoag", 
         icon: <Beaker className="h-4 w-4 text-amber-600" /> 
       },
       { 
@@ -206,14 +206,24 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
       setOpenMobile(false);
     }
 
-    const target = document.getElementById(sectionId);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-      window.setTimeout(() => {
-        const corrected = document.getElementById(sectionId);
-        corrected?.scrollIntoView({ behavior: "instant", block: "start", inline: "nearest" });
-      }, 250);
-    }
+    // Force-mount the LazySection so it has real height before scrolling
+    window.dispatchEvent(new CustomEvent('force-mount-section', { detail: sectionId }));
+
+    const headerOffset = 80;
+    const scrollToTarget = (behavior: ScrollBehavior = 'smooth') => {
+      const element = document.getElementById(sectionId);
+      if (!element) return;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior });
+    };
+
+    // Repeat corrections to handle layout shifts as lazy content mounts
+    setTimeout(() => scrollToTarget('instant'), 100);
+    setTimeout(() => scrollToTarget('instant'), 400);
+    setTimeout(() => scrollToTarget('smooth'), 800);
+    setTimeout(() => scrollToTarget('smooth'), 1500);
+    setTimeout(() => scrollToTarget('smooth'), 2500);
   };
 
   return (
