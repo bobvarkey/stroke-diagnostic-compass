@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthScreen } from "@/components/AuthScreen";
-import { PatientSelector } from "@/components/PatientSelector";
 import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -172,16 +170,6 @@ const Index = () => {
         </div>
       </div>
     );
-  }
-
-  // Show auth screen if not logged in (unless in demo mode)
-  if (!user && !isDemoMode) {
-    return <AuthScreen onEnterDemoMode={handleEnterDemoMode} onSkipToApp={handleSkipToApp} />;
-  }
-
-  // Show patient selector if no patient selected (unless in demo mode)
-  if (!selectedPatient && !isDemoMode) {
-    return <PatientSelector onSelectPatient={handleSelectPatient} onEnterDemoMode={handleEnterDemoMode} />;
   }
 
   // Show main workup interface with selected patient
