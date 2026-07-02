@@ -1001,7 +1001,19 @@ const StrokeMedicationsFormulary: React.FC = () => {
         </div>
 
         {/* Antiplatelet switching guide — shown on All & Antiplatelets tabs */}
-        {(tab === "all" || tab === "antiplatelet") && <AntiplateletSwitchingGuide />}
+        {(tab === "all" || tab === "antiplatelet") && (
+          <AntiplateletSwitchingGuide
+            onSelectDrug={(drugName) => {
+              setTab("antiplatelet");
+              setQ(drugName);
+              setTimeout(() => {
+                document
+                  .getElementById("medications-formulary")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }, 50);
+            }}
+          />
+        )}
 
         {/* Category filters */}
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
