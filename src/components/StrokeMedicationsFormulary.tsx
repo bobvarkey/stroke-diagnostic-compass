@@ -264,6 +264,27 @@ const DRUGS: Drug[] = [
     notes: "Reversal: Protamine 1 mg per 1 mg enoxaparin (only ~60% neutralization).",
   },
   {
+    name: "Fondaparinux",
+    aliases: "Arixtra",
+    category: "anticoagulant",
+    class: "Synthetic pentasaccharide — indirect factor Xa inhibitor (via antithrombin)",
+    indication:
+      "VTE prophylaxis/treatment, ACS. Non-heparin alternative in suspected/confirmed HIT or HIT history (renal function permitting).",
+    dose:
+      "VTE prophylaxis: 2.5 mg SC daily. VTE treatment (weight-based): <50 kg → 5 mg SC daily; 50–100 kg → 7.5 mg SC daily; >100 kg → 10 mg SC daily. ACS: 2.5 mg SC daily. HIT: use VTE treatment dose per weight (no HIT-specific dose).",
+    route: "SC",
+    onset: "Onset 2–3 h SC; peak anti-Xa 2 h",
+    duration: "t½ 17–21 h (normal renal); prolonged in CKD — no antidote",
+    contraindications:
+      "CrCl <30 mL/min (contraindicated for treatment; caution 30–50), body weight <50 kg for prophylaxis, active major bleeding, bacterial endocarditis, thrombocytopenia with positive in-vitro test in presence of fondaparinux (rare).",
+    monitoring:
+      "Baseline + periodic CrCl, platelets (HIT is exceptionally rare but monitor if switched from heparin), Hb. Anti-Xa (fondaparinux-calibrated) only in extremes of weight, renal impairment, or pregnancy. NO routine aPTT.",
+    notes:
+      "HIT: does NOT cross-react with PF4/heparin antibodies in the vast majority — accepted alternative when parenteral DTI unavailable and renal function adequate. AVOID in severe renal impairment / dialysis — prefer argatroban (hepatic clearance) or bivalirudin. Not titratable and not readily reversible; consider recombinant factor VIIa for life-threatening bleed.",
+    evidence: "ASH 2018 HIT guidelines; MATISSE-DVT/PE; OASIS-5/6",
+  },
+
+  {
     name: "Warfarin",
     aliases: "Coumadin",
     category: "anticoagulant",
