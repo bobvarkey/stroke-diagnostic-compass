@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   X,
 } from "lucide-react";
+import AntiplateletSwitchingGuide from "./AntiplateletSwitchingGuide";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -998,6 +999,9 @@ const StrokeMedicationsFormulary: React.FC = () => {
             </Button>
           </div>
         </div>
+
+        {/* Antiplatelet switching guide — shown on All & Antiplatelets tabs */}
+        {(tab === "all" || tab === "antiplatelet") && <AntiplateletSwitchingGuide />}
 
         {/* Category filters */}
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
