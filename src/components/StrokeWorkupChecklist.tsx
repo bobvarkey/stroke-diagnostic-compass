@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, memo } from "react";
 import LazySection from "./LazySection";
+import StrokeMedicationsFormulary from "./StrokeMedicationsFormulary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
