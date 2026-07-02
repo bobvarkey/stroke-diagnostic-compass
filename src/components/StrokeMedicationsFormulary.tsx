@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   X,
 } from "lucide-react";
+import AntiplateletSwitchingGuide from "./AntiplateletSwitchingGuide";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
