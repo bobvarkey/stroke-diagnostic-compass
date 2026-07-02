@@ -3,7 +3,98 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Activity, Clock, AlertTriangle, ShieldAlert, Droplet, TrendingUp } from "lucide-react";
+import { Activity, Clock, AlertTriangle, ShieldAlert, Droplet, TrendingUp, OctagonAlert, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+
+export type HITStatus = "none" | "suspected" | "confirmed" | "history";
+export type RenalCategory = "normal_mild" | "moderate" | "severe_or_dialysis";
+export type HemoStatus = "stable" | "unstable";
+export type VTEIndication = "vte_treatment" | "vte_prophylaxis_medical" | "vte_prophylaxis_surgical" | "acs" | "other";
+
+interface AltAnticoagPlan {
+  primary: string;
+  detail: string;
+  fondaparinuxDose?: string;
+  tone: "danger" | "warn" | "info";
+  stopHeparin: boolean;
+}
+
+function fondaparinuxDoseFor(indication: VTEIndication, weightKg?: number): string {
+  if (indication === "vte_prophylaxis_medical" || indication === "vte_prophylaxis_surgical") {
+    return "Fondaparinux 2.5 mg SC daily (avoid if weight <50 kg for prophylaxis).";
+  }
+  if (indication === "acs") return "Fondaparinux 2.5 mg SC daily (OASIS-5/6).";
+  if (indication === "vte_treatment") {
+    if (weightKg && weightKg < 50) return "Fondaparinux 5 mg SC daily (weight <50 kg).";
+    if (weightKg && weightKg > 100) return "Fondaparinux 10 mg SC daily (weight >100 kg).";
+    return "Fondaparinux 7.5 mg SC daily (weight 50–100 kg).";
+  }
+  return "Dose per indication algorithm.";
+}
+
+function buildAltPlan(
+  hit: HITStatus,
+  renal: RenalCategory,
+  hemo: HemoStatus,
+  indication: VTEIndication,
+  currentHeparin: boolean,
+  weightKg?: number,
+): AltAnticoagPlan | null {
+  if (hit === "none") return null;
+
+  // Severe renal impairment / dialysis — avoid fondaparinux
+  if (renal === "severe_or_dialysis") {
+    return {
+      primary: "Argatroban (preferred) or bivalirudin — AVOID fondaparinux",
+      detail:
+        "Severe renal impairment / dialysis: argatroban cleared hepatically (start 0.5–2 mcg/kg/min IV, titrate aPTT 1.5–3× baseline). Bivalirudin acceptable if hepatic dysfunction. Fondaparinux contraindicated (renal accumulation, no reversal). DOAC only after clinical stability and platelet recovery.",
+      tone: "danger",
+      stopHeparin: currentHeparin,
+    };
+  }
+
+  // Hemodynamically unstable — parenteral DTI preferred
+  if (hemo === "unstable") {
+    return {
+      primary: "Argatroban or bivalirudin (titratable parenteral DTI)",
+      detail:
+        "Hemodynamic instability requires a titratable, reversible-by-half-life anticoagulant. Fondaparinux may be considered ONLY if parenteral DTIs are unavailable AND renal function acceptable — but recognise it is not titratable and has no antidote.",
+      fondaparinuxDose:
+        renal !== "severe_or_dialysis"
+          ? fondaparinuxDoseFor(indication === "other" ? "vte_treatment" : indication, weightKg)
+          : undefined,
+      tone: "danger",
+      stopHeparin: currentHeparin,
+    };
+  }
+
+  // Stable + acceptable renal → fondaparinux appropriate for VTE / ACS
+  const vteOrAcs =
+    indication === "vte_treatment" ||
+    indication === "vte_prophylaxis_medical" ||
+    indication === "vte_prophylaxis_surgical" ||
+    indication === "acs";
+
+  if (vteOrAcs) {
+    return {
+      primary: "Fondaparinux (non-heparin alternative)",
+      detail:
+        "Stable patient, renal function acceptable, and indication amenable to factor-Xa inhibition. Fondaparinux does NOT cross-react with PF4/heparin antibodies (ASH 2018). Argatroban or bivalirudin remain acceptable if a titratable option is preferred. Transition to DOAC once platelets >150 K and clinically stable.",
+      fondaparinuxDose: fondaparinuxDoseFor(indication, weightKg),
+      tone: "warn",
+      stopHeparin: currentHeparin,
+    };
+  }
+
+  return {
+    primary: "Non-heparin anticoagulant per guideline",
+    detail:
+      "Fondaparinux is not first-line for this indication. Prefer argatroban / bivalirudin or an indication-specific alternative. Do not restart any heparin product.",
+    tone: "warn",
+    stopHeparin: currentHeparin,
+  };
+}
+
 
 export type UFHRegimenId =
   | "heparin-infusion"
