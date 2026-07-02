@@ -3,8 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { toast } from "sonner";
 import {
   Pill,
   Syringe,
@@ -14,6 +17,10 @@ import {
   ChevronDown,
   AlertTriangle,
   Beaker,
+  Download,
+  Copy,
+  CheckCircle2,
+  X,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -464,119 +471,259 @@ const DRUGS: Drug[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Weight-based calculator                                             */
+/* Weight-based calculator — structured specs                          */
 /* ------------------------------------------------------------------ */
-type CalcDrug =
-  | "alteplase"
-  | "tnk"
-  | "tirofiban-load"
-  | "tirofiban-maint"
-  | "instant-load"
-  | "instant-maint"
-  | "eptifibatide-bolus"
-  | "eptifibatide-maint"
-  | "cangrelor"
-  | "enoxaparin"
-  | "heparin";
+type DoseUnit = "mg" | "mcg" | "U" | "mcg/min" | "mcg/kg/min" | "mg/kg" | "U/kg" | "U/hr";
 
-const CALC_DEFS: Record<
-  CalcDrug,
-  { label: string; unit: string; compute: (w: number) => string; notes?: string }
-> = {
-  alteplase: {
-    label: "Alteplase total dose (0.9 mg/kg, max 90 mg)",
-    unit: "mg",
-    compute: (w) => {
-      const total = Math.min(w * 0.9, 90);
-      const bolus = total * 0.1;
-      const infusion = total - bolus;
-      return `${total.toFixed(1)} mg total — Bolus ${bolus.toFixed(1)} mg over 1 min, then ${infusion.toFixed(1)} mg over 60 min`;
-    },
+interface CalcSpec {
+  id: string;
+  label: string;
+  category: DrugCategory;
+  route: "IV bolus" | "IV infusion" | "IA" | "SC";
+  perKg: number;              // dose per kg in output unit
+  outputUnit: DoseUnit;        // display unit for the primary dose
+  capMax?: number;             // absolute cap regardless of weight
+  weightMin?: number;          // guideline weight floor
+  weightMax?: number;          // guideline weight ceiling
+  round?: number;              // rounding increment (e.g. 0.5, 1, 5)
+  durationMin?: number;        // infusion window in minutes (for total)
+  concentration?: { mg: number; mL: number }; // for mL/hr calc
+  concentrationUnit?: "mg/mL" | "mcg/mL" | "U/mL";
+  renalReduce?: { crclBelow: number; factor: number; note: string };
+  contraindicationCrCl?: number; // absolute contra below this CrCl
+  notes?: string;
+  reference?: string;
+}
+
+const round = (v: number, step = 0.1) => Math.round(v / step) * step;
+
+const CALCS: CalcSpec[] = [
+  {
+    id: "alteplase",
+    label: "Alteplase (IV tPA)",
+    category: "thrombolytic",
+    route: "IV infusion",
+    perKg: 0.9,
+    outputUnit: "mg",
+    capMax: 90,
+    weightMin: 40,
+    weightMax: 150,
+    round: 0.1,
+    durationMin: 60,
+    notes: "10% as bolus over 1 min, remainder over 60 min.",
+    reference: "NINDS, ECASS III",
   },
-  tnk: {
-    label: "Tenecteplase (0.25 mg/kg, max 25 mg)",
-    unit: "mg",
-    compute: (w) => {
-      const d = Math.min(w * 0.25, 25);
-      return `${d.toFixed(1)} mg IV bolus over 5 seconds`;
-    },
+  {
+    id: "tnk",
+    label: "Tenecteplase (TNK)",
+    category: "thrombolytic",
+    route: "IV bolus",
+    perKg: 0.25,
+    outputUnit: "mg",
+    capMax: 25,
+    weightMin: 40,
+    weightMax: 150,
+    round: 0.5,
+    notes: "Single bolus over 5 seconds.",
+    reference: "AcT, EXTEND-IA TNK",
   },
-  "tirofiban-load": {
-    label: "Tirofiban IV loading (0.4 mcg/kg/min × 30 min)",
-    unit: "mcg/min",
-    compute: (w) => {
-      const rate = w * 0.4;
-      const total = rate * 30;
-      const mlHr = (rate * 60) / 50; // 50 mcg/mL
-      return `${rate.toFixed(1)} mcg/min × 30 min = ${total.toFixed(0)} mcg total | Pump ${mlHr.toFixed(1)} mL/hr @ 50 mcg/mL`;
-    },
+  {
+    id: "tirofiban-load",
+    label: "Tirofiban IV loading (RESCUE-BT2)",
+    category: "antiplatelet",
+    route: "IV infusion",
+    perKg: 0.4,
+    outputUnit: "mcg/kg/min",
+    durationMin: 30,
+    concentration: { mg: 12.5, mL: 250 }, // 50 mcg/mL
+    concentrationUnit: "mcg/mL",
+    renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce infusion by 50% if CrCl <30" },
+    reference: "RESCUE-BT2 NEJM 2023",
   },
-  "tirofiban-maint": {
-    label: "Tirofiban IV maintenance (0.1 mcg/kg/min)",
-    unit: "mcg/min",
-    compute: (w) => {
-      const rate = w * 0.1;
-      const mlHr = (rate * 60) / 50;
-      return `${rate.toFixed(1)} mcg/min | Pump ${mlHr.toFixed(1)} mL/hr @ 50 mcg/mL × up to 24 h`;
-    },
+  {
+    id: "tirofiban-maint",
+    label: "Tirofiban IV maintenance",
+    category: "antiplatelet",
+    route: "IV infusion",
+    perKg: 0.1,
+    outputUnit: "mcg/kg/min",
+    concentration: { mg: 12.5, mL: 250 },
+    concentrationUnit: "mcg/mL",
+    renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
+    notes: "Continue up to 24 h.",
   },
-  "instant-load": {
-    label: "Tirofiban INSTANT loading (0.3 mcg/kg/min × 30 min, post-TNK)",
-    unit: "mcg/min",
-    compute: (w) => {
-      const rate = w * 0.3;
-      const mlHr = (rate * 60) / 50;
-      return `${rate.toFixed(1)} mcg/min × 30 min | ${mlHr.toFixed(1)} mL/hr @ 50 mcg/mL`;
-    },
+  {
+    id: "instant-load",
+    label: "Tirofiban INSTANT loading (post-TNK)",
+    category: "antiplatelet",
+    route: "IV infusion",
+    perKg: 0.3,
+    outputUnit: "mcg/kg/min",
+    durationMin: 30,
+    concentration: { mg: 12.5, mL: 250 },
+    concentrationUnit: "mcg/mL",
+    renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
+    reference: "INSTANT JAMA 2026",
   },
-  "instant-maint": {
-    label: "Tirofiban INSTANT maintenance (0.075 mcg/kg/min × 47.5 h)",
-    unit: "mcg/min",
-    compute: (w) => {
-      const rate = w * 0.075;
-      const mlHr = (rate * 60) / 50;
-      return `${rate.toFixed(1)} mcg/min | ${mlHr.toFixed(1)} mL/hr @ 50 mcg/mL × 47.5 h`;
-    },
+  {
+    id: "instant-maint",
+    label: "Tirofiban INSTANT maintenance",
+    category: "antiplatelet",
+    route: "IV infusion",
+    perKg: 0.075,
+    outputUnit: "mcg/kg/min",
+    concentration: { mg: 12.5, mL: 250 },
+    concentrationUnit: "mcg/mL",
+    renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
+    notes: "Continue 47.5 h.",
   },
-  "eptifibatide-bolus": {
-    label: "Eptifibatide bolus (180 mcg/kg)",
-    unit: "mcg",
-    compute: (w) => {
-      const dose = w * 180;
-      const ml = dose / 2000; // 2 mg/mL
-      return `${dose.toFixed(0)} mcg (${(dose / 1000).toFixed(2)} mg) IV bolus = ${ml.toFixed(2)} mL @ 2 mg/mL`;
-    },
+  {
+    id: "eptifibatide-bolus",
+    label: "Eptifibatide IV bolus",
+    category: "antiplatelet",
+    route: "IV bolus",
+    perKg: 180,
+    outputUnit: "mcg",
+    round: 100,
+    contraindicationCrCl: 15,
+    notes: "May repeat once at 5 min.",
   },
-  "eptifibatide-maint": {
-    label: "Eptifibatide infusion (2 mcg/kg/min; halve if CrCl <50)",
-    unit: "mcg/min",
-    compute: (w) => {
-      const rate = w * 2;
-      const mlHr = (rate * 60) / 750; // 0.75 mg/mL
-      return `${rate.toFixed(1)} mcg/min | ${mlHr.toFixed(1)} mL/hr @ 0.75 mg/mL`;
-    },
+  {
+    id: "eptifibatide-maint",
+    label: "Eptifibatide infusion",
+    category: "antiplatelet",
+    route: "IV infusion",
+    perKg: 2,
+    outputUnit: "mcg/kg/min",
+    concentration: { mg: 75, mL: 100 }, // 0.75 mg/mL = 750 mcg/mL
+    concentrationUnit: "mcg/mL",
+    renalReduce: { crclBelow: 50, factor: 0.5, note: "Halve infusion if CrCl <50" },
+    contraindicationCrCl: 15,
   },
-  cangrelor: {
-    label: "Cangrelor low-dose neuro infusion (0.75 mcg/kg/min, no bolus)",
-    unit: "mcg/min",
-    compute: (w) => {
-      const rate = w * 0.75;
-      // Reconstitute 50 mg in 250 mL NS → 200 mcg/mL
-      const mlHr = (rate * 60) / 200;
-      return `${rate.toFixed(1)} mcg/min | ${mlHr.toFixed(1)} mL/hr @ 200 mcg/mL (50 mg / 250 mL NS)`;
-    },
+  {
+    id: "cangrelor",
+    label: "Cangrelor neuro infusion (low-dose, no bolus)",
+    category: "antiplatelet",
+    route: "IV infusion",
+    perKg: 0.75,
+    outputUnit: "mcg/kg/min",
+    concentration: { mg: 50, mL: 250 }, // 200 mcg/mL
+    concentrationUnit: "mcg/mL",
+    notes: "Do NOT give oral clopidogrel/prasugrel while infusing.",
   },
-  enoxaparin: {
-    label: "Enoxaparin treatment (1 mg/kg SC q12h)",
-    unit: "mg",
-    compute: (w) => `${(w * 1).toFixed(0)} mg SC q12h — or ${(w * 1.5).toFixed(0)} mg SC daily`,
+  {
+    id: "enoxaparin-tx",
+    label: "Enoxaparin treatment dose",
+    category: "anticoagulant",
+    route: "SC",
+    perKg: 1,
+    outputUnit: "mg",
+    round: 5,
+    renalReduce: { crclBelow: 30, factor: 1, note: "CrCl <30: give 1 mg/kg SC DAILY (not q12h)" },
+    notes: "1 mg/kg SC q12h — or 1.5 mg/kg SC daily.",
   },
-  heparin: {
-    label: "UFH: 80 U/kg bolus + 18 U/kg/h infusion",
-    unit: "U",
-    compute: (w) => `Bolus ${(w * 80).toFixed(0)} U | Infusion ${(w * 18).toFixed(0)} U/hr — titrate to aPTT 1.5–2×`,
+  {
+    id: "heparin-bolus",
+    label: "UFH bolus",
+    category: "anticoagulant",
+    route: "IV bolus",
+    perKg: 80,
+    outputUnit: "U",
+    round: 100,
+    capMax: 10000,
+    notes: "Titrate infusion to aPTT 1.5–2× control.",
   },
-};
+  {
+    id: "heparin-infusion",
+    label: "UFH infusion",
+    category: "anticoagulant",
+    route: "IV infusion",
+    perKg: 18,
+    outputUnit: "U/hr",
+    round: 50,
+  },
+];
+
+interface CalcResult {
+  dose: number;
+  displayDose: string;
+  totalDose?: string;
+  mlHr?: string;
+  warnings: string[];
+  errors: string[];
+  capped: boolean;
+  renalAdjusted: boolean;
+}
+
+function calcDose(spec: CalcSpec, weightKg: number, crcl?: number): CalcResult {
+  const warnings: string[] = [];
+  const errors: string[] = [];
+  let capped = false;
+  let renalAdjusted = false;
+
+  // Weight range check
+  if (spec.weightMin && weightKg < spec.weightMin) {
+    warnings.push(`Weight ${weightKg} kg below tested range (${spec.weightMin}–${spec.weightMax} kg) — verify pediatric protocol.`);
+  }
+  if (spec.weightMax && weightKg > spec.weightMax) {
+    warnings.push(`Weight ${weightKg} kg above tested range (max ${spec.weightMax} kg) — use max-cap dosing.`);
+  }
+
+  // Renal contraindication
+  if (spec.contraindicationCrCl !== undefined && crcl !== undefined && crcl < spec.contraindicationCrCl) {
+    errors.push(`CONTRAINDICATED: CrCl ${crcl} < ${spec.contraindicationCrCl} mL/min — do not administer.`);
+  }
+
+  // Base dose
+  let dose = weightKg * spec.perKg;
+
+  // Cap
+  if (spec.capMax && dose > spec.capMax) {
+    dose = spec.capMax;
+    capped = true;
+    warnings.push(`Dose capped at guideline maximum ${spec.capMax} ${spec.outputUnit}.`);
+  }
+
+  // Renal reduction
+  if (spec.renalReduce && crcl !== undefined && crcl < spec.renalReduce.crclBelow) {
+    if (spec.renalReduce.factor !== 1) {
+      dose = dose * spec.renalReduce.factor;
+      renalAdjusted = true;
+    }
+    warnings.push(spec.renalReduce.note);
+  }
+
+  // Rounding
+  const step = spec.round ?? 0.1;
+  const rounded = round(dose, step);
+
+  // Format primary display
+  const displayDose = spec.outputUnit === "mcg/kg/min"
+    ? `${(spec.perKg * (renalAdjusted ? spec.renalReduce!.factor : 1)).toFixed(3)} mcg/kg/min → ${(rounded).toFixed(2)} mcg/min for ${weightKg} kg`
+    : `${rounded.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${spec.outputUnit}`;
+
+  // Alteplase split
+  let totalDose: string | undefined;
+  if (spec.id === "alteplase") {
+    const bolus = round(rounded * 0.1, 0.1);
+    const infusion = round(rounded - bolus, 0.1);
+    totalDose = `Bolus ${bolus.toFixed(1)} mg over 1 min → then ${infusion.toFixed(1)} mg over 60 min`;
+  } else if (spec.durationMin && spec.outputUnit === "mcg/kg/min") {
+    const totalMcg = rounded * spec.durationMin;
+    totalDose = `Cumulative over ${spec.durationMin} min: ${totalMcg.toLocaleString(undefined, { maximumFractionDigits: 0 })} mcg (${(totalMcg / 1000).toFixed(2)} mg)`;
+  }
+
+  // mL/hr for infusions
+  let mlHr: string | undefined;
+  if (spec.concentration && spec.outputUnit === "mcg/kg/min") {
+    const concMcgPerMl = (spec.concentration.mg * 1000) / spec.concentration.mL;
+    const mcgPerHr = rounded * 60; // mcg/min → mcg/hr
+    const rate = mcgPerHr / concMcgPerMl;
+    mlHr = `${rate.toFixed(1)} mL/hr @ ${concMcgPerMl.toFixed(0)} mcg/mL (${spec.concentration.mg} mg in ${spec.concentration.mL} mL)`;
+  }
+
+  return { dose: rounded, displayDose, totalDose, mlHr, warnings, errors, capped, renalAdjusted };
+}
 
 /* ------------------------------------------------------------------ */
 /* UI                                                                  */
@@ -585,114 +732,123 @@ const CATEGORY_STYLE: Record<
   DrugCategory,
   { label: string; badge: string; icon: React.ReactNode }
 > = {
-  antiplatelet: {
-    label: "Antiplatelets",
-    badge: "bg-blue-500/15 text-blue-300 border-blue-400/30",
-    icon: <Pill className="h-4 w-4" />,
-  },
-  anticoagulant: {
-    label: "Anticoagulants",
-    badge: "bg-purple-500/15 text-purple-300 border-purple-400/30",
-    icon: <Syringe className="h-4 w-4" />,
-  },
-  thrombolytic: {
-    label: "Thrombolytics",
-    badge: "bg-amber-500/15 text-amber-300 border-amber-400/30",
-    icon: <Beaker className="h-4 w-4" />,
-  },
-  reversal: {
-    label: "Reversal Agents",
-    badge: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
-    icon: <ShieldAlert className="h-4 w-4" />,
-  },
-  "blood-product": {
-    label: "Blood Products",
-    badge: "bg-rose-500/15 text-rose-300 border-rose-400/30",
-    icon: <Droplets className="h-4 w-4" />,
-  },
+  antiplatelet: { label: "Antiplatelets", badge: "bg-blue-500/15 text-blue-300 border-blue-400/30", icon: <Pill className="h-4 w-4" /> },
+  anticoagulant: { label: "Anticoagulants", badge: "bg-purple-500/15 text-purple-300 border-purple-400/30", icon: <Syringe className="h-4 w-4" /> },
+  thrombolytic: { label: "Thrombolytics", badge: "bg-amber-500/15 text-amber-300 border-amber-400/30", icon: <Beaker className="h-4 w-4" /> },
+  reversal: { label: "Reversal Agents", badge: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30", icon: <ShieldAlert className="h-4 w-4" /> },
+  "blood-product": { label: "Blood Products", badge: "bg-rose-500/15 text-rose-300 border-rose-400/30", icon: <Droplets className="h-4 w-4" /> },
 };
 
-const DrugCard: React.FC<{ drug: Drug }> = ({ drug }) => {
+const Row: React.FC<{ label: string; value: string; tone?: "danger" | "warn"; highlight?: boolean }> = ({ label, value, tone, highlight }) => {
+  const toneCls =
+    tone === "danger" ? "text-red-300 bg-red-500/10 border-red-500/30"
+    : tone === "warn" ? "text-amber-200 bg-amber-500/10 border-amber-500/30"
+    : highlight ? "text-cyan-100 bg-cyan-500/10 border-cyan-500/30"
+    : "text-slate-200 bg-slate-800/40 border-slate-700";
+  return (
+    <div className={`rounded-md border p-2 ${toneCls}`}>
+      <p className="text-[11px] uppercase tracking-wide font-semibold opacity-80">{label}</p>
+      <p className="text-sm leading-snug whitespace-pre-wrap">{value}</p>
+    </div>
+  );
+};
+
+const DrugCard: React.FC<{
+  drug: Drug;
+  selected: boolean;
+  onToggle: () => void;
+}> = ({ drug, selected, onToggle }) => {
   const [open, setOpen] = useState(false);
   const style = CATEGORY_STYLE[drug.category];
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <Card className="border-slate-700 bg-slate-900/60">
-        <CollapsibleTrigger asChild>
-          <button className="w-full text-left">
-            <CardHeader className="py-3 hover:bg-slate-800/50 transition-colors">
+    <Card className={`border transition-colors ${selected ? "border-cyan-500/60 bg-cyan-950/20" : "border-slate-700 bg-slate-900/60"}`}>
+      <div className="flex items-start gap-2 p-3">
+        <Checkbox
+          checked={selected}
+          onCheckedChange={onToggle}
+          className="mt-1 border-slate-500 data-[state=checked]:bg-cyan-600 data-[state=checked]:border-cyan-500"
+          aria-label={`Select ${drug.name}`}
+        />
+        <Collapsible open={open} onOpenChange={setOpen} className="flex-1 min-w-0">
+          <CollapsibleTrigger asChild>
+            <button className="w-full text-left">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
                   {style.icon}
                   <div className="min-w-0">
-                    <CardTitle className="text-base text-white truncate">
+                    <p className="text-base text-white truncate font-semibold">
                       {drug.name}
-                      {drug.aliases && (
-                        <span className="text-xs font-normal text-slate-400 ml-2">
-                          ({drug.aliases})
-                        </span>
-                      )}
-                    </CardTitle>
+                      {drug.aliases && <span className="text-xs font-normal text-slate-400 ml-2">({drug.aliases})</span>}
+                    </p>
                     <p className="text-xs text-slate-400 truncate">{drug.class}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <Badge variant="outline" className={style.badge}>
-                    {drug.route}
-                  </Badge>
-                  <ChevronDown
-                    className={`h-4 w-4 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`}
-                  />
+                  <Badge variant="outline" className={style.badge}>{drug.route}</Badge>
+                  <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
                 </div>
               </div>
-            </CardHeader>
-          </button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <CardContent className="pt-0 space-y-3 text-sm">
-            <Row label="Indication" value={drug.indication} />
-            <Row label="Dose" value={drug.dose} highlight />
-            {drug.duration && <Row label="Duration" value={drug.duration} />}
-            <Row
-              label="Contraindications"
-              value={drug.contraindications}
-              tone="danger"
-            />
-            <Row label="Monitoring" value={drug.monitoring} tone="warn" />
-            {drug.notes && <Row label="Notes" value={drug.notes} />}
-            {drug.evidence && (
-              <p className="text-xs text-slate-400 italic pt-1 border-t border-slate-700">
-                Evidence: {drug.evidence}
-              </p>
-            )}
-          </CardContent>
-        </CollapsibleContent>
-      </Card>
-    </Collapsible>
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="pt-3 space-y-2 text-sm">
+              <Row label="Indication" value={drug.indication} />
+              <Row label="Dose" value={drug.dose} highlight />
+              {drug.duration && <Row label="Duration" value={drug.duration} />}
+              <Row label="Contraindications" value={drug.contraindications} tone="danger" />
+              <Row label="Monitoring" value={drug.monitoring} tone="warn" />
+              {drug.notes && <Row label="Notes" value={drug.notes} />}
+              {drug.evidence && (
+                <p className="text-xs text-slate-400 italic pt-1 border-t border-slate-700">Evidence: {drug.evidence}</p>
+              )}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+    </Card>
   );
 };
 
-const Row: React.FC<{
-  label: string;
-  value: string;
-  tone?: "danger" | "warn";
-  highlight?: boolean;
-}> = ({ label, value, tone, highlight }) => {
-  const toneCls =
-    tone === "danger"
-      ? "text-red-300 bg-red-500/10 border-red-500/30"
-      : tone === "warn"
-      ? "text-amber-200 bg-amber-500/10 border-amber-500/30"
-      : highlight
-      ? "text-cyan-100 bg-cyan-500/10 border-cyan-500/30"
-      : "text-slate-200 bg-slate-800/40 border-slate-700";
-  return (
-    <div className={`rounded-md border p-2 ${toneCls}`}>
-      <p className="text-[11px] uppercase tracking-wide font-semibold opacity-80">{label}</p>
-      <p className="text-sm leading-snug">{value}</p>
-    </div>
-  );
-};
+/* ------------------------------------------------------------------ */
+/* Export helpers                                                      */
+/* ------------------------------------------------------------------ */
+function drugToText(d: Drug): string {
+  const lines = [
+    `━━━ ${d.name.toUpperCase()}${d.aliases ? ` (${d.aliases})` : ""} ━━━`,
+    `Category    : ${CATEGORY_STYLE[d.category].label}`,
+    `Class       : ${d.class}`,
+    `Route       : ${d.route}`,
+    `Indication  : ${d.indication}`,
+    `Dose        : ${d.dose}`,
+  ];
+  if (d.duration) lines.push(`Duration    : ${d.duration}`);
+  lines.push(`Contra-Ind. : ${d.contraindications}`);
+  lines.push(`Monitoring  : ${d.monitoring}`);
+  if (d.notes) lines.push(`Notes       : ${d.notes}`);
+  if (d.evidence) lines.push(`Evidence    : ${d.evidence}`);
+  return lines.join("\n");
+}
+
+function buildExport(drugs: Drug[]): string {
+  const header = [
+    "STROKE MEDICATIONS REFERENCE EXPORT",
+    `Generated: ${new Date().toLocaleString()}`,
+    `Selected  : ${drugs.length} drug(s)`,
+    "Reference only — verify all doses against institutional protocol.",
+    "",
+  ].join("\n");
+  return header + drugs.map(drugToText).join("\n\n") + "\n";
+}
+
+function download(text: string, filename: string) {
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 /* ------------------------------------------------------------------ */
 /* Main component                                                      */
@@ -701,6 +857,8 @@ const StrokeMedicationsFormulary: React.FC = () => {
   const [tab, setTab] = useState<DrugCategory | "all" | "calc">("all");
   const [q, setQ] = useState("");
   const [weight, setWeight] = useState<string>("70");
+  const [crclStr, setCrclStr] = useState<string>("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -711,13 +869,52 @@ const StrokeMedicationsFormulary: React.FC = () => {
         d.name.toLowerCase().includes(query) ||
         (d.aliases ?? "").toLowerCase().includes(query) ||
         d.class.toLowerCase().includes(query) ||
-        d.indication.toLowerCase().includes(query)
+        d.indication.toLowerCase().includes(query) ||
+        d.route.toLowerCase().includes(query)
       );
     });
   }, [tab, q]);
 
+  const toggle = (name: string) =>
+    setSelected((s) => {
+      const next = new Set(s);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+
+  const selectAllVisible = () =>
+    setSelected((s) => {
+      const next = new Set(s);
+      filtered.forEach((d) => next.add(d.name));
+      return next;
+    });
+
+  const clearSelection = () => setSelected(new Set());
+
+  const selectedDrugs = useMemo(() => DRUGS.filter((d) => selected.has(d.name)), [selected]);
+
+  const doExport = (mode: "download" | "copy") => {
+    if (selectedDrugs.length === 0) {
+      toast.error("Select at least one drug to export.");
+      return;
+    }
+    const text = buildExport(selectedDrugs);
+    if (mode === "download") {
+      download(text, `stroke-medications-${new Date().toISOString().slice(0, 10)}.txt`);
+      toast.success(`Exported ${selectedDrugs.length} drug(s) as .txt`);
+    } else {
+      navigator.clipboard.writeText(text).then(
+        () => toast.success(`Copied ${selectedDrugs.length} drug(s) to clipboard`),
+        () => toast.error("Clipboard blocked — use download instead"),
+      );
+    }
+  };
+
   const w = parseFloat(weight);
   const wValid = !isNaN(w) && w >= 20 && w <= 250;
+  const crclNum = crclStr.trim() === "" ? undefined : parseFloat(crclStr);
+  const crclValid = crclNum === undefined || (!isNaN(crclNum) && crclNum >= 5 && crclNum <= 200);
 
   return (
     <Card id="medications-formulary" className="border-slate-700 bg-slate-950/70">
@@ -726,110 +923,162 @@ const StrokeMedicationsFormulary: React.FC = () => {
           <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 border border-indigo-400/30">
             <Pill className="h-6 w-6 text-cyan-300" />
           </div>
-          <div>
-            <CardTitle className="text-xl text-white">
-              Stroke, SAH, CVT &amp; ICH Medications Formulary
-            </CardTitle>
+          <div className="flex-1">
+            <CardTitle className="text-xl text-white">Stroke, SAH, CVT &amp; ICH Medications Formulary</CardTitle>
             <p className="text-sm text-slate-400 mt-1">
-              Comprehensive drug reference with weight-based dose calculator
+              Search, filter, and export {DRUGS.length} drugs with weight-based dose calculator
             </p>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Input
-            placeholder="Search drug, brand, class, indication…"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
-          />
+        {/* Search */}
+        <Input
+          placeholder="Search drug, brand, class, indication, route (e.g. IA, IV)…"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
+        />
+
+        {/* Selection toolbar */}
+        <div className="flex flex-wrap items-center gap-2 p-2 rounded-md bg-slate-900/60 border border-slate-700">
+          <Badge variant="outline" className="bg-cyan-500/15 text-cyan-200 border-cyan-400/40">
+            {selected.size} selected
+          </Badge>
+          <Button size="sm" variant="outline" onClick={selectAllVisible} className="h-8 border-slate-600 text-slate-200 hover:bg-slate-800">
+            <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Select visible
+          </Button>
+          <Button size="sm" variant="outline" onClick={clearSelection} className="h-8 border-slate-600 text-slate-200 hover:bg-slate-800" disabled={selected.size === 0}>
+            <X className="h-3.5 w-3.5 mr-1" /> Clear
+          </Button>
+          <div className="ml-auto flex gap-2">
+            <Button size="sm" onClick={() => doExport("copy")} className="h-8 bg-slate-700 hover:bg-slate-600 text-white">
+              <Copy className="h-3.5 w-3.5 mr-1" /> Copy .txt
+            </Button>
+            <Button size="sm" onClick={() => doExport("download")} className="h-8 bg-cyan-600 hover:bg-cyan-500 text-white">
+              <Download className="h-3.5 w-3.5 mr-1" /> Download .txt
+            </Button>
+          </div>
         </div>
 
+        {/* Category filters */}
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
           <TabsList className="grid grid-cols-3 sm:grid-cols-7 h-auto bg-slate-900 border border-slate-700 p-1 gap-1">
-            <TabsTrigger value="all" className="text-xs data-[state=active]:bg-slate-700 data-[state=active]:text-white text-slate-300">
-              All ({DRUGS.length})
-            </TabsTrigger>
-            <TabsTrigger value="antiplatelet" className="text-xs data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-300">
-              Antiplatelets
-            </TabsTrigger>
-            <TabsTrigger value="anticoagulant" className="text-xs data-[state=active]:bg-purple-600 data-[state=active]:text-white text-slate-300">
-              Anticoagulants
-            </TabsTrigger>
-            <TabsTrigger value="thrombolytic" className="text-xs data-[state=active]:bg-amber-600 data-[state=active]:text-white text-slate-300">
-              Thrombolytics
-            </TabsTrigger>
-            <TabsTrigger value="reversal" className="text-xs data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-300">
-              Reversal
-            </TabsTrigger>
-            <TabsTrigger value="blood-product" className="text-xs data-[state=active]:bg-rose-600 data-[state=active]:text-white text-slate-300">
-              Blood Products
-            </TabsTrigger>
+            <TabsTrigger value="all" className="text-xs data-[state=active]:bg-slate-700 data-[state=active]:text-white text-slate-300">All ({DRUGS.length})</TabsTrigger>
+            <TabsTrigger value="antiplatelet" className="text-xs data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-300">Antiplatelets</TabsTrigger>
+            <TabsTrigger value="anticoagulant" className="text-xs data-[state=active]:bg-purple-600 data-[state=active]:text-white text-slate-300">Anticoagulants</TabsTrigger>
+            <TabsTrigger value="thrombolytic" className="text-xs data-[state=active]:bg-amber-600 data-[state=active]:text-white text-slate-300">Thrombolytics</TabsTrigger>
+            <TabsTrigger value="reversal" className="text-xs data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-300">Reversal</TabsTrigger>
+            <TabsTrigger value="blood-product" className="text-xs data-[state=active]:bg-rose-600 data-[state=active]:text-white text-slate-300">Blood Products</TabsTrigger>
             <TabsTrigger value="calc" className="text-xs data-[state=active]:bg-cyan-600 data-[state=active]:text-white text-slate-300">
-              <Calculator className="h-3 w-3 mr-1" />
-              Calc
+              <Calculator className="h-3 w-3 mr-1" /> Calc
             </TabsTrigger>
           </TabsList>
 
-          {(["all", "antiplatelet", "anticoagulant", "thrombolytic", "reversal", "blood-product"] as const).map(
-            (t) => (
-              <TabsContent key={t} value={t} className="mt-4 space-y-2">
-                {filtered.length === 0 ? (
-                  <p className="text-sm text-slate-400 py-8 text-center">No matches.</p>
-                ) : (
-                  filtered.map((d) => <DrugCard key={d.name} drug={d} />)
-                )}
-              </TabsContent>
-            )
-          )}
+          {(["all", "antiplatelet", "anticoagulant", "thrombolytic", "reversal", "blood-product"] as const).map((t) => (
+            <TabsContent key={t} value={t} className="mt-4 space-y-2">
+              {filtered.length === 0 ? (
+                <p className="text-sm text-slate-400 py-8 text-center">No matches.</p>
+              ) : (
+                filtered.map((d) => (
+                  <DrugCard key={d.name} drug={d} selected={selected.has(d.name)} onToggle={() => toggle(d.name)} />
+                ))
+              )}
+            </TabsContent>
+          ))}
 
           <TabsContent value="calc" className="mt-4 space-y-4">
             <Card className="border-cyan-500/40 bg-cyan-950/20">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base text-cyan-200 flex items-center gap-2">
-                  <Calculator className="h-4 w-4" />
-                  Weight-based dose calculator
+                  <Calculator className="h-4 w-4" /> Unit-aware weight-based dose calculator
                 </CardTitle>
+                <p className="text-xs text-slate-400">
+                  Enter weight (kg) and optionally CrCl (mL/min). Doses auto-round to safe increments and validate
+                  against guideline ranges, weight caps, and renal thresholds.
+                </p>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="max-w-xs">
-                  <Label htmlFor="wt" className="text-slate-200">
-                    Patient weight (kg)
-                  </Label>
-                  <Input
-                    id="wt"
-                    type="number"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    min={20}
-                    max={250}
-                    className="bg-slate-900 border-slate-700 text-white mt-1"
-                  />
-                  {!wValid && (
-                    <p className="text-xs text-amber-300 mt-1 flex items-center gap-1">
-                      <AlertTriangle className="h-3 w-3" />
-                      Enter weight between 20 and 250 kg
-                    </p>
-                  )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg">
+                  <div>
+                    <Label htmlFor="wt" className="text-slate-200 text-xs">Weight (kg)</Label>
+                    <Input
+                      id="wt"
+                      type="number"
+                      inputMode="decimal"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                      min={20}
+                      max={250}
+                      className="bg-slate-900 border-slate-700 text-white mt-1"
+                    />
+                    {!wValid && (
+                      <p className="text-xs text-amber-300 mt-1 flex items-center gap-1">
+                        <AlertTriangle className="h-3 w-3" /> Weight 20–250 kg required
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="crcl" className="text-slate-200 text-xs">CrCl (mL/min) — optional</Label>
+                    <Input
+                      id="crcl"
+                      type="number"
+                      inputMode="decimal"
+                      value={crclStr}
+                      onChange={(e) => setCrclStr(e.target.value)}
+                      placeholder="e.g. 45"
+                      min={5}
+                      max={200}
+                      className="bg-slate-900 border-slate-700 text-white mt-1"
+                    />
+                    {!crclValid && (
+                      <p className="text-xs text-amber-300 mt-1 flex items-center gap-1">
+                        <AlertTriangle className="h-3 w-3" /> CrCl 5–200 mL/min
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                {wValid && (
+                {wValid && crclValid && (
                   <div className="grid gap-2">
-                    {(Object.keys(CALC_DEFS) as CalcDrug[]).map((k) => {
-                      const def = CALC_DEFS[k];
+                    {CALCS.map((spec) => {
+                      const r = calcDose(spec, w, crclNum);
+                      const contra = r.errors.length > 0;
                       return (
                         <div
-                          key={k}
-                          className="p-3 rounded-md bg-slate-900/70 border border-slate-700"
+                          key={spec.id}
+                          className={`p-3 rounded-md border ${
+                            contra ? "bg-red-950/40 border-red-500/50"
+                            : r.warnings.length > 0 ? "bg-amber-950/30 border-amber-500/40"
+                            : "bg-slate-900/70 border-slate-700"
+                          }`}
                         >
-                          <p className="text-xs uppercase tracking-wide text-slate-400 font-semibold">
-                            {def.label}
-                          </p>
-                          <p className="text-sm text-cyan-100 font-mono mt-1">
-                            {def.compute(w)}
-                          </p>
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-xs uppercase tracking-wide text-slate-400 font-semibold">
+                              {spec.label} <span className="text-slate-500 normal-case">· {spec.route}</span>
+                            </p>
+                            <div className="flex gap-1 shrink-0">
+                              {r.capped && <Badge className="bg-amber-600/30 text-amber-200 border-amber-500/40 text-[10px]">CAPPED</Badge>}
+                              {r.renalAdjusted && <Badge className="bg-purple-600/30 text-purple-200 border-purple-500/40 text-[10px]">RENAL ADJ</Badge>}
+                              {contra && <Badge className="bg-red-600/40 text-red-100 border-red-500/50 text-[10px]">CONTRA</Badge>}
+                            </div>
+                          </div>
+                          <p className="text-sm text-cyan-100 font-mono mt-1">{r.displayDose}</p>
+                          {r.totalDose && <p className="text-xs text-slate-300 font-mono">{r.totalDose}</p>}
+                          {r.mlHr && <p className="text-xs text-slate-300 font-mono">Pump: {r.mlHr}</p>}
+                          {r.errors.map((e, i) => (
+                            <p key={`e${i}`} className="text-xs text-red-200 mt-1 flex gap-1 items-start">
+                              <AlertTriangle className="h-3 w-3 shrink-0 mt-0.5" /> {e}
+                            </p>
+                          ))}
+                          {r.warnings.map((w2, i) => (
+                            <p key={`w${i}`} className="text-xs text-amber-200 mt-1 flex gap-1 items-start">
+                              <AlertTriangle className="h-3 w-3 shrink-0 mt-0.5" /> {w2}
+                            </p>
+                          ))}
+                          {spec.notes && <p className="text-[11px] text-slate-400 mt-1 italic">{spec.notes}</p>}
+                          {spec.reference && <p className="text-[10px] text-slate-500 italic">Ref: {spec.reference}</p>}
                         </div>
                       );
                     })}
@@ -839,9 +1088,10 @@ const StrokeMedicationsFormulary: React.FC = () => {
                 <div className="text-xs text-amber-200 bg-amber-500/10 border border-amber-500/30 rounded-md p-3 flex gap-2">
                   <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                   <div>
-                    Calculator is a bedside aid. Always verify against institutional protocol,
-                    renal function, and package insert. Reduce tirofiban/eptifibatide by 50% if
-                    CrCl &lt;30 (tirofiban) or &lt;50 (eptifibatide). Cap tPA at 90 mg and TNK at 25 mg.
+                    Bedside aid only. Doses are auto-rounded to safe increments (0.1 mg for tPA, 0.5 mg TNK,
+                    5 mg enoxaparin, 100 U heparin). Warnings appear when weight is outside tested range, when
+                    dose is capped, or when CrCl triggers renal adjustment/contraindication. Always verify
+                    against your institutional protocol and package insert.
                   </div>
                 </div>
               </CardContent>
@@ -858,3 +1108,4 @@ const StrokeMedicationsFormulary: React.FC = () => {
 };
 
 export default StrokeMedicationsFormulary;
+
