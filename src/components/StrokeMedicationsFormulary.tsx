@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import AntiplateletSwitchingGuide from "./AntiplateletSwitchingGuide";
+import UFHMonitoringTimeline, { UFHRegimenId } from "./UFHMonitoringTimeline";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
