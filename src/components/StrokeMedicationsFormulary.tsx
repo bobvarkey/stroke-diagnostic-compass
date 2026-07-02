@@ -493,6 +493,7 @@ interface CalcSpec {
   contraindicationCrCl?: number; // absolute contra below this CrCl
   notes?: string;
   reference?: string;
+  drugName?: string;           // link to Drug entry for details panel
 }
 
 const round = (v: number, step = 0.1) => Math.round(v / step) * step;
@@ -512,6 +513,7 @@ const CALCS: CalcSpec[] = [
     durationMin: 60,
     notes: "10% as bolus over 1 min, remainder over 60 min.",
     reference: "NINDS, ECASS III",
+    drugName: "Alteplase",
   },
   {
     id: "tnk",
@@ -526,6 +528,7 @@ const CALCS: CalcSpec[] = [
     round: 0.5,
     notes: "Single bolus over 5 seconds.",
     reference: "AcT, EXTEND-IA TNK",
+    drugName: "Tenecteplase",
   },
   {
     id: "tirofiban-load",
@@ -535,10 +538,11 @@ const CALCS: CalcSpec[] = [
     perKg: 0.4,
     outputUnit: "mcg/kg/min",
     durationMin: 30,
-    concentration: { mg: 12.5, mL: 250 }, // 50 mcg/mL
+    concentration: { mg: 12.5, mL: 250 },
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce infusion by 50% if CrCl <30" },
     reference: "RESCUE-BT2 NEJM 2023",
+    drugName: "Tirofiban",
   },
   {
     id: "tirofiban-maint",
@@ -551,6 +555,7 @@ const CALCS: CalcSpec[] = [
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
     notes: "Continue up to 24 h.",
+    drugName: "Tirofiban",
   },
   {
     id: "instant-load",
@@ -564,6 +569,7 @@ const CALCS: CalcSpec[] = [
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
     reference: "INSTANT JAMA 2026",
+    drugName: "Tirofiban",
   },
   {
     id: "instant-maint",
@@ -576,6 +582,7 @@ const CALCS: CalcSpec[] = [
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
     notes: "Continue 47.5 h.",
+    drugName: "Tirofiban",
   },
   {
     id: "eptifibatide-bolus",
@@ -587,6 +594,7 @@ const CALCS: CalcSpec[] = [
     round: 100,
     contraindicationCrCl: 15,
     notes: "May repeat once at 5 min.",
+    drugName: "Eptifibatide",
   },
   {
     id: "eptifibatide-maint",
@@ -595,10 +603,11 @@ const CALCS: CalcSpec[] = [
     route: "IV infusion",
     perKg: 2,
     outputUnit: "mcg/kg/min",
-    concentration: { mg: 75, mL: 100 }, // 0.75 mg/mL = 750 mcg/mL
+    concentration: { mg: 75, mL: 100 },
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 50, factor: 0.5, note: "Halve infusion if CrCl <50" },
     contraindicationCrCl: 15,
+    drugName: "Eptifibatide",
   },
   {
     id: "cangrelor",
@@ -607,9 +616,10 @@ const CALCS: CalcSpec[] = [
     route: "IV infusion",
     perKg: 0.75,
     outputUnit: "mcg/kg/min",
-    concentration: { mg: 50, mL: 250 }, // 200 mcg/mL
+    concentration: { mg: 50, mL: 250 },
     concentrationUnit: "mcg/mL",
     notes: "Do NOT give oral clopidogrel/prasugrel while infusing.",
+    drugName: "Cangrelor",
   },
   {
     id: "enoxaparin-tx",
@@ -621,6 +631,7 @@ const CALCS: CalcSpec[] = [
     round: 5,
     renalReduce: { crclBelow: 30, factor: 1, note: "CrCl <30: give 1 mg/kg SC DAILY (not q12h)" },
     notes: "1 mg/kg SC q12h — or 1.5 mg/kg SC daily.",
+    drugName: "Enoxaparin",
   },
   {
     id: "heparin-bolus",
@@ -632,6 +643,7 @@ const CALCS: CalcSpec[] = [
     round: 100,
     capMax: 10000,
     notes: "Titrate infusion to aPTT 1.5–2× control.",
+    drugName: "Unfractionated Heparin (UFH)",
   },
   {
     id: "heparin-infusion",
@@ -641,6 +653,7 @@ const CALCS: CalcSpec[] = [
     perKg: 18,
     outputUnit: "U/hr",
     round: 50,
+    drugName: "Unfractionated Heparin (UFH)",
   },
 ];
 
@@ -655,13 +668,29 @@ interface CalcResult {
   renalAdjusted: boolean;
 }
 
-function calcDose(spec: CalcSpec, weightKg: number, crcl?: number): CalcResult {
+export interface RoundingPrefs {
+  mg?: number;      // override for mg-unit doses
+  mcg?: number;     // override for mcg-unit doses
+  units?: number;   // override for U doses
+  rate?: number;    // override for mcg/kg/min display rounding (mcg/min)
+  mlHr?: number;    // rounding for mL/hr pump rate
+}
+
+function pickRound(spec: CalcSpec, prefs?: RoundingPrefs): number {
+  if (!prefs) return spec.round ?? 0.1;
+  if (spec.outputUnit === "mg" && prefs.mg !== undefined) return prefs.mg;
+  if (spec.outputUnit === "mcg" && prefs.mcg !== undefined) return prefs.mcg;
+  if ((spec.outputUnit === "U" || spec.outputUnit === "U/hr") && prefs.units !== undefined) return prefs.units;
+  if (spec.outputUnit === "mcg/kg/min" && prefs.rate !== undefined) return prefs.rate;
+  return spec.round ?? 0.1;
+}
+
+function calcDose(spec: CalcSpec, weightKg: number, crcl?: number, prefs?: RoundingPrefs): CalcResult {
   const warnings: string[] = [];
   const errors: string[] = [];
   let capped = false;
   let renalAdjusted = false;
 
-  // Weight range check
   if (spec.weightMin && weightKg < spec.weightMin) {
     warnings.push(`Weight ${weightKg} kg below tested range (${spec.weightMin}–${spec.weightMax} kg) — verify pediatric protocol.`);
   }
@@ -669,22 +698,18 @@ function calcDose(spec: CalcSpec, weightKg: number, crcl?: number): CalcResult {
     warnings.push(`Weight ${weightKg} kg above tested range (max ${spec.weightMax} kg) — use max-cap dosing.`);
   }
 
-  // Renal contraindication
   if (spec.contraindicationCrCl !== undefined && crcl !== undefined && crcl < spec.contraindicationCrCl) {
     errors.push(`CONTRAINDICATED: CrCl ${crcl} < ${spec.contraindicationCrCl} mL/min — do not administer.`);
   }
 
-  // Base dose
   let dose = weightKg * spec.perKg;
 
-  // Cap
   if (spec.capMax && dose > spec.capMax) {
     dose = spec.capMax;
     capped = true;
     warnings.push(`Dose capped at guideline maximum ${spec.capMax} ${spec.outputUnit}.`);
   }
 
-  // Renal reduction
   if (spec.renalReduce && crcl !== undefined && crcl < spec.renalReduce.crclBelow) {
     if (spec.renalReduce.factor !== 1) {
       dose = dose * spec.renalReduce.factor;
@@ -693,33 +718,30 @@ function calcDose(spec: CalcSpec, weightKg: number, crcl?: number): CalcResult {
     warnings.push(spec.renalReduce.note);
   }
 
-  // Rounding
-  const step = spec.round ?? 0.1;
+  const step = pickRound(spec, prefs);
   const rounded = round(dose, step);
 
-  // Format primary display
   const displayDose = spec.outputUnit === "mcg/kg/min"
     ? `${(spec.perKg * (renalAdjusted ? spec.renalReduce!.factor : 1)).toFixed(3)} mcg/kg/min → ${(rounded).toFixed(2)} mcg/min for ${weightKg} kg`
     : `${rounded.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${spec.outputUnit}`;
 
-  // Alteplase split
   let totalDose: string | undefined;
   if (spec.id === "alteplase") {
-    const bolus = round(rounded * 0.1, 0.1);
-    const infusion = round(rounded - bolus, 0.1);
+    const bolus = round(rounded * 0.1, step);
+    const infusion = round(rounded - bolus, step);
     totalDose = `Bolus ${bolus.toFixed(1)} mg over 1 min → then ${infusion.toFixed(1)} mg over 60 min`;
   } else if (spec.durationMin && spec.outputUnit === "mcg/kg/min") {
     const totalMcg = rounded * spec.durationMin;
     totalDose = `Cumulative over ${spec.durationMin} min: ${totalMcg.toLocaleString(undefined, { maximumFractionDigits: 0 })} mcg (${(totalMcg / 1000).toFixed(2)} mg)`;
   }
 
-  // mL/hr for infusions
   let mlHr: string | undefined;
   if (spec.concentration && spec.outputUnit === "mcg/kg/min") {
     const concMcgPerMl = (spec.concentration.mg * 1000) / spec.concentration.mL;
-    const mcgPerHr = rounded * 60; // mcg/min → mcg/hr
+    const mcgPerHr = rounded * 60;
     const rate = mcgPerHr / concMcgPerMl;
-    mlHr = `${rate.toFixed(1)} mL/hr @ ${concMcgPerMl.toFixed(0)} mcg/mL (${spec.concentration.mg} mg in ${spec.concentration.mL} mL)`;
+    const mlStep = prefs?.mlHr ?? 0.1;
+    mlHr = `${round(rate, mlStep).toFixed(mlStep < 1 ? 1 : 0)} mL/hr @ ${concMcgPerMl.toFixed(0)} mcg/mL (${spec.concentration.mg} mg in ${spec.concentration.mL} mL)`;
   }
 
   return { dose: rounded, displayDose, totalDose, mlHr, warnings, errors, capped, renalAdjusted };
@@ -859,6 +881,21 @@ const StrokeMedicationsFormulary: React.FC = () => {
   const [weight, setWeight] = useState<string>("70");
   const [crclStr, setCrclStr] = useState<string>("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
+  const [rounding, setRounding] = useState<RoundingPrefs>({
+    mg: 0.1, mcg: 100, units: 100, rate: 0.01, mlHr: 0.1,
+  });
+  const toggleDetail = (id: string) =>
+    setExpandedDetails((s) => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id); else n.add(id);
+      return n;
+    });
+  const drugByName = useMemo(() => {
+    const m = new Map<string, Drug>();
+    DRUGS.forEach((d) => m.set(d.name, d));
+    return m;
+  }, []);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -1040,11 +1077,47 @@ const StrokeMedicationsFormulary: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Configurable rounding rules */}
+                <div className="rounded-md border border-slate-700 bg-slate-900/60 p-3">
+                  <p className="text-xs uppercase tracking-wide text-slate-300 font-semibold mb-2">
+                    Dose rounding rules
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                    {([
+                      { key: "mg", label: "mg doses", opts: [0.01, 0.1, 0.5, 1, 5] },
+                      { key: "mcg", label: "mcg boluses", opts: [10, 50, 100, 250, 500] },
+                      { key: "units", label: "Units (heparin)", opts: [10, 50, 100, 250, 500] },
+                      { key: "rate", label: "mcg/min rate", opts: [0.01, 0.1, 0.5, 1] },
+                      { key: "mlHr", label: "mL/hr pump", opts: [0.1, 0.5, 1] },
+                    ] as const).map((f) => (
+                      <div key={f.key}>
+                        <Label className="text-slate-300 text-[11px]">{f.label}</Label>
+                        <select
+                          value={rounding[f.key]}
+                          onChange={(e) =>
+                            setRounding((p) => ({ ...p, [f.key]: parseFloat(e.target.value) }))
+                          }
+                          className="mt-1 w-full h-8 rounded-md bg-slate-800 border border-slate-700 text-white text-xs px-2"
+                        >
+                          {f.opts.map((o) => (
+                            <option key={o} value={o}>nearest {o}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-slate-500 italic mt-2">
+                    Rounding applies to every calculated dose below.
+                  </p>
+                </div>
+
                 {wValid && crclValid && (
                   <div className="grid gap-2">
                     {CALCS.map((spec) => {
-                      const r = calcDose(spec, w, crclNum);
+                      const r = calcDose(spec, w, crclNum, rounding);
                       const contra = r.errors.length > 0;
+                      const linked = spec.drugName ? drugByName.get(spec.drugName) : undefined;
+                      const detailOpen = expandedDetails.has(spec.id);
                       return (
                         <div
                           key={spec.id}
@@ -1079,6 +1152,56 @@ const StrokeMedicationsFormulary: React.FC = () => {
                           ))}
                           {spec.notes && <p className="text-[11px] text-slate-400 mt-1 italic">{spec.notes}</p>}
                           {spec.reference && <p className="text-[10px] text-slate-500 italic">Ref: {spec.reference}</p>}
+
+                          {linked && (
+                            <div className="mt-2">
+                              <button
+                                onClick={() => toggleDetail(spec.id)}
+                                className="text-[11px] text-cyan-300 hover:text-cyan-200 flex items-center gap-1"
+                              >
+                                <ChevronDown className={`h-3 w-3 transition-transform ${detailOpen ? "rotate-180" : ""}`} />
+                                {detailOpen ? "Hide" : "Show"} drug details (contraindications, renal, guideline range)
+                              </button>
+                              {detailOpen && (
+                                <div className="mt-2 space-y-2 border-t border-slate-700 pt-2">
+                                  <Row label="Guideline dose range" value={linked.dose} highlight />
+                                  {(spec.weightMin || spec.weightMax || spec.capMax) && (
+                                    <Row
+                                      label="Validated weight / cap range"
+                                      value={[
+                                        spec.weightMin && spec.weightMax
+                                          ? `Weight ${spec.weightMin}–${spec.weightMax} kg`
+                                          : null,
+                                        spec.capMax ? `Absolute max ${spec.capMax} ${spec.outputUnit}` : null,
+                                      ].filter(Boolean).join(" · ")}
+                                    />
+                                  )}
+                                  <Row label="Contraindications" value={linked.contraindications} tone="danger" />
+                                  {(spec.renalReduce || spec.contraindicationCrCl !== undefined) && (
+                                    <Row
+                                      label="Renal adjustment"
+                                      value={[
+                                        spec.renalReduce ? spec.renalReduce.note : null,
+                                        spec.contraindicationCrCl !== undefined
+                                          ? `Contraindicated if CrCl < ${spec.contraindicationCrCl} mL/min`
+                                          : null,
+                                        !spec.renalReduce && spec.contraindicationCrCl === undefined
+                                          ? "No renal dose adjustment required."
+                                          : null,
+                                      ].filter(Boolean).join(" · ")}
+                                      tone="warn"
+                                    />
+                                  )}
+                                  <Row label="Monitoring" value={linked.monitoring} tone="warn" />
+                                  {linked.evidence && (
+                                    <p className="text-[10px] text-slate-400 italic">
+                                      Guideline reference: {linked.evidence}
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
