@@ -3,7 +3,98 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Activity, Clock, AlertTriangle, ShieldAlert, Droplet, TrendingUp } from "lucide-react";
+import { Activity, Clock, AlertTriangle, ShieldAlert, Droplet, TrendingUp, OctagonAlert, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+
+export type HITStatus = "none" | "suspected" | "confirmed" | "history";
+export type RenalCategory = "normal_mild" | "moderate" | "severe_or_dialysis";
+export type HemoStatus = "stable" | "unstable";
+export type VTEIndication = "vte_treatment" | "vte_prophylaxis_medical" | "vte_prophylaxis_surgical" | "acs" | "other";
+
+interface AltAnticoagPlan {
+  primary: string;
+  detail: string;
+  fondaparinuxDose?: string;
+  tone: "danger" | "warn" | "info";
+  stopHeparin: boolean;
+}
+
+function fondaparinuxDoseFor(indication: VTEIndication, weightKg?: number): string {
+  if (indication === "vte_prophylaxis_medical" || indication === "vte_prophylaxis_surgical") {
+    return "Fondaparinux 2.5 mg SC daily (avoid if weight <50 kg for prophylaxis).";
+  }
+  if (indication === "acs") return "Fondaparinux 2.5 mg SC daily (OASIS-5/6).";
+  if (indication === "vte_treatment") {
+    if (weightKg && weightKg < 50) return "Fondaparinux 5 mg SC daily (weight <50 kg).";
+    if (weightKg && weightKg > 100) return "Fondaparinux 10 mg SC daily (weight >100 kg).";
+    return "Fondaparinux 7.5 mg SC daily (weight 50–100 kg).";
+  }
+  return "Dose per indication algorithm.";
+}
+
+function buildAltPlan(
+  hit: HITStatus,
+  renal: RenalCategory,
+  hemo: HemoStatus,
+  indication: VTEIndication,
+  currentHeparin: boolean,
+  weightKg?: number,
+): AltAnticoagPlan | null {
+  if (hit === "none") return null;
+
+  // Severe renal impairment / dialysis — avoid fondaparinux
+  if (renal === "severe_or_dialysis") {
+    return {
+      primary: "Argatroban (preferred) or bivalirudin — AVOID fondaparinux",
+      detail:
+        "Severe renal impairment / dialysis: argatroban cleared hepatically (start 0.5–2 mcg/kg/min IV, titrate aPTT 1.5–3× baseline). Bivalirudin acceptable if hepatic dysfunction. Fondaparinux contraindicated (renal accumulation, no reversal). DOAC only after clinical stability and platelet recovery.",
+      tone: "danger",
+      stopHeparin: currentHeparin,
+    };
+  }
+
+  // Hemodynamically unstable — parenteral DTI preferred
+  if (hemo === "unstable") {
+    return {
+      primary: "Argatroban or bivalirudin (titratable parenteral DTI)",
+      detail:
+        "Hemodynamic instability requires a titratable, reversible-by-half-life anticoagulant. Fondaparinux may be considered ONLY if parenteral DTIs are unavailable AND renal function acceptable — but recognise it is not titratable and has no antidote.",
+      fondaparinuxDose: fondaparinuxDoseFor(
+        indication === "other" ? "vte_treatment" : indication,
+        weightKg,
+      ),
+      tone: "danger",
+      stopHeparin: currentHeparin,
+    };
+  }
+
+  // Stable + acceptable renal → fondaparinux appropriate for VTE / ACS
+  const vteOrAcs =
+    indication === "vte_treatment" ||
+    indication === "vte_prophylaxis_medical" ||
+    indication === "vte_prophylaxis_surgical" ||
+    indication === "acs";
+
+  if (vteOrAcs) {
+    return {
+      primary: "Fondaparinux (non-heparin alternative)",
+      detail:
+        "Stable patient, renal function acceptable, and indication amenable to factor-Xa inhibition. Fondaparinux does NOT cross-react with PF4/heparin antibodies (ASH 2018). Argatroban or bivalirudin remain acceptable if a titratable option is preferred. Transition to DOAC once platelets >150 K and clinically stable.",
+      fondaparinuxDose: fondaparinuxDoseFor(indication, weightKg),
+      tone: "warn",
+      stopHeparin: currentHeparin,
+    };
+  }
+
+  return {
+    primary: "Non-heparin anticoagulant per guideline",
+    detail:
+      "Fondaparinux is not first-line for this indication. Prefer argatroban / bivalirudin or an indication-specific alternative. Do not restart any heparin product.",
+    tone: "warn",
+    stopHeparin: currentHeparin,
+  };
+}
+
 
 export type UFHRegimenId =
   | "heparin-infusion"
@@ -256,12 +347,38 @@ const UFHMonitoringTimeline: React.FC<Props> = ({ initialRegimen = "heparin-infu
     pregnancy: false,
     activeBleeding: false,
   });
+  const [hitStatus, setHitStatus] = useState<HITStatus>("none");
+  const [renalCat, setRenalCat] = useState<RenalCategory>("normal_mild");
+  const [hemoStatus, setHemoStatus] = useState<HemoStatus>("stable");
+  const [indication, setIndication] = useState<VTEIndication>("vte_treatment");
+  const [weightKgStr, setWeightKgStr] = useState<string>("");
 
   const spec = REGIMENS[regimen];
   const timeline = useMemo(() => buildTimeline(spec, risk), [spec, risk]);
   const useAntiXa = risk.baselineAPTTProlonged || risk.obesity || risk.renalImpairment;
 
-  const hitRiskTier = risk.priorHeparin14d || risk.postSurgical ? "HIGH" : "STANDARD";
+  const currentHeparin =
+    regimen === "heparin-infusion" ||
+    regimen === "heparin-low-intensity" ||
+    regimen === "heparin-procedural" ||
+    regimen === "heparin-bolus" ||
+    regimen === "ufh-prophylactic-sc";
+
+  const weightKg = weightKgStr ? parseFloat(weightKgStr) : undefined;
+  const altPlan = useMemo(
+    () => buildAltPlan(hitStatus, renalCat, hemoStatus, indication, currentHeparin, weightKg),
+    [hitStatus, renalCat, hemoStatus, indication, currentHeparin, weightKg],
+  );
+
+  const hitRiskTier =
+    hitStatus === "confirmed" || hitStatus === "suspected"
+      ? "ACTIVE HIT"
+      : hitStatus === "history"
+      ? "HIT HISTORY"
+      : risk.priorHeparin14d || risk.postSurgical
+      ? "HIGH"
+      : "STANDARD";
+
 
   const RISK_OPTS: { key: keyof UFHRiskFactors; label: string; hint: string }[] = [
     { key: "priorHeparin14d", label: "Prior heparin <100 d", hint: "Rapid-onset HIT possible <24 h" },
@@ -336,6 +453,140 @@ const UFHMonitoringTimeline: React.FC<Props> = ({ initialRegimen = "heparin-infu
             ))}
           </div>
         </div>
+
+        {/* HIT status + alternative anticoagulant decision panel */}
+        <div className="rounded-md border border-rose-500/40 bg-rose-950/20 p-3 space-y-3">
+          <div className="flex items-center gap-2">
+            <OctagonAlert className="h-4 w-4 text-rose-300" />
+            <p className="text-xs uppercase tracking-wide text-rose-200 font-semibold">
+              HIT status &amp; non-heparin alternative
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {(
+              [
+                { v: "none", label: "No HIT concern" },
+                { v: "suspected", label: "Suspected HIT" },
+                { v: "confirmed", label: "Confirmed HIT" },
+                { v: "history", label: "HIT history" },
+              ] as { v: HITStatus; label: string }[]
+            ).map((o) => (
+              <button
+                key={o.v}
+                onClick={() => setHitStatus(o.v)}
+                className={`text-[11px] rounded-md border px-2 py-1.5 transition ${
+                  hitStatus === o.v
+                    ? "bg-rose-600/40 border-rose-400/60 text-rose-50"
+                    : "bg-slate-900/60 border-slate-700 text-slate-300 hover:bg-slate-800"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+
+          {hitStatus !== "none" && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-slate-200 text-[11px]">Renal status</Label>
+                  <select
+                    value={renalCat}
+                    onChange={(e) => setRenalCat(e.target.value as RenalCategory)}
+                    className="mt-1 w-full h-8 rounded-md bg-slate-800 border border-slate-700 text-white text-xs px-2"
+                  >
+                    <option value="normal_mild">Normal or mild (CrCl ≥50)</option>
+                    <option value="moderate">Moderate (CrCl 30–49)</option>
+                    <option value="severe_or_dialysis">Severe / dialysis (CrCl &lt;30)</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="text-slate-200 text-[11px]">Hemodynamic status</Label>
+                  <select
+                    value={hemoStatus}
+                    onChange={(e) => setHemoStatus(e.target.value as HemoStatus)}
+                    className="mt-1 w-full h-8 rounded-md bg-slate-800 border border-slate-700 text-white text-xs px-2"
+                  >
+                    <option value="stable">Stable</option>
+                    <option value="unstable">Unstable / shock</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="text-slate-200 text-[11px]">Indication</Label>
+                  <select
+                    value={indication}
+                    onChange={(e) => setIndication(e.target.value as VTEIndication)}
+                    className="mt-1 w-full h-8 rounded-md bg-slate-800 border border-slate-700 text-white text-xs px-2"
+                  >
+                    <option value="vte_treatment">VTE treatment</option>
+                    <option value="vte_prophylaxis_medical">VTE prophylaxis (medical)</option>
+                    <option value="vte_prophylaxis_surgical">VTE prophylaxis (surgical)</option>
+                    <option value="acs">ACS</option>
+                    <option value="other">Other / stroke-related</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="text-slate-200 text-[11px]">Weight (kg) — for fondaparinux</Label>
+                  <Input
+                    type="number"
+                    inputMode="decimal"
+                    value={weightKgStr}
+                    onChange={(e) => setWeightKgStr(e.target.value)}
+                    placeholder="e.g. 72"
+                    className="mt-1 h-8 bg-slate-800 border-slate-700 text-white text-xs"
+                  />
+                </div>
+              </div>
+
+              {altPlan?.stopHeparin && (
+                <div className="rounded-md border border-red-500/60 bg-red-950/40 p-2 flex items-start gap-2">
+                  <OctagonAlert className="h-4 w-4 text-red-300 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-red-100">
+                    <b>STOP all heparin products immediately</b> — including current UFH infusion, SC UFH, LMWH,
+                    heparin flushes, and heparin-coated catheters. Document HIT in the chart and add allergy alert.
+                  </p>
+                </div>
+              )}
+
+              {altPlan && (
+                <div
+                  className={`rounded-md border p-3 ${
+                    altPlan.tone === "danger"
+                      ? "bg-orange-950/30 border-orange-500/50"
+                      : "bg-amber-950/20 border-amber-500/40"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 text-xs text-slate-100">
+                    <ArrowRight className="h-3.5 w-3.5 text-cyan-300" />
+                    <span className="font-semibold">Switch to:</span>
+                    <span className="text-cyan-100">{altPlan.primary}</span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 mt-1">{altPlan.detail}</p>
+                  {altPlan.fondaparinuxDose && (
+                    <p className="text-[11px] text-emerald-200 mt-1 font-mono">
+                      Dose: {altPlan.fondaparinuxDose}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <div className="rounded-md border border-slate-700 bg-slate-900/50 p-2">
+                <p className="text-[11px] text-slate-200 font-semibold mb-1">HIT surveillance reminders</p>
+                <ul className="text-[10px] text-slate-300 list-disc list-inside space-y-0.5">
+                  <li>Send HIT ELISA (PF4 antibody); confirm positives with functional assay (SRA / HIPA).</li>
+                  <li>Calculate 4T score at bedside; ≥4 = intermediate/high probability → empiric non-heparin AC.</li>
+                  <li>Do NOT give platelet transfusion unless life-threatening bleed (may exacerbate thrombosis).</li>
+                  <li>Screen for DVT with lower-extremity Doppler even without symptoms (50% have subclinical DVT).</li>
+                  <li>Do NOT restart warfarin until platelets recover to &gt;150 K (venous limb gangrene risk).</li>
+                  <li>Document HIT permanently — avoid heparin lifelong; re-exposure risk stratified by antibody status.</li>
+                </ul>
+              </div>
+            </>
+          )}
+        </div>
+
+
 
         {/* Summary badges */}
         <div className="flex flex-wrap gap-2">
