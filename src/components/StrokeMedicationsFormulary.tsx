@@ -1208,6 +1208,12 @@ const StrokeMedicationsFormulary: React.FC = () => {
                               {detailOpen && (
                                 <div className="mt-2 space-y-2 border-t border-slate-700 pt-2">
                                   <Row label="Guideline dose range" value={linked.dose} highlight />
+                                  {linked.onset && (
+                                    <Row label="Onset of action" value={linked.onset} />
+                                  )}
+                                  {linked.duration && (
+                                    <Row label="Duration of action" value={linked.duration} />
+                                  )}
                                   {(spec.weightMin || spec.weightMax || spec.capMax) && (
                                     <Row
                                       label="Validated weight / cap range"
