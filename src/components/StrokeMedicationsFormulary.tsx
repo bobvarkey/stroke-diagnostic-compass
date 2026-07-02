@@ -513,6 +513,7 @@ const CALCS: CalcSpec[] = [
     durationMin: 60,
     notes: "10% as bolus over 1 min, remainder over 60 min.",
     reference: "NINDS, ECASS III",
+    drugName: "Alteplase",
   },
   {
     id: "tnk",
@@ -527,6 +528,7 @@ const CALCS: CalcSpec[] = [
     round: 0.5,
     notes: "Single bolus over 5 seconds.",
     reference: "AcT, EXTEND-IA TNK",
+    drugName: "Tenecteplase",
   },
   {
     id: "tirofiban-load",
@@ -536,10 +538,11 @@ const CALCS: CalcSpec[] = [
     perKg: 0.4,
     outputUnit: "mcg/kg/min",
     durationMin: 30,
-    concentration: { mg: 12.5, mL: 250 }, // 50 mcg/mL
+    concentration: { mg: 12.5, mL: 250 },
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce infusion by 50% if CrCl <30" },
     reference: "RESCUE-BT2 NEJM 2023",
+    drugName: "Tirofiban",
   },
   {
     id: "tirofiban-maint",
@@ -552,6 +555,7 @@ const CALCS: CalcSpec[] = [
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
     notes: "Continue up to 24 h.",
+    drugName: "Tirofiban",
   },
   {
     id: "instant-load",
@@ -565,6 +569,7 @@ const CALCS: CalcSpec[] = [
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
     reference: "INSTANT JAMA 2026",
+    drugName: "Tirofiban",
   },
   {
     id: "instant-maint",
@@ -577,6 +582,7 @@ const CALCS: CalcSpec[] = [
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 30, factor: 0.5, note: "Reduce by 50% if CrCl <30" },
     notes: "Continue 47.5 h.",
+    drugName: "Tirofiban",
   },
   {
     id: "eptifibatide-bolus",
@@ -588,6 +594,7 @@ const CALCS: CalcSpec[] = [
     round: 100,
     contraindicationCrCl: 15,
     notes: "May repeat once at 5 min.",
+    drugName: "Eptifibatide",
   },
   {
     id: "eptifibatide-maint",
@@ -596,10 +603,11 @@ const CALCS: CalcSpec[] = [
     route: "IV infusion",
     perKg: 2,
     outputUnit: "mcg/kg/min",
-    concentration: { mg: 75, mL: 100 }, // 0.75 mg/mL = 750 mcg/mL
+    concentration: { mg: 75, mL: 100 },
     concentrationUnit: "mcg/mL",
     renalReduce: { crclBelow: 50, factor: 0.5, note: "Halve infusion if CrCl <50" },
     contraindicationCrCl: 15,
+    drugName: "Eptifibatide",
   },
   {
     id: "cangrelor",
@@ -608,9 +616,10 @@ const CALCS: CalcSpec[] = [
     route: "IV infusion",
     perKg: 0.75,
     outputUnit: "mcg/kg/min",
-    concentration: { mg: 50, mL: 250 }, // 200 mcg/mL
+    concentration: { mg: 50, mL: 250 },
     concentrationUnit: "mcg/mL",
     notes: "Do NOT give oral clopidogrel/prasugrel while infusing.",
+    drugName: "Cangrelor",
   },
   {
     id: "enoxaparin-tx",
@@ -622,6 +631,7 @@ const CALCS: CalcSpec[] = [
     round: 5,
     renalReduce: { crclBelow: 30, factor: 1, note: "CrCl <30: give 1 mg/kg SC DAILY (not q12h)" },
     notes: "1 mg/kg SC q12h — or 1.5 mg/kg SC daily.",
+    drugName: "Enoxaparin",
   },
   {
     id: "heparin-bolus",
@@ -633,6 +643,7 @@ const CALCS: CalcSpec[] = [
     round: 100,
     capMax: 10000,
     notes: "Titrate infusion to aPTT 1.5–2× control.",
+    drugName: "Unfractionated Heparin (UFH)",
   },
   {
     id: "heparin-infusion",
@@ -642,6 +653,7 @@ const CALCS: CalcSpec[] = [
     perKg: 18,
     outputUnit: "U/hr",
     round: 50,
+    drugName: "Unfractionated Heparin (UFH)",
   },
 ];
 
