@@ -347,12 +347,38 @@ const UFHMonitoringTimeline: React.FC<Props> = ({ initialRegimen = "heparin-infu
     pregnancy: false,
     activeBleeding: false,
   });
+  const [hitStatus, setHitStatus] = useState<HITStatus>("none");
+  const [renalCat, setRenalCat] = useState<RenalCategory>("normal_mild");
+  const [hemoStatus, setHemoStatus] = useState<HemoStatus>("stable");
+  const [indication, setIndication] = useState<VTEIndication>("vte_treatment");
+  const [weightKgStr, setWeightKgStr] = useState<string>("");
 
   const spec = REGIMENS[regimen];
   const timeline = useMemo(() => buildTimeline(spec, risk), [spec, risk]);
   const useAntiXa = risk.baselineAPTTProlonged || risk.obesity || risk.renalImpairment;
 
-  const hitRiskTier = risk.priorHeparin14d || risk.postSurgical ? "HIGH" : "STANDARD";
+  const currentHeparin =
+    regimen === "heparin-infusion" ||
+    regimen === "heparin-low-intensity" ||
+    regimen === "heparin-procedural" ||
+    regimen === "heparin-bolus" ||
+    regimen === "ufh-prophylactic-sc";
+
+  const weightKg = weightKgStr ? parseFloat(weightKgStr) : undefined;
+  const altPlan = useMemo(
+    () => buildAltPlan(hitStatus, renalCat, hemoStatus, indication, currentHeparin, weightKg),
+    [hitStatus, renalCat, hemoStatus, indication, currentHeparin, weightKg],
+  );
+
+  const hitRiskTier =
+    hitStatus === "confirmed" || hitStatus === "suspected"
+      ? "ACTIVE HIT"
+      : hitStatus === "history"
+      ? "HIT HISTORY"
+      : risk.priorHeparin14d || risk.postSurgical
+      ? "HIGH"
+      : "STANDARD";
+
 
   const RISK_OPTS: { key: keyof UFHRiskFactors; label: string; hint: string }[] = [
     { key: "priorHeparin14d", label: "Prior heparin <100 d", hint: "Rapid-onset HIT possible <24 h" },
