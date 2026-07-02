@@ -586,6 +586,145 @@ const UFHMonitoringTimeline: React.FC<Props> = ({ initialRegimen = "heparin-infu
           )}
         </div>
 
+        {/* Dedicated HIT surveillance reminder list */}
+        <div className="rounded-md border border-rose-500/40 bg-slate-950/60 p-3 space-y-3">
+          <div className="flex items-center gap-2">
+            <Droplet className="h-4 w-4 text-rose-300" />
+            <p className="text-xs uppercase tracking-wide text-rose-200 font-semibold">
+              HIT surveillance schedule &amp; escalation triggers
+            </p>
+            <Badge className="ml-auto bg-rose-600/25 text-rose-100 border border-rose-400/40 text-[10px]">
+              {hitRiskTier}
+            </Badge>
+          </div>
+
+          {/* Platelet cadence table */}
+          <div>
+            <p className="text-[11px] text-slate-200 font-semibold mb-1">Platelet count cadence</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px] border border-slate-700 rounded-md">
+                <thead className="bg-slate-800/70 text-slate-200">
+                  <tr>
+                    <th className="text-left px-2 py-1 font-medium">Window</th>
+                    <th className="text-left px-2 py-1 font-medium">Frequency</th>
+                    <th className="text-left px-2 py-1 font-medium">Rationale</th>
+                  </tr>
+                </thead>
+                <tbody className="text-slate-300">
+                  <tr className="border-t border-slate-700">
+                    <td className="px-2 py-1 font-mono">Baseline (T = 0)</td>
+                    <td className="px-2 py-1">Single CBC</td>
+                    <td className="px-2 py-1">Reference for ≥50% drop threshold.</td>
+                  </tr>
+                  <tr className="border-t border-slate-700">
+                    <td className="px-2 py-1 font-mono">Day 1–3</td>
+                    <td className="px-2 py-1">
+                      {hitRiskTier === "ACTIVE HIT" || hitRiskTier === "HIT HISTORY"
+                        ? "Daily (or q12h if switching agents)"
+                        : hitRiskTier === "HIGH"
+                        ? "Daily"
+                        : "Daily (post-cardiac) / q2–3 d otherwise"}
+                    </td>
+                    <td className="px-2 py-1">
+                      Rapid-onset HIT window if prior heparin &lt;100 d — antibodies already present.
+                    </td>
+                  </tr>
+                  <tr className="border-t border-slate-700">
+                    <td className="px-2 py-1 font-mono">Day 4–14 ⚑</td>
+                    <td className="px-2 py-1 font-semibold text-rose-200">
+                      Every 2–3 days (peak HIT risk)
+                    </td>
+                    <td className="px-2 py-1">
+                      Typical immune HIT onset day 5–10. Highest yield surveillance window.
+                    </td>
+                  </tr>
+                  <tr className="border-t border-slate-700">
+                    <td className="px-2 py-1 font-mono">&gt; Day 14</td>
+                    <td className="px-2 py-1">
+                      Discontinue routine surveillance if heparin stopped &amp; platelets stable.
+                    </td>
+                    <td className="px-2 py-1">Delayed-onset HIT possible up to 3 wk after exposure.</td>
+                  </tr>
+                  <tr className="border-t border-slate-700">
+                    <td className="px-2 py-1 font-mono">Any time</td>
+                    <td className="px-2 py-1">STAT CBC + 4T score</td>
+                    <td className="px-2 py-1">
+                      New thrombus, skin lesion at injection site, or anaphylactoid reaction to bolus.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Escalation triggers */}
+          <div>
+            <p className="text-[11px] text-slate-200 font-semibold mb-1">
+              Escalation to argatroban / bivalirudin — trigger criteria
+            </p>
+            <ul className="text-[11px] text-slate-300 space-y-1">
+              <li className="flex gap-2">
+                <ShieldAlert className="h-3 w-3 text-rose-300 shrink-0 mt-0.5" />
+                <span>
+                  <b>Platelets drop &gt;50%</b> from baseline (even if nadir &gt;150 K) between day 4–14.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <ShieldAlert className="h-3 w-3 text-rose-300 shrink-0 mt-0.5" />
+                <span>
+                  <b>Absolute platelet count &lt;150 K</b> with no alternative cause (sepsis, chemo, DIC excluded).
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <ShieldAlert className="h-3 w-3 text-rose-300 shrink-0 mt-0.5" />
+                <span>
+                  <b>New arterial or venous thrombosis</b> on heparin — regardless of platelet count.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <ShieldAlert className="h-3 w-3 text-rose-300 shrink-0 mt-0.5" />
+                <span>
+                  <b>4T score ≥ 4</b> (intermediate/high pretest probability) → empirically switch pending ELISA/SRA.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <ShieldAlert className="h-3 w-3 text-rose-300 shrink-0 mt-0.5" />
+                <span>
+                  <b>Necrotic skin lesion</b> at SC injection site or <b>anaphylactoid reaction</b> within 30 min of IV bolus.
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Non-heparin agent picker */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="rounded-md border border-cyan-500/40 bg-cyan-950/20 p-2">
+              <p className="text-[11px] text-cyan-200 font-semibold flex items-center gap-1">
+                <ArrowRight className="h-3 w-3" /> Argatroban (hepatic clearance)
+              </p>
+              <p className="text-[10px] text-slate-300 mt-1">
+                Start <b>2 mcg/kg/min</b> IV (0.5–1.2 if hepatic dysfunction, HF, post-cardiac surgery, or critical illness).
+                Target aPTT 1.5–3× baseline (max 100 s). Half-life 40–50 min. Prolongs INR — overlap 5 d before warfarin transition &amp; keep argatroban until INR ≥4 for 2 d.
+              </p>
+            </div>
+            <div className="rounded-md border border-cyan-500/40 bg-cyan-950/20 p-2">
+              <p className="text-[11px] text-cyan-200 font-semibold flex items-center gap-1">
+                <ArrowRight className="h-3 w-3" /> Bivalirudin (mixed clearance)
+              </p>
+              <p className="text-[10px] text-slate-300 mt-1">
+                Start <b>0.15 mg/kg/h</b> IV (0.03–0.05 mg/kg/h in severe renal impairment / dialysis).
+                Target aPTT 1.5–2.5× baseline. Half-life 25 min. Preferred when hepatic dysfunction limits argatroban or for HIT + PCI.
+              </p>
+            </div>
+          </div>
+
+          <p className="text-[10px] text-slate-500 italic">
+            References: ASH 2018 HIT guidelines, ACCP 2022 antithrombotic therapy, CHEST 2018 heparin-induced thrombocytopenia.
+          </p>
+        </div>
+
+
+
 
 
         {/* Summary badges */}
