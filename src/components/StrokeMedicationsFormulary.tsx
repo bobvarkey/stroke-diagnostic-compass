@@ -1077,11 +1077,47 @@ const StrokeMedicationsFormulary: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Configurable rounding rules */}
+                <div className="rounded-md border border-slate-700 bg-slate-900/60 p-3">
+                  <p className="text-xs uppercase tracking-wide text-slate-300 font-semibold mb-2">
+                    Dose rounding rules
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                    {([
+                      { key: "mg", label: "mg doses", opts: [0.01, 0.1, 0.5, 1, 5] },
+                      { key: "mcg", label: "mcg boluses", opts: [10, 50, 100, 250, 500] },
+                      { key: "units", label: "Units (heparin)", opts: [10, 50, 100, 250, 500] },
+                      { key: "rate", label: "mcg/min rate", opts: [0.01, 0.1, 0.5, 1] },
+                      { key: "mlHr", label: "mL/hr pump", opts: [0.1, 0.5, 1] },
+                    ] as const).map((f) => (
+                      <div key={f.key}>
+                        <Label className="text-slate-300 text-[11px]">{f.label}</Label>
+                        <select
+                          value={rounding[f.key]}
+                          onChange={(e) =>
+                            setRounding((p) => ({ ...p, [f.key]: parseFloat(e.target.value) }))
+                          }
+                          className="mt-1 w-full h-8 rounded-md bg-slate-800 border border-slate-700 text-white text-xs px-2"
+                        >
+                          {f.opts.map((o) => (
+                            <option key={o} value={o}>nearest {o}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-slate-500 italic mt-2">
+                    Rounding applies to every calculated dose below.
+                  </p>
+                </div>
+
                 {wValid && crclValid && (
                   <div className="grid gap-2">
                     {CALCS.map((spec) => {
-                      const r = calcDose(spec, w, crclNum);
+                      const r = calcDose(spec, w, crclNum, rounding);
                       const contra = r.errors.length > 0;
+                      const linked = spec.drugName ? drugByName.get(spec.drugName) : undefined;
+                      const detailOpen = expandedDetails.has(spec.id);
                       return (
                         <div
                           key={spec.id}
@@ -1116,6 +1152,56 @@ const StrokeMedicationsFormulary: React.FC = () => {
                           ))}
                           {spec.notes && <p className="text-[11px] text-slate-400 mt-1 italic">{spec.notes}</p>}
                           {spec.reference && <p className="text-[10px] text-slate-500 italic">Ref: {spec.reference}</p>}
+
+                          {linked && (
+                            <div className="mt-2">
+                              <button
+                                onClick={() => toggleDetail(spec.id)}
+                                className="text-[11px] text-cyan-300 hover:text-cyan-200 flex items-center gap-1"
+                              >
+                                <ChevronDown className={`h-3 w-3 transition-transform ${detailOpen ? "rotate-180" : ""}`} />
+                                {detailOpen ? "Hide" : "Show"} drug details (contraindications, renal, guideline range)
+                              </button>
+                              {detailOpen && (
+                                <div className="mt-2 space-y-2 border-t border-slate-700 pt-2">
+                                  <Row label="Guideline dose range" value={linked.dose} highlight />
+                                  {(spec.weightMin || spec.weightMax || spec.capMax) && (
+                                    <Row
+                                      label="Validated weight / cap range"
+                                      value={[
+                                        spec.weightMin && spec.weightMax
+                                          ? `Weight ${spec.weightMin}–${spec.weightMax} kg`
+                                          : null,
+                                        spec.capMax ? `Absolute max ${spec.capMax} ${spec.outputUnit}` : null,
+                                      ].filter(Boolean).join(" · ")}
+                                    />
+                                  )}
+                                  <Row label="Contraindications" value={linked.contraindications} tone="danger" />
+                                  {(spec.renalReduce || spec.contraindicationCrCl !== undefined) && (
+                                    <Row
+                                      label="Renal adjustment"
+                                      value={[
+                                        spec.renalReduce ? spec.renalReduce.note : null,
+                                        spec.contraindicationCrCl !== undefined
+                                          ? `Contraindicated if CrCl < ${spec.contraindicationCrCl} mL/min`
+                                          : null,
+                                        !spec.renalReduce && spec.contraindicationCrCl === undefined
+                                          ? "No renal dose adjustment required."
+                                          : null,
+                                      ].filter(Boolean).join(" · ")}
+                                      tone="warn"
+                                    />
+                                  )}
+                                  <Row label="Monitoring" value={linked.monitoring} tone="warn" />
+                                  {linked.evidence && (
+                                    <p className="text-[10px] text-slate-400 italic">
+                                      Guideline reference: {linked.evidence}
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
