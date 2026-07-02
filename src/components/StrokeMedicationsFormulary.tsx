@@ -43,6 +43,7 @@ interface Drug {
   dose: string;
   route: string;
   duration?: string;
+  onset?: string;
   contraindications: string;
   monitoring: string;
   notes?: string;
@@ -63,6 +64,7 @@ const DRUGS: Drug[] = [
     dose:
       "Load 162–325 mg PO/PR × 1 (within 24–48 h of AIS, after IVT delayed 24 h). Maintenance 75–100 mg PO daily. DAPT: 81 mg daily.",
     route: "PO / PR / NG",
+    onset: "15–30 min (antiplatelet effect); peak 1–2 h",
     duration: "Indefinite for secondary prevention; 21–30 d in DAPT window",
     contraindications:
       "Active bleeding, aspirin allergy, severe thrombocytopenia (<50 K), within 24 h of IVT",
@@ -78,6 +80,7 @@ const DRUGS: Drug[] = [
     dose:
       "Load 300–600 mg PO × 1; maintenance 75 mg PO daily. In DAPT, 21 d with aspirin then continue mono ≤ 90 d.",
     route: "PO / NG",
+    onset: "2–6 h after loading; antiplatelet effect persists 5–7 d",
     duration: "21 d DAPT (CHANCE/POINT); consider 90 d if intracranial stenosis",
     contraindications:
       "Active bleeding, hypersensitivity; caution CYP2C19 LOF alleles (*2/*3 → reduced response)",
@@ -95,6 +98,7 @@ const DRUGS: Drug[] = [
     dose:
       "Load 180 mg PO × 1; maintenance 90 mg PO BID. In THALES DAPT: 30 d with aspirin then continue 90 mg BID mono.",
     route: "PO",
+    onset: "30 min; reversible offset 3–5 d",
     duration: "30 d DAPT then mono to day 90; long-term if HR indication",
     contraindications:
       "Active bleeding, prior ICH, severe hepatic impairment, strong CYP3A4 inhibitors/inducers",
@@ -110,6 +114,7 @@ const DRUGS: Drug[] = [
     indication: "PCI/ACS — generally NOT recommended in stroke",
     dose: "Load 60 mg PO; maintenance 10 mg daily (5 mg if <60 kg or ≥75 y)",
     route: "PO",
+    onset: "30 min; irreversible offset 7–10 d",
     contraindications:
       "PRIOR STROKE or TIA (absolute) — ↑ ICH risk. Active bleeding, age ≥75 (relative).",
     monitoring: "Bleeding",
@@ -137,6 +142,7 @@ const DRUGS: Drug[] = [
     indication: "AIS secondary prevention (esp. Asian populations, intracranial stenosis, CSPS trials)",
     dose: "100 mg PO BID (50 mg BID if elderly/frail)",
     route: "PO",
+    onset: "1–2 h; duration 12 h",
     duration: "Long-term",
     contraindications: "CHF (any severity — BLACK BOX), hemorrhagic tendency, severe hepatic impairment",
     monitoring: "Headache, palpitations, diarrhea, HR",
@@ -152,6 +158,7 @@ const DRUGS: Drug[] = [
     dose:
       "AIS IV loading: 0.4 mcg/kg/min × 30 min → 0.1 mcg/kg/min × up to 24 h. Post-TNK INSTANT: 0.3 mcg/kg/min × 30 min → 0.075 mcg/kg/min × 47.5 h. IA rescue bolus: 0.25–1 mg (max 1 mg per SAO).",
     route: "IV / IA",
+    onset: "5 min; offset 4–8 h after stop",
     duration: "12–24 h (standard); 47.5 h (INSTANT post-TNK)",
     contraindications:
       "Active bleeding, ICH history, platelets <100 K, recent major surgery <30 d, severe HTN >180/110 uncontrolled",
@@ -170,6 +177,7 @@ const DRUGS: Drug[] = [
     dose:
       "Low-dose neuro (no bolus): 0.75 mcg/kg/min. Intermediate stroke: 15 mcg/kg bolus + 2 mcg/kg/min. Cardiac PCI (label): 30 mcg/kg bolus + 4 mcg/kg/min × ≥2 h.",
     route: "IV infusion",
+    onset: "2 min; offset 30–60 min after stop",
     duration: "During procedure + overlap with oral P2Y12 (Ticagrelor 180 mg 30 min before stop; Clopidogrel 600 mg AFTER stop; Prasugrel 60 mg AFTER stop)",
     contraindications: "Active bleeding, ICH, severe thrombocytopenia",
     monitoring: "Bleeding, puncture site, platelets. Effect resolves within ~60 min of stopping.",
@@ -186,6 +194,7 @@ const DRUGS: Drug[] = [
     dose:
       "IV: 180 mcg/kg bolus × 1–2 (5 min apart) + 2 mcg/kg/min infusion up to 18–24 h. Reduce infusion 50% if CrCl <50.",
     route: "IV / IA",
+    onset: "1–2 min; offset 4–6 h",
     duration: "Up to 18–24 h",
     contraindications:
       "Active bleeding, dialysis, prior ICH, severe HTN, platelets <100 K, major surgery <6 wk",
@@ -200,6 +209,7 @@ const DRUGS: Drug[] = [
     indication: "Historical stroke use — largely replaced by tirofiban/eptifibatide",
     dose: "0.25 mg/kg IV bolus + 0.125 mcg/kg/min (max 10 mcg/min) × 12 h",
     route: "IV",
+    onset: "5 min; offset 24–48 h (platelet-bound Fab)",
     contraindications: "Prior stroke <2 y (AbESTT-II halted for ↑ ICH). Active bleeding.",
     monitoring: "Platelets — profound thrombocytopenia; bleeding",
     notes: "No longer manufactured in US. AbESTT-II: excess ICH in stroke — AVOID.",
@@ -228,6 +238,7 @@ const DRUGS: Drug[] = [
     dose:
       "Prophylaxis: 40 mg SC daily (30 mg SC BID if high risk). Treatment: 1 mg/kg SC q12h or 1.5 mg/kg SC daily. CrCl <30: 30 mg SC daily prophylaxis / 1 mg/kg daily treatment.",
     route: "SC",
+    onset: "Onset 3–5 h SC; duration 12–24 h",
     duration: "Until mobile / therapy transition",
     contraindications: "Active bleeding, HIT, CrCl <15 (relative), epidural catheter within 12 h",
     monitoring: "Anti-Xa (obese, renal, pregnancy), platelets, Hb",
@@ -241,6 +252,7 @@ const DRUGS: Drug[] = [
     indication: "Mechanical valves, moderate-severe MS, APLA syndrome, DOAC failure",
     dose: "Start 5 mg PO daily (2.5 mg elderly/frail), titrate to INR 2–3 (2.5–3.5 mechanical mitral)",
     route: "PO",
+    onset: "Onset 24–72 h; duration 2–5 d after last dose",
     duration: "Indefinite for most indications",
     contraindications: "Pregnancy (except mechanical valve), active bleeding, non-adherence, severe hepatic dz",
     monitoring: "INR (daily → weekly → monthly), CBC, LFTs",
@@ -255,6 +267,7 @@ const DRUGS: Drug[] = [
     dose:
       "5 mg PO BID. Reduce to 2.5 mg BID if ≥2 of: age ≥80, weight ≤60 kg, SCr ≥1.5 mg/dL. Avoid if CrCl <15.",
     route: "PO",
+    onset: "3–4 h; duration 24 h",
     duration: "Indefinite",
     contraindications: "Active bleeding, mechanical valves, severe hepatic dz, prosthetic valve",
     monitoring: "Renal function q6–12 mo, Hb, bleeding",
@@ -269,6 +282,7 @@ const DRUGS: Drug[] = [
     indication: "Non-valvular AF, VTE, ESUS (subgroup — not routine)",
     dose: "20 mg PO daily with evening meal. 15 mg if CrCl 15–50. Avoid CrCl <15.",
     route: "PO",
+    onset: "2–4 h; duration 24 h",
     duration: "Indefinite",
     contraindications: "Active bleeding, mechanical valves, moderate-severe hepatic dz",
     monitoring: "Renal function, Hb",
@@ -282,6 +296,7 @@ const DRUGS: Drug[] = [
     indication: "Non-valvular AF, VTE",
     dose: "150 mg PO BID. 110 mg BID if age ≥80 or bleeding risk. Avoid CrCl <30.",
     route: "PO",
+    onset: "1–3 h; duration 24–36 h",
     duration: "Indefinite",
     contraindications: "Mechanical valves (RE-ALIGN), active bleeding, CrCl <30",
     monitoring: "Renal function q6 mo, Hb, dyspepsia",
@@ -296,6 +311,7 @@ const DRUGS: Drug[] = [
     indication: "Non-valvular AF, VTE",
     dose: "60 mg PO daily. 30 mg if CrCl 15–50, weight ≤60 kg, or P-gp inhibitor. Avoid CrCl >95 or <15.",
     route: "PO",
+    onset: "1–2 h; duration 24 h",
     contraindications: "Active bleeding, mechanical valves, CrCl >95 (reduced efficacy)",
     monitoring: "Renal function, Hb",
     notes: "Reversal: Andexanet or 4F-PCC.",
@@ -329,6 +345,7 @@ const DRUGS: Drug[] = [
     dose:
       "0.25 mg/kg IV × 1 bolus over 5 s (max 25 mg). AHA 2026 alternative to alteplase for LVO.",
     route: "IV",
+    onset: "Immediate; t½ ~20 min (single bolus)",
     duration: "Single bolus + 24 h monitoring",
     contraindications: "Same as alteplase",
     monitoring: "Same as alteplase (BP, neuro, 24 h NCCT)",
@@ -345,6 +362,7 @@ const DRUGS: Drug[] = [
     indication: "Dabigatran-associated life-threatening bleed (ICH) or emergent surgery",
     dose: "5 g IV (2 × 2.5 g vials) as two consecutive infusions or bolus",
     route: "IV",
+    onset: "Onset <15 min; effect ≥24 h",
     duration: "Onset <15 min; effect ≥24 h",
     contraindications: "None absolute (hypersensitivity rare)",
     monitoring: "aPTT, thrombin time, dabigatran level (if available); rebound thrombosis risk",
@@ -359,6 +377,7 @@ const DRUGS: Drug[] = [
     dose:
       "Low dose (last DOAC dose ≤5 mg apix/10 mg riva OR >8 h ago): 400 mg IV bolus + 4 mg/min × 120 min. High dose (>5 mg apix / >10 mg riva within 8 h): 800 mg bolus + 8 mg/min × 120 min.",
     route: "IV",
+    onset: "Onset minutes; activity ~2 h",
     duration: "Bolus + 2 h infusion",
     contraindications: "None absolute; caution recent thrombotic event (rebound thrombosis ~10%)",
     monitoring: "Anti-Xa level (if available), neuro, thromboembolic events",
@@ -374,6 +393,7 @@ const DRUGS: Drug[] = [
     dose:
       "VKA: INR 2–<4 → 25 U/kg; INR 4–6 → 35 U/kg; INR >6 → 50 U/kg (max 5000 U). DOAC: 50 U/kg fixed. Always give Vitamin K 10 mg IV concurrently for VKA.",
     route: "IV",
+    onset: "Onset 10–30 min; duration 6–12 h",
     duration: "Onset within 10–30 min",
     contraindications: "HIT, DIC, hypersensitivity",
     monitoring: "INR at 30 min and 6–12 h; thromboembolic events",
@@ -388,6 +408,7 @@ const DRUGS: Drug[] = [
     dose:
       "ICH: 10 mg IV over 30 min. Non-bleeding INR >10: 2.5–5 mg PO. INR 4.5–10 no bleeding: hold warfarin ± 1–2.5 mg PO.",
     route: "IV (slow) / PO",
+    onset: "Onset 6–24 h; effect sustained ≥5 d",
     duration: "Effect 6–24 h; sustained ≥5 d",
     contraindications: "Anaphylactoid reaction with IV push (give slow infusion)",
     monitoring: "INR q6h × 24 h; anaphylaxis (rare with slow infusion)",
@@ -401,6 +422,7 @@ const DRUGS: Drug[] = [
     dose:
       "UFH: 1 mg per 100 U heparin in prior 2–3 h (max 50 mg per dose). LMWH <8 h: 1 mg per 1 mg enoxaparin (or 1 mg per 100 anti-Xa U dalteparin). LMWH 8–12 h: 0.5 mg per 1 mg.",
     route: "IV (slow, over 10 min)",
+    onset: "Immediate; duration ~2 h",
     duration: "Immediate onset; heparin has short t½ so re-bolus rarely needed",
     contraindications:
       "Fish allergy (relative), prior protamine exposure (NPH insulin, vasectomy), hypotension with rapid push",
@@ -417,6 +439,7 @@ const DRUGS: Drug[] = [
       "Warfarin reversal when 4F-PCC unavailable; TTP (plasma exchange); massive transfusion 1:1:1",
     dose: "10–20 mL/kg (typically 4–6 units = 800–1200 mL for 70 kg adult)",
     route: "IV",
+    onset: "Onset 30–60 min per unit; duration 6–12 h",
     duration: "30–60 min per unit; thaw time ~30 min",
     contraindications: "Volume overload risk, IgA deficiency (use IgA-deficient plasma)",
     monitoring: "INR pre/post, TACO/TRALI, volume status, calcium (citrate load)",
@@ -433,6 +456,7 @@ const DRUGS: Drug[] = [
     dose:
       "10 units (1 pool) raises fibrinogen ~50–70 mg/dL in 70 kg adult. Target fibrinogen >150–200. Post-IVT ICH: 10 U empiric.",
     route: "IV",
+    onset: "Immediate; duration 8–12 h",
     duration: "Each unit 10–20 mL; infuse over ~15 min",
     contraindications: "None absolute; IgA deficiency caution",
     monitoring: "Fibrinogen (goal >150–200 for post-IVT ICH), TEG if available",
@@ -449,6 +473,7 @@ const DRUGS: Drug[] = [
     dose:
       "Post-IVT ICH: 25–70 mg/kg IV (typical adult 4 g). Calculate: (target − actual fibrinogen) × weight × 1.7 = mg needed.",
     route: "IV",
+    onset: "Immediate; t½ ~72 h",
     duration: "Immediate onset; t½ ~72 h",
     contraindications: "History of hypersensitivity",
     monitoring: "Fibrinogen q1h × 4 h then q6h; thrombotic events",
@@ -463,6 +488,7 @@ const DRUGS: Drug[] = [
       "Thrombocytopenia + bleeding; NOT routine for antiplatelet-associated ICH (PATCH — HARMFUL)",
     dose: "1 apheresis unit (~3–4 × 10¹¹) raises count ~30–50 K in adult",
     route: "IV",
+    onset: "Immediate; count increment lasts 3–5 d",
     contraindications: "Antiplatelet-associated spontaneous ICH (PATCH trial — worse outcome)",
     monitoring: "Platelet count 10 min and 1 h post; TRALI, TACO",
     notes:
@@ -817,7 +843,7 @@ const DrugCard: React.FC<{
             <div className="pt-3 space-y-2 text-sm">
               <Row label="Indication" value={drug.indication} />
               <Row label="Dose" value={drug.dose} highlight />
-              {drug.duration && <Row label="Duration" value={drug.duration} />}
+              <Row label="Onset & Duration" value={`${drug.onset || "Not specified"}${drug.duration ? ` · Duration: ${drug.duration}` : ""}`} />
               <Row label="Contraindications" value={drug.contraindications} tone="danger" />
               <Row label="Monitoring" value={drug.monitoring} tone="warn" />
               {drug.notes && <Row label="Notes" value={drug.notes} />}
@@ -844,6 +870,7 @@ function drugToText(d: Drug): string {
     `Indication  : ${d.indication}`,
     `Dose        : ${d.dose}`,
   ];
+  if (d.onset) lines.push(`Onset       : ${d.onset}`);
   if (d.duration) lines.push(`Duration    : ${d.duration}`);
   lines.push(`Contra-Ind. : ${d.contraindications}`);
   lines.push(`Monitoring  : ${d.monitoring}`);
@@ -1181,6 +1208,12 @@ const StrokeMedicationsFormulary: React.FC = () => {
                               {detailOpen && (
                                 <div className="mt-2 space-y-2 border-t border-slate-700 pt-2">
                                   <Row label="Guideline dose range" value={linked.dose} highlight />
+                                  {linked.onset && (
+                                    <Row label="Onset of action" value={linked.onset} />
+                                  )}
+                                  {linked.duration && (
+                                    <Row label="Duration of action" value={linked.duration} />
+                                  )}
                                   {(spec.weightMin || spec.weightMax || spec.capMax) && (
                                     <Row
                                       label="Validated weight / cap range"
