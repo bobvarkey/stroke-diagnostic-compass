@@ -1300,6 +1300,17 @@ const StrokeMedicationsFormulary: React.FC = () => {
                   </div>
                 )}
 
+                {/* Auto-generated UFH monitoring timeline */}
+                <UFHMonitoringTimeline
+                  initialRegimen={
+                    (Array.from(expandedDetails).find((id) =>
+                      ["heparin-infusion", "heparin-low-intensity", "heparin-procedural", "heparin-bolus"].includes(id),
+                    ) as UFHRegimenId | undefined) ?? "heparin-infusion"
+                  }
+                />
+
+
+
                 <div className="text-xs text-amber-200 bg-amber-500/10 border border-amber-500/30 rounded-md p-3 flex gap-2">
                   <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                   <div>
