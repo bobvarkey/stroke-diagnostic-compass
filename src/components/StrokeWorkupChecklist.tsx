@@ -6193,6 +6193,13 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <SubduralHematoma />
           </LazySection>
         </TabsContent>
+
+        {/* Medications Formulary Tab */}
+        <TabsContent value="medications" className="space-y-6">
+          <LazySection id="medications-formulary">
+            <StrokeMedicationsFormulary />
+          </LazySection>
+        </TabsContent>
       </Tabs>
 
       {/* Mobile Bottom Navigation Bar */}
