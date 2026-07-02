@@ -493,6 +493,7 @@ interface CalcSpec {
   contraindicationCrCl?: number; // absolute contra below this CrCl
   notes?: string;
   reference?: string;
+  drugName?: string;           // link to Drug entry for details panel
 }
 
 const round = (v: number, step = 0.1) => Math.round(v / step) * step;
