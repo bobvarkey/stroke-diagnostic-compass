@@ -668,13 +668,29 @@ interface CalcResult {
   renalAdjusted: boolean;
 }
 
-function calcDose(spec: CalcSpec, weightKg: number, crcl?: number): CalcResult {
+export interface RoundingPrefs {
+  mg?: number;      // override for mg-unit doses
+  mcg?: number;     // override for mcg-unit doses
+  units?: number;   // override for U doses
+  rate?: number;    // override for mcg/kg/min display rounding (mcg/min)
+  mlHr?: number;    // rounding for mL/hr pump rate
+}
+
+function pickRound(spec: CalcSpec, prefs?: RoundingPrefs): number {
+  if (!prefs) return spec.round ?? 0.1;
+  if (spec.outputUnit === "mg" && prefs.mg !== undefined) return prefs.mg;
+  if (spec.outputUnit === "mcg" && prefs.mcg !== undefined) return prefs.mcg;
+  if ((spec.outputUnit === "U" || spec.outputUnit === "U/hr") && prefs.units !== undefined) return prefs.units;
+  if (spec.outputUnit === "mcg/kg/min" && prefs.rate !== undefined) return prefs.rate;
+  return spec.round ?? 0.1;
+}
+
+function calcDose(spec: CalcSpec, weightKg: number, crcl?: number, prefs?: RoundingPrefs): CalcResult {
   const warnings: string[] = [];
   const errors: string[] = [];
   let capped = false;
   let renalAdjusted = false;
 
-  // Weight range check
   if (spec.weightMin && weightKg < spec.weightMin) {
     warnings.push(`Weight ${weightKg} kg below tested range (${spec.weightMin}–${spec.weightMax} kg) — verify pediatric protocol.`);
   }
@@ -682,22 +698,18 @@ function calcDose(spec: CalcSpec, weightKg: number, crcl?: number): CalcResult {
     warnings.push(`Weight ${weightKg} kg above tested range (max ${spec.weightMax} kg) — use max-cap dosing.`);
   }
 
-  // Renal contraindication
   if (spec.contraindicationCrCl !== undefined && crcl !== undefined && crcl < spec.contraindicationCrCl) {
     errors.push(`CONTRAINDICATED: CrCl ${crcl} < ${spec.contraindicationCrCl} mL/min — do not administer.`);
   }
 
-  // Base dose
   let dose = weightKg * spec.perKg;
 
-  // Cap
   if (spec.capMax && dose > spec.capMax) {
     dose = spec.capMax;
     capped = true;
     warnings.push(`Dose capped at guideline maximum ${spec.capMax} ${spec.outputUnit}.`);
   }
 
-  // Renal reduction
   if (spec.renalReduce && crcl !== undefined && crcl < spec.renalReduce.crclBelow) {
     if (spec.renalReduce.factor !== 1) {
       dose = dose * spec.renalReduce.factor;
@@ -706,33 +718,30 @@ function calcDose(spec: CalcSpec, weightKg: number, crcl?: number): CalcResult {
     warnings.push(spec.renalReduce.note);
   }
 
-  // Rounding
-  const step = spec.round ?? 0.1;
+  const step = pickRound(spec, prefs);
   const rounded = round(dose, step);
 
-  // Format primary display
   const displayDose = spec.outputUnit === "mcg/kg/min"
     ? `${(spec.perKg * (renalAdjusted ? spec.renalReduce!.factor : 1)).toFixed(3)} mcg/kg/min → ${(rounded).toFixed(2)} mcg/min for ${weightKg} kg`
     : `${rounded.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${spec.outputUnit}`;
 
-  // Alteplase split
   let totalDose: string | undefined;
   if (spec.id === "alteplase") {
-    const bolus = round(rounded * 0.1, 0.1);
-    const infusion = round(rounded - bolus, 0.1);
+    const bolus = round(rounded * 0.1, step);
+    const infusion = round(rounded - bolus, step);
     totalDose = `Bolus ${bolus.toFixed(1)} mg over 1 min → then ${infusion.toFixed(1)} mg over 60 min`;
   } else if (spec.durationMin && spec.outputUnit === "mcg/kg/min") {
     const totalMcg = rounded * spec.durationMin;
     totalDose = `Cumulative over ${spec.durationMin} min: ${totalMcg.toLocaleString(undefined, { maximumFractionDigits: 0 })} mcg (${(totalMcg / 1000).toFixed(2)} mg)`;
   }
 
-  // mL/hr for infusions
   let mlHr: string | undefined;
   if (spec.concentration && spec.outputUnit === "mcg/kg/min") {
     const concMcgPerMl = (spec.concentration.mg * 1000) / spec.concentration.mL;
-    const mcgPerHr = rounded * 60; // mcg/min → mcg/hr
+    const mcgPerHr = rounded * 60;
     const rate = mcgPerHr / concMcgPerMl;
-    mlHr = `${rate.toFixed(1)} mL/hr @ ${concMcgPerMl.toFixed(0)} mcg/mL (${spec.concentration.mg} mg in ${spec.concentration.mL} mL)`;
+    const mlStep = prefs?.mlHr ?? 0.1;
+    mlHr = `${round(rate, mlStep).toFixed(mlStep < 1 ? 1 : 0)} mL/hr @ ${concMcgPerMl.toFixed(0)} mcg/mL (${spec.concentration.mg} mg in ${spec.concentration.mL} mL)`;
   }
 
   return { dose: rounded, displayDose, totalDose, mlHr, warnings, errors, capped, renalAdjusted };
