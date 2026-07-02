@@ -59,10 +59,10 @@ function buildAltPlan(
       primary: "Argatroban or bivalirudin (titratable parenteral DTI)",
       detail:
         "Hemodynamic instability requires a titratable, reversible-by-half-life anticoagulant. Fondaparinux may be considered ONLY if parenteral DTIs are unavailable AND renal function acceptable — but recognise it is not titratable and has no antidote.",
-      fondaparinuxDose:
-        renal !== "severe_or_dialysis"
-          ? fondaparinuxDoseFor(indication === "other" ? "vte_treatment" : indication, weightKg)
-          : undefined,
+      fondaparinuxDose: fondaparinuxDoseFor(
+        indication === "other" ? "vte_treatment" : indication,
+        weightKg,
+      ),
       tone: "danger",
       stopHeparin: currentHeparin,
     };
