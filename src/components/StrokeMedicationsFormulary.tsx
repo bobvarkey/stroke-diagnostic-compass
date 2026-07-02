@@ -881,6 +881,21 @@ const StrokeMedicationsFormulary: React.FC = () => {
   const [weight, setWeight] = useState<string>("70");
   const [crclStr, setCrclStr] = useState<string>("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
+  const [rounding, setRounding] = useState<RoundingPrefs>({
+    mg: 0.1, mcg: 100, units: 100, rate: 0.01, mlHr: 0.1,
+  });
+  const toggleDetail = (id: string) =>
+    setExpandedDetails((s) => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id); else n.add(id);
+      return n;
+    });
+  const drugByName = useMemo(() => {
+    const m = new Map<string, Drug>();
+    DRUGS.forEach((d) => m.set(d.name, d));
+    return m;
+  }, []);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
