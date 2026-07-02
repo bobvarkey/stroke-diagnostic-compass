@@ -5656,9 +5656,15 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-relaxed">
           Acute Stroke Workup Checklist
         </h1>
-        <p className="text-gray-300 text-base sm:text-lg md:text-xl leading-relaxed">
+        <p className="text-gray-300 text-base sm:text-lg md:text-xl leading-relaxed mb-4">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
+        <GlobalAppSearch
+          onNavigate={(tab, sectionId) => {
+            setActiveTab(tab);
+            if (sectionId) setActiveSectionId(sectionId);
+          }}
+        />
       </div>
 
       {/* Main Category Tabs */}
