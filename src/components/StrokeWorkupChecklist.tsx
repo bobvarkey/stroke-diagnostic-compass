@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, memo } from "react";
 import LazySection from "./LazySection";
+import StrokeMedicationsFormulary from "./StrokeMedicationsFormulary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -5662,7 +5663,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-6 h-20 sticky top-0 z-40 mb-5 bg-slate-900 rounded-none p-2 border-b border-slate-700 backdrop-blur-xl bg-black/90">
+        <TabsList className="hidden sm:grid w-full grid-cols-7 h-20 sticky top-0 z-40 mb-5 bg-slate-900 rounded-none p-2 border-b border-slate-700 backdrop-blur-xl bg-black/90">
           <TabsTrigger value="ischemic" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
             <Zap className="h-5 w-5 shrink-0" />
             Ischemic
@@ -5686,6 +5687,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <TabsTrigger value="post-ivt" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
             <AlertTriangle className="h-5 w-5 shrink-0" />
             Post IVT
+          </TabsTrigger>
+          <TabsTrigger value="medications" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
+            <Pill className="h-5 w-5 shrink-0" />
+            Meds
           </TabsTrigger>
         </TabsList>
 
@@ -6188,18 +6193,26 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <SubduralHematoma />
           </LazySection>
         </TabsContent>
+
+        {/* Medications Formulary Tab */}
+        <TabsContent value="medications" className="space-y-6">
+          <LazySection id="medications-formulary">
+            <StrokeMedicationsFormulary />
+          </LazySection>
+        </TabsContent>
       </Tabs>
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-border/50 backdrop-blur-xl bg-background/90" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
-        <div className="grid grid-cols-6 h-16">
+        <div className="grid grid-cols-7 h-16">
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
             { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
-            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post IVT-ICH", activeColor: "text-rose-500" },
+            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post IVT", activeColor: "text-rose-500" },
             { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
             { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },
+            { value: "medications", icon: <Pill className="h-5 w-5" />, label: "Meds", activeColor: "text-cyan-500" },
           ].map((tab) => (
             <button
               key={tab.value}
