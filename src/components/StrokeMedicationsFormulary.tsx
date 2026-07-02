@@ -1000,6 +1000,9 @@ const StrokeMedicationsFormulary: React.FC = () => {
           </div>
         </div>
 
+        {/* Antiplatelet switching guide — shown on All & Antiplatelets tabs */}
+        {(tab === "all" || tab === "antiplatelet") && <AntiplateletSwitchingGuide />}
+
         {/* Category filters */}
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
           <TabsList className="grid grid-cols-3 sm:grid-cols-7 h-auto bg-slate-900 border border-slate-700 p-1 gap-1">
