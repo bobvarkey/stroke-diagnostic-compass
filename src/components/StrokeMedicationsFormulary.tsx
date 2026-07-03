@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import AntiplateletSwitchingGuide from "./AntiplateletSwitchingGuide";
 import UFHMonitoringTimeline, { UFHRegimenId } from "./UFHMonitoringTimeline";
+import antiplateletCheatSheet from "@/assets/antiplatelet-cheat-sheet-2025.png.asset.json";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
