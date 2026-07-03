@@ -1107,8 +1107,37 @@ const StrokeMedicationsFormulary: React.FC = () => {
           />
         )}
 
+        {/* 2025 Antiplatelet Cheat Sheet reference */}
+        <Collapsible defaultOpen={false} className="mb-4">
+          <CollapsibleTrigger asChild>
+            <button className="w-full flex items-center justify-between rounded-lg border border-slate-700 bg-gradient-to-r from-indigo-950/60 to-slate-900/60 px-3 py-2 hover:bg-slate-800/70 transition">
+              <span className="text-sm font-semibold text-cyan-200 flex items-center gap-2">
+                <Pill className="h-4 w-4" />
+                2025 Guideline-Based Antiplatelet Cheat Sheet
+              </span>
+              <ChevronDown className="h-4 w-4 text-slate-400 transition-transform data-[state=open]:rotate-180" />
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-3">
+            <div className="rounded-lg border border-slate-700 bg-white p-2 overflow-hidden">
+              <a href={antiplateletCheatSheet.url} target="_blank" rel="noopener noreferrer" aria-label="Open full-size antiplatelet cheat sheet">
+                <img
+                  src={antiplateletCheatSheet.url}
+                  alt="2025 Guideline-Based Antiplatelet Cheat Sheet — evidence-based quick reference covering primary prevention, ACS, ischemic stroke/TIA, PCI+AF, long-term therapy, de-escalation, GI protection, perioperative management, and contraindications"
+                  loading="lazy"
+                  className="w-full h-auto rounded"
+                />
+              </a>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-2 italic">
+              Tap image to open full size. Sources: ACC/AHA 2025 ACS · ESC 2023 ACS · ESC 2024 CCS · AHA/ASA 2021 Stroke Prevention.
+            </p>
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* Category filters */}
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
+
           <TabsList className="grid grid-cols-3 sm:grid-cols-7 h-auto bg-slate-900 border border-slate-700 p-1 gap-1">
             <TabsTrigger value="all" className="text-xs data-[state=active]:bg-slate-700 data-[state=active]:text-white text-slate-300">All ({DRUGS.length})</TabsTrigger>
             <TabsTrigger value="antiplatelet" className="text-xs data-[state=active]:bg-blue-600 data-[state=active]:text-white text-slate-300">Antiplatelets</TabsTrigger>
