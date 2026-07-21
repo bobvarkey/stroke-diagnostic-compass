@@ -9,6 +9,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ChevronDown, Activity, Calculator, GitBranch, AlertTriangle } from "lucide-react";
+import { ZoomableImage } from "@/components/ZoomableImage";
+import cognardDavfImage from "@/assets/cognard-davf-classification.png.asset.json";
 
 /* =========================================================
  * 1. Spetzler-Martin AVM Grading Scale
@@ -388,6 +390,12 @@ function DAVFClassification() {
         <p className="text-xs text-muted-foreground">Classify dural AV fistulas by venous drainage pattern, cortical reflux, and venous ectasia for hemorrhage risk stratification and treatment planning.</p>
       </CardHeader>
       <CardContent className="space-y-4">
+        <ZoomableImage
+          src={cognardDavfImage.url}
+          alt="Simplified Cognard Classification for dAVFs — benign (I, IIa) vs aggressive patterns (IIb, III, IV, V) with cortical venous reflux and ectasia"
+          caption="Simplified Cognard Classification — benign vs aggressive dAVF patterns"
+          className="rounded-lg border"
+        />
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="grid grid-cols-3 w-full">
             <TabsTrigger value="flow">Cognard Flow Map</TabsTrigger>
