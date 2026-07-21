@@ -12,6 +12,7 @@ import SettingsPage from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import ContrastTest from "./pages/ContrastTest";
 import Pricing from "./pages/Pricing";
+import GlossaryDrawer from "./components/GlossaryDrawer";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <GlossaryDrawer />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
