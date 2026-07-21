@@ -6195,6 +6195,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <SubarachnoidHemorrhage />
           </LazySection>
 
+          {/* PHASES Aneurysm Rupture Risk (5-year) */}
+          <div id="phases-score">
+            <PHASESScore />
+          </div>
+
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Subarachnoid hemorrhage management — Always correlate with clinical presentation</p>
           </div>
