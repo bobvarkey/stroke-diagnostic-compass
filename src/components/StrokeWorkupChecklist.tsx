@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { Cloud, CloudOff, Loader2, Check, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkupAutosave, loadWorkupSnapshot, type WorkupSnapshot } from "@/hooks/useWorkupAutosave";
