@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, AlertTriangle, Ban, Syringe, Droplets, Activity, ShieldAlert, Clock, Brain, Stethoscope, HeartPulse } from "lucide-react";
+import { ChevronDown, AlertTriangle, Syringe, Droplets, Activity, ShieldAlert, Clock, Brain, Stethoscope, HeartPulse } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CheckItem {

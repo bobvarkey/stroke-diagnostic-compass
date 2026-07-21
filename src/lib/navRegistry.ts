@@ -1,6 +1,6 @@
 import {
   AlertTriangle, Activity, Brain, Heart, TestTube, Calculator, ClipboardList,
-  FileText, Scale, Target, Zap, Droplets, Stethoscope, Beaker, BookOpen,
+  FileText, Scale, Target, Zap, Droplets,
   Pill, ShieldAlert, Waves, GitBranch,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";

@@ -19,7 +19,6 @@ import {
   Hand,
   MessageSquare,
   Brain,
-  Link as LinkIcon,
   ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";

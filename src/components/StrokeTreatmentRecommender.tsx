@@ -1,13 +1,12 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { 
-  Zap, Brain, Clock, ArrowRight, CheckCircle2, XCircle, AlertTriangle, 
+  Zap, Brain, Clock, ArrowRight, CheckCircle2, AlertTriangle, 
   Syringe, Target, Activity, Info
 } from "lucide-react";
 import { cn } from "@/lib/utils";

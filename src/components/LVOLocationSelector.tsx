@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { MapPin, Check, X, RotateCcw, Info } from "lucide-react";
+import { MapPin, Check, RotateCcw, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import vascularAnatomyImage from "@/assets/vascular-anatomy-lvo-selector.png";
 

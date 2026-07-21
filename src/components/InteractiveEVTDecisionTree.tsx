@@ -1,11 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Target, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.webp";
 
 type EVTResult = "evt" | "idd" | "no_evt" | null;
 
