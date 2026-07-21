@@ -1491,7 +1491,7 @@ function VisualNIHSSCalculator() {
   ];
 
   // Calculate total score (excluding UN items)
-  const totalScore = Object.entries(scores).reduce((sum, [key, score]) => {
+  const totalScore = Object.entries(scores).reduce((sum, [_key, score]) => {
     if (score === "UN") return sum;
     return sum + score;
   }, 0);

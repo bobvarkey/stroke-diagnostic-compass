@@ -64,7 +64,7 @@ const PhaseCard: React.FC<{
   );
 };
 
-const ActionChecklist: React.FC<{ items: CheckItem[]; prefix: string }> = ({ items, prefix }) => {
+const ActionChecklist: React.FC<{ items: CheckItem[]; prefix: string }> = ({ items, prefix: _prefix }) => {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   return (
     <div className="space-y-2">

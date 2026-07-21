@@ -159,7 +159,7 @@ const ISPS25StrokePhenotyping: React.FC = () => {
     return displays[phenotype];
   };
 
-  const CheckboxField = ({ id, label, checked, category }: { id: keyof ISPS25Findings; label: string; checked: boolean; category?: string }) => (
+  const CheckboxField = ({ id, label, checked, category: _category }: { id: keyof ISPS25Findings; label: string; checked: boolean; category?: string }) => (
     <div className="flex items-center space-x-2">
       <Checkbox
         id={id}

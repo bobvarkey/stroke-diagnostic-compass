@@ -43,7 +43,7 @@ interface PatientSelectorProps {
   onEnterDemoMode?: () => void;
 }
 
-export function PatientSelector({ onSelectPatient, onEnterDemoMode }: PatientSelectorProps) {
+export function PatientSelector({ onSelectPatient, onEnterDemoMode: _onEnterDemoMode }: PatientSelectorProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

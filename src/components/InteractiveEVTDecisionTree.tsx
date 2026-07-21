@@ -143,7 +143,7 @@ function getTimeOptions(pop: string, vessel: string) {
   ];
 }
 
-function getAspectsOptions(timeWindow: string) {
+function getAspectsOptions(_timeWindow: string) {
   return [
     { value: "6-10", label: "ASPECTS 6–10" },
     { value: "3-5", label: "ASPECTS 3–5" },
@@ -151,7 +151,7 @@ function getAspectsOptions(timeWindow: string) {
   ];
 }
 
-function getMrsOptions(pop: string, vessel: string, timeWindow: string, aspects: string) {
+function getMrsOptions(_pop: string, vessel: string, timeWindow: string, aspects: string) {
   if (vessel === "basilar") return [
     { value: "0-1", label: "mRS 0–1" },
     { value: "gte2", label: "mRS ≥2" },

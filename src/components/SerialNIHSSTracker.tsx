@@ -194,7 +194,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
       doc.setFont("helvetica", "bold");
       doc.text("NIHSS Item", startX + 2, yPos + 7);
       
-      timepoints.forEach((tp, idx) => {
+      timepoints.forEach((tp, _idx) => {
         const label = tp.timepoint === "custom" ? (tp.customLabel || "Custom") : timepointLabels[tp.timepoint];
         const date = new Date(tp.datetime).toLocaleDateString();
         const time = new Date(tp.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -225,7 +225,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
         doc.setTextColor(0, 0, 0);
         doc.text(`${itemId}. ${nihssItemNames[itemId]}`, startX + 2, yPos);
 
-        timepoints.forEach((tp, idx) => {
+        timepoints.forEach((tp, _idx) => {
           const score = tp.scores[itemId];
           const scoreText = score === "UN" ? "UN" : score.toString();
           
@@ -261,7 +261,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
       doc.setFontSize(9);
       doc.text("TOTAL SCORE", startX + 2, yPos + 2);
       
-      timepoints.forEach((tp, idx) => {
+      timepoints.forEach((tp, _idx) => {
         const total = calculateTotalScore(tp.scores);
         const un = countUntestable(tp.scores);
         const scoreText = un > 0 ? `${total} (${un} UN)` : total.toString();
@@ -275,7 +275,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
       doc.setFontSize(8);
       doc.text("Severity:", startX + 2, yPos);
       doc.setFont("helvetica", "normal");
-      timepoints.forEach((tp, idx) => {
+      timepoints.forEach((tp, _idx) => {
         const total = calculateTotalScore(tp.scores);
         doc.text(getSeverityLabel(total), startX + itemColWidth + (idx * colWidth) + colWidth / 2, yPos, { align: "center" });
       });
@@ -287,7 +287,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
         doc.text("Change from Previous:", startX + 2, yPos);
         doc.setFont("helvetica", "normal");
         
-        timepoints.forEach((tp, idx) => {
+        timepoints.forEach((tp, _idx) => {
           if (idx > 0) {
             const currentTotal = calculateTotalScore(tp.scores);
             const prevTotal = calculateTotalScore(timepoints[idx - 1].scores);
@@ -320,7 +320,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
       doc.text("Assessment Details:", startX, yPos);
       yPos += 6;
 
-      timepoints.forEach((tp, idx) => {
+      timepoints.forEach((tp, _idx) => {
         if (yPos > pageHeight - 25) {
           doc.addPage();
           yPos = 15;
@@ -419,7 +419,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
     
     let summary = `📋 Serial NIHSS Report\n${patientInfo}${mrnInfo}\n\n`;
     
-    timepoints.forEach((tp, idx) => {
+    timepoints.forEach((tp, _idx) => {
       const label = tp.timepoint === "custom" ? (tp.customLabel || "Custom") : timepointLabels[tp.timepoint];
       const total = calculateTotalScore(tp.scores);
       const severity = getSeverityLabel(total);
@@ -667,7 +667,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
                     <thead>
                       <tr className="bg-violet-100 dark:bg-violet-900/40">
                         <th className="border border-violet-200 dark:border-violet-700 p-2 text-left sticky left-0 bg-violet-100 dark:bg-violet-900/40">Item</th>
-                        {timepoints.map((tp, idx) => (
+                        {timepoints.map((tp, _idx) => (
                           <th key={tp.id} className="border border-violet-200 dark:border-violet-700 p-2 text-center min-w-[80px]">
                             <div className="font-bold">
                               {tp.timepoint === "custom" ? (tp.customLabel || "Custom") : timepointLabels[tp.timepoint]}
@@ -688,7 +688,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
                           <td className="border border-violet-200 dark:border-violet-700 p-2 font-medium sticky left-0 bg-inherit">
                             {itemId}. {nihssItemNames[itemId]}
                           </td>
-                          {timepoints.map((tp, idx) => {
+                          {timepoints.map((tp, _idx) => {
                             const score = tp.scores[itemId as keyof NIHSSScores];
                             const prevTP = idx > 0 ? timepoints[idx - 1] : null;
                             let changeClass = "";
@@ -717,7 +717,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
                         <td className="border border-violet-300 dark:border-violet-600 p-2 sticky left-0 bg-violet-200 dark:bg-violet-800/50">
                           TOTAL
                         </td>
-                        {timepoints.map((tp, idx) => {
+                        {timepoints.map((tp, _idx) => {
                           const total = calculateTotalScore(tp.scores);
                           const un = countUntestable(tp.scores);
                           const prevTP = idx > 0 ? timepoints[idx - 1] : null;
