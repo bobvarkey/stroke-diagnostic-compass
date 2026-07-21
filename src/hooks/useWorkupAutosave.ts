@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type WorkupSnapshot = {
   checkedItems: string[];
@@ -54,6 +54,39 @@ export function useWorkupAutosave({
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const firstRun = useRef(true);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const snapshotRef = useRef(snapshot);
+  snapshotRef.current = snapshot;
+
+  const persistNow = useCallback(async () => {
+    setStatus("saving");
+    const current = snapshotRef.current;
+    try {
+      const payload: WorkupSnapshot = { ...current, savedAt: new Date().toISOString() };
+      localStorage.setItem(key(patientId), JSON.stringify(payload));
+    } catch (err) {
+      console.warn("[autosave] localStorage write failed", err);
+    }
+    try {
+      if (!disableRemote && onPersist) {
+        await onPersist({
+          workup: { ...current, savedAt: new Date().toISOString() },
+        });
+      }
+      setLastSaved(new Date());
+      setStatus("saved");
+    } catch (err) {
+      console.error("[autosave] remote save failed", err);
+      setStatus("error");
+    }
+  }, [patientId, disableRemote, onPersist]);
+
+  const saveNow = useCallback(async () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    await persistNow();
+  }, [persistNow]);
 
   useEffect(() => {
     // Skip the initial mount save — hydration should not mark the state dirty.
@@ -95,5 +128,5 @@ export function useWorkupAutosave({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(snapshot), patientId, disableRemote]);
 
-  return { status, lastSaved };
+  return { status, lastSaved, saveNow };
 }

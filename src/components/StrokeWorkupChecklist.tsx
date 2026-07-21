@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo, memo } from "react";
-import { Cloud, CloudOff, Loader2, Check } from "lucide-react";
+import { Cloud, CloudOff, Loader2, Check, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useWorkupAutosave, loadWorkupSnapshot, type WorkupSnapshot } from "@/hooks/useWorkupAutosave";
 import LazySection from "./LazySection";
 import StrokeMedicationsFormulary from "./StrokeMedicationsFormulary";
@@ -5668,7 +5669,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   );
 
   const isDemo = !patient || patient.id === "demo-patient-001";
-  const { status: saveStatus, lastSaved } = useWorkupAutosave({
+  const { status: saveStatus, lastSaved, saveNow } = useWorkupAutosave({
     patientId: hydrationKey,
     snapshot,
     disableRemote: isDemo || !onPatientDataChange,
@@ -5831,6 +5832,18 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                     </>
                   )}
                 </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => { void saveNow(); }}
+                  disabled={saveStatus === "saving"}
+                  className="h-6 px-2 text-[11px] gap-1"
+                  title={isDemo ? "Save now to this device" : "Sync now to your account"}
+                >
+                  <Save className="h-3 w-3" />
+                  Save now
+                </Button>
               </div>
               <div className="text-xs text-muted-foreground truncate">
                 Scores, demographics, and completed investigations — PDF or plain text.
