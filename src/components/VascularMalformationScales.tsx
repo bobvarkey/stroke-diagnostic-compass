@@ -393,7 +393,6 @@ function DAVFClassification() {
         <ZoomableImage
           src={cognardDavfImage.url}
           alt="Simplified Cognard Classification for dAVFs — benign (I, IIa) vs aggressive patterns (IIb, III, IV, V) with cortical venous reflux and ectasia"
-          caption="Simplified Cognard Classification — benign vs aggressive dAVF patterns"
           className="rounded-lg border"
         />
         <Tabs value={tab} onValueChange={setTab}>
