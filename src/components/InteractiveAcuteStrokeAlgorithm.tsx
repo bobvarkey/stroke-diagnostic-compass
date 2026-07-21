@@ -9,9 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertTriangle, ArrowRight, ChevronDown, Zap, Clock, Activity, Target, BookOpen, ClipboardList, GitBranch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ModuleCommentBox from "./ModuleCommentBox";
-import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.jpeg";
+import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.webp";
 import evtDecisionTree2026 from "@/assets/evt-decision-tree-2026.jpeg";
-import antiplateletAlgorithm2026 from "@/assets/antiplatelet-algorithm-2026.jpeg";
+import antiplateletAlgorithm2026 from "@/assets/antiplatelet-algorithm-2026.webp";
 
 import InteractiveEVTDecisionTree from "./InteractiveEVTDecisionTree";
 import MeVOOrientalTrial from "./MeVOOrientalTrial";

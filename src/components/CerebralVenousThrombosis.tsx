@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, AlertTriangle, Brain, Activity, Stethoscope, Pill, Syringe, Eye } from "lucide-react";
-import cvtFlowchart from "@/assets/cvt-management-flowchart.png";
+import cvtFlowchart from "@/assets/cvt-management-flowchart.webp";
 import CVTGradingScale from "./CVTGradingScale";
 import DIAS3Calculator from "./DIAS3Calculator";
 import SI2NCAL2CCalculator from "./SI2NCAL2CCalculator";
