@@ -187,13 +187,8 @@ const Index = () => {
                   {selectedPatient.name}
                 </span>
               )}
-              {isDemoMode && (
-                <Badge variant="secondary" className="bg-accent-amber/15 text-amber-700 dark:text-amber-300 border-amber-300/30 text-xs shrink-0">
-                  <Play className="h-3 w-3 mr-1" />
-                  <span className="hidden sm:inline">Demo</span>
-                </Badge>
-              )}
             </div>
+
 
             <div className="flex-1" />
             
