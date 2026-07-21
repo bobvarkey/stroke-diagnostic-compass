@@ -7,11 +7,11 @@ import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, Users, LogOut, Shield, Play } from "lucide-react";
+import { ChevronUp, Users, LogOut, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Json } from "@/integrations/supabase/types";
-import { LandingPage } from "@/components/LandingPage";
+
 
 interface Patient {
   id: string;
@@ -53,8 +53,7 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
-  const [isDemoMode, setIsDemoMode] = useState(true);
-  const [showLandingPage, setShowLandingPage] = useState(true);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,9 +83,9 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto-save patient data when it changes (skip in demo mode)
+  // Auto-save patient data when it changes
   const savePatientData = useCallback(async (data: Record<string, unknown>) => {
-    if (!selectedPatient || !user || isDemoMode) return;
+    if (!selectedPatient || !user || selectedPatient.id === DEMO_PATIENT.id) return;
     
     try {
       const { error } = await supabase
@@ -102,7 +101,8 @@ const Index = () => {
     } catch (error) {
       console.error('Error saving patient data:', error);
     }
-  }, [selectedPatient, user, isDemoMode]);
+  }, [selectedPatient, user]);
+
 
   // Debounced save
   useEffect(() => {
@@ -124,44 +124,19 @@ const Index = () => {
   const handleReturnToPatientList = () => {
     setSelectedPatient(null);
     setPatientData({});
-    setIsDemoMode(false);
   };
 
   const handleSignOut = async () => {
-    if (isDemoMode) {
-      setIsDemoMode(false);
-      setSelectedPatient(null);
-      setPatientData({});
-      toast({ title: 'Demo ended', description: 'Exited demonstration mode' });
-      return;
-    }
     await signOut();
     setSelectedPatient(null);
     setPatientData({});
     toast({ title: 'Signed out', description: 'You have been logged out' });
   };
 
-  const handleEnterDemoMode = () => {
-    setIsDemoMode(true);
-    setSelectedPatient(DEMO_PATIENT);
-    setPatientData({});
-    setShowLandingPage(false);
-    toast({
-      title: 'Demo Mode Active',
-      description: 'Exploring with sample patient data. Changes will not be saved.'
-    });
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSkipToApp = () => {
-    setIsDemoMode(true);
-    setSelectedPatient(DEMO_PATIENT);
-    setPatientData({});
-    setShowLandingPage(false);
-  };
 
   // Show loading state
   if (loading) {
@@ -177,25 +152,16 @@ const Index = () => {
     );
   }
 
-  // Show landing page if enabled
-  if (showLandingPage) {
-    return (
-      <LandingPage
-        onExploreClick={() => setShowLandingPage(false)}
-        onSelectAssessment={() => setShowLandingPage(false)}
-      />
-    );
+  // Show auth screen if not logged in
+  if (!user) {
+    return <AuthScreen />;
   }
 
-  // Show auth screen if not logged in (unless in demo mode)
-  if (!user && !isDemoMode) {
-    return <AuthScreen onEnterDemoMode={handleEnterDemoMode} onSkipToApp={handleSkipToApp} />;
+  // Show patient selector if no patient selected
+  if (!selectedPatient) {
+    return <PatientSelector onSelectPatient={handleSelectPatient} />;
   }
 
-  // Show patient selector if no patient selected (unless in demo mode)
-  if (!selectedPatient && !isDemoMode) {
-    return <PatientSelector onSelectPatient={handleSelectPatient} onEnterDemoMode={handleEnterDemoMode} />;
-  }
 
   // Show main workup interface with selected patient
   return (
@@ -221,29 +187,23 @@ const Index = () => {
                   {selectedPatient.name}
                 </span>
               )}
-              {isDemoMode && (
-                <Badge variant="secondary" className="bg-accent-amber/15 text-amber-700 dark:text-amber-300 border-amber-300/30 text-xs shrink-0">
-                  <Play className="h-3 w-3 mr-1" />
-                  <span className="hidden sm:inline">Demo</span>
-                </Badge>
-              )}
             </div>
+
 
             <div className="flex-1" />
             
             {/* User info and actions */}
             <div className="flex items-center gap-1 sm:gap-2">
-              {!isDemoMode && (
-                <span className="text-xs text-muted-foreground hidden md:inline">
-                  {profile?.display_name || profile?.username}
-                </span>
-              )}
-              {isAdmin && !isDemoMode && (
+              <span className="text-xs text-muted-foreground hidden md:inline">
+                {profile?.display_name || profile?.username}
+              </span>
+              {isAdmin && (
                 <Badge variant="secondary" className="items-center gap-1 hidden md:flex text-xs">
                   <Shield className="h-3 w-3" />
                   Admin
                 </Badge>
               )}
+
               <Button
                 variant="ghost" 
                 size="sm" 
