@@ -5791,6 +5791,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             Meds
           </TabsTrigger>
         </TabsList>
+        <p className="hidden sm:block text-[11px] text-muted-foreground/80 -mt-3 mb-3 text-center">
+          Keyboard: <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">←/→</kbd> cycle tabs · <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">1-7</kbd> jump · <kbd className="px-1 rounded border">Tab</kbd> to focus, then <kbd className="px-1 rounded border">←/→</kbd> / <kbd className="px-1 rounded border">Enter</kbd>
+        </p>
 
         {/* Ischemic Stroke Tab Content */}
         <TabsContent value="ischemic" className="space-y-0">
