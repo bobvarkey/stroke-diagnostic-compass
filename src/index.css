@@ -80,60 +80,65 @@
     --sidebar-ring: 14 100% 62%;
   }
 
+  /* .dark mirrors Sunset Blaze so dark: variants stay on-brand */
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 95%;
+    --background: 240 20% 5%;
+    --foreground: 30 20% 96%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 95%;
+    --card: 260 25% 9%;
+    --card-foreground: 30 20% 96%;
 
-    --popover: 222 47% 9%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 260 25% 9%;
+    --popover-foreground: 30 20% 96%;
 
-    --primary: 217 91% 65%;
-    --primary-foreground: 222 47% 6%;
+    --primary: 14 100% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 40% 18%;
-    --secondary-foreground: 270 60% 85%;
+    --secondary: 253 68% 60%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 222 30% 14%;
-    --muted-foreground: 220 15% 78%;
+    --muted: 260 15% 15%;
+    --muted-foreground: 30 15% 78%;
 
-    --accent: 190 50% 15%;
-    --accent-foreground: 190 80% 80%;
+    --accent: 336 78% 58%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 95%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 16%;
-    --input: 222 30% 14%;
-    --ring: 217 91% 65%;
+    --border: 260 20% 18%;
+    --input: 260 20% 14%;
+    --ring: 14 100% 60%;
 
-    --glass-bg: 222 47% 10% / 0.7;
-    --glass-border: 0 0% 100% / 0.08;
-    --glass-shadow: 217 91% 60% / 0.1;
+    --glass-bg: 260 25% 10% / 0.72;
+    --glass-border: 30 100% 70% / 0.14;
+    --glass-shadow: 14 100% 55% / 0.22;
 
-    --accent-blue: 217 91% 65%;
-    --accent-purple: 270 70% 65%;
-    --accent-pink: 330 80% 65%;
+    --accent-blue: 253 68% 65%;
+    --accent-purple: 253 68% 60%;
+    --accent-pink: 336 78% 60%;
     --accent-teal: 175 70% 50%;
-    --accent-amber: 38 92% 55%;
-    --accent-emerald: 160 84% 45%;
-    --accent-rose: 350 89% 65%;
+    --accent-amber: 32 95% 55%;
+    --accent-emerald: 160 84% 50%;
+    --accent-rose: 14 100% 62%;
+    --accent-coral: 14 100% 60%;
+    --accent-magenta: 336 78% 58%;
+    --accent-violet: 253 68% 60%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 50%), hsl(270 70% 50%));
-    --gradient-warm: linear-gradient(135deg, hsl(330 80% 50%), hsl(38 92% 45%));
-    --gradient-cool: linear-gradient(135deg, hsl(175 70% 35%), hsl(217 91% 50%));
-    --gradient-surface: linear-gradient(135deg, hsl(222 47% 6%), hsl(270 40% 8%));
+    --gradient-sunset: linear-gradient(135deg, hsl(14 100% 60%) 0%, hsl(32 95% 55%) 33%, hsl(336 78% 58%) 66%, hsl(253 68% 60%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(14 100% 60%), hsl(336 78% 58%));
+    --gradient-warm: linear-gradient(135deg, hsl(14 100% 60%), hsl(32 95% 55%));
+    --gradient-cool: linear-gradient(135deg, hsl(336 78% 58%), hsl(253 68% 60%));
+    --gradient-surface: linear-gradient(135deg, hsl(240 30% 5%), hsl(260 30% 10%));
 
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 30% 85%;
-    --sidebar-primary: 217 91% 65%;
+    --sidebar-background: 260 30% 7%;
+    --sidebar-foreground: 30 20% 92%;
+    --sidebar-primary: 14 100% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 40% 15%;
-    --sidebar-accent-foreground: 270 60% 85%;
-    --sidebar-border: 222 30% 14%;
-    --sidebar-ring: 217 91% 65%;
+    --sidebar-accent: 260 25% 14%;
+    --sidebar-accent-foreground: 30 20% 96%;
+    --sidebar-border: 260 20% 16%;
+    --sidebar-ring: 14 100% 62%;
   }
 }
 
