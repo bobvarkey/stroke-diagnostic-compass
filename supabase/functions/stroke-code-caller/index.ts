@@ -9,20 +9,24 @@ const corsHeaders = {
 interface CallRequest {
   activationId: string;
   codeLevel: 'code_1' | 'code_2';
-  facilityId: string;
-  nsaEnabled: boolean;
-  nsaPhone: string | null;
-  voiceMessage: string;
+}
+
+// XML/TwiML escape to prevent injection into <Say> tags
+function xmlEscape(input: string): string {
+  return String(input ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Verify authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(
@@ -34,43 +38,97 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    
-    // Create client with user's auth token for verification
+
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
     });
 
     const token = authHeader.replace('Bearer ', '');
-    const { data, error: authError } = await authClient.auth.getClaims(token);
-    if (authError || !data?.claims) {
+    const { data: claimsData, error: authError } = await authClient.auth.getClaims(token);
+    if (authError || !claimsData?.claims) {
       return new Response(
         JSON.stringify({ success: false, error: 'Unauthorized - invalid token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Create service role client for database operations
+    const userId = claimsData.claims.sub as string;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { activationId, codeLevel, facilityId, nsaEnabled, nsaPhone, voiceMessage } = await req.json() as CallRequest;
+    // Require admin role — only admins can trigger real outbound calls
+    const { data: adminCheck, error: roleErr } = await supabase.rpc('has_role', {
+      _user_id: userId,
+      _role: 'admin',
+    });
+    if (roleErr || adminCheck !== true) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Forbidden - admin role required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
-    // Server-side input validation
+    const body = await req.json() as Partial<CallRequest>;
+    const activationId = typeof body.activationId === 'string' ? body.activationId : '';
+    const codeLevel = body.codeLevel === 'code_1' || body.codeLevel === 'code_2' ? body.codeLevel : null;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(activationId) || !codeLevel) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid activationId or codeLevel' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate activation exists and is recent (within last 24h)
+    const { data: activation, error: actErr } = await supabase
+      .from('stroke_activations')
+      .select('id, created_at')
+      .eq('id', activationId)
+      .maybeSingle();
+    if (actErr || !activation) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Activation not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const activationAgeMs = Date.now() - new Date(activation.created_at).getTime();
+    if (activationAgeMs > 24 * 60 * 60 * 1000) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Activation expired' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Fetch settings server-side — never trust client for phone numbers/message
+    const { data: settings, error: settingsErr } = await supabase
+      .from('stroke_settings')
+      .select('facility_id, nsa_phone_number, nsa_enabled, voice_message_code_1, voice_message_code_2')
+      .limit(1)
+      .maybeSingle();
+    if (settingsErr || !settings) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Stroke settings not configured' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const facilityId = String(settings.facility_id ?? '');
+    const nsaEnabled = !!settings.nsa_enabled;
+    const nsaPhone = settings.nsa_phone_number ?? null;
+    const voiceMessage = codeLevel === 'code_1'
+      ? String(settings.voice_message_code_1 ?? '')
+      : String(settings.voice_message_code_2 ?? '');
+
+    if (voiceMessage.length > 500 || facilityId.length > 50) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Configured settings exceed length limits' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    if (typeof voiceMessage === 'string' && voiceMessage.length > 500) {
+    if (nsaEnabled && nsaPhone && !phoneRegex.test(String(nsaPhone).replace(/[\s\-()]/g, ''))) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Voice message exceeds 500 character limit' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-    if (typeof facilityId === 'string' && facilityId.length > 50) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Facility ID exceeds 50 character limit' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-    if (nsaPhone && !phoneRegex.test(nsaPhone.replace(/[\s\-()]/g, ''))) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Invalid NSA phone number format' }),
+        JSON.stringify({ success: false, error: 'Invalid NSA phone number in settings' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -79,7 +137,6 @@ serve(async (req) => {
     const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN');
     const twilioPhoneNumber = Deno.env.get('TWILIO_PHONE_NUMBER');
 
-    // Fetch call logs for this activation
     const { data: callLogs, error: logsError } = await supabase
       .from('stroke_call_logs')
       .select('*')
@@ -91,13 +148,9 @@ serve(async (req) => {
       throw logsError;
     }
 
-    // Check if Twilio is configured
     const twilioConfigured = twilioAccountSid && twilioAuthToken && twilioPhoneNumber;
 
     if (!twilioConfigured) {
-      console.log('Twilio not configured - updating logs with pending status');
-      
-      // Update all call logs to indicate manual calling is required
       for (const log of callLogs || []) {
         await supabase
           .from('stroke_call_logs')
@@ -108,7 +161,6 @@ serve(async (req) => {
           .eq('id', log.id);
       }
 
-      // Update activation with NSA status
       if (nsaEnabled && nsaPhone) {
         await supabase
           .from('stroke_activations')
@@ -120,8 +172,8 @@ serve(async (req) => {
       }
 
       return new Response(
-        JSON.stringify({ 
-          success: false, 
+        JSON.stringify({
+          success: false,
           message: 'Twilio not configured. Please add TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_PHONE_NUMBER secrets.',
           manualCallingRequired: true
         }),
@@ -129,16 +181,18 @@ serve(async (req) => {
       );
     }
 
-    // Twilio is configured - proceed with automated calling
     const twilioBaseUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Calls.json`;
     const authHeaderTwilio = 'Basic ' + btoa(`${twilioAccountSid}:${twilioAuthToken}`);
 
     const callResults: { contactId: string; success: boolean; error?: string }[] = [];
 
-    // Make calls sequentially to each contact
+    // Pre-escape safe values for TwiML
+    const safeVoice = xmlEscape(voiceMessage);
+    const safeFacility = xmlEscape(facilityId);
+    const safeCodeLabel = codeLevel === 'code_1' ? 'Code 1 emergency' : 'Code 2';
+
     for (const log of callLogs || []) {
       try {
-        // Update status to calling
         await supabase
           .from('stroke_call_logs')
           .update({
@@ -147,10 +201,8 @@ serve(async (req) => {
           })
           .eq('id', log.id);
 
-        // Create TwiML for the voice message
-        const twiml = `<Response><Say voice="alice">${voiceMessage}. This is a ${codeLevel === 'code_1' ? 'Code 1 emergency' : 'Code 2'} stroke alert for patient at ${facilityId}. Please respond immediately.</Say><Pause length="1"/><Say voice="alice">Repeat: ${voiceMessage}</Say></Response>`;
+        const twiml = `<Response><Say voice="alice">${safeVoice}. This is a ${safeCodeLabel} stroke alert for patient at ${safeFacility}. Please respond immediately.</Say><Pause length="1"/><Say voice="alice">Repeat: ${safeVoice}</Say></Response>`;
 
-        // Make the call via Twilio
         const formData = new URLSearchParams();
         formData.append('To', log.phone_number);
         formData.append('From', twilioPhoneNumber!);
@@ -169,7 +221,6 @@ serve(async (req) => {
         const callData = await callResponse.json();
 
         if (callResponse.ok) {
-          // Update status to success
           await supabase
             .from('stroke_call_logs')
             .update({
@@ -184,7 +235,7 @@ serve(async (req) => {
         }
       } catch (callError) {
         const errorMessage = callError instanceof Error ? callError.message : 'Unknown error';
-        
+
         await supabase
           .from('stroke_call_logs')
           .update({
@@ -197,17 +248,15 @@ serve(async (req) => {
         callResults.push({ contactId: log.contact_id, success: false, error: errorMessage });
       }
 
-      // Small delay between calls to avoid rate limiting
       await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    // Handle NSA notification
     let nsaNotified = false;
     let nsaStatus = '';
 
     if (nsaEnabled && nsaPhone) {
       try {
-        const nsaTwiml = `<Response><Say voice="alice">This is an automated stroke code notification from ${facilityId}. A ${codeLevel === 'code_1' ? 'Code 1' : 'Code 2'} stroke alert has been activated. Timestamp: ${new Date().toISOString()}. This message is for National Stroke Association records.</Say></Response>`;
+        const nsaTwiml = `<Response><Say voice="alice">This is an automated stroke code notification from ${safeFacility}. A ${safeCodeLabel} stroke alert has been activated. Timestamp: ${xmlEscape(new Date().toISOString())}. This message is for National Stroke Association records.</Say></Response>`;
 
         const nsaFormData = new URLSearchParams();
         nsaFormData.append('To', nsaPhone);
@@ -235,7 +284,6 @@ serve(async (req) => {
         nsaStatus = `NSA notification error: ${nsaError instanceof Error ? nsaError.message : 'Unknown error'}`;
       }
 
-      // Update activation with NSA status
       await supabase
         .from('stroke_activations')
         .update({
@@ -261,15 +309,15 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Stroke code caller error:', error);
-    
+
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      JSON.stringify({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       }),
-      { 
+      {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
   }
