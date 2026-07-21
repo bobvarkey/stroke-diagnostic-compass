@@ -86,9 +86,9 @@ const TPAEligibilityChecklist: React.FC = () => {
   const [inclusionChecked, setInclusionChecked] = useState<Record<string, boolean>>({});
   const [absoluteChecked, setAbsoluteChecked] = useState<Record<string, boolean>>({});
   const [relativeChecked, setRelativeChecked] = useState<Record<string, boolean>>({});
-  const [inclusionOpen, setInclusionOpen] = useState(true);
-  const [absoluteOpen, setAbsoluteOpen] = useState(true);
-  const [relativeOpen, setRelativeOpen] = useState(true);
+  const [inclusionOpen, setInclusionOpen] = useState(false);
+  const [absoluteOpen, setAbsoluteOpen] = useState(false);
+  const [relativeOpen, setRelativeOpen] = useState(false);
   const [lowNihssOpen, setLowNihssOpen] = useState(false);
   const [comment, setComment] = useState("");
 

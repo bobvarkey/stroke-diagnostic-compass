@@ -25,7 +25,7 @@ const PhaseCard: React.FC<{
   color: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
-}> = ({ phase, title, icon, color, children, defaultOpen = true }) => {
+}> = ({ phase, title, icon, color, children, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
   const colorMap: Record<string, string> = {
     red: "border-red-400 dark:border-red-600 bg-gradient-to-br from-red-50/60 dark:from-red-950/20 to-background",
@@ -1542,7 +1542,7 @@ const BloodProductInfusionCalculator: React.FC = () => {
 };
 
 const PostThrombolysisICHManagement: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>

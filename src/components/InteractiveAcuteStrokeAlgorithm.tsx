@@ -44,7 +44,7 @@ interface AlgorithmInputs {
 }
 
 const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("guidelines");
   const [comment, setComment] = useState("");
   const [inputs, setInputs] = useState<AlgorithmInputs>({

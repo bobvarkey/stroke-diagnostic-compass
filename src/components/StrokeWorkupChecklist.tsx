@@ -321,7 +321,7 @@ const categoryIcons: Record<string, any> = {
 
 // Acute Stroke Management Algorithm Component - AHA 2026 Guidelines
 function AcuteStrokeAlgorithm() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -594,7 +594,7 @@ function AcuteStrokeAlgorithm() {
 
 // Acute ICH Management Component
 function AcuteICHManagement() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -1057,7 +1057,7 @@ function AcuteICHManagement() {
 
 // ISPS25 Flowchart Component
 function ISPS25Flowchart() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -1284,7 +1284,7 @@ function NIHSSScaleReference() {
 
 // Visual NIHSS Calculator Component
 function VisualNIHSSCalculator() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [showPrintSheet, setShowPrintSheet] = useState(false);
   const [scores, setScores] = useState<Record<string, number | "UN">>({
     "1a": 0, "1b": 0, "1c": 0, "2": 0, "3": 0, "4": 0,

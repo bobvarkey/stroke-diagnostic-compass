@@ -178,7 +178,7 @@ const gradingSystems: GradingSystem[] = [
 ];
 
 const CTACollateralGrading: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedSystem, setSelectedSystem] = useState<string>("tan");
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
 

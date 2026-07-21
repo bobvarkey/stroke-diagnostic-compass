@@ -15,7 +15,7 @@ import ARISE1PDFReport from "@/components/ARISE1PDFReport";
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
 function SDHClassification() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>

@@ -13,8 +13,8 @@ import ModuleCommentBox from "./ModuleCommentBox";
 
 const IVTAnticoagulationGuide: React.FC = () => {
   const [comment, setComment] = useState("");
-  const [vkaOpen, setVkaOpen] = useState(true);
-  const [doacOpen, setDoacOpen] = useState(true);
+  const [vkaOpen, setVkaOpen] = useState(false);
+  const [doacOpen, setDoacOpen] = useState(false);
   const [dosingOpen, setDosingOpen] = useState(false);
   const [doacReversalOpen, setDoacReversalOpen] = useState(false);
   const [practicalOpen, setPracticalOpen] = useState(false);

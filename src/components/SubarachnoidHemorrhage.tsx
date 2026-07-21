@@ -19,7 +19,7 @@ import FisherScaleCalculator from "./FisherScaleCalculator";
 // ─── Diagnostic Algorithm ───────────────────────────────────────────────────
 
 function SAHDiagnosticAlgorithm() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [ctPositive, setCtPositive] = useState<boolean | null>(null);
   const [lpDone, setLpDone] = useState<boolean | null>(null);
   const [lpPositive, setLpPositive] = useState<boolean | null>(null);
@@ -271,7 +271,7 @@ function SAHDiagnosticAlgorithm() {
 // ─── Treatment Algorithm ────────────────────────────────────────────────────
 
 function SAHTreatmentAlgorithm() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -421,7 +421,7 @@ function SAHTreatmentAlgorithm() {
 // ─── Complications Management ───────────────────────────────────────────────
 
 function SAHComplicationsManagement() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [activeComplTab, setActiveComplTab] = useState("vasospasm");
 
   return (
