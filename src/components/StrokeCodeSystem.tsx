@@ -85,14 +85,14 @@ const ROLE_LABELS: Record<ContactRole, string> = {
   lab_tech: "Lab Tech"
 };
 
-const ROLE_OPTIONS = Object.entries(ROLE_LABELS).map(([value, label]) => ({ value: value as ContactRole, label }));
+const _ROLE_OPTIONS = Object.entries(ROLE_LABELS).map(([value, label]) => ({ value: value as ContactRole, label }));
 
 export default function StrokeCodeSystem() {
   const [activeTab, setActiveTab] = useState("activate");
   const [contacts, setContacts] = useState<StrokeContact[]>([]);
   const [settings, setSettings] = useState<StrokeSettings | null>(null);
-  const [activations, setActivations] = useState<StrokeActivation[]>([]);
-  const [callLogs, setCallLogs] = useState<StrokeCallLog[]>([]);
+  const [_activations, setActivations] = useState<StrokeActivation[]>([]);
+  const [_callLogs, setCallLogs] = useState<StrokeCallLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [activating, setActivating] = useState(false);
   const [selectedActivation, setSelectedActivation] = useState<StrokeActivation | null>(null);
@@ -106,7 +106,7 @@ export default function StrokeCodeSystem() {
   
   // Contact form state
   const [editingContact, setEditingContact] = useState<StrokeContact | null>(null);
-  const [contactFormOpen, setContactFormOpen] = useState(false);
+  const [_contactFormOpen, setContactFormOpen] = useState(false);
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactRole, setContactRole] = useState<ContactRole>("neurologist");
@@ -312,7 +312,7 @@ export default function StrokeCodeSystem() {
     return /^\+?[1-9]\d{1,14}$/.test(phone.replace(/[\s\-()]/g, ''));
   };
 
-  const handleSaveContact = async () => {
+  const _handleSaveContact = async () => {
     if (!contactName.trim() || !contactPhone.trim()) {
       toast({ title: "Please fill in name and phone number", variant: "destructive" });
       return;
@@ -364,7 +364,7 @@ export default function StrokeCodeSystem() {
     }
   };
 
-  const handleDeleteContact = async (id: string) => {
+  const _handleDeleteContact = async (id: string) => {
     if (!confirm("Are you sure you want to delete this contact?")) return;
     
     try {
@@ -377,7 +377,7 @@ export default function StrokeCodeSystem() {
     }
   };
 
-  const handleToggleContactActive = async (contact: StrokeContact) => {
+  const _handleToggleContactActive = async (contact: StrokeContact) => {
     try {
       await supabase
         .from('stroke_contacts')
@@ -389,7 +389,7 @@ export default function StrokeCodeSystem() {
     }
   };
 
-  const handleSaveSettings = async () => {
+  const _handleSaveSettings = async () => {
     if (facilityId.trim().length > 50) {
       toast({ title: "Facility ID must be under 50 characters", variant: "destructive" });
       return;
@@ -442,7 +442,7 @@ export default function StrokeCodeSystem() {
     setContactPriority(1);
   };
 
-  const openEditContact = (contact: StrokeContact) => {
+  const _openEditContact = (contact: StrokeContact) => {
     setEditingContact(contact);
     setContactName(contact.name);
     setContactPhone(contact.phone_number);
@@ -452,7 +452,7 @@ export default function StrokeCodeSystem() {
     setContactFormOpen(true);
   };
 
-  const getCallStatusIcon = (status: string) => {
+  const _getCallStatusIcon = (status: string) => {
     switch (status) {
       case 'success': return <CheckCircle2 className="h-4 w-4 text-green-500" />;
       case 'failed': return <XCircle className="h-4 w-4 text-red-500" />;
@@ -462,7 +462,7 @@ export default function StrokeCodeSystem() {
     }
   };
 
-  const getCallStatusBadge = (status: string) => {
+  const _getCallStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
       success: "default",
       failed: "destructive",
@@ -477,7 +477,7 @@ export default function StrokeCodeSystem() {
     );
   };
 
-  const dialNumber = (phone: string) => {
+  const _dialNumber = (phone: string) => {
     window.location.href = `tel:${phone}`;
   };
 

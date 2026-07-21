@@ -261,7 +261,7 @@ const strokeTests: TestItem[] = [
 ];
 
 // Clopidogrel Resistance Clinical Note
-const clopidogrelResistanceNote = `CYP2C19 Loss-of-Function Alleles: Clopidogrel is a prodrug requiring CYP2C19 for activation. Patients with loss-of-function alleles (*2, *3) have reduced or absent enzyme activity, leading to diminished antiplatelet effect.
+const _clopidogrelResistanceNote = `CYP2C19 Loss-of-Function Alleles: Clopidogrel is a prodrug requiring CYP2C19 for activation. Patients with loss-of-function alleles (*2, *3) have reduced or absent enzyme activity, leading to diminished antiplatelet effect.
 
 ⚠️ IMPORTANT: 30-50% of the Indian population carries CYP2C19 loss-of-function alleles, making clopidogrel resistance highly prevalent in this demographic.
 
@@ -281,10 +281,10 @@ Alternative Agents for Poor Metabolizers:
 • Prasugrel (Effient) - less affected by CYP2C19 variants`;
 
 // AF Burden Clinical Note
-const afBurdenNote = `The type and burden of device-detected AF are paramount to appropriate management. High-burden AF (longest episode >24 hours) significantly elevates stroke risk - anticoagulation or LAA occlusion should be considered. Low-burden AF (6 min–24 hours) management is less clear. AF detected within 12 months of continuous cardiac monitoring, particularly episodes >24 hours, is more likely causal for ESUS. Although prolonged monitoring increases AF detection, further research is needed for low-burden AF management, especially when detected beyond 12 months.`;
+const _afBurdenNote = `The type and burden of device-detected AF are paramount to appropriate management. High-burden AF (longest episode >24 hours) significantly elevates stroke risk - anticoagulation or LAA occlusion should be considered. Low-burden AF (6 min–24 hours) management is less clear. AF detected within 12 months of continuous cardiac monitoring, particularly episodes >24 hours, is more likely causal for ESUS. Although prolonged monitoring increases AF detection, further research is needed for low-burden AF management, especially when detected beyond 12 months.`;
 
 // STRIVE Criteria for Cerebral Small Vessel Disease
-const striveMarkers = [
+const _striveMarkers = [
   { name: "Recent Small Subcortical Infarcts", desc: "Acute lesions <20mm in axial plane, in perforating artery territory" },
   { name: "Lacunes", desc: "Round/ovoid fluid-filled cavities 3-15mm, in perforating artery territory" },
   { name: "White Matter Hyperintensities", desc: "Hyperintense on T2/FLAIR, variable size; use Fazekas scale (0-3)" },
@@ -319,7 +319,7 @@ const categoryIcons: Record<string, any> = {
 };
 
 // Acute Stroke Management Algorithm Component - AHA 2026 Guidelines
-function AcuteStrokeAlgorithm() {
+function _AcuteStrokeAlgorithm() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -1055,7 +1055,7 @@ function AcuteICHManagement() {
 }
 
 // ISPS25 Flowchart Component
-function ISPS25Flowchart() {
+function _ISPS25Flowchart() {
   const [isOpen, setIsOpen] = useState(false);
   
   return (
@@ -1295,7 +1295,7 @@ function VisualNIHSSCalculator() {
   });
 
   // Items that can be marked as untestable
-  const untestableItems = ["5a", "5b", "6a", "6b", "7", "10"];
+  const _untestableItems = ["5a", "5b", "6a", "6b", "7", "10"];
 
   const nihssItems = [
     {
@@ -3110,7 +3110,7 @@ function MRSScaleReference() {
 }
 
 // ASPECTS Score Component
-function ASPECTSScoreReference() {
+function _ASPECTSScoreReference() {
   const [isOpen, setIsOpen] = useState(false);
   
   const aspectsRegions = [
@@ -3231,10 +3231,10 @@ function ASPECTSScoreReference() {
 }
 
 // pc-ASPECTS Score Component
-function PcASPECTSScoreReference() {
+function _PcASPECTSScoreReference() {
   const [isOpen, setIsOpen] = useState(false);
   
-  const pcAspectsRegions = [
+  const _pcAspectsRegions = [
     { region: "L", name: "Left Thalamus", points: 1, level: "Thalamus" },
     { region: "R", name: "Right Thalamus", points: 1, level: "Thalamus" },
     { region: "L", name: "Left Cerebellum", points: 1, level: "Cerebellum" },
@@ -3393,7 +3393,7 @@ function PcASPECTSScoreReference() {
 }
 
 // CHA2DS2-VASc Score Calculator Component
-function CHA2DS2VAScCalculator() {
+function _CHA2DS2VAScCalculator() {
   const [isOpen, setIsOpen] = useState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
@@ -3551,7 +3551,7 @@ function CHA2DS2VAScCalculator() {
 }
 
 // uACR Cardiovascular Risk Reference Component
-function UACRCardiovascularRisk() {
+function _UACRCardiovascularRisk() {
   const [isOpen, setIsOpen] = useState(false);
 
   const uacrCategories = [
@@ -3741,7 +3741,7 @@ function UACRCardiovascularRisk() {
 }
 
 // eGFR Calculator with KDIGO CKD Staging Component
-function EGFRCalculator() {
+function _EGFRCalculator() {
   const [isOpen, setIsOpen] = useState(false);
   const [age, setAge] = useState<string>("");
   const [sex, setSex] = useState<string>("");
@@ -4025,7 +4025,7 @@ function EGFRCalculator() {
 // PREVENTScoreCalculator is now imported from ./PREVENTScoreCalculator.tsx
 
 // HAS-BLED Score Calculator Component
-function HASBLEDCalculator() {
+function _HASBLEDCalculator() {
   const [isOpen, setIsOpen] = useState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
@@ -4207,7 +4207,7 @@ function HASBLEDCalculator() {
 }
 
 // ABCD2 Score Calculator Component
-function ABCD2Calculator() {
+function _ABCD2Calculator() {
   const [isOpen, setIsOpen] = useState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
@@ -4390,7 +4390,7 @@ function ABCD2Calculator() {
 }
 
 // ICH Score Calculator Component
-function ICHScoreCalculator() {
+function _ICHScoreCalculator() {
   const [isOpen, setIsOpen] = useState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
@@ -5431,7 +5431,7 @@ function SAHGradingScales() {
 }
 
 // Metabolic Syndrome Criteria Checker Component
-function MetabolicSyndromeChecker() {
+function _MetabolicSyndromeChecker() {
   const [isOpen, setIsOpen] = useState(false);
   const [idfCriteria, setIdfCriteria] = useState<Set<string>>(new Set());
   const [atpCriteria, setAtpCriteria] = useState<Set<string>>(new Set());
@@ -5673,7 +5673,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
     },
   });
 
-  const toggleSection = (sectionId: string) => {
+  const _toggleSection = (sectionId: string) => {
     const newExpanded = new Set(expandedSections);
     if (newExpanded.has(sectionId)) {
       newExpanded.delete(sectionId);
