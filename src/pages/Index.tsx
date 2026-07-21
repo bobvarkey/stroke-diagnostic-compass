@@ -152,15 +152,11 @@ const Index = () => {
     );
   }
 
-  // Show auth screen if not logged in
-  if (!user) {
-    return <AuthScreen />;
-  }
-
   // Show patient selector if no patient selected
   if (!selectedPatient) {
     return <PatientSelector onSelectPatient={handleSelectPatient} />;
   }
+
 
 
   // Show main workup interface with selected patient
