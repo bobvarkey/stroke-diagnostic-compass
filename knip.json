@@ -1,23 +1,13 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": [
-    "src/main.tsx",
-    "index.html",
-    "vite.config.ts",
-    "tailwind.config.ts",
-    "postcss.config.js"
-  ],
+  "entry": ["src/main.tsx"],
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": [
-    "src/components/ui/**",
-    "src/integrations/supabase/**",
-    "supabase/**"
+    "src/integrations/supabase/**"
   ],
   "ignoreDependencies": [
     "tailwindcss-animate",
-    "@tailwindcss/typography",
-    "autoprefixer",
-    "postcss",
-    "lovable-tagger"
-  ]
+    "@tailwindcss/typography"
+  ],
+  "ignoreExportsUsedInFile": true
 }
