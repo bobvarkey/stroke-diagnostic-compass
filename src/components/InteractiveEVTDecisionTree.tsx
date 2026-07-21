@@ -1,11 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Target, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.webp";
 
 type EVTResult = "evt" | "idd" | "no_evt" | null;
 
@@ -146,7 +143,7 @@ function getTimeOptions(pop: string, vessel: string) {
   ];
 }
 
-function getAspectsOptions(timeWindow: string) {
+function getAspectsOptions(_timeWindow: string) {
   return [
     { value: "6-10", label: "ASPECTS 6–10" },
     { value: "3-5", label: "ASPECTS 3–5" },
@@ -154,7 +151,7 @@ function getAspectsOptions(timeWindow: string) {
   ];
 }
 
-function getMrsOptions(pop: string, vessel: string, timeWindow: string, aspects: string) {
+function getMrsOptions(_pop: string, vessel: string, timeWindow: string, aspects: string) {
   if (vessel === "basilar") return [
     { value: "0-1", label: "mRS 0–1" },
     { value: "gte2", label: "mRS ≥2" },

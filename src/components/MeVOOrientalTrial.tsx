@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Target, AlertTriangle, Info, ExternalLink } from "lucide-react";
+import { Target, AlertTriangle, ExternalLink } from "lucide-react";
 
 const MeVOOrientalTrial = () => {
   const [isHovered, setIsHovered] = useState(false);

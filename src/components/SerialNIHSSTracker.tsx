@@ -320,7 +320,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
       doc.text("Assessment Details:", startX, yPos);
       yPos += 6;
 
-      timepoints.forEach((tp, idx) => {
+      timepoints.forEach((tp, _idx) => {
         if (yPos > pageHeight - 25) {
           doc.addPage();
           yPos = 15;
@@ -450,7 +450,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
     const encodedText = encodeURIComponent(summary + "\n📄 PDF attached separately if available.");
     
     // Format phone number (remove spaces and special characters)
-    let phone = recipientPhone.replace(/[\s\-\(\)]/g, '');
+    let phone = recipientPhone.replace(/[\s\-()]/g, '');
     if (phone && !phone.startsWith('+')) {
       phone = '+' + phone;
     }
@@ -667,7 +667,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
                     <thead>
                       <tr className="bg-violet-100 dark:bg-violet-900/40">
                         <th className="border border-violet-200 dark:border-violet-700 p-2 text-left sticky left-0 bg-violet-100 dark:bg-violet-900/40">Item</th>
-                        {timepoints.map((tp, idx) => (
+                        {timepoints.map((tp, _idx) => (
                           <th key={tp.id} className="border border-violet-200 dark:border-violet-700 p-2 text-center min-w-[80px]">
                             <div className="font-bold">
                               {tp.timepoint === "custom" ? (tp.customLabel || "Custom") : timepointLabels[tp.timepoint]}

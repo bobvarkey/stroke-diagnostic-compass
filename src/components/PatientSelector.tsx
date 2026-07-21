@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Users, Plus, Search, Clock, User, LogOut, Shield, 
-  FileText, Calendar, ArrowRight, Play 
+  FileText, Calendar, ArrowRight 
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -43,7 +43,7 @@ interface PatientSelectorProps {
   onEnterDemoMode?: () => void;
 }
 
-export function PatientSelector({ onSelectPatient, onEnterDemoMode }: PatientSelectorProps) {
+export function PatientSelector({ onSelectPatient, onEnterDemoMode: _onEnterDemoMode }: PatientSelectorProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

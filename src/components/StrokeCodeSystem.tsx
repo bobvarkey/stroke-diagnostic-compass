@@ -4,32 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
-  Phone, 
   AlertTriangle, 
   Zap, 
   Users, 
-  Settings, 
-  History, 
-  Plus, 
-  Edit, 
-  Trash2, 
   CheckCircle2, 
   XCircle, 
   Clock, 
   PhoneCall,
   PhoneOff,
   Bell,
-  Building,
-  UserPlus,
   Activity
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";

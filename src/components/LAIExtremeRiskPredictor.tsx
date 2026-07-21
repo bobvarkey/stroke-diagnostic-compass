@@ -1,10 +1,9 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Copy, RotateCcw, Target } from "lucide-react";
+import { Copy, RotateCcw, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 

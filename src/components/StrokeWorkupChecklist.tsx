@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, useMemo, memo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Cloud, CloudOff, Loader2, Check, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkupAutosave, loadWorkupSnapshot, type WorkupSnapshot } from "@/hooks/useWorkupAutosave";
@@ -14,10 +14,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse } from "lucide-react";
-import SectionNavigator, { SectionItem } from "./SectionNavigator";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, BarChart3, Calculator, Pill, ShieldAlert } from "lucide-react";
+import SectionNavigator from "./SectionNavigator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
 
 import DemographicsForm from "./DemographicsForm";
@@ -31,18 +30,11 @@ import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
-import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
-import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import IVTManagementCombined from "./IVTManagementCombined";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
-import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
-import LipidTherapyIntensificationGuide from "./LipidTherapyIntensificationGuide";
-import ETICIScoreCalculator from "./ETICIScoreCalculator";
-import TALDefinitionGuide from "./TALDefinitionGuide";
 import VascularAnatomyDiagram from "./VascularAnatomyDiagram";
-import ThrombectomyOutcomeTracker from "./ThrombectomyOutcomeTracker";
 import PREVENTScoreCalculator from "./PREVENTScoreCalculator";
 import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
@@ -51,7 +43,6 @@ import KDIGOHeatMap from "./KDIGOHeatMap";
 import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
-import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import VascularMalformationScales, { PHASESScore } from "./VascularMalformationScales";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
@@ -1500,7 +1491,7 @@ function VisualNIHSSCalculator() {
   ];
 
   // Calculate total score (excluding UN items)
-  const totalScore = Object.entries(scores).reduce((sum, [key, score]) => {
+  const totalScore = Object.entries(scores).reduce((sum, [_key, score]) => {
     if (score === "UN") return sum;
     return sum + score;
   }, 0);

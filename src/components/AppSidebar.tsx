@@ -30,7 +30,7 @@ function loadGroupState(): Record<string, boolean> {
   try {
     const raw = localStorage.getItem(LS_GROUPS);
     if (raw) return JSON.parse(raw);
-  } catch {}
+  } catch { /* ignore */ }
   const defaults: Record<string, boolean> = {};
   NAV_GROUPS.forEach((g, i) => (defaults[g.title] = i < 2));
   return defaults;
@@ -65,7 +65,7 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
 
   // Persist group state
   useEffect(() => {
-    try { localStorage.setItem(LS_GROUPS, JSON.stringify(groupOpen)); } catch {}
+    try { localStorage.setItem(LS_GROUPS, JSON.stringify(groupOpen)); } catch { /* ignore */ }
   }, [groupOpen]);
 
   // Blur backdrop when searching
@@ -250,4 +250,3 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
   );
 }
 
-export default AppSidebar;

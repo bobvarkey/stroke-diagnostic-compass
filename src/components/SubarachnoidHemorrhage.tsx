@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
-  ChevronDown, AlertTriangle, Activity, Brain, Heart, Thermometer,
-  Droplets, Clock, Shield, Zap, Stethoscope, Syringe, Target,
+  ChevronDown, AlertTriangle, Activity, Heart,
+  Droplets, Clock, Shield, Zap, Syringe, Target,
   CheckCircle2, XCircle, ArrowRight, TrendingUp, RotateCcw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

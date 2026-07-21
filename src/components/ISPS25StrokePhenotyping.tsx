@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Brain, AlertTriangle, CheckCircle2, Info, FileText, Heart, Activity } from "lucide-react";
+import { Brain, AlertTriangle, Info, FileText, Heart, Activity } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -160,7 +159,7 @@ const ISPS25StrokePhenotyping: React.FC = () => {
     return displays[phenotype];
   };
 
-  const CheckboxField = ({ id, label, checked, category }: { id: keyof ISPS25Findings; label: string; checked: boolean; category?: string }) => (
+  const CheckboxField = ({ id, label, checked, category: _category }: { id: keyof ISPS25Findings; label: string; checked: boolean; category?: string }) => (
     <div className="flex items-center space-x-2">
       <Checkbox
         id={id}
