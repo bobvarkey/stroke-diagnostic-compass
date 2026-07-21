@@ -83,9 +83,9 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto-save patient data when it changes (skip in demo mode)
+  // Auto-save patient data when it changes
   const savePatientData = useCallback(async (data: Record<string, unknown>) => {
-    if (!selectedPatient || !user || isDemoMode) return;
+    if (!selectedPatient || !user || selectedPatient.id === DEMO_PATIENT.id) return;
     
     try {
       const { error } = await supabase
@@ -101,7 +101,8 @@ const Index = () => {
     } catch (error) {
       console.error('Error saving patient data:', error);
     }
-  }, [selectedPatient, user, isDemoMode]);
+  }, [selectedPatient, user]);
+
 
   // Debounced save
   useEffect(() => {
