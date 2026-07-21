@@ -450,7 +450,7 @@ export default function SerialNIHSSTracker({ currentScores, currentUntestableRea
     const encodedText = encodeURIComponent(summary + "\n📄 PDF attached separately if available.");
     
     // Format phone number (remove spaces and special characters)
-    let phone = recipientPhone.replace(/[\s\-\(\)]/g, '');
+    let phone = recipientPhone.replace(/[\s\-()]/g, '');
     if (phone && !phone.startsWith('+')) {
       phone = '+' + phone;
     }
