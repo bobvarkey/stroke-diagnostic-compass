@@ -36,7 +36,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-lg bg-gradient-sunset flex items-center justify-center shadow-glow">
               <Stethoscope className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-gradient-sunset">Stroke Complete 2026</span>
+            <span className="font-bold text-gradient-sunset">Stroke Pathfinder (94)</span>
           </Link>
           <nav className="flex items-center gap-1 text-xs">
             <Link to="/calculators"><Button variant="ghost" size="sm"><Calculator className="h-3.5 w-3.5 mr-1"/>Calculators</Button></Link>
