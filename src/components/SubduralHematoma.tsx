@@ -811,12 +811,13 @@ function SDHMedicalManagement() {
               {[
                 {
                   drug: "Dexamethasone",
-                  dose: "Loading: 4mg BD × 2 weeks, then taper over 2 weeks",
-                  evidence: "Dex-CSDH trial (2020) — reduced surgical need at 6 months, BUT no benefit at 12 months and more adverse events. Use cautiously.",
-                  notes: "Monitor glucose, consider PPI prophylaxis. Contraindicated if diabetes poorly controlled.",
-                  verdict: "Controversial",
-                  color: "border-amber-300",
+                  dose: "8 mg BID × 2 weeks, then taper over 2 weeks",
+                  evidence: "Dex-CSDH trial (Hutchinson et al., NEJM 2020; N=748): Favorable mRS 0–3 at 6 mo — Dex 83.9% vs Placebo 90.3% (diff −6.4 pp; 95% CI −11.4 to −1.4; P=0.01). Serious adverse events at 30 d: 16.0% vs 6.4% (OR 2.49; 95% CI 1.54–4.15; P<0.001). Repeat surgery for recurrence: 1.7% vs 7.1% (diff −5.4 pp; 95% CI −8.7 to −2.5; P<0.001).",
+                  notes: "Net effect: fewer favorable outcomes and more SAEs despite lower recurrence — routine use NOT recommended. Monitor glucose, PPI prophylaxis. Avoid in poorly controlled DM, active infection, or psychiatric illness.",
+                  verdict: "Not Recommended (NEJM 2020)",
+                  color: "border-red-300",
                 },
+
                 {
                   drug: "Atorvastatin",
                   dose: "20-80 mg daily for 8-12 weeks",
