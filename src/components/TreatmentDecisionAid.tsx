@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Scale, Clock, ArrowRightLeft, AlertTriangle, Printer, FileText, X } from "lucide-react";
 import ModuleCommentBox from "./ModuleCommentBox";
 
-import tpaVsMedical from "@/assets/tpa-vs-medical-management.png";
-import tpa3hVs4h from "@/assets/tpa-3h-vs-4-5h.png";
-import lvoMedicalVsEvt from "@/assets/lvo-medical-vs-evt.png";
-import tpaVsTpaMtLvo from "@/assets/tpa-vs-tpa-mt-lvo.png";
-import lateThrombectomyLvo from "@/assets/late-thrombectomy-lvo.png";
+import tpaVsMedical from "@/assets/tpa-vs-medical-management.webp";
+import tpa3hVs4h from "@/assets/tpa-3h-vs-4-5h.webp";
+import lvoMedicalVsEvt from "@/assets/lvo-medical-vs-evt.webp";
+import tpaVsTpaMtLvo from "@/assets/tpa-vs-tpa-mt-lvo.webp";
+import lateThrombectomyLvo from "@/assets/late-thrombectomy-lvo.webp";
 
 interface DecisionScenario {
   id: string;
