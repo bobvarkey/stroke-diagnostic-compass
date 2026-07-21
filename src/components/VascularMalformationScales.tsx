@@ -565,7 +565,7 @@ function DAVFClassification() {
  * Container
  * ========================================================= */
 export default function VascularMalformationScales() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   return (
     <Card id="vascular-malformations" className="border-2 border-rose-200 dark:border-rose-800/60">
       <Collapsible open={open} onOpenChange={setOpen}>

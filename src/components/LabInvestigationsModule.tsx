@@ -245,7 +245,7 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
     }
   };
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>

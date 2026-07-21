@@ -72,7 +72,7 @@ const DEFAULT_SCANS: ScanItem[] = [
 ];
 
 const LVODecisionDashboard: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [assessment, setAssessment] = useState<AssessmentData>({
     nihss: null,
     hasLVO: null,

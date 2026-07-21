@@ -95,7 +95,7 @@ const CVDSeverityScale: React.FC = () => {
 
   return (
     <Card className="border-2 border-indigo-200 dark:border-indigo-800">
-      <Collapsible defaultOpen>
+      <Collapsible>
         <CollapsibleTrigger asChild>
           <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
             <CardTitle className="flex items-center justify-between">
@@ -278,7 +278,7 @@ const CVDSeverityScale: React.FC = () => {
 
 const CVTManagementFlowchart: React.FC = () => (
   <Card className="border-2 border-purple-200 dark:border-purple-800">
-    <Collapsible defaultOpen>
+    <Collapsible>
       <CollapsibleTrigger asChild>
         <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
           <CardTitle className="flex items-center justify-between">

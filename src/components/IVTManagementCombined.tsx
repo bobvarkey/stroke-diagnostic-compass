@@ -8,7 +8,7 @@ import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 
 const IVTManagementCombined: React.FC = () => {
-  const [eligibilityOpen, setEligibilityOpen] = useState(true);
+  const [eligibilityOpen, setEligibilityOpen] = useState(false);
   const [anticoagOpen, setAnticoagOpen] = useState(false);
   const [dosingOpen, setDosingOpen] = useState(false);
 
