@@ -157,7 +157,7 @@ function R2eDAVMScore() {
 /* =========================================================
  * 3. PHASES Aneurysm Rupture Risk Score
  * ========================================================= */
-function PHASESScore() {
+export function PHASESScore() {
   const [population, setPopulation] = useState<number | null>(null);
   const [htn, setHtn] = useState<boolean>(false);
   const [age, setAge] = useState<number | null>(null);
