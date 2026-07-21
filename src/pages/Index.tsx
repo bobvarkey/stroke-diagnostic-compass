@@ -183,12 +183,18 @@ const Index = () => {
   const handleSelectPatient = (patient: Patient) => {
     setSelectedPatient(patient);
     setPatientData((patient.clinical_data as Record<string, unknown>) || {});
+    knownUpdatedAtRef.current = patient.updated_at ?? null;
+    pendingSaveRef.current = null;
+    setConflict(null);
     toast({ title: 'Patient Selected', description: `Now viewing ${patient.patient_id}` });
   };
 
   const handleReturnToPatientList = () => {
     setSelectedPatient(null);
     setPatientData({});
+    knownUpdatedAtRef.current = null;
+    pendingSaveRef.current = null;
+    setConflict(null);
   };
 
   const handleSignOut = async () => {
@@ -198,9 +204,33 @@ const Index = () => {
     toast({ title: 'Signed out', description: 'You have been logged out' });
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleKeepMine = async () => {
+    const data = pendingSaveRef.current ?? patientData;
+    setConflict(null);
+    pendingSaveRef.current = null;
+    await savePatientData(data, { force: true });
+    toast({ title: 'Your version saved', description: 'The cloud copy was overwritten.' });
   };
+
+  const handleKeepRemote = async () => {
+    if (!selectedPatient) return;
+    setConflict(null);
+    pendingSaveRef.current = null;
+    const { data: remote, error } = await supabase
+      .from('patients')
+      .select('*')
+      .eq('id', selectedPatient.id)
+      .maybeSingle();
+    if (error || !remote) {
+      toast({ title: 'Sync failed', description: error?.message ?? 'Could not fetch cloud version', variant: 'destructive' });
+      return;
+    }
+    setSelectedPatient(remote as unknown as Patient);
+    setPatientData(((remote as { clinical_data?: Record<string, unknown> }).clinical_data) || {});
+    knownUpdatedAtRef.current = (remote as { updated_at?: string }).updated_at ?? null;
+    toast({ title: 'Cloud version loaded', description: 'Your local edits were discarded.' });
+  };
+
 
 
   // Show loading state
@@ -293,16 +323,13 @@ const Index = () => {
         </SidebarInset>
       </div>
 
-      {/* Scroll to top button */}
-      {showScrollTop && (
-        <Button
-          onClick={scrollToTop}
-          size="icon"
-          className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg h-12 w-12 bg-primary/90 backdrop-blur-sm hover:bg-primary safe-bottom"
-        >
-          <ChevronUp className="h-5 w-5" />
-        </Button>
-      )}
+      <PatientConflictDialog
+        open={!!conflict}
+        info={conflict}
+        onKeepMine={handleKeepMine}
+        onKeepRemote={handleKeepRemote}
+        onCancel={() => { setConflict(null); pendingSaveRef.current = null; }}
+      />
     </SidebarProvider>
   );
 };
