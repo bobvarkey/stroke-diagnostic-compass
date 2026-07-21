@@ -124,4 +124,3 @@ export const ZoomableImage: React.FC<ZoomableImageProps> = ({
   );
 };
 
-export default ZoomableImage;

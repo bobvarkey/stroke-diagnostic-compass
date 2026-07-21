@@ -250,4 +250,3 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
   );
 }
 
-export default AppSidebar;
