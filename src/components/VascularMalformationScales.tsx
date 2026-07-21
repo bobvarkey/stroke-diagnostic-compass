@@ -320,8 +320,7 @@ export function PHASESScore() {
           <div className="rounded-md border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30 p-3 text-xs flex items-start gap-2">
             <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <strong>Complete to see the score:</strong>{" "}
-              {missing.map((m) => m.label).join(" · ")}
+              <strong>Missing:</strong> {missing.map((m) => m.label).join(" · ")}
             </div>
           </div>
         )}
@@ -332,7 +331,7 @@ export function PHASESScore() {
               <span className="text-sm font-medium">PHASES Score</span>
               <Badge className="bg-purple-600 text-white text-lg px-3 py-1">{score}</Badge>
             </div>
-            <p className="text-sm"><strong>Estimated 5-year rupture risk:</strong> {risk(score)}</p>
+            <p className="text-sm"><strong>5-year rupture risk:</strong> {risk(score)}</p>
           </div>
         )}
 
@@ -340,7 +339,6 @@ export function PHASESScore() {
           <Button variant="ghost" size="sm" onClick={reset} className="text-xs">Reset</Button>
         </div>
 
-        <p className="text-xs text-muted-foreground border-t pt-2">Reference: Greving JP, et al. Lancet Neurol 2014;13(1):59–66.</p>
       </CardContent>
     </Card>
   );
