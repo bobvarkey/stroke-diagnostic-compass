@@ -5671,33 +5671,33 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-7 h-20 sticky top-0 z-40 mb-5 bg-slate-900 rounded-none p-2 border-b border-slate-700 backdrop-blur-xl bg-black/90">
-          <TabsTrigger value="ischemic" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
-            <Zap className="h-5 w-5 shrink-0" />
+        <TabsList className="hidden sm:grid w-full grid-cols-7 h-auto sticky top-0 z-40 mb-5 rounded-xl p-1.5 gap-1 bg-gradient-to-r from-background/95 via-card/90 to-background/95 backdrop-blur-xl border border-border/60 shadow-lg shadow-primary/5">
+          <TabsTrigger value="ischemic" className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-tight text-foreground/70 hover:text-foreground data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:shadow-md data-[state=active]:shadow-blue-500/40 px-2.5 py-2.5 rounded-lg transition-all">
+            <Zap className="h-4 w-4 shrink-0" />
             Ischemic
           </TabsTrigger>
-          <TabsTrigger value="hemorrhagic" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
-            <Droplets className="h-5 w-5 shrink-0" />
+          <TabsTrigger value="hemorrhagic" className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-tight text-foreground/70 hover:text-foreground data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/40 px-2.5 py-2.5 rounded-lg transition-all">
+            <Droplets className="h-4 w-4 shrink-0" />
             ICH
           </TabsTrigger>
-          <TabsTrigger value="sah" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
-            <Droplets className="h-5 w-5 shrink-0" />
+          <TabsTrigger value="sah" className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-tight text-foreground/70 hover:text-foreground data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-red-500 data-[state=active]:to-rose-500 data-[state=active]:shadow-md data-[state=active]:shadow-red-500/40 px-2.5 py-2.5 rounded-lg transition-all">
+            <Droplets className="h-4 w-4 shrink-0" />
             SAH
           </TabsTrigger>
-          <TabsTrigger value="sdh" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
-            <Layers className="h-5 w-5 shrink-0" />
+          <TabsTrigger value="sdh" className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-tight text-foreground/70 hover:text-foreground data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-orange-500 data-[state=active]:to-amber-500 data-[state=active]:shadow-md data-[state=active]:shadow-orange-500/40 px-2.5 py-2.5 rounded-lg transition-all">
+            <Layers className="h-4 w-4 shrink-0" />
             SDH
           </TabsTrigger>
-          <TabsTrigger value="cvt" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
-            <Brain className="h-5 w-5 shrink-0" />
+          <TabsTrigger value="cvt" className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-tight text-foreground/70 hover:text-foreground data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-purple-500 data-[state=active]:to-fuchsia-500 data-[state=active]:shadow-md data-[state=active]:shadow-purple-500/40 px-2.5 py-2.5 rounded-lg transition-all">
+            <Brain className="h-4 w-4 shrink-0" />
             CVT
           </TabsTrigger>
-          <TabsTrigger value="post-ivt" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
-            <AlertTriangle className="h-5 w-5 shrink-0" />
+          <TabsTrigger value="post-ivt" className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-tight text-foreground/70 hover:text-foreground data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-rose-500 data-[state=active]:to-pink-500 data-[state=active]:shadow-md data-[state=active]:shadow-rose-500/40 px-2.5 py-2.5 rounded-lg transition-all">
+            <AlertTriangle className="h-4 w-4 shrink-0" />
             Post IVT
           </TabsTrigger>
-          <TabsTrigger value="medications" className="flex items-center gap-2 text-sm font-semibold text-gray-300 data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-md px-3 py-2 rounded-lg transition-all hover:text-white">
-            <Pill className="h-5 w-5 shrink-0" />
+          <TabsTrigger value="medications" className="flex items-center justify-center gap-1.5 text-[13px] font-semibold tracking-tight text-foreground/70 hover:text-foreground data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-cyan-500 data-[state=active]:to-teal-500 data-[state=active]:shadow-md data-[state=active]:shadow-cyan-500/40 px-2.5 py-2.5 rounded-lg transition-all">
+            <Pill className="h-4 w-4 shrink-0" />
             Meds
           </TabsTrigger>
         </TabsList>
