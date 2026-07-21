@@ -3,11 +3,37 @@
   "entry": ["src/main.tsx"],
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": [
-    "src/integrations/supabase/**"
+    "src/integrations/supabase/**",
+    "src/components/ui/**",
+    "src/components/NIHSSIcons.tsx"
   ],
   "ignoreDependencies": [
     "tailwindcss-animate",
-    "@tailwindcss/typography"
+    "@tailwindcss/typography",
+    "@hookform/resolvers",
+    "@radix-ui/react-alert-dialog",
+    "@radix-ui/react-aspect-ratio",
+    "@radix-ui/react-avatar",
+    "@radix-ui/react-context-menu",
+    "@radix-ui/react-hover-card",
+    "@radix-ui/react-navigation-menu",
+    "@radix-ui/react-popover",
+    "@radix-ui/react-toggle",
+    "@radix-ui/react-toggle-group",
+    "cmdk",
+    "react-day-picker",
+    "react-hook-form",
+    "react-resizable-panels",
+    "vaul",
+    "zod"
   ],
-  "ignoreExportsUsedInFile": true
+  "ignoreExportsUsedInFile": true,
+  "rules": {
+    "files": "error",
+    "dependencies": "error",
+    "unlisted": "error",
+    "exports": "warn",
+    "types": "warn",
+    "duplicates": "error"
+  }
 }
