@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Cloud, CloudOff, Loader2, Check, Save } from "lucide-react";
+import { Cloud, CloudOff, Loader2, Check, Save, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
+import { useCollapsibleState, expandAll, collapseAll } from "@/hooks/useCollapsibleState";
 import { Button } from "@/components/ui/button";
 import { useWorkupAutosave, loadWorkupSnapshot, type WorkupSnapshot } from "@/hooks/useWorkupAutosave";
 
