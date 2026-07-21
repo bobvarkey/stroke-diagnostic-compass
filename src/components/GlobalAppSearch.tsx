@@ -31,7 +31,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
   { label: "Lipid Risk Classification", tab: "ischemic", sectionId: "lipid-risk", keywords: "lipid ldl apob lp(a) lipoprotein cholesterol extreme risk lai", category: "Lipid" },
   { label: "Stroke History Template", tab: "ischemic", sectionId: "stroke-history", keywords: "history template 36 items summary", category: "Ischemic" },
   { label: "ISPS25 Phenotyping", tab: "ischemic", sectionId: "stroke-phenotyping", keywords: "isps25 phenotype etiology classification tost", category: "Ischemic" },
-  { label: "Lab Investigations (OCR)", tab: "ischemic", sectionId: "lab-investigations", keywords: "labs ocr metropolis thrombophilia panel gemini", category: "Labs" },
+  { label: "Lab Investigations", tab: "ischemic", sectionId: "lab-investigations", keywords: "labs metropolis thrombophilia panel", category: "Labs" },
   { label: "Workup Checklist", tab: "ischemic", sectionId: "workup-checklist", keywords: "checklist workup tests investigations", category: "Ischemic" },
 
   // ── ICH / Post-IVT ──────────────────────────────────────────────────
