@@ -2,6 +2,10 @@ import React, { useState, useRef, useCallback, useEffect, useMemo, memo } from "
 import { Cloud, CloudOff, Loader2, Check, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkupAutosave, loadWorkupSnapshot, type WorkupSnapshot } from "@/hooks/useWorkupAutosave";
+
+/** Guard destructive reset actions with a browser confirm dialog. */
+const confirmReset = (message = "Reset this score? Any entered values will be cleared."): boolean =>
+  typeof window === "undefined" ? true : window.confirm(message);
 import LazySection from "./LazySection";
 import StrokeMedicationsFormulary from "./StrokeMedicationsFormulary";
 import GlobalAppSearch from "./GlobalAppSearch";
@@ -1602,7 +1606,7 @@ function VisualNIHSSCalculator() {
                     Print Sheet
                   </button>
                   <button
-                    onClick={(e) => { e.stopPropagation(); resetScores(); }}
+                    onClick={(e) => { e.stopPropagation(); if (confirmReset("Reset all NIHSS scores? Entered items will be cleared.")) resetScores(); }}
                     className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors"
                   >
                     Reset All
@@ -2153,7 +2157,7 @@ function VisualGCSCalculator() {
                   </div>
                 </div>
                 <button
-                  onClick={(e) => { e.stopPropagation(); resetScores(); }}
+                  onClick={(e) => { e.stopPropagation(); if (confirmReset()) resetScores(); }}
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors"
                 >
                   Reset
@@ -2398,7 +2402,7 @@ function VisualFOURScoreCalculator() {
                   </div>
                 </div>
                 <button
-                  onClick={(e) => { e.stopPropagation(); resetScores(); }}
+                  onClick={(e) => { e.stopPropagation(); if (confirmReset()) resetScores(); }}
                   className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-sm font-medium transition-colors"
                 >
                   Reset
@@ -2679,7 +2683,7 @@ function HuntHessCalculator() {
             {/* Reset and Notes */}
             <div className="flex items-center justify-between">
               <button
-                onClick={() => setSelectedGrade(null)}
+                onClick={() => { if (confirmReset("Clear the selected grade?")) setSelectedGrade(null); }}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-medium transition-colors"
               >
                 Reset
@@ -3010,7 +3014,7 @@ function WFNSCalculator() {
             {/* Reset Button */}
             <div className="flex items-center justify-between">
               <button
-                onClick={resetScores}
+                onClick={() => { if (confirmReset()) resetScores(); }}
                 className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-sm font-medium transition-colors"
               >
                 Reset
