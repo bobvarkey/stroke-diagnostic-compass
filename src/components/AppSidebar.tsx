@@ -132,7 +132,7 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight min-w-0">
-              <span className="font-bold text-sm text-gradient-sunset truncate">StrokeSuite</span>
+              <span className="font-bold text-sm text-gradient-sunset truncate">Stroke Complete 2026</span>
               <span className="text-[10px] text-muted-foreground">Clinical Companion</span>
             </div>
           )}
