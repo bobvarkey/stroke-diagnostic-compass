@@ -1879,6 +1879,7 @@ export default function SubduralHematoma() {
       <SDHTreatmentIndications />
       <SDHReversalChecklist />
       <SDHSeizureProphylaxis />
+      <SDHMonitoringImagingProtocol />
       <SDHSurgicalOptions />
       <MMAEmbolization />
       <SDHMedicalManagement />
