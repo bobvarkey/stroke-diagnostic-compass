@@ -207,16 +207,6 @@ export function PatientSelector({ onSelectPatient, onEnterDemoMode }: PatientSel
               </div>
             </DialogContent>
           </Dialog>
-          {onEnterDemoMode && (
-            <Button 
-              variant="outline" 
-              onClick={onEnterDemoMode}
-              className="flex items-center gap-2 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
-            >
-              <Play className="h-4 w-4" />
-              Demo Mode
-            </Button>
-          )}
         </div>
 
         {/* Patient List */}

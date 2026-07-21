@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ALL_NAV_ITEMS } from "@/lib/navRegistry";
 import heroBrain from "@/assets/hero-brain.jpg";
-import QuickStartDemo from "@/components/QuickStartDemo";
+
 
 export default function Home() {
   const [q, setQ] = useState("");
@@ -110,10 +110,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Demo-first quick start (progressive disclosure) */}
-      <section className="max-w-6xl mx-auto px-4 pb-8">
-        <QuickStartDemo />
-      </section>
 
       {/* Feature cards */}
       <section className="max-w-6xl mx-auto px-4 pb-20 grid md:grid-cols-3 gap-4">
