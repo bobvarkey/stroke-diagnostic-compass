@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthScreen } from "@/components/AuthScreen";
+
 import { PatientSelector } from "@/components/PatientSelector";
 import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
