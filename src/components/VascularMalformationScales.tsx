@@ -162,12 +162,63 @@ export function PHASESScore() {
   const [htn, setHtn] = useState<boolean>(false);
   const [age, setAge] = useState<number | null>(null);
   const [sizePts, setSizePts] = useState<number | null>(null);
+  const [sizeMm, setSizeMm] = useState<string>("");
   const [priorSAH, setPriorSAH] = useState<boolean>(false);
   const [site, setSite] = useState<number | null>(null);
 
-  const score = [population, age, sizePts, site].every((v) => v !== null)
-    ? (population! + (htn ? 1 : 0) + age! + sizePts! + (priorSAH ? 1 : 0) + site!)
-    : null;
+  // Allowed enum values — used as inline safety net so no impossible value ever computes a score.
+  const ALLOWED = {
+    population: [0, 3, 5],
+    age: [0, 1],
+    sizePts: [0, 3, 6, 10],
+    site: [0, 2, 4],
+  } as const;
+
+  const isValid = (val: number | null, allowed: readonly number[]) =>
+    val !== null && allowed.includes(val);
+
+  const fields = [
+    { key: "population", label: "Population (P)", ok: isValid(population, ALLOWED.population) },
+    { key: "age", label: "Age (A)", ok: isValid(age, ALLOWED.age) },
+    { key: "sizePts", label: "Size (S)", ok: isValid(sizePts, ALLOWED.sizePts) },
+    { key: "site", label: "Site (S)", ok: isValid(site, ALLOWED.site) },
+  ];
+  const missing = fields.filter((f) => !f.ok);
+
+  // Free-text size input validation (0.1 – 60 mm plausibility bounds)
+  const sizeMmNum = sizeMm.trim() === "" ? null : Number(sizeMm);
+  const sizeMmError =
+    sizeMm.trim() === ""
+      ? null
+      : Number.isNaN(sizeMmNum!) || sizeMmNum! <= 0
+      ? "Enter a positive number in millimetres."
+      : sizeMmNum! > 60
+      ? "Value looks implausibly large (>60 mm). Please recheck."
+      : null;
+
+  // Auto-derive size band from mm entry, if valid.
+  const derivedSizePts = useMemo(() => {
+    if (sizeMmNum === null || sizeMmError) return null;
+    if (sizeMmNum < 7) return 0;
+    if (sizeMmNum < 10) return 3;
+    if (sizeMmNum < 20) return 6;
+    return 10;
+  }, [sizeMmNum, sizeMmError]);
+
+  const effectiveSizePts = sizeMmNum !== null && !sizeMmError ? derivedSizePts : sizePts;
+
+  const score = useMemo(() => {
+    if (
+      !isValid(population, ALLOWED.population) ||
+      !isValid(age, ALLOWED.age) ||
+      effectiveSizePts === null ||
+      !ALLOWED.sizePts.includes(effectiveSizePts as 0 | 3 | 6 | 10) ||
+      !isValid(site, ALLOWED.site)
+    ) {
+      return null;
+    }
+    return population! + (htn ? 1 : 0) + age! + effectiveSizePts + (priorSAH ? 1 : 0) + site!;
+  }, [population, age, effectiveSizePts, site, htn, priorSAH]);
 
   const risk = (s: number | null) => {
     if (s === null) return null;
@@ -184,6 +235,11 @@ export function PHASESScore() {
     return "≥17.8% (5-year)";
   };
 
+  const reset = () => {
+    setPopulation(null); setHtn(false); setAge(null);
+    setSizePts(null); setSizeMm(""); setPriorSAH(false); setSite(null);
+  };
+
   return (
     <Card className="border-l-4 border-l-purple-500">
       <CardHeader>
@@ -191,10 +247,12 @@ export function PHASESScore() {
           <Calculator className="h-5 w-5" /> PHASES — Aneurysm Rupture Risk (5-year)
         </CardTitle>
         <p className="text-xs text-muted-foreground">Modality: DSA / CTA / MRA · Brain · Vascular. Validated in pooled analysis of 6 prospective cohorts (Greving JP, Lancet Neurol 2014).</p>
+        <p className="text-xs text-muted-foreground">Pick one option in each of the four required fields (P, A, S-size, S-site). Hypertension and Earlier SAH are optional modifiers.</p>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label className="text-sm font-semibold">P — Population</Label>
+          <p className="text-xs text-muted-foreground">Patient's geographic/ethnic cohort — reflects baseline rupture incidence.</p>
           <RadioGroup value={population?.toString() ?? ""} onValueChange={(v) => setPopulation(Number(v))}>
             {[{v:0,l:"North American / European (non-Finnish)"},{v:3,l:"Japanese"},{v:5,l:"Finnish"}].map(o => (
               <div key={o.v} className="flex items-center gap-2"><RadioGroupItem id={`ph-p-${o.v}`} value={o.v.toString()}/><Label htmlFor={`ph-p-${o.v}`} className="text-sm cursor-pointer">{o.l} — {o.v} pt</Label></div>
@@ -204,7 +262,10 @@ export function PHASESScore() {
 
         <div className="flex items-start gap-2">
           <Checkbox id="ph-htn" checked={htn} onCheckedChange={(v) => setHtn(!!v)} />
-          <Label htmlFor="ph-htn" className="text-sm cursor-pointer">H — Hypertension — 1 pt</Label>
+          <div>
+            <Label htmlFor="ph-htn" className="text-sm cursor-pointer">H — Hypertension — 1 pt</Label>
+            <p className="text-xs text-muted-foreground">Known HTN or on antihypertensive therapy.</p>
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -217,7 +278,35 @@ export function PHASESScore() {
 
         <div className="space-y-2">
           <Label className="text-sm font-semibold">S — Size of Aneurysm</Label>
-          <RadioGroup value={sizePts?.toString() ?? ""} onValueChange={(v) => setSizePts(Number(v))}>
+          <p className="text-xs text-muted-foreground">Largest diameter on DSA / CTA / MRA. Enter mm to auto-band, or pick a band directly.</p>
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              inputMode="decimal"
+              min={0.1}
+              max={60}
+              step={0.1}
+              value={sizeMm}
+              onChange={(e) => setSizeMm(e.target.value)}
+              placeholder="e.g. 6.5"
+              aria-invalid={!!sizeMmError}
+              className={`max-w-[140px] h-9 ${sizeMmError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+            />
+            <span className="text-sm text-muted-foreground">mm</span>
+            {derivedSizePts !== null && (
+              <Badge variant="secondary" className="ml-1 text-xs">
+                Auto-band: {derivedSizePts} pt
+              </Badge>
+            )}
+          </div>
+          {sizeMmError && (
+            <p className="text-xs text-destructive flex items-center gap-1"><AlertTriangle className="h-3 w-3" />{sizeMmError}</p>
+          )}
+          <RadioGroup
+            value={(effectiveSizePts ?? "").toString()}
+            onValueChange={(v) => { setSizePts(Number(v)); setSizeMm(""); }}
+            className="pt-1"
+          >
             {[{v:0,l:"< 7.0 mm"},{v:3,l:"7.0 – 9.9 mm"},{v:6,l:"10.0 – 19.9 mm"},{v:10,l:"≥ 20 mm"}].map(o=>(
               <div key={o.v} className="flex items-center gap-2"><RadioGroupItem id={`ph-s-${o.v}`} value={o.v.toString()}/><Label htmlFor={`ph-s-${o.v}`} className="text-sm cursor-pointer">{o.l} — {o.v} pt</Label></div>
             ))}
@@ -226,17 +315,31 @@ export function PHASESScore() {
 
         <div className="flex items-start gap-2">
           <Checkbox id="ph-e" checked={priorSAH} onCheckedChange={(v) => setPriorSAH(!!v)} />
-          <Label htmlFor="ph-e" className="text-sm cursor-pointer">E — Earlier SAH from a different aneurysm — 1 pt</Label>
+          <div>
+            <Label htmlFor="ph-e" className="text-sm cursor-pointer">E — Earlier SAH from a different aneurysm — 1 pt</Label>
+            <p className="text-xs text-muted-foreground">Prior aSAH from a separate, previously treated aneurysm — not the current one.</p>
+          </div>
         </div>
 
         <div className="space-y-2">
           <Label className="text-sm font-semibold">S — Site of Aneurysm</Label>
+          <p className="text-xs text-muted-foreground">Anatomic location of the index aneurysm.</p>
           <RadioGroup value={site?.toString() ?? ""} onValueChange={(v) => setSite(Number(v))}>
             <div className="flex items-center gap-2"><RadioGroupItem id="ph-si-0" value="0"/><Label htmlFor="ph-si-0" className="text-sm cursor-pointer">ICA — 0 pt</Label></div>
             <div className="flex items-center gap-2"><RadioGroupItem id="ph-si-2" value="2"/><Label htmlFor="ph-si-2" className="text-sm cursor-pointer">MCA — 2 pt</Label></div>
             <div className="flex items-center gap-2"><RadioGroupItem id="ph-si-4" value="4"/><Label htmlFor="ph-si-4" className="text-sm cursor-pointer">ACA / PCom / Posterior circulation — 4 pt</Label></div>
           </RadioGroup>
         </div>
+
+        {score === null && missing.length > 0 && (
+          <div className="rounded-md border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30 p-3 text-xs flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <strong>Complete to see the score:</strong>{" "}
+              {missing.map((m) => m.label).join(" · ")}
+            </div>
+          </div>
+        )}
 
         {score !== null && (
           <div className="rounded-lg border-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 p-4 space-y-1">
@@ -247,6 +350,11 @@ export function PHASESScore() {
             <p className="text-sm"><strong>Estimated 5-year rupture risk:</strong> {risk(score)}</p>
           </div>
         )}
+
+        <div className="flex justify-end">
+          <Button variant="ghost" size="sm" onClick={reset} className="text-xs">Reset</Button>
+        </div>
+
         <p className="text-xs text-muted-foreground border-t pt-2">Reference: Greving JP, et al. Lancet Neurol 2014;13(1):59–66.</p>
       </CardContent>
     </Card>
