@@ -5668,7 +5668,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   );
 
   const isDemo = !patient || patient.id === "demo-patient-001";
-  const { status: saveStatus, lastSaved } = useWorkupAutosave({
+  const { status: saveStatus, lastSaved, saveNow } = useWorkupAutosave({
     patientId: hydrationKey,
     snapshot,
     disableRemote: isDemo || !onPatientDataChange,
