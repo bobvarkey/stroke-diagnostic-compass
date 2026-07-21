@@ -53,8 +53,8 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
-  const [isDemoMode, setIsDemoMode] = useState(true);
-  const [showLandingPage, setShowLandingPage] = useState(true);
+  const isDemoMode = false;
+  const [showLandingPage] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
