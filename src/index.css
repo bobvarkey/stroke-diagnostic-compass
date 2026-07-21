@@ -9,67 +9,75 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+    /* Sunset Blaze palette: coral → amber → magenta → violet */
+    --background: 240 20% 5%;
+    --foreground: 30 20% 96%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 100%;
+    --card: 260 25% 9%;
+    --card-foreground: 30 20% 96%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 260 25% 9%;
+    --popover-foreground: 30 20% 96%;
 
-    --primary: 217 91% 60%;
+    --primary: 14 100% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 40% 18%;
-    --secondary-foreground: 270 60% 85%;
+    --secondary: 253 68% 60%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 85%;
+    --muted: 260 15% 15%;
+    --muted-foreground: 30 15% 78%;
 
-    --accent: 190 50% 20%;
-    --accent-foreground: 190 80% 80%;
+    --accent: 336 78% 58%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 217 91% 60%;
+    --border: 260 20% 18%;
+    --input: 260 20% 14%;
+    --ring: 14 100% 60%;
 
-    --medical-header: 217 91% 60%;
-    --medical-section: 0 0% 10%;
+    --medical-header: 14 100% 60%;
+    --medical-section: 260 25% 10%;
     --medical-complete: 142 71% 50%;
-    --medical-pending: 38 92% 55%;
+    --medical-pending: 32 95% 55%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    --glass-bg: 0 0% 10% / 0.8;
-    --glass-border: 0 0% 100% / 0.1;
-    --glass-shadow: 217 91% 60% / 0.15;
-    --glass-blur: 16px;
+    --glass-bg: 260 25% 10% / 0.72;
+    --glass-border: 30 100% 70% / 0.14;
+    --glass-shadow: 14 100% 55% / 0.22;
+    --glass-blur: 18px;
 
-    --accent-blue: 217 91% 65%;
-    --accent-purple: 270 70% 65%;
-    --accent-pink: 330 80% 65%;
+    --accent-blue: 253 68% 65%;
+    --accent-purple: 253 68% 60%;
+    --accent-pink: 336 78% 60%;
     --accent-teal: 175 70% 50%;
-    --accent-amber: 38 92% 55%;
+    --accent-amber: 32 95% 55%;
     --accent-emerald: 160 84% 50%;
-    --accent-rose: 350 89% 65%;
+    --accent-rose: 14 100% 62%;
+    --accent-coral: 14 100% 60%;
+    --accent-magenta: 336 78% 58%;
+    --accent-violet: 253 68% 60%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(270 70% 60%));
-    --gradient-warm: linear-gradient(135deg, hsl(330 80% 60%), hsl(38 92% 55%));
-    --gradient-cool: linear-gradient(135deg, hsl(175 70% 50%), hsl(217 91% 60%));
-    --gradient-surface: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 12%));
+    --gradient-sunset: linear-gradient(135deg, hsl(14 100% 60%) 0%, hsl(32 95% 55%) 33%, hsl(336 78% 58%) 66%, hsl(253 68% 60%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(14 100% 60%), hsl(336 78% 58%));
+    --gradient-warm: linear-gradient(135deg, hsl(14 100% 60%), hsl(32 95% 55%));
+    --gradient-cool: linear-gradient(135deg, hsl(336 78% 58%), hsl(253 68% 60%));
+    --gradient-surface: linear-gradient(135deg, hsl(240 30% 5%), hsl(260 30% 10%));
 
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 217 91% 65%;
+    --shadow-glow: 0 0 40px hsl(14 100% 60% / 0.35), 0 0 80px hsl(336 78% 58% / 0.25);
+    --shadow-glow-violet: 0 0 40px hsl(253 68% 60% / 0.4);
+
+    --sidebar-background: 260 30% 7%;
+    --sidebar-foreground: 30 20% 92%;
+    --sidebar-primary: 14 100% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 40% 20%;
-    --sidebar-accent-foreground: 270 60% 85%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 217 91% 65%;
+    --sidebar-accent: 260 25% 14%;
+    --sidebar-accent-foreground: 30 20% 96%;
+    --sidebar-border: 260 20% 16%;
+    --sidebar-ring: 14 100% 62%;
   }
 
   .dark {
@@ -203,30 +211,51 @@
   }
 
   .bg-orb-1 {
-    width: 400px;
-    height: 400px;
-    background: hsl(var(--accent-blue));
-    top: -100px;
-    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: hsl(var(--accent-coral));
+    top: -120px;
+    right: -120px;
+    opacity: 0.28;
     animation: float-orb 20s ease-in-out infinite;
   }
 
   .bg-orb-2 {
-    width: 350px;
-    height: 350px;
-    background: hsl(var(--accent-purple));
-    bottom: -80px;
-    left: -80px;
+    width: 420px;
+    height: 420px;
+    background: hsl(var(--accent-magenta));
+    bottom: -100px;
+    left: -100px;
+    opacity: 0.24;
     animation: float-orb 25s ease-in-out infinite reverse;
   }
 
   .bg-orb-3 {
-    width: 300px;
-    height: 300px;
-    background: hsl(var(--accent-teal));
+    width: 360px;
+    height: 360px;
+    background: hsl(var(--accent-violet));
     top: 40%;
     left: 30%;
+    opacity: 0.2;
     animation: float-orb 30s ease-in-out infinite;
+  }
+
+  .bg-gradient-sunset { background: var(--gradient-sunset); }
+  .text-gradient-sunset {
+    background: var(--gradient-sunset);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-glow-violet { box-shadow: var(--shadow-glow-violet); }
+
+  body[data-sidebar-search="active"] [data-sidebar="inset"] main {
+    filter: blur(6px);
+    transition: filter 0.2s ease;
+    pointer-events: none;
+    user-select: none;
   }
 }
 
