@@ -124,44 +124,19 @@ const Index = () => {
   const handleReturnToPatientList = () => {
     setSelectedPatient(null);
     setPatientData({});
-    setIsDemoMode(false);
   };
 
   const handleSignOut = async () => {
-    if (isDemoMode) {
-      setIsDemoMode(false);
-      setSelectedPatient(null);
-      setPatientData({});
-      toast({ title: 'Demo ended', description: 'Exited demonstration mode' });
-      return;
-    }
     await signOut();
     setSelectedPatient(null);
     setPatientData({});
     toast({ title: 'Signed out', description: 'You have been logged out' });
   };
 
-  const handleEnterDemoMode = () => {
-    setIsDemoMode(true);
-    setSelectedPatient(DEMO_PATIENT);
-    setPatientData({});
-    setShowLandingPage(false);
-    toast({
-      title: 'Demo Mode Active',
-      description: 'Exploring with sample patient data. Changes will not be saved.'
-    });
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSkipToApp = () => {
-    setIsDemoMode(true);
-    setSelectedPatient(DEMO_PATIENT);
-    setPatientData({});
-    setShowLandingPage(false);
-  };
 
   // Show loading state
   if (loading) {
