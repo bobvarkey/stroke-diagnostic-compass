@@ -5705,8 +5705,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
         {/* Ischemic Stroke Tab Content */}
         <TabsContent value="ischemic" className="space-y-0">
           {/* Sticky Section Quick-Jump Bar */}
-          <div className="sticky top-14 z-30 bg-black/95 border-b border-slate-700 px-4 py-3 mb-6 backdrop-blur-xl overflow-x-auto">
-            <div className="flex gap-2 text-sm">
+          <div className="sticky top-[68px] z-30 bg-background/90 border border-border/50 rounded-xl px-3 py-2.5 mb-6 backdrop-blur-xl overflow-x-auto shadow-sm">
+            <div className="flex gap-1.5 text-sm">
               {[
                 { id: "treatment-recommender", label: "Treatment" },
                 { id: "stroke-code", label: "Code" },
@@ -5726,10 +5726,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                     setActiveSectionId(section.id);
                     document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all font-medium text-base ${
+                  className={`px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all text-[13px] font-semibold tracking-tight ${
                     activeSectionId === section.id
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/50"
-                      : "bg-slate-800 text-gray-300 hover:bg-slate-700"
+                      ? "bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-md shadow-blue-500/40"
+                      : "bg-muted/60 text-foreground/70 hover:text-foreground hover:bg-muted"
                   }`}
                 >
                   {section.label}
