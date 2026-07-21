@@ -30,16 +30,16 @@ interface Patient {
   updated_at: string;
 }
 
-// Demo patient for demonstration mode
-const DEMO_PATIENT: Patient = {
-  id: "demo-patient-001",
-  patient_id: "DEMO-001",
-  name: "Demo Patient",
+// Default in-memory patient (not persisted until saved)
+const DEFAULT_PATIENT: Patient = {
+  id: "local-patient",
+  patient_id: "",
+  name: "",
   weight: 70,
   age: 65,
   sex: "M",
-  last_known_well: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-  demographics: { mrn: "DEMO-001", chief_complaint: "Left-sided weakness" },
+  last_known_well: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  demographics: {},
   clinical_data: {},
   created_by: null,
   last_edited_by: null,
@@ -53,7 +53,7 @@ const Index = () => {
   const [searchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<string>("");
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEFAULT_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
 
   // Auto-scroll to ?section= from Home / Calculators links
@@ -103,7 +103,7 @@ const Index = () => {
 
   // Auto-save patient data when it changes
   const savePatientData = useCallback(async (data: Record<string, unknown>) => {
-    if (!selectedPatient || !user || selectedPatient.id === DEMO_PATIENT.id) return;
+    if (!selectedPatient || !user || selectedPatient.id === DEFAULT_PATIENT.id) return;
     
     try {
       const { error } = await supabase

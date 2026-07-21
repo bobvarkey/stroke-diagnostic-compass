@@ -204,30 +204,6 @@ export function AuthScreen({ onEnterDemoMode, onSkipToApp }: AuthScreenProps) {
             </button>
           </div>
 
-          {/* Demo Mode Divider */}
-          {onEnterDemoMode && (
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-700" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-slate-950 px-2 text-slate-500">or</span>
-              </div>
-            </div>
-          )}
-
-          {/* Demo Mode Button */}
-          {onEnterDemoMode && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onEnterDemoMode}
-              className="w-full h-12 border-2 border-accent-teal/50 hover:border-accent-teal text-emerald-400 hover:text-emerald-300 hover:bg-accent-teal/10 font-medium tracking-wide rounded-xl transition-all duration-200"
-            >
-              <Play className="h-4 w-4 mr-2" />
-              Try Demo Mode
-            </Button>
-          )}
 
           {/* Skip to App Button */}
           {onSkipToApp && (

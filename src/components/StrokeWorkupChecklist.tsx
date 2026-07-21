@@ -16,7 +16,7 @@ import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
 
 import DemographicsForm from "./DemographicsForm";
-import PDFScoreSummary from "./PDFScoreSummary";
+
 import WorkupExportButton from "./WorkupExportButton";
 import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
 import InteractivePcASPECTSCalculator from "./InteractivePcASPECTSCalculator";
@@ -5847,8 +5847,6 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <DemographicsForm demographics={demographics} onDemographicsChange={setDemographics} />
 
 
-          {/* PDF Score Summary */}
-          <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />
 
           {/* Treatment Pathway Recommender */}
           <LazySection id="treatment-recommender">
