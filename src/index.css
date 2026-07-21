@@ -573,3 +573,69 @@ html {
          .badge:not([class*="text-"])) {
   color: hsl(222 47% 8%);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   READABILITY GUARANTEE — override explicit low-contrast text
+   utilities when their ancestor uses a light background. Uses
+   two class selectors for higher specificity so it beats plain
+   `text-slate-400` / `text-white`, but is still scoped only to
+   light-surface subtrees.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* All light surface containers */
+.bg-white [class*="text-white"],
+[class*="bg-slate-50"] [class*="text-white"], [class*="bg-slate-100"] [class*="text-white"], [class*="bg-slate-200"] [class*="text-white"],
+[class*="bg-gray-50"]  [class*="text-white"], [class*="bg-gray-100"]  [class*="text-white"], [class*="bg-gray-200"]  [class*="text-white"],
+[class*="bg-zinc-50"]  [class*="text-white"], [class*="bg-zinc-100"]  [class*="text-white"], [class*="bg-zinc-200"]  [class*="text-white"],
+[class*="bg-neutral-50"] [class*="text-white"], [class*="bg-neutral-100"] [class*="text-white"],
+[class*="bg-stone-50"] [class*="text-white"], [class*="bg-stone-100"] [class*="text-white"],
+.bg-white [class*="text-slate-3"], .bg-white [class*="text-slate-4"], .bg-white [class*="text-slate-5"],
+.bg-white [class*="text-gray-3"],  .bg-white [class*="text-gray-4"],  .bg-white [class*="text-gray-5"],
+.bg-white [class*="text-zinc-3"],  .bg-white [class*="text-zinc-4"],  .bg-white [class*="text-zinc-5"],
+.bg-white [class*="text-neutral-3"], .bg-white [class*="text-neutral-4"], .bg-white [class*="text-neutral-5"],
+[class*="bg-slate-50"]  [class*="text-slate-3"], [class*="bg-slate-50"]  [class*="text-slate-4"], [class*="bg-slate-50"]  [class*="text-slate-5"],
+[class*="bg-slate-100"] [class*="text-slate-3"], [class*="bg-slate-100"] [class*="text-slate-4"], [class*="bg-slate-100"] [class*="text-slate-5"],
+[class*="bg-slate-200"] [class*="text-slate-3"], [class*="bg-slate-200"] [class*="text-slate-4"], [class*="bg-slate-200"] [class*="text-slate-5"],
+[class*="bg-gray-50"]  [class*="text-gray-3"], [class*="bg-gray-50"]  [class*="text-gray-4"], [class*="bg-gray-50"]  [class*="text-gray-5"],
+[class*="bg-gray-100"] [class*="text-gray-3"], [class*="bg-gray-100"] [class*="text-gray-4"], [class*="bg-gray-100"] [class*="text-gray-5"],
+[class*="bg-gray-200"] [class*="text-gray-3"], [class*="bg-gray-200"] [class*="text-gray-4"], [class*="bg-gray-200"] [class*="text-gray-5"],
+/* pastel tinted backgrounds — same treatment */
+[class*="bg-amber-50"]  [class*="text-slate-3"], [class*="bg-amber-50"]  [class*="text-slate-4"], [class*="bg-amber-50"]  [class*="text-slate-5"],
+[class*="bg-amber-100"] [class*="text-slate-3"], [class*="bg-amber-100"] [class*="text-slate-4"], [class*="bg-amber-100"] [class*="text-slate-5"],
+[class*="bg-yellow-50"] [class*="text-slate-3"], [class*="bg-yellow-100"][class*="text-slate-3"],
+[class*="bg-blue-50"]   [class*="text-slate-3"], [class*="bg-blue-50"]   [class*="text-slate-4"], [class*="bg-blue-50"]   [class*="text-slate-5"],
+[class*="bg-blue-100"]  [class*="text-slate-3"], [class*="bg-blue-100"]  [class*="text-slate-4"], [class*="bg-blue-100"]  [class*="text-slate-5"],
+[class*="bg-emerald-50"][class*="text-slate-3"], [class*="bg-emerald-50"][class*="text-slate-4"], [class*="bg-emerald-50"][class*="text-slate-5"],
+[class*="bg-green-50"]  [class*="text-slate-3"], [class*="bg-green-50"]  [class*="text-slate-4"], [class*="bg-green-50"]  [class*="text-slate-5"],
+[class*="bg-red-50"]    [class*="text-slate-3"], [class*="bg-red-50"]    [class*="text-slate-4"], [class*="bg-red-50"]    [class*="text-slate-5"],
+[class*="bg-rose-50"]   [class*="text-slate-3"], [class*="bg-rose-50"]   [class*="text-slate-4"], [class*="bg-rose-50"]   [class*="text-slate-5"],
+[class*="bg-purple-50"] [class*="text-slate-3"], [class*="bg-purple-50"] [class*="text-slate-4"], [class*="bg-purple-50"] [class*="text-slate-5"],
+[class*="bg-violet-50"] [class*="text-slate-3"], [class*="bg-violet-50"] [class*="text-slate-4"], [class*="bg-violet-50"] [class*="text-slate-5"],
+[class*="bg-indigo-50"] [class*="text-slate-3"], [class*="bg-indigo-50"] [class*="text-slate-4"], [class*="bg-indigo-50"] [class*="text-slate-5"],
+[class*="bg-sky-50"]    [class*="text-slate-3"], [class*="bg-sky-50"]    [class*="text-slate-4"], [class*="bg-sky-50"]    [class*="text-slate-5"],
+[class*="bg-teal-50"]   [class*="text-slate-3"], [class*="bg-teal-50"]   [class*="text-slate-4"], [class*="bg-teal-50"]   [class*="text-slate-5"],
+[class*="bg-cyan-50"]   [class*="text-slate-3"], [class*="bg-cyan-50"]   [class*="text-slate-4"], [class*="bg-cyan-50"]   [class*="text-slate-5"],
+[class*="bg-pink-50"]   [class*="text-slate-3"], [class*="bg-pink-50"]   [class*="text-slate-4"], [class*="bg-pink-50"]   [class*="text-slate-5"],
+[class*="bg-fuchsia-50"][class*="text-slate-3"], [class*="bg-fuchsia-50"][class*="text-slate-4"], [class*="bg-fuchsia-50"][class*="text-slate-5"],
+[class*="bg-orange-50"] [class*="text-slate-3"], [class*="bg-orange-50"] [class*="text-slate-4"], [class*="bg-orange-50"] [class*="text-slate-5"] {
+  color: hsl(222 47% 12%) !important;
+}
+
+/* Muted foreground on any light surface — bump to readable slate-700 */
+.bg-white .text-muted-foreground,
+[class*="bg-white"] .text-muted-foreground,
+[class*="bg-slate-50"]  .text-muted-foreground, [class*="bg-slate-100"] .text-muted-foreground, [class*="bg-slate-200"] .text-muted-foreground,
+[class*="bg-gray-50"]   .text-muted-foreground, [class*="bg-gray-100"]  .text-muted-foreground, [class*="bg-gray-200"]  .text-muted-foreground,
+[class*="bg-zinc-50"]   .text-muted-foreground, [class*="bg-zinc-100"]  .text-muted-foreground, [class*="bg-zinc-200"]  .text-muted-foreground,
+[class*="bg-neutral-50"] .text-muted-foreground, [class*="bg-neutral-100"] .text-muted-foreground,
+[class*="bg-stone-50"]  .text-muted-foreground, [class*="bg-stone-100"] .text-muted-foreground,
+[class*="bg-amber-50"]  .text-muted-foreground, [class*="bg-amber-100"] .text-muted-foreground,
+[class*="bg-yellow-50"] .text-muted-foreground, [class*="bg-blue-50"]   .text-muted-foreground, [class*="bg-blue-100"]  .text-muted-foreground,
+[class*="bg-emerald-50"] .text-muted-foreground, [class*="bg-green-50"] .text-muted-foreground,
+[class*="bg-red-50"]    .text-muted-foreground, [class*="bg-rose-50"]   .text-muted-foreground,
+[class*="bg-purple-50"] .text-muted-foreground, [class*="bg-violet-50"] .text-muted-foreground, [class*="bg-indigo-50"] .text-muted-foreground,
+[class*="bg-sky-50"]    .text-muted-foreground, [class*="bg-teal-50"]   .text-muted-foreground, [class*="bg-cyan-50"] .text-muted-foreground,
+[class*="bg-pink-50"]   .text-muted-foreground, [class*="bg-fuchsia-50"] .text-muted-foreground, [class*="bg-orange-50"] .text-muted-foreground {
+  color: hsl(222 30% 25%) !important;
+}
+
