@@ -1704,6 +1704,154 @@ function SDHSeizureProphylaxis() {
   );
 }
 
+// ─── Monitoring & Repeat Imaging Protocol ──────────────────────────────────
+
+function SDHMonitoringImagingProtocol() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const neuroChecks: Array<{ phase: string; freq: string; setting: string; color: string }> = [
+    { phase: "First 2 h post-arrival / post-op", freq: "GCS + pupils + focal exam q15 min", setting: "ED / PACU / Neuro-ICU", color: "border-red-400 bg-red-50 dark:bg-red-950/20" },
+    { phase: "Hours 2–6", freq: "q30 min", setting: "Neuro-ICU / step-down", color: "border-orange-400 bg-orange-50 dark:bg-orange-950/20" },
+    { phase: "Hours 6–24", freq: "q1 h", setting: "Neuro-ICU", color: "border-amber-400 bg-amber-50 dark:bg-amber-950/20" },
+    { phase: "Day 2–3 (stable)", freq: "q2 h", setting: "Step-down", color: "border-yellow-400 bg-yellow-50 dark:bg-yellow-950/20" },
+    { phase: "Day 3+ (stable ward)", freq: "q4 h", setting: "Ward", color: "border-green-400 bg-green-50 dark:bg-green-950/20" },
+    { phase: "cSDH post-burr-hole", freq: "q1 h ×6 h → q2 h ×18 h → q4 h", setting: "Step-down", color: "border-teal-400 bg-teal-50 dark:bg-teal-950/20" },
+    { phase: "Post-MMA embolization", freq: "q1 h ×6 h → q2 h ×18 h", setting: "Step-down / ward", color: "border-cyan-400 bg-cyan-50 dark:bg-cyan-950/20" },
+  ];
+
+  const imaging: Array<{ scenario: string; timing: string; modality: string; rationale: string }> = [
+    { scenario: "All acute SDH — baseline", timing: "On arrival", modality: "NCCT head", rationale: "Establish thickness, MLS, associated contusion/SAH/EDH." },
+    { scenario: "Acute SDH — routine surveillance", timing: "6 h & 24 h", modality: "NCCT head", rationale: "70% of hematoma expansion occurs within 6 h; 90% within 24 h." },
+    { scenario: "Any GCS drop ≥2, new pupil change, focal deficit, or seizure", timing: "STAT", modality: "NCCT head", rationale: "Rule out expansion, MLS progression, herniation." },
+    { scenario: "On anticoagulant/antiplatelet or coagulopathy", timing: "6 h + 24 h + 48–72 h", modality: "NCCT head", rationale: "Delayed expansion risk persists 24–72 h even after reversal." },
+    { scenario: "Suspected underlying vascular lesion (young, atypical location, no trauma, SAH with SDH)", timing: "Within 24 h", modality: "CTA head/neck", rationale: "Exclude aneurysm, AVM, dAVF, cortical vein thrombosis." },
+    { scenario: "Non-accidental trauma / equivocal age of SDH", timing: "Within 48–72 h", modality: "MRI brain (SWI + DWI + T1/T2)", rationale: "Dates hematoma (Hb evolution), reveals DAI, small contusions, ischemia missed on CT." },
+    { scenario: "Post-operative craniotomy / burr-hole", timing: "Within 24 h post-op (routine)", modality: "NCCT head", rationale: "Baseline residual, pneumocephalus, re-accumulation, ipsilateral or contralateral new bleed (2–5%)." },
+    { scenario: "Post-op deterioration", timing: "STAT", modality: "NCCT head", rationale: "Recurrence, tension pneumocephalus, contralateral SDH, malignant swelling." },
+    { scenario: "cSDH — pre-discharge check", timing: "Day 3–5 post-op", modality: "NCCT head", rationale: "Document residual thickness/MLS; baseline for outpatient comparison." },
+    { scenario: "cSDH follow-up (asymptomatic)", timing: "2–4 wk, 6–8 wk, 3 mo", modality: "NCCT (or MRI if renal-sparing needed)", rationale: "Detect re-accumulation (10–20%); most recurrences within 6 wk." },
+    { scenario: "Post-MMA embolization", timing: "24–48 h, then 6 wk, 3 mo, 6 mo", modality: "NCCT (MRI at 6 mo optional)", rationale: "MMA effect is gradual; expect ~50% volume reduction by 3 mo (EMBOLISE, STEM, MAGIC-MT)." },
+    { scenario: "SDH with SAH or thunderclap headache", timing: "Within 24 h", modality: "CTA ± DSA", rationale: "Rule out ruptured aneurysm (esp. convexity SAH pattern)." },
+    { scenario: "Persistent unexplained deficit with normal CT", timing: "48–72 h", modality: "MRI brain + MRV", rationale: "Detect cortical vein thrombosis, small strokes, or seizure-related changes." },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-sky-400 dark:border-sky-600 bg-gradient-to-br from-sky-50 dark:from-sky-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-sky-100/50 dark:bg-sky-900/30">
+            <CardTitle className="flex items-center justify-between text-sky-800 dark:text-sky-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                <span>Monitoring &amp; Repeat Imaging Protocol</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-5">
+            {/* Neuro checks */}
+            <div>
+              <h4 className="font-semibold text-sky-800 dark:text-sky-300 text-sm mb-3 flex items-center gap-2">
+                <Brain className="h-4 w-4" /> Neuro Check Cadence (GCS + pupils + focal exam)
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {neuroChecks.map((n) => (
+                  <div key={n.phase} className={`p-2.5 rounded-md border-2 ${n.color}`}>
+                    <div className="font-semibold text-xs text-slate-900 dark:text-slate-100">{n.phase}</div>
+                    <div className="text-xs mt-0.5"><strong>Frequency:</strong> {n.freq}</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">Setting: {n.setting}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Vital & ICP thresholds */}
+            <div className="p-3 rounded-lg border-2 border-rose-400 bg-rose-50 dark:bg-rose-950/20">
+              <h5 className="font-semibold text-rose-800 dark:text-rose-300 text-sm mb-2 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" /> Physiologic Targets &amp; Trigger Points
+              </h5>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
+                <ul className="space-y-1">
+                  <li>• <strong>SBP:</strong> 140–160 mmHg (avoid &lt;110); MAP ≥80</li>
+                  <li>• <strong>ICP:</strong> &lt;22 mmHg; CPP 60–70 mmHg</li>
+                  <li>• <strong>SpO₂:</strong> ≥94%; PaO₂ &gt;80 mmHg</li>
+                  <li>• <strong>PaCO₂:</strong> 35–40 mmHg (transient 30–35 for herniation)</li>
+                </ul>
+                <ul className="space-y-1">
+                  <li>• <strong>Temp:</strong> normothermia 36–37.5 °C</li>
+                  <li>• <strong>Glucose:</strong> 140–180 mg/dL</li>
+                  <li>• <strong>Na⁺:</strong> 140–145 (target 145–155 if ICP↑)</li>
+                  <li>• <strong>Platelets:</strong> &gt;100K; INR ≤1.4; fibrinogen &gt;150</li>
+                </ul>
+              </div>
+              <div className="mt-2 text-xs text-rose-800 dark:text-rose-200">
+                <strong>STAT re-image + neurosurgery call for any of:</strong> GCS ↓ ≥2, new pupil asymmetry &gt;1 mm, new focal deficit, seizure, Cushing triad (HTN + bradycardia + irregular respiration), sustained ICP &gt;22 for &gt;5 min.
+              </div>
+            </div>
+
+            {/* Imaging */}
+            <div>
+              <h4 className="font-semibold text-sky-800 dark:text-sky-300 text-sm mb-3 flex items-center gap-2">
+                <Target className="h-4 w-4" /> Repeat Imaging — NCCT / CTA / MRI
+              </h4>
+              <div className="space-y-2">
+                {imaging.map((i) => (
+                  <div key={i.scenario} className="p-3 rounded-lg border border-sky-200 dark:border-sky-800 bg-white dark:bg-slate-900/50">
+                    <div className="flex items-start justify-between gap-2 flex-wrap">
+                      <div className="font-semibold text-xs text-slate-900 dark:text-slate-100">{i.scenario}</div>
+                      <div className="flex gap-1 flex-wrap">
+                        <Badge variant="outline" className="text-[10px]">{i.timing}</Badge>
+                        <Badge className="bg-sky-600 text-white text-[10px]">{i.modality}</Badge>
+                      </div>
+                    </div>
+                    <div className="text-[11px] text-muted-foreground mt-1">{i.rationale}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Modality choice */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                <div className="font-semibold text-sm">NCCT (workhorse)</div>
+                <p className="text-xs text-muted-foreground mt-1">Fast, detects fresh blood &amp; MLS, easy in unstable patients. Preferred for all surveillance scans within first 72 h.</p>
+              </div>
+              <div className="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                <div className="font-semibold text-sm">CTA</div>
+                <p className="text-xs text-muted-foreground mt-1">When SDH is atypical (young, no trauma, cortical SAH, isolated convexity SAH) — rules out aneurysm, AVM, dAVF. Also for MMA embolization planning.</p>
+              </div>
+              <div className="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                <div className="font-semibold text-sm">MRI (SWI, DWI, MRV)</div>
+                <p className="text-xs text-muted-foreground mt-1">Ages hematoma, detects DAI, small contusions, ischemia, cortical vein thrombosis; useful when CT is negative but exam abnormal, or for pediatric / NAT workup.</p>
+              </div>
+            </div>
+
+            {/* Discharge & outpatient */}
+            <div className="p-3 rounded-lg border-2 border-emerald-400 bg-emerald-50 dark:bg-emerald-950/20">
+              <h5 className="font-semibold text-emerald-800 dark:text-emerald-300 text-sm mb-2 flex items-center gap-2">
+                <ArrowRight className="h-4 w-4" /> Discharge &amp; Outpatient Follow-up
+              </h5>
+              <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                <li>• Acute SDH (non-op, stable): repeat NCCT at <strong>2 wk</strong> and <strong>6 wk</strong>; sooner if new symptoms.</li>
+                <li>• Post-craniotomy: clinic + NCCT at <strong>2 wk</strong>, <strong>6 wk</strong>, <strong>3 mo</strong>.</li>
+                <li>• Post-burr-hole cSDH: clinic + NCCT at <strong>2–4 wk</strong>, <strong>6–8 wk</strong>, <strong>3 mo</strong>; MRI if persistent residual to plan revision vs MMA rescue.</li>
+                <li>• Post-MMA: NCCT at <strong>6 wk</strong>, <strong>3 mo</strong>, <strong>6 mo</strong> (volume trajectory).</li>
+                <li>• Anticoagulation resumption discussed at <strong>4–8 wk</strong> (per indication, CHA₂DS₂-VASc vs bleed risk); document shared decision-making.</li>
+                <li>• Safe-return-to-activity: driving after clinician clearance + seizure-free period per local law; contact sports typically deferred ≥6 mo.</li>
+              </ul>
+              <p className="text-[11px] text-muted-foreground italic mt-2">
+                Refs: BTF 4th ed 2016 · Neurocritical Care Society SDH monitoring · AANS/CNS acute SDH guidelines · EMBOLISE, STEM, MAGIC-MT (MMA embolization) · Bullock 2006 acute SDH surgical guidelines.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function SubduralHematoma() {
   return (
     <div className="space-y-4">
@@ -1731,6 +1879,7 @@ export default function SubduralHematoma() {
       <SDHTreatmentIndications />
       <SDHReversalChecklist />
       <SDHSeizureProphylaxis />
+      <SDHMonitoringImagingProtocol />
       <SDHSurgicalOptions />
       <MMAEmbolization />
       <SDHMedicalManagement />
