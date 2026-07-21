@@ -45,6 +45,7 @@ import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
+import VascularMalformationScales from "./VascularMalformationScales";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
@@ -6086,6 +6087,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "acute-ich", label: "Acute ICH Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
               { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "func-score", label: "FUNC Score", icon: <BarChart3 className="h-3.5 w-3.5 text-blue-500" /> },
+              { id: "vascular-malformations", label: "AVM / Aneurysm / dAVF Scores", icon: <Activity className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "sah-grading", label: "SAH Grading Scales", icon: <Activity className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "fisher-scale", label: "Fisher Scale", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
               { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
@@ -6106,6 +6108,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           {/* FUNC Score Calculator */}
           <FUNCScoreCalculator />
+
+          {/* Vascular Malformations & Aneurysm Risk Scores */}
+          <VascularMalformationScales />
 
           {/* SAH Grading Scales */}
           <SAHGradingScales />
