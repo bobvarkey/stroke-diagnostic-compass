@@ -5757,6 +5757,30 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             if (sectionId) setActiveSectionId(sectionId);
           }}
         />
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={expandAll}
+            className="h-7 px-3 text-xs gap-1.5"
+            title="Open every collapsible section on this page"
+          >
+            <ChevronsUpDown className="h-3.5 w-3.5" />
+            Expand all
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={collapseAll}
+            className="h-7 px-3 text-xs gap-1.5"
+            title="Collapse every section on this page"
+          >
+            <ChevronsDownUp className="h-3.5 w-3.5" />
+            Collapse all
+          </Button>
+        </div>
       </div>
 
       {/* Main Category Tabs */}
