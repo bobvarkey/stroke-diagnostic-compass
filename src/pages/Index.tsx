@@ -7,11 +7,11 @@ import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, Users, LogOut, Shield, Play } from "lucide-react";
+import { ChevronUp, Users, LogOut, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Json } from "@/integrations/supabase/types";
-import { LandingPage } from "@/components/LandingPage";
+
 
 interface Patient {
   id: string;
