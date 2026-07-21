@@ -130,7 +130,7 @@ export function PatientSelector({ onSelectPatient, onEnterDemoMode }: PatientSel
               <Users className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">StrokeSuite</h1>
+              <h1 className="text-2xl font-bold">Stroke Complete 2026</h1>
               <p className="text-sm text-muted-foreground">Patient Management</p>
             </div>
           </div>
