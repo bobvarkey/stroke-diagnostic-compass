@@ -3,5 +3,4 @@ project_id = "mudqzllcgiyivtlycrms"
 [functions.stroke-code-caller]
 verify_jwt = false
 
-[functions.analyze-document]
-verify_jwt = false
+
