@@ -236,9 +236,11 @@ const Index = () => {
             <div className="h-[2px] bg-gradient-sunset opacity-70" />
           </header>
           <main className="flex-1 relative">
-            <StrokeWorkupChecklist 
+            <StrokeWorkupChecklist
               patient={selectedPatient}
-              onPatientDataChange={setPatientData}
+              onPatientDataChange={(partial) =>
+                setPatientData((prev) => ({ ...prev, ...partial }))
+              }
             />
           </main>
         </SidebarInset>

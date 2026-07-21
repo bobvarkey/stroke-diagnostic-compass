@@ -1,4 +1,6 @@
-import React, { useState, useRef, useCallback, memo } from "react";
+import React, { useState, useRef, useCallback, useEffect, useMemo, memo } from "react";
+import { Cloud, CloudOff, Loader2, Check } from "lucide-react";
+import { useWorkupAutosave, loadWorkupSnapshot, type WorkupSnapshot } from "@/hooks/useWorkupAutosave";
 import LazySection from "./LazySection";
 import StrokeMedicationsFormulary from "./StrokeMedicationsFormulary";
 import GlobalAppSearch from "./GlobalAppSearch";
@@ -5606,21 +5608,74 @@ interface StrokeWorkupChecklistProps {
 }
 
 export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: StrokeWorkupChecklistProps) {
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
-  const [strokeHistoryFactors, setStrokeHistoryFactors] = useState<Record<string, boolean>>({});
-  const [activeTab, setActiveTab] = useState("ischemic");
-  const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({
-    patientId: patient?.patient_id || "",
-    name: patient?.name || undefined,
-    age: patient?.age?.toString() || undefined,
-    sex: patient?.sex || undefined,
-    lastKnownWell: patient?.last_known_well ? patient.last_known_well.slice(0, 16) : undefined,
-  });
-  const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
+  // ---- Hydrate initial state from (1) patient.clinical_data.workup, then (2) localStorage
+  const hydrationKey = patient?.id || patient?.patient_id || "default";
+  const remoteSnapshot = useMemo<WorkupSnapshot | null>(() => {
+    const raw = (patient?.clinical_data as Record<string, unknown> | undefined)?.workup;
+    return raw && typeof raw === "object" ? (raw as WorkupSnapshot) : null;
+  }, [patient?.id]);
+  const localSnapshot = useMemo(() => loadWorkupSnapshot(hydrationKey), [hydrationKey]);
+  // Prefer whichever snapshot was saved most recently
+  const initial: WorkupSnapshot | null = useMemo(() => {
+    if (remoteSnapshot && localSnapshot) {
+      return new Date(remoteSnapshot.savedAt || 0) >= new Date(localSnapshot.savedAt || 0)
+        ? remoteSnapshot
+        : localSnapshot;
+    }
+    return remoteSnapshot || localSnapshot;
+  }, [remoteSnapshot, localSnapshot]);
+
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(
+    () => new Set(initial?.checkedItems ?? []),
+  );
+  const [strokeHistoryFactors, setStrokeHistoryFactors] = useState<Record<string, boolean>>(
+    () => initial?.strokeHistoryFactors ?? {},
+  );
+  const [activeTab, setActiveTab] = useState(initial?.activeTab || "ischemic");
+  const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>(
+    () =>
+      (initial?.demographics as any) || {
+        patientId: patient?.patient_id || "",
+        name: patient?.name || undefined,
+        age: patient?.age?.toString() || undefined,
+        sex: patient?.sex || undefined,
+        lastKnownWell: patient?.last_known_well ? patient.last_known_well.slice(0, 16) : undefined,
+      },
+  );
+  const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>(
+    () => (initial?.calculatedScores as Record<string, any>) || {},
+  );
 
   // Navigation state for collapsible sections
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["treatment-recommender"]));
-  const [activeSectionId, setActiveSectionId] = useState("treatment-recommender");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    () => new Set(initial?.expandedSections ?? ["treatment-recommender"]),
+  );
+  const [activeSectionId, setActiveSectionId] = useState(initial?.activeSectionId || "treatment-recommender");
+
+  // ---- Autosave: localStorage always, DB when a real patient is loaded
+  const snapshot: WorkupSnapshot = useMemo(
+    () => ({
+      checkedItems: Array.from(checkedItems),
+      strokeHistoryFactors,
+      demographics,
+      calculatedScores,
+      expandedSections: Array.from(expandedSections),
+      activeTab,
+      activeSectionId,
+      savedAt: new Date().toISOString(),
+    }),
+    [checkedItems, strokeHistoryFactors, demographics, calculatedScores, expandedSections, activeTab, activeSectionId],
+  );
+
+  const isDemo = !patient || patient.id === "demo-patient-001";
+  const { status: saveStatus, lastSaved } = useWorkupAutosave({
+    patientId: hydrationKey,
+    snapshot,
+    disableRemote: isDemo || !onPatientDataChange,
+    onPersist: async (payload) => {
+      onPatientDataChange?.(payload);
+    },
+  });
 
   const toggleSection = (sectionId: string) => {
     const newExpanded = new Set(expandedSections);
@@ -5739,10 +5794,44 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             </div>
           </div>
 
-          {/* Quick Export */}
+          {/* Quick Export + Autosave status */}
           <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/60 backdrop-blur px-4 py-3">
             <div className="min-w-0">
-              <div className="text-sm font-semibold">Export workup</div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                Export workup
+                <span
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground"
+                  title={
+                    isDemo
+                      ? "Demo mode: saved on this device only"
+                      : "Autosaves to your account (syncs across devices)"
+                  }
+                >
+                  {saveStatus === "saving" && (
+                    <>
+                      <Loader2 className="h-3 w-3 animate-spin" /> Saving…
+                    </>
+                  )}
+                  {saveStatus === "saved" && (
+                    <>
+                      {isDemo ? <CloudOff className="h-3 w-3" /> : <Cloud className="h-3 w-3 text-emerald-500" />}
+                      <Check className="h-3 w-3" />
+                      Saved{lastSaved ? ` · ${lastSaved.toLocaleTimeString()}` : ""}
+                    </>
+                  )}
+                  {saveStatus === "error" && (
+                    <>
+                      <CloudOff className="h-3 w-3 text-destructive" /> Save failed
+                    </>
+                  )}
+                  {saveStatus === "idle" && (
+                    <>
+                      {isDemo ? <CloudOff className="h-3 w-3" /> : <Cloud className="h-3 w-3" />}
+                      {isDemo ? "Local only" : "Auto-sync on"}
+                    </>
+                  )}
+                </span>
+              </div>
               <div className="text-xs text-muted-foreground truncate">
                 Scores, demographics, and completed investigations — PDF or plain text.
               </div>
