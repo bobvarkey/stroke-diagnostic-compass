@@ -320,7 +320,7 @@ const categoryIcons: Record<string, any> = {
 
 // Acute Stroke Management Algorithm Component - AHA 2026 Guidelines
 function AcuteStrokeAlgorithm() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -593,7 +593,7 @@ function AcuteStrokeAlgorithm() {
 
 // Acute ICH Management Component
 function AcuteICHManagement() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -1056,7 +1056,7 @@ function AcuteICHManagement() {
 
 // ISPS25 Flowchart Component
 function ISPS25Flowchart() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -1183,7 +1183,7 @@ function ISPS25Flowchart() {
 
 // NIHSS Scale Reference Component
 function NIHSSScaleReference() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   
   const nihssItems = [
     { item: "1a", name: "Level of Consciousness", scores: "0 = Alert; 1 = Drowsy; 2 = Obtunded; 3 = Coma/Unresponsive" },
@@ -1283,7 +1283,7 @@ function NIHSSScaleReference() {
 
 // Visual NIHSS Calculator Component
 function VisualNIHSSCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [showPrintSheet, setShowPrintSheet] = useState(false);
   const [scores, setScores] = useState<Record<string, number | "UN">>({
     "1a": 0, "1b": 0, "1c": 0, "2": 0, "3": 0, "4": 0,
@@ -2015,7 +2015,7 @@ function VisualNIHSSCalculator() {
 
 // Visual GCS Calculator Component
 function VisualGCSCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [scores, setScores] = useState<Record<string, number>>({
     eye: 4,
     verbal: 5,
@@ -2242,7 +2242,7 @@ function VisualGCSCalculator() {
 
 // Visual FOUR Score Calculator Component
 function VisualFOURScoreCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [scores, setScores] = useState<Record<string, number>>({
     eye: 4,
     motor: 4,
@@ -2485,7 +2485,7 @@ function VisualFOURScoreCalculator() {
 
 // Hunt and Hess Scale Calculator Component
 function HuntHessCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
 
   const grades = [
@@ -2696,7 +2696,7 @@ function HuntHessCalculator() {
 
 // WFNS (World Federation of Neurological Surgeons) Scale Calculator
 function WFNSCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [gcs, setGcs] = useState<number | null>(null);
   const [motorDeficit, setMotorDeficit] = useState<boolean | null>(null);
 
@@ -3028,7 +3028,7 @@ function WFNSCalculator() {
 
 // Modified Rankin Scale (mRS) Component
 function MRSScaleReference() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   
   const mrsLevels = [
     { score: 0, label: "No symptoms", description: "No symptoms at all", color: "bg-green-500" },
@@ -3111,7 +3111,7 @@ function MRSScaleReference() {
 
 // ASPECTS Score Component
 function ASPECTSScoreReference() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   
   const aspectsRegions = [
     { region: "C", name: "Caudate", level: "Ganglionic" },
@@ -3232,7 +3232,7 @@ function ASPECTSScoreReference() {
 
 // pc-ASPECTS Score Component
 function PcASPECTSScoreReference() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   
   const pcAspectsRegions = [
     { region: "L", name: "Left Thalamus", points: 1, level: "Thalamus" },
@@ -3394,7 +3394,7 @@ function PcASPECTSScoreReference() {
 
 // CHA2DS2-VASc Score Calculator Component
 function CHA2DS2VAScCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
   const toggleCriteria = (id: string) => {
@@ -3552,7 +3552,7 @@ function CHA2DS2VAScCalculator() {
 
 // uACR Cardiovascular Risk Reference Component
 function UACRCardiovascularRisk() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
 
   const uacrCategories = [
     { range: "<30", label: "Normal to Mildly Increased", color: "bg-green-500", risk: "Baseline CV risk", category: "A1" },
@@ -3742,7 +3742,7 @@ function UACRCardiovascularRisk() {
 
 // eGFR Calculator with KDIGO CKD Staging Component
 function EGFRCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [age, setAge] = useState<string>("");
   const [sex, setSex] = useState<string>("");
   const [creatinine, setCreatinine] = useState<string>("");
@@ -4026,7 +4026,7 @@ function EGFRCalculator() {
 
 // HAS-BLED Score Calculator Component
 function HASBLEDCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
   const toggleCriteria = (id: string) => {
@@ -4208,7 +4208,7 @@ function HASBLEDCalculator() {
 
 // ABCD2 Score Calculator Component
 function ABCD2Calculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
   const toggleCriteria = (id: string) => {
@@ -4391,7 +4391,7 @@ function ABCD2Calculator() {
 
 // ICH Score Calculator Component
 function ICHScoreCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
   const toggleCriteria = (id: string) => {
@@ -4582,7 +4582,7 @@ function ICHScoreCalculator() {
 
 // FUNC Score Calculator Component
 function FUNCScoreCalculator() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
   const toggleCriteria = (id: string) => {
@@ -4796,7 +4796,7 @@ function FUNCScoreCalculator() {
 
 // Functional Outcome Scales Component (mRS & GOS)
 function FunctionalOutcomeScales() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
 
   const mrsGrades = [
     { score: 0, description: "No symptoms at all", category: "Excellent", color: "bg-green-500" },
@@ -5003,7 +5003,7 @@ function FunctionalOutcomeScales() {
 
 // ADL Assessment Scales Component (Barthel Index & FIM)
 function ADLAssessmentScales() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
 
   const barthelItems = [
     { activity: "Feeding", independent: 10, dependent: 0, description: "Independent: able to eat from a tray, use utensils" },
@@ -5286,7 +5286,7 @@ function ADLAssessmentScales() {
 
 // SAH Grading Scales Component (Hunt & Hess / WFNS)
 function SAHGradingScales() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
 
   const huntHessGrades = [
     { grade: 1, description: "Asymptomatic or mild headache, slight nuchal rigidity", mortality: "1%", color: "bg-green-500" },
@@ -5432,7 +5432,7 @@ function SAHGradingScales() {
 
 // Metabolic Syndrome Criteria Checker Component
 function MetabolicSyndromeChecker() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useCollapsibleState(false);
   const [idfCriteria, setIdfCriteria] = useState<Set<string>>(new Set());
   const [atpCriteria, setAtpCriteria] = useState<Set<string>>(new Set());
 
