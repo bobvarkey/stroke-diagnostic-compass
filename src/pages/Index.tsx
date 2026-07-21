@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -49,10 +50,27 @@ const DEMO_PATIENT: Patient = {
 const Index = () => {
   const { user, profile, isAdmin, loading, signOut } = useAuth();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<string>("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
+
+  // Auto-scroll to ?section= from Home / Calculators links
+  useEffect(() => {
+    const s = searchParams.get("section");
+    if (!s) return;
+    const scrollTo = (b: ScrollBehavior = "smooth") => {
+      const el = document.getElementById(s);
+      if (el) el.scrollIntoView({ behavior: b, block: "start" });
+    };
+    setActiveSection(s);
+    window.dispatchEvent(new CustomEvent("force-mount-section", { detail: s }));
+    setTimeout(() => scrollTo("instant"), 400);
+    setTimeout(() => scrollTo("smooth"), 1000);
+    setTimeout(() => scrollTo("smooth"), 2000);
+  }, [searchParams]);
+
 
 
   useEffect(() => {
