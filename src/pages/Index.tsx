@@ -188,49 +188,52 @@ const Index = () => {
       <div className="min-h-screen flex w-full relative z-10">
         <AppSidebar activeSection={activeSection} onSectionClick={setActiveSection} />
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b px-2 sm:px-4 glass-strong safe-top">
-            <SidebarTrigger className="-ml-1" />
-            
-            {/* Patient info */}
-            <div className="flex items-center gap-1.5 sm:gap-2 ml-1 sm:ml-2 min-w-0">
-              <Badge variant="outline" className="font-mono text-xs shrink-0 bg-primary/5 border-primary/20">
-                {selectedPatient?.patient_id}
-              </Badge>
-              {selectedPatient?.name && (
-                <span className="text-sm text-muted-foreground hidden sm:inline truncate">
-                  {selectedPatient.name}
-                </span>
-              )}
-            </div>
+          <header className="sticky top-0 z-50 border-b glass-strong safe-top">
+            <div className="flex h-14 items-center gap-2 px-2 sm:px-4">
+              <SidebarTrigger className="-ml-1" />
 
-
-            <div className="flex-1" />
-            
-            {/* User info and actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              <span className="text-xs text-muted-foreground hidden md:inline">
-                {profile?.display_name || profile?.username}
-              </span>
-              {isAdmin && (
-                <Badge variant="secondary" className="items-center gap-1 hidden md:flex text-xs">
-                  <Shield className="h-3 w-3" />
-                  Admin
+              {/* Patient info */}
+              <div className="flex items-center gap-1.5 sm:gap-2 ml-1 sm:ml-2 min-w-0">
+                <Badge variant="outline" className="font-mono text-xs shrink-0 bg-gradient-sunset/10 border-primary/30 text-foreground">
+                  {selectedPatient?.patient_id}
                 </Badge>
-              )}
+                {selectedPatient?.name && (
+                  <span className="text-sm text-muted-foreground hidden sm:inline truncate">
+                    {selectedPatient.name}
+                  </span>
+                )}
+              </div>
 
-              <Button
-                variant="ghost" 
-                size="sm" 
-                onClick={handleReturnToPatientList}
-                className="flex items-center gap-1 h-9 px-2 sm:px-3"
-              >
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline text-xs">Cases</span>
-              </Button>
-              <Button variant="ghost" size="icon" onClick={handleSignOut} className="h-9 w-9">
-                <LogOut className="h-4 w-4" />
-              </Button>
+              <div className="flex-1" />
+
+              {/* User info and actions */}
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-xs text-muted-foreground hidden md:inline">
+                  {profile?.display_name || profile?.username}
+                </span>
+                {isAdmin && (
+                  <Badge variant="secondary" className="items-center gap-1 hidden md:flex text-xs bg-gradient-sunset border-0 text-primary-foreground">
+                    <Shield className="h-3 w-3" />
+                    Admin
+                  </Badge>
+                )}
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleReturnToPatientList}
+                  className="flex items-center gap-1 h-9 px-2 sm:px-3"
+                >
+                  <Users className="h-4 w-4" />
+                  <span className="hidden sm:inline text-xs">Cases</span>
+                </Button>
+                <Button variant="ghost" size="icon" onClick={handleSignOut} className="h-9 w-9">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
+            {/* Sunset accent stripe — matches Home */}
+            <div className="h-[2px] bg-gradient-sunset opacity-70" />
           </header>
           <main className="flex-1 relative">
             <StrokeWorkupChecklist 
