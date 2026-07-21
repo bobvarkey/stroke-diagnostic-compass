@@ -1,0 +1,60 @@
+export interface GlossaryEntry {
+  term: string;
+  short: string;
+  full: string;
+  category?: string;
+  references?: string[];
+}
+
+export const GLOSSARY: Record<string, GlossaryEntry> = {
+  NIHSS: {
+    term: "NIHSS",
+    short: "National Institutes of Health Stroke Scale",
+    full: "A 15-item neurologic exam used to quantify stroke severity (0 = no deficit, up to 42). Used to guide reperfusion decisions, predict outcome, and monitor deterioration.",
+    category: "Score",
+  },
+  LVO: {
+    term: "LVO",
+    short: "Large Vessel Occlusion",
+    full: "Occlusion of ICA, M1/proximal M2, basilar, or dominant PCA. Candidate for mechanical thrombectomy up to 24h from LKW when imaging criteria are met.",
+    category: "Anatomy",
+  },
+  EVT: { term: "EVT", short: "Endovascular Thrombectomy", full: "Mechanical clot retrieval for LVO ischemic stroke. Standard of care within 24h in selected patients (DAWN/DEFUSE-3)." },
+  IVT: { term: "IVT", short: "Intravenous Thrombolysis", full: "IV alteplase (0.9 mg/kg) or tenecteplase (0.25 mg/kg) within 4.5h of symptom onset in eligible patients." },
+  tPA: { term: "tPA", short: "Tissue Plasminogen Activator", full: "Alteplase — standard IV thrombolytic. 10% bolus, 90% infusion over 60 min." },
+  TNK: { term: "TNK", short: "Tenecteplase", full: "Genetically modified tPA — single IV bolus 0.25 mg/kg (max 25 mg). Non-inferior/superior to alteplase in AIS." },
+  mRS: { term: "mRS", short: "Modified Rankin Scale", full: "0 (no symptoms) – 6 (death). Global disability outcome measure at 90 days." },
+  ASPECTS: { term: "ASPECTS", short: "Alberta Stroke Program Early CT Score", full: "10-point CT score of MCA territory. ≥6 favors reperfusion; <6 predicts poor outcome and higher hemorrhage risk." },
+  DAPT: { term: "DAPT", short: "Dual Antiplatelet Therapy", full: "Aspirin + P2Y12 inhibitor (clopidogrel/ticagrelor). Typically 21–90 days after minor stroke/TIA (CHANCE, POINT, THALES)." },
+  CVT: { term: "CVT", short: "Cerebral Venous Thrombosis", full: "Thrombosis of dural sinuses or cortical veins. Anticoagulation with LMWH is first-line even in the presence of hemorrhagic transformation." },
+  SAH: { term: "SAH", short: "Subarachnoid Hemorrhage", full: "Bleeding into subarachnoid space, typically from ruptured aneurysm. Graded by Hunt-Hess, WFNS, modified Fisher." },
+  ICH: { term: "ICH", short: "Intracerebral Hemorrhage", full: "Non-traumatic bleeding into brain parenchyma. Manage BP (target SBP 130–150), reverse anticoagulation, consider surgery for cerebellar/large lobar." },
+  DOAC: { term: "DOAC", short: "Direct Oral Anticoagulant", full: "Apixaban, rivaroxaban, dabigatran, edoxaban. Reverse dabigatran with idarucizumab; factor Xa inhibitors with andexanet alfa or 4F-PCC." },
+  UFH: { term: "UFH", short: "Unfractionated Heparin", full: "IV heparin — monitor with aPTT (Raschke nomogram) or anti-Xa 0.3–0.7 IU/mL. Baseline platelets; recheck day 4–14 for HIT." },
+  LMWH: { term: "LMWH", short: "Low Molecular Weight Heparin", full: "Enoxaparin, dalteparin. Weight-based dosing; adjust for CrCl <30 mL/min." },
+  HIT: { term: "HIT", short: "Heparin-Induced Thrombocytopenia", full: "Immune-mediated platelet drop (>50%) day 5–10 of heparin exposure. 4T score; stop heparin, start argatroban or bivalirudin." },
+  TICI: { term: "TICI", short: "Thrombolysis in Cerebral Infarction", full: "Angiographic reperfusion score. eTICI 2b50/2c/3 = successful reperfusion." },
+  CrCl: { term: "CrCl", short: "Creatinine Clearance", full: "Cockcroft-Gault: [(140 − age) × weight × (0.85 if F)] / (72 × SCr). Drives renal dosing of DOACs, LMWH, tirofiban." },
+  LKW: { term: "LKW", short: "Last Known Well", full: "Time patient was last seen at neurological baseline. Anchors reperfusion window; not the same as symptom-discovery time." },
+  PCC: { term: "PCC", short: "Prothrombin Complex Concentrate", full: "4-factor PCC (Kcentra) for VKA reversal (25–50 IU/kg based on INR) and off-label DOAC reversal." },
+  FFP: { term: "FFP", short: "Fresh Frozen Plasma", full: "Contains all coagulation factors. 10–15 mL/kg. Slower onset than PCC — no longer first-line for VKA reversal." },
+  BP: { term: "BP", short: "Blood Pressure", full: "Pre-IVT target <185/110; post-IVT <180/105. In ICH target SBP 130–150 (INTERACT-2)." },
+  CT: { term: "CT", short: "Computed Tomography", full: "Non-contrast CT rules out hemorrhage; CT angiography detects LVO; CT perfusion quantifies core/penumbra." },
+  CTP: { term: "CTP", short: "CT Perfusion", full: "Perfusion imaging identifying ischemic core (rCBF <30%) vs penumbra (Tmax >6s). Drives extended-window EVT decisions (DAWN/DEFUSE-3)." },
+  CAA: { term: "CAA", short: "Cerebral Amyloid Angiopathy", full: "Amyloid deposition in cortical vessels — cause of lobar ICH in elderly. Boston criteria; avoid anticoagulation." },
+  CAD: { term: "CAD", short: "Coronary Artery Disease", full: "Prerequisite condition for LDL Extreme Risk categorization (LAI 2026)." },
+  PAD: { term: "PAD", short: "Peripheral Arterial Disease", full: "Atherosclerotic occlusion of non-coronary arteries — major CV risk enhancer." },
+  CKD: { term: "CKD", short: "Chronic Kidney Disease", full: "eGFR <60 mL/min/1.73m² for ≥3 months. Modifies risk score and drug dosing (KDIGO)." },
+  ApoB: { term: "ApoB", short: "Apolipoprotein B", full: "Structural protein on all atherogenic particles. Reflects total atherogenic particle count. Optimal <80 mg/dL." },
+  "Lp(a)": { term: "Lp(a)", short: "Lipoprotein(a)", full: "Genetically determined, minimally modified by diet/statins. High risk >50 mg/dL. Pelacarsen and olpasiran in trials." },
+  LDL: { term: "LDL", short: "Low-Density Lipoprotein Cholesterol", full: "Extreme risk target <40 mg/dL (LAI 2026). Statin + ezetimibe + PCSK9i escalation." },
+  TIA: { term: "TIA", short: "Transient Ischemic Attack", full: "Focal neurologic deficit from ischemia without infarction on imaging. Requires urgent workup — ABCD² score." },
+  GCS: { term: "GCS", short: "Glasgow Coma Scale", full: "3–15 scale of consciousness (Eye/Verbal/Motor). ≤8 typically warrants airway protection." },
+  AF: { term: "AF", short: "Atrial Fibrillation", full: "Most common cardioembolic source. 1-3-6-12 day rule guides OAC initiation post-stroke." },
+  OAC: { term: "OAC", short: "Oral Anticoagulation", full: "Warfarin or DOAC. Prevents ~65% of AF-related strokes." },
+  BATHE: { term: "BATHE", short: "Baseline / Aphasia / Total gaze / Hemianopia / Extremity", full: "Mnemonic for disabling deficits that qualify for IVT even at low NIHSS." },
+  ETICI: { term: "eTICI", short: "expanded TICI", full: "Refined angiographic scale: 0, 1, 2a (<50%), 2b50 (50–66%), 2b67 (67–89%), 2c (90–99%), 3 (100%)." },
+  DCI: { term: "DCI", short: "Delayed Cerebral Ischemia", full: "Neurological deterioration 3–14 days after SAH from vasospasm. Nimodipine, euvolemia, induced hypertension." },
+};
+
+export const GLOSSARY_TERMS = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
