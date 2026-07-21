@@ -12,7 +12,7 @@ import SectionNavigator, { SectionItem } from "./SectionNavigator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
-import DocumentAnalyzer from "./DocumentAnalyzer";
+
 import DemographicsForm from "./DemographicsForm";
 import PDFScoreSummary from "./PDFScoreSummary";
 import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
@@ -5741,8 +5741,6 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Demographics Form */}
           <DemographicsForm demographics={demographics} onDemographicsChange={setDemographics} />
 
-          {/* AI Document Analyzer */}
-          <DocumentAnalyzer checkedTests={checkedTestNames} calculatedScores={calculatedScores} demographics={demographics} />
 
           {/* PDF Score Summary */}
           <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />

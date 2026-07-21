@@ -15,7 +15,7 @@ const features = [
   "UFH monitoring timeline with HIT surveillance",
   "LAI lipid extreme-risk predictor & EMR notes",
   "Antiplatelet switching guide (Clopidogrel/Ticagrelor/Prasugrel)",
-  "AI document & lab report analyzer",
+  "Lab report OCR & auto-flagging",
   "PDF report generation & sharing",
   "Real-time collaboration & auto-save",
   "Priority clinical support",
