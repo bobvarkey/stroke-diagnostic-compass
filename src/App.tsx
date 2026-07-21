@@ -33,6 +33,7 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <GlossaryDrawer />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
