@@ -11,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ChevronDown, Activity, Calculator, GitBranch, AlertTriangle } from "lucide-react";
 import { ZoomableImage } from "@/components/ZoomableImage";
 import cognardDavfImage from "@/assets/cognard-davf-classification.png.asset.json";
+import bordenDavfImage from "@/assets/borden-davf-classification.png.asset.json";
 
 /* =========================================================
  * 1. Spetzler-Martin AVM Grading Scale
