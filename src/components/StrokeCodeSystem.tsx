@@ -155,7 +155,7 @@ export default function StrokeCodeSystem() {
       const [contactsRes, settingsRes, activationsRes] = await Promise.all([
         supabase.from('stroke_contacts').select('*').order('priority_order'),
         supabase.from('stroke_settings').select('*').limit(1).maybeSingle(),
-        supabase.from('strokeactivations').select('*').order('created_at', { ascending: false }).limit(50)
+        supabase.from('stroke_activations').select('*').order('created_at', { ascending: false }).limit(50)
       ]);
 
       if (contactsRes.data) setContacts(contactsRes.data);
@@ -229,7 +229,7 @@ export default function StrokeCodeSystem() {
     try {
       // Create activation record
       const { data: activation, error: activationError } = await supabase
-        .from('strokeactivations')
+        .from('stroke_activations')
         .insert({
           code_level: codeLevel,
           patient_id: patientId.trim(),
