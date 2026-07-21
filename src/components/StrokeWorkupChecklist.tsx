@@ -45,7 +45,7 @@ import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
-import VascularMalformationScales from "./VascularMalformationScales";
+import VascularMalformationScales, { PHASESScore } from "./VascularMalformationScales";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
