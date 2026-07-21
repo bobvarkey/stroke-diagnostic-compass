@@ -5628,6 +5628,44 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
     () => initial?.strokeHistoryFactors ?? {},
   );
   const [activeTab, setActiveTab] = useState(initial?.activeTab || "ischemic");
+
+  // Global keyboard navigation for main tabs.
+  // Alt + ArrowLeft/ArrowRight cycles tabs; Alt + 1..7 jumps directly.
+  // Radix Tabs already handle Arrow/Home/End/Enter/Space when a trigger is focused.
+  const TAB_ORDER = useMemo(
+    () => ["ischemic", "hemorrhagic", "sah", "sdh", "cvt", "post-ivt", "medications"],
+    [],
+  );
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      // Ignore while typing in inputs/textareas/contentEditable
+      const t = e.target as HTMLElement | null;
+      if (t) {
+        const tag = t.tagName;
+        if (
+          tag === "INPUT" ||
+          tag === "TEXTAREA" ||
+          tag === "SELECT" ||
+          (t as HTMLElement).isContentEditable
+        ) return;
+      }
+      if (!e.altKey || e.ctrlKey || e.metaKey) return;
+
+      const idx = TAB_ORDER.indexOf(activeTab);
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setActiveTab(TAB_ORDER[(idx + 1) % TAB_ORDER.length]);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setActiveTab(TAB_ORDER[(idx - 1 + TAB_ORDER.length) % TAB_ORDER.length]);
+      } else if (/^[1-7]$/.test(e.key)) {
+        e.preventDefault();
+        setActiveTab(TAB_ORDER[parseInt(e.key, 10) - 1]);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeTab, TAB_ORDER]);
   const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>(
     () =>
       (initial?.demographics as any) || {
