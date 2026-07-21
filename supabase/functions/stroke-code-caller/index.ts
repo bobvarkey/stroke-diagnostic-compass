@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { xmlEscape } from "./_utils.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,16 +10,6 @@ const corsHeaders = {
 interface CallRequest {
   activationId: string;
   codeLevel: 'code_1' | 'code_2';
-}
-
-// XML/TwiML escape to prevent injection into <Say> tags
-function xmlEscape(input: string): string {
-  return String(input ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
 }
 
 serve(async (req) => {
