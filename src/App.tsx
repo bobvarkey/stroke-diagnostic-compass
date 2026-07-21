@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ContrastTest from "./pages/ContrastTest";
+import Pricing from "./pages/Pricing";
 
 const queryClient = new QueryClient();
 
