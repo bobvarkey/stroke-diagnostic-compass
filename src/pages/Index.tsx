@@ -53,7 +53,7 @@ const Index = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<string>("");
-  const [_showScrollTop, setShowScrollTop] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEFAULT_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
   const [conflict, setConflict] = useState<ConflictInfo | null>(null);
