@@ -1,0 +1,8 @@
+# Stroke Diagnostic Compass
+
+> Clinical decision-support tool for acute stroke care — diagnostic workflows, dosing calculators, and evidence-based management protocols for ischemic stroke, ICH, SAH, SDH, and CVT.
+
+## Pages
+
+- [Home](/): Stroke workup checklist, calculators (NIHSS, ASPECTS, tPA eligibility), lipid risk, EVT decision support, and medication formulary.
+- [Pricing](/pricing): Stroke Pro subscription plan and features.
