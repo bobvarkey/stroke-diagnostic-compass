@@ -246,57 +246,45 @@ export function PHASESScore() {
         <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
           <Calculator className="h-5 w-5" /> PHASES — Aneurysm Rupture Risk (5-year)
         </CardTitle>
-        <p className="text-xs text-muted-foreground">Modality: DSA / CTA / MRA · Brain · Vascular. Validated in pooled analysis of 6 prospective cohorts (Greving JP, Lancet Neurol 2014).</p>
-        <p className="text-xs text-muted-foreground">Pick one option in each of the four required fields (P, A, S-size, S-site). Hypertension and Earlier SAH are optional modifiers.</p>
+        <p className="text-xs text-muted-foreground">DSA / CTA / MRA · Greving JP, Lancet Neurol 2014.</p>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label className="text-sm font-semibold">P — Population</Label>
-          <p className="text-xs text-muted-foreground">Patient's geographic/ethnic cohort — reflects baseline rupture incidence.</p>
           <RadioGroup value={population?.toString() ?? ""} onValueChange={(v) => setPopulation(Number(v))}>
-            {[{v:0,l:"North American / European (non-Finnish)"},{v:3,l:"Japanese"},{v:5,l:"Finnish"}].map(o => (
+            {[{v:0,l:"N. American / European"},{v:3,l:"Japanese"},{v:5,l:"Finnish"}].map(o => (
               <div key={o.v} className="flex items-center gap-2"><RadioGroupItem id={`ph-p-${o.v}`} value={o.v.toString()}/><Label htmlFor={`ph-p-${o.v}`} className="text-sm cursor-pointer">{o.l} — {o.v} pt</Label></div>
             ))}
           </RadioGroup>
         </div>
 
-        <div className="flex items-start gap-2">
+        <div className="flex items-center gap-2">
           <Checkbox id="ph-htn" checked={htn} onCheckedChange={(v) => setHtn(!!v)} />
-          <div>
-            <Label htmlFor="ph-htn" className="text-sm cursor-pointer">H — Hypertension — 1 pt</Label>
-            <p className="text-xs text-muted-foreground">Known HTN or on antihypertensive therapy.</p>
-          </div>
+          <Label htmlFor="ph-htn" className="text-sm cursor-pointer">H — Hypertension — 1 pt</Label>
         </div>
 
         <div className="space-y-2">
           <Label className="text-sm font-semibold">A — Age</Label>
           <RadioGroup value={age?.toString() ?? ""} onValueChange={(v) => setAge(Number(v))}>
-            <div className="flex items-center gap-2"><RadioGroupItem id="ph-a-0" value="0"/><Label htmlFor="ph-a-0" className="text-sm cursor-pointer">&lt; 70 years — 0 pt</Label></div>
-            <div className="flex items-center gap-2"><RadioGroupItem id="ph-a-1" value="1"/><Label htmlFor="ph-a-1" className="text-sm cursor-pointer">≥ 70 years — 1 pt</Label></div>
+            <div className="flex items-center gap-2"><RadioGroupItem id="ph-a-0" value="0"/><Label htmlFor="ph-a-0" className="text-sm cursor-pointer">&lt; 70 y — 0 pt</Label></div>
+            <div className="flex items-center gap-2"><RadioGroupItem id="ph-a-1" value="1"/><Label htmlFor="ph-a-1" className="text-sm cursor-pointer">≥ 70 y — 1 pt</Label></div>
           </RadioGroup>
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm font-semibold">S — Size of Aneurysm</Label>
-          <p className="text-xs text-muted-foreground">Largest diameter on DSA / CTA / MRA. Enter mm to auto-band, or pick a band directly.</p>
+          <Label className="text-sm font-semibold">S — Size (largest diameter)</Label>
           <div className="flex items-center gap-2">
             <Input
-              type="number"
-              inputMode="decimal"
-              min={0.1}
-              max={60}
-              step={0.1}
+              type="number" inputMode="decimal" min={0.1} max={60} step={0.1}
               value={sizeMm}
               onChange={(e) => setSizeMm(e.target.value)}
-              placeholder="e.g. 6.5"
+              placeholder="mm"
               aria-invalid={!!sizeMmError}
-              className={`max-w-[140px] h-9 ${sizeMmError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              className={`max-w-[120px] h-9 ${sizeMmError ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
             <span className="text-sm text-muted-foreground">mm</span>
             {derivedSizePts !== null && (
-              <Badge variant="secondary" className="ml-1 text-xs">
-                Auto-band: {derivedSizePts} pt
-              </Badge>
+              <Badge variant="secondary" className="text-xs">{derivedSizePts} pt</Badge>
             )}
           </div>
           {sizeMmError && (
@@ -307,29 +295,26 @@ export function PHASESScore() {
             onValueChange={(v) => { setSizePts(Number(v)); setSizeMm(""); }}
             className="pt-1"
           >
-            {[{v:0,l:"< 7.0 mm"},{v:3,l:"7.0 – 9.9 mm"},{v:6,l:"10.0 – 19.9 mm"},{v:10,l:"≥ 20 mm"}].map(o=>(
+            {[{v:0,l:"< 7 mm"},{v:3,l:"7–9.9 mm"},{v:6,l:"10–19.9 mm"},{v:10,l:"≥ 20 mm"}].map(o=>(
               <div key={o.v} className="flex items-center gap-2"><RadioGroupItem id={`ph-s-${o.v}`} value={o.v.toString()}/><Label htmlFor={`ph-s-${o.v}`} className="text-sm cursor-pointer">{o.l} — {o.v} pt</Label></div>
             ))}
           </RadioGroup>
         </div>
 
-        <div className="flex items-start gap-2">
+        <div className="flex items-center gap-2">
           <Checkbox id="ph-e" checked={priorSAH} onCheckedChange={(v) => setPriorSAH(!!v)} />
-          <div>
-            <Label htmlFor="ph-e" className="text-sm cursor-pointer">E — Earlier SAH from a different aneurysm — 1 pt</Label>
-            <p className="text-xs text-muted-foreground">Prior aSAH from a separate, previously treated aneurysm — not the current one.</p>
-          </div>
+          <Label htmlFor="ph-e" className="text-sm cursor-pointer">E — Earlier SAH (different aneurysm) — 1 pt</Label>
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm font-semibold">S — Site of Aneurysm</Label>
-          <p className="text-xs text-muted-foreground">Anatomic location of the index aneurysm.</p>
+          <Label className="text-sm font-semibold">S — Site</Label>
           <RadioGroup value={site?.toString() ?? ""} onValueChange={(v) => setSite(Number(v))}>
             <div className="flex items-center gap-2"><RadioGroupItem id="ph-si-0" value="0"/><Label htmlFor="ph-si-0" className="text-sm cursor-pointer">ICA — 0 pt</Label></div>
             <div className="flex items-center gap-2"><RadioGroupItem id="ph-si-2" value="2"/><Label htmlFor="ph-si-2" className="text-sm cursor-pointer">MCA — 2 pt</Label></div>
-            <div className="flex items-center gap-2"><RadioGroupItem id="ph-si-4" value="4"/><Label htmlFor="ph-si-4" className="text-sm cursor-pointer">ACA / PCom / Posterior circulation — 4 pt</Label></div>
+            <div className="flex items-center gap-2"><RadioGroupItem id="ph-si-4" value="4"/><Label htmlFor="ph-si-4" className="text-sm cursor-pointer">ACA / PCom / Posterior — 4 pt</Label></div>
           </RadioGroup>
         </div>
+
 
         {score === null && missing.length > 0 && (
           <div className="rounded-md border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30 p-3 text-xs flex items-start gap-2">
