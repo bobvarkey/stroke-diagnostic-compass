@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,10 +8,11 @@ import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, Users, LogOut, Shield } from "lucide-react";
+import { Users, LogOut, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Json } from "@/integrations/supabase/types";
+import PatientConflictDialog, { ConflictInfo } from "@/components/PatientConflictDialog";
 
 
 interface Patient {
@@ -55,6 +56,10 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEFAULT_PATIENT);
   const [patientData, setPatientData] = useState<Record<string, unknown>>({});
+  const [conflict, setConflict] = useState<ConflictInfo | null>(null);
+  const pendingSaveRef = useRef<Record<string, unknown> | null>(null);
+  // Last remote `updated_at` we know about — anything newer in DB means another device saved.
+  const knownUpdatedAtRef = useRef<string | null>(null);
 
   // Auto-scroll to ?section= from Home / Calculators links
   useEffect(() => {
@@ -101,21 +106,63 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto-save patient data when it changes
-  const savePatientData = useCallback(async (data: Record<string, unknown>) => {
+  // Auto-save patient data when it changes — with conflict detection
+  const savePatientData = useCallback(async (data: Record<string, unknown>, opts?: { force?: boolean }) => {
     if (!selectedPatient || !user || selectedPatient.id === DEFAULT_PATIENT.id) return;
-    
+
     try {
-      const { error } = await supabase
+      // 1. Check current remote version
+      const { data: remote, error: fetchErr } = await supabase
+        .from('patients')
+        .select('updated_at, last_edited_by, clinical_data')
+        .eq('id', selectedPatient.id)
+        .maybeSingle();
+      if (fetchErr) throw fetchErr;
+
+      const remoteUpdatedAt = remote?.updated_at ?? null;
+      const known = knownUpdatedAtRef.current;
+
+      // 2. Conflict = remote is newer than what we last saw AND the edit wasn't ours
+      const isConflict =
+        !opts?.force &&
+        remoteUpdatedAt &&
+        known &&
+        remoteUpdatedAt !== known &&
+        remote?.last_edited_by !== user.id;
+
+      if (isConflict) {
+        pendingSaveRef.current = data;
+        let editorLabel = "another user";
+        if (remote?.last_edited_by) {
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('display_name, username')
+            .eq('user_id', remote.last_edited_by)
+            .maybeSingle();
+          if (prof) editorLabel = prof.display_name || prof.username || editorLabel;
+        }
+        setConflict({
+          remoteUpdatedAt: remoteUpdatedAt!,
+          remoteEditorLabel: editorLabel,
+          localSavedAt: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // 3. Write
+      const nowIso = new Date().toISOString();
+      const { data: updated, error } = await supabase
         .from('patients')
         .update({
           clinical_data: data as Json,
           last_edited_by: user.id,
-          updated_at: new Date().toISOString(),
+          updated_at: nowIso,
         })
-        .eq('id', selectedPatient.id);
-
+        .eq('id', selectedPatient.id)
+        .select('updated_at')
+        .maybeSingle();
       if (error) throw error;
+      knownUpdatedAtRef.current = updated?.updated_at ?? nowIso;
     } catch (error) {
       console.error('Error saving patient data:', error);
     }
@@ -136,12 +183,18 @@ const Index = () => {
   const handleSelectPatient = (patient: Patient) => {
     setSelectedPatient(patient);
     setPatientData((patient.clinical_data as Record<string, unknown>) || {});
+    knownUpdatedAtRef.current = patient.updated_at ?? null;
+    pendingSaveRef.current = null;
+    setConflict(null);
     toast({ title: 'Patient Selected', description: `Now viewing ${patient.patient_id}` });
   };
 
   const handleReturnToPatientList = () => {
     setSelectedPatient(null);
     setPatientData({});
+    knownUpdatedAtRef.current = null;
+    pendingSaveRef.current = null;
+    setConflict(null);
   };
 
   const handleSignOut = async () => {
@@ -151,9 +204,33 @@ const Index = () => {
     toast({ title: 'Signed out', description: 'You have been logged out' });
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleKeepMine = async () => {
+    const data = pendingSaveRef.current ?? patientData;
+    setConflict(null);
+    pendingSaveRef.current = null;
+    await savePatientData(data, { force: true });
+    toast({ title: 'Your version saved', description: 'The cloud copy was overwritten.' });
   };
+
+  const handleKeepRemote = async () => {
+    if (!selectedPatient) return;
+    setConflict(null);
+    pendingSaveRef.current = null;
+    const { data: remote, error } = await supabase
+      .from('patients')
+      .select('*')
+      .eq('id', selectedPatient.id)
+      .maybeSingle();
+    if (error || !remote) {
+      toast({ title: 'Sync failed', description: error?.message ?? 'Could not fetch cloud version', variant: 'destructive' });
+      return;
+    }
+    setSelectedPatient(remote as unknown as Patient);
+    setPatientData(((remote as { clinical_data?: Record<string, unknown> }).clinical_data) || {});
+    knownUpdatedAtRef.current = (remote as { updated_at?: string }).updated_at ?? null;
+    toast({ title: 'Cloud version loaded', description: 'Your local edits were discarded.' });
+  };
+
 
 
   // Show loading state
@@ -246,16 +323,13 @@ const Index = () => {
         </SidebarInset>
       </div>
 
-      {/* Scroll to top button */}
-      {showScrollTop && (
-        <Button
-          onClick={scrollToTop}
-          size="icon"
-          className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg h-12 w-12 bg-primary/90 backdrop-blur-sm hover:bg-primary safe-bottom"
-        >
-          <ChevronUp className="h-5 w-5" />
-        </Button>
-      )}
+      <PatientConflictDialog
+        open={!!conflict}
+        info={conflict}
+        onKeepMine={handleKeepMine}
+        onKeepRemote={handleKeepRemote}
+        onCancel={() => { setConflict(null); pendingSaveRef.current = null; }}
+      />
     </SidebarProvider>
   );
 };
