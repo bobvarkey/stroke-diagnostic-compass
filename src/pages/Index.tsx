@@ -152,25 +152,16 @@ const Index = () => {
     );
   }
 
-  // Show landing page if enabled
-  if (showLandingPage) {
-    return (
-      <LandingPage
-        onExploreClick={() => setShowLandingPage(false)}
-        onSelectAssessment={() => setShowLandingPage(false)}
-      />
-    );
+  // Show auth screen if not logged in
+  if (!user) {
+    return <AuthScreen />;
   }
 
-  // Show auth screen if not logged in (unless in demo mode)
-  if (!user && !isDemoMode) {
-    return <AuthScreen onEnterDemoMode={handleEnterDemoMode} onSkipToApp={handleSkipToApp} />;
+  // Show patient selector if no patient selected
+  if (!selectedPatient) {
+    return <PatientSelector onSelectPatient={handleSelectPatient} />;
   }
 
-  // Show patient selector if no patient selected (unless in demo mode)
-  if (!selectedPatient && !isDemoMode) {
-    return <PatientSelector onSelectPatient={handleSelectPatient} onEnterDemoMode={handleEnterDemoMode} />;
-  }
 
   // Show main workup interface with selected patient
   return (
