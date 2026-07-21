@@ -6109,6 +6109,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* FUNC Score Calculator */}
           <FUNCScoreCalculator />
 
+          {/* Vascular Malformations & Aneurysm Risk Scores */}
+          <VascularMalformationScales />
+
           {/* SAH Grading Scales */}
           <SAHGradingScales />
 
