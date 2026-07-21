@@ -1391,6 +1391,319 @@ function SubduralHygroma() {
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
+// ─── Anticoagulant / Antiplatelet Reversal Checklist ───────────────────────
+
+function SDHReversalChecklist() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const labs = [
+    { test: "CBC (platelets, Hb)", why: "Baseline; plt <100K → platelet transfusion if antiplatelet or active bleed" },
+    { test: "PT / INR", why: "VKA reversal target INR ≤1.4 before surgery / to stop expansion" },
+    { test: "aPTT", why: "UFH activity; also elevated with dabigatran & argatroban" },
+    { test: "Fibrinogen", why: "Replace with cryoprecipitate if <150-200 mg/dL" },
+    { test: "Type & crossmatch", why: "In case of transfusion or operative evacuation" },
+    { test: "Renal function (Cr, eGFR)", why: "Drives DOAC clearance; andexanet/idarucizumab dose unaffected" },
+    { test: "LFTs", why: "Assess synthetic function; VKA metabolism" },
+    { test: "Anti-Xa (apixaban/rivaroxaban/edoxaban calibrated)", why: "If available: >30 ng/mL suggests clinically relevant DOAC level" },
+    { test: "Dilute thrombin time / ecarin clotting time", why: "Dabigatran quantification if available" },
+    { test: "TEG / ROTEM (if available)", why: "Global hemostasis; guides targeted product replacement" },
+    { test: "Platelet function assay (VerifyNow / PFA-100)", why: "Documents residual antiplatelet effect before reversal" },
+    { test: "Last dose time & drug name", why: "Determines whether reversal is still indicated (see half-life)" },
+  ];
+
+  const agents: Array<{ drug: string; reversal: string; dose: string; notes: string; color: string }> = [
+    {
+      drug: "Warfarin (VKA)",
+      reversal: "4F-PCC (Kcentra) + Vitamin K 10 mg IV",
+      dose: "INR 2–<4: 25 U/kg (max 2500) · 4–6: 35 U/kg (max 3500) · >6: 50 U/kg (max 5000)",
+      notes: "FFP only if PCC unavailable (10–15 mL/kg). Recheck INR at 30 min & 6 h. Target INR ≤1.4.",
+      color: "border-red-400 bg-red-50 dark:bg-red-950/20",
+    },
+    {
+      drug: "Dabigatran (direct thrombin)",
+      reversal: "Idarucizumab (Praxbind) 5 g IV (2 × 2.5 g)",
+      dose: "Fixed dose regardless of weight/renal function",
+      notes: "If unavailable: 4F-PCC 50 U/kg + activated charcoal if <2 h from ingestion. Hemodialysis clears ~60% in 4 h.",
+      color: "border-purple-400 bg-purple-50 dark:bg-purple-950/20",
+    },
+    {
+      drug: "Apixaban / Rivaroxaban (Xa)",
+      reversal: "Andexanet alfa (Andexxa) — preferred if available",
+      dose: "Low dose: 400 mg bolus + 4 mg/min ×120 min (apix ≤5 mg or riva ≤10 mg, or last dose ≥8 h). High dose: 800 mg + 8 mg/min ×120 min.",
+      notes: "Alternative: 4F-PCC 50 U/kg (25–50). Do NOT combine with heparin (rebound Xa). ANNEXA-I 2024: hematoma expansion 13.4% vs 22.1% (PCC).",
+      color: "border-purple-400 bg-purple-50 dark:bg-purple-950/20",
+    },
+    {
+      drug: "Edoxaban",
+      reversal: "4F-PCC 50 U/kg (andexanet not FDA-approved for edoxaban)",
+      dose: "50 U/kg (max 5000 U)",
+      notes: "Andexanet has data but is off-label. Consider aPCC (FEIBA) 50 U/kg as second-line.",
+      color: "border-purple-400 bg-purple-50 dark:bg-purple-950/20",
+    },
+    {
+      drug: "Unfractionated Heparin (UFH)",
+      reversal: "Protamine sulfate 1 mg per 100 U UFH given in last 2–3 h",
+      dose: "Max 50 mg per dose; give slowly IV to avoid hypotension/anaphylaxis",
+      notes: "For continuous infusion: dose based on infusion rate over prior 2 h.",
+      color: "border-blue-400 bg-blue-50 dark:bg-blue-950/20",
+    },
+    {
+      drug: "LMWH (enoxaparin, dalteparin)",
+      reversal: "Protamine (partial reversal ~60%)",
+      dose: "Enoxaparin within 8 h: 1 mg protamine per 1 mg enoxaparin. >8 h: 0.5 mg per 1 mg.",
+      notes: "Consider andexanet or aPCC if severe ongoing bleeding.",
+      color: "border-blue-400 bg-blue-50 dark:bg-blue-950/20",
+    },
+    {
+      drug: "Fondaparinux",
+      reversal: "aPCC (FEIBA) 20 U/kg — no direct antidote",
+      dose: "Consider recombinant FVIIa 90 mcg/kg as alternative",
+      notes: "Protamine ineffective. Hemodialysis of limited utility (highly protein-bound).",
+      color: "border-blue-400 bg-blue-50 dark:bg-blue-950/20",
+    },
+    {
+      drug: "Aspirin / Clopidogrel / Ticagrelor / Prasugrel",
+      reversal: "Platelet transfusion (1 apheresis unit) + DDAVP 0.4 mcg/kg IV",
+      dose: "Consider 2nd unit if ongoing bleed; TXA 1 g IV over 10 min then 1 g over 8 h (per CRASH-2/HALT-IT rationale)",
+      notes: "PATCH trial (2016): platelet transfusion in spontaneous ICH on antiplatelets worsened outcome. Reserve for surgical/traumatic SDH or planned neurosurgery.",
+      color: "border-amber-400 bg-amber-50 dark:bg-amber-950/20",
+    },
+    {
+      drug: "GP IIb/IIIa (tirofiban, eptifibatide)",
+      reversal: "Stop infusion (short half-life 2 h) + platelet transfusion if urgent surgery",
+      dose: "Abciximab: platelet transfusion mandatory (irreversible)",
+      notes: "Consider dialysis for eptifibatide/tirofiban if renal failure prolongs effect.",
+      color: "border-amber-400 bg-amber-50 dark:bg-amber-950/20",
+    },
+    {
+      drug: "Thrombolytics (tPA/TNK) — post-IVT bleed",
+      reversal: "Cryoprecipitate 10 U + TXA 1 g IV",
+      dose: "Target fibrinogen ≥150–200 mg/dL. FIBRES-based: fibrinogen concentrate 70 mg/kg preferred if available.",
+      notes: "Also give platelets if concurrent antiplatelet. See Post-IVT Hemorrhage protocol.",
+      color: "border-rose-400 bg-rose-50 dark:bg-rose-950/20",
+    },
+  ];
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-red-400 dark:border-red-600 bg-gradient-to-br from-red-50 dark:from-red-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-red-100/50 dark:bg-red-900/30">
+            <CardTitle className="flex items-center justify-between text-red-800 dark:text-red-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <RotateCcw className="h-5 w-5" />
+                <span>Anticoagulant &amp; Antiplatelet Reversal — Labs + Agents</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-5">
+            {/* Immediate actions */}
+            <div className="p-3 rounded-lg border-2 border-red-500 bg-red-100/60 dark:bg-red-900/30">
+              <h5 className="font-semibold text-red-800 dark:text-red-300 text-sm mb-2 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" /> Immediate Actions (first 15 min)
+              </h5>
+              <ol className="list-decimal list-inside text-xs space-y-1 text-red-800 dark:text-red-200">
+                <li>STOP all anticoagulants and antiplatelets. Document drug, dose, and time of last dose.</li>
+                <li>Establish 2 large-bore IV access, send labs (see below), type &amp; cross 2 U pRBC.</li>
+                <li>BP target SBP 140–160 mmHg (avoid &lt;110); reverse hypotension aggressively.</li>
+                <li>Neuro checks q15 min; repeat NCCT at 6 h or with any decline.</li>
+                <li>Neurosurgery consult for evacuation criteria (thickness &gt;10 mm, MLS &gt;5 mm, GCS drop ≥2).</li>
+              </ol>
+            </div>
+
+            {/* Labs */}
+            <div>
+              <h4 className="font-semibold text-red-800 dark:text-red-300 text-sm mb-3 flex items-center gap-2">
+                <Stethoscope className="h-4 w-4" /> Labs to Order Before Reversal
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {labs.map((l) => (
+                  <div key={l.test} className="p-2.5 rounded-md border border-red-200 dark:border-red-800 bg-white dark:bg-slate-900/50 text-xs">
+                    <div className="font-semibold text-slate-900 dark:text-slate-100">{l.test}</div>
+                    <div className="text-muted-foreground mt-0.5">{l.why}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Reversal agents */}
+            <div>
+              <h4 className="font-semibold text-red-800 dark:text-red-300 text-sm mb-3 flex items-center gap-2">
+                <Syringe className="h-4 w-4" /> Reversal Agents by Drug Class
+              </h4>
+              <div className="space-y-2">
+                {agents.map((a) => (
+                  <div key={a.drug} className={`p-3 rounded-lg border-2 ${a.color}`}>
+                    <div className="flex items-start justify-between gap-2 flex-wrap">
+                      <div className="font-bold text-sm text-slate-900 dark:text-slate-100">{a.drug}</div>
+                      <Badge variant="outline" className="text-[10px]">{a.reversal}</Badge>
+                    </div>
+                    <div className="text-xs text-slate-700 dark:text-slate-300 mt-1"><strong>Dose:</strong> {a.dose}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{a.notes}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Adjuncts */}
+            <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700">
+              <h5 className="font-semibold text-sm mb-2">Universal Adjuncts</h5>
+              <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                <li>• <strong>TXA 1 g IV over 10 min then 1 g over 8 h</strong> — CRASH-3 (TBI subgroup) reduced head-injury deaths in mild-moderate TBI.</li>
+                <li>• <strong>DDAVP 0.4 mcg/kg IV</strong> — uremia, cirrhosis, or antiplatelet-related bleeding.</li>
+                <li>• Correct hypothermia (&gt;36 °C), acidosis (pH &gt;7.2), ionized Ca²⁺ &gt;1.1 mmol/L — "lethal triad" impairs clotting.</li>
+                <li>• Vitamin K 10 mg IV even if on DOAC (if malnourished / suspected VKA overlap).</li>
+              </ul>
+              <p className="text-[11px] text-muted-foreground italic mt-2">
+                Refs: Neurocritical Care Society 2016 · AHA/ASA 2022 ICH · ANNEXA-I 2024 (NEJM) · REVERSE-AD · PATCH 2016 · CRASH-3.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+// ─── Seizure Prophylaxis in SDH ────────────────────────────────────────────
+
+function SDHSeizureProphylaxis() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-indigo-400 dark:border-indigo-600 bg-gradient-to-br from-indigo-50 dark:from-indigo-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-indigo-100/50 dark:bg-indigo-900/30">
+            <CardTitle className="flex items-center justify-between text-indigo-800 dark:text-indigo-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5" />
+                <span>Seizure Prophylaxis — Levetiracetam vs Phenytoin</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-4">
+            {/* When to use */}
+            <div className="p-3 rounded-lg border-2 border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30">
+              <h5 className="font-semibold text-indigo-800 dark:text-indigo-300 text-sm mb-2 flex items-center gap-2">
+                <Target className="h-4 w-4" /> Indications for Prophylaxis (Brain Trauma Foundation 4th ed / AANS)
+              </h5>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <div className="font-semibold text-green-700 dark:text-green-300 mb-1 flex items-center gap-1">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Give (Level IIA)
+                  </div>
+                  <ul className="space-y-1 text-slate-700 dark:text-slate-300">
+                    <li>• Acute SDH with cortical contusion / hemorrhagic parenchymal injury</li>
+                    <li>• GCS ≤10 with SDH</li>
+                    <li>• Depressed skull fracture over SDH</li>
+                    <li>• Penetrating head injury</li>
+                    <li>• Witnessed early post-traumatic seizure (&lt;7 d) — treat, not prophylax</li>
+                    <li>• Craniotomy for SDH evacuation (surgeon preference; short course)</li>
+                    <li>• Cortical location of hematoma (parasagittal, frontal)</li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-semibold text-rose-700 dark:text-rose-300 mb-1 flex items-center gap-1">
+                    <XCircle className="h-3.5 w-3.5" /> Do NOT routinely give
+                  </div>
+                  <ul className="space-y-1 text-slate-700 dark:text-slate-300">
+                    <li>• Asymptomatic thin acute SDH, GCS 15, no cortical injury</li>
+                    <li>• Uncomplicated chronic SDH awaiting burr-hole (unless prior seizure)</li>
+                    <li>• Post-MMA embolization without cortical breach</li>
+                    <li>• Beyond 7 days — no benefit for preventing late (post-traumatic) epilepsy</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Comparison */}
+            <div>
+              <h4 className="font-semibold text-indigo-800 dark:text-indigo-300 text-sm mb-3">Levetiracetam vs Phenytoin</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg border-2 border-teal-400 bg-teal-50 dark:bg-teal-950/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-bold text-teal-800 dark:text-teal-300 text-sm">Levetiracetam (Keppra) — PREFERRED</div>
+                    <Badge className="bg-teal-600 text-white text-[10px]">First-line</Badge>
+                  </div>
+                  <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                    <li>• <strong>Load:</strong> 20–60 mg/kg IV (typically 1000–2000 mg) over 15 min</li>
+                    <li>• <strong>Maintenance:</strong> 500–1000 mg IV/PO BID</li>
+                    <li>• <strong>Renal:</strong> CrCl 30–50 → 500 mg BID; CrCl &lt;30 → 250–500 mg BID; HD → 500–1000 mg daily + 250–500 mg post-HD</li>
+                    <li>• <strong>Levels:</strong> not routinely monitored</li>
+                    <li>• <strong>Interactions:</strong> minimal — safe with warfarin/DOACs/statins</li>
+                    <li>• <strong>Adverse effects:</strong> agitation, irritability, sedation (rarely psychosis)</li>
+                    <li>• Non-inferior to phenytoin for early PTS (Szaflarski 2010, Inaba 2013) with better tolerability and no level monitoring</li>
+                  </ul>
+                </div>
+                <div className="p-3 rounded-lg border-2 border-slate-400 bg-slate-50 dark:bg-slate-900/40">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-bold text-slate-800 dark:text-slate-200 text-sm">Phenytoin / Fosphenytoin</div>
+                    <Badge variant="outline" className="text-[10px]">Alternative</Badge>
+                  </div>
+                  <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                    <li>• <strong>Load:</strong> Fosphenytoin 20 mg PE/kg IV at ≤150 mg PE/min (or phenytoin 20 mg/kg at ≤50 mg/min)</li>
+                    <li>• <strong>Maintenance:</strong> 4–6 mg/kg/day divided BID–TID</li>
+                    <li>• <strong>Level:</strong> total 10–20 mcg/mL (free 1–2); check trough at 48–72 h and after any dose change</li>
+                    <li>• <strong>Interactions:</strong> CYP inducer — reduces warfarin, DOACs, statins, dexamethasone, oral contraceptives</li>
+                    <li>• <strong>Adverse:</strong> hypotension, arrhythmia during load; purple glove syndrome (IV phenytoin), rash, SJS (HLA-B*1502), gingival hyperplasia, hepatitis</li>
+                    <li>• Reserve for allergy/intolerance to LEV or when a serum level is desired for compliance monitoring</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Duration */}
+            <div className="p-3 rounded-lg border-2 border-amber-400 bg-amber-50 dark:bg-amber-950/20">
+              <h5 className="font-semibold text-amber-800 dark:text-amber-300 text-sm mb-2 flex items-center gap-2">
+                <Clock className="h-4 w-4" /> Duration of Therapy
+              </h5>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div className="p-2 rounded bg-white dark:bg-slate-900/50 border border-amber-200 dark:border-amber-800">
+                  <div className="font-semibold">Prophylaxis (no seizure)</div>
+                  <div className="text-muted-foreground mt-1"><strong>7 days</strong> total, then stop. No benefit beyond 1 wk for preventing late PTS (BTF Level IIA; Temkin 1990 NEJM).</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900/50 border border-amber-200 dark:border-amber-800">
+                  <div className="font-semibold">Early PTS (&lt;7 d)</div>
+                  <div className="text-muted-foreground mt-1">Continue <strong>3–6 months</strong>, then re-evaluate with EEG. Taper if seizure-free and EEG unremarkable.</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900/50 border border-amber-200 dark:border-amber-800">
+                  <div className="font-semibold">Late PTS (&gt;7 d) / recurrent</div>
+                  <div className="text-muted-foreground mt-1">Treat as <strong>post-traumatic epilepsy</strong> — long-term ASM, neurology follow-up, MRI + EEG workup.</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Special populations */}
+            <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700">
+              <h5 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Shield className="h-4 w-4" /> Special Populations &amp; Pearls
+              </h5>
+              <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                <li>• <strong>Elderly on DOAC/VKA:</strong> LEV preferred — no CYP interaction preserves anticoagulant levels.</li>
+                <li>• <strong>Pregnancy:</strong> LEV is category C but preferred over phenytoin (teratogen, category D).</li>
+                <li>• <strong>Renal failure:</strong> LEV requires dose reduction (renally cleared); phenytoin dosing unchanged but check free levels (protein-binding altered).</li>
+                <li>• <strong>Hepatic failure:</strong> avoid phenytoin; use LEV (unchanged in hepatic dysfunction).</li>
+                <li>• <strong>Asian ancestry:</strong> check HLA-B*1502 before phenytoin (SJS/TEN risk).</li>
+                <li>• Obtain continuous EEG if unexplained ↓ GCS or fluctuating exam after SDH — non-convulsive status epilepticus in 8–20% of severe TBI.</li>
+              </ul>
+              <p className="text-[11px] text-muted-foreground italic mt-2">
+                Refs: Brain Trauma Foundation 4th ed 2016 · Temkin NEJM 1990 · Szaflarski Neurocrit Care 2010 · Inaba J Trauma 2013 · AANS/CNS Guidelines for Severe TBI.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function SubduralHematoma() {
   return (
     <div className="space-y-4">
@@ -1416,6 +1729,8 @@ export default function SubduralHematoma() {
       <SDHClassification />
       <SDHDiagnosis />
       <SDHTreatmentIndications />
+      <SDHReversalChecklist />
+      <SDHSeizureProphylaxis />
       <SDHSurgicalOptions />
       <MMAEmbolization />
       <SDHMedicalManagement />
