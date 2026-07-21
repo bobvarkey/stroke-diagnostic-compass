@@ -194,17 +194,16 @@ const Index = () => {
             
             {/* User info and actions */}
             <div className="flex items-center gap-1 sm:gap-2">
-              {!isDemoMode && (
-                <span className="text-xs text-muted-foreground hidden md:inline">
-                  {profile?.display_name || profile?.username}
-                </span>
-              )}
-              {isAdmin && !isDemoMode && (
+              <span className="text-xs text-muted-foreground hidden md:inline">
+                {profile?.display_name || profile?.username}
+              </span>
+              {isAdmin && (
                 <Badge variant="secondary" className="items-center gap-1 hidden md:flex text-xs">
                   <Shield className="h-3 w-3" />
                   Admin
                 </Badge>
               )}
+
               <Button
                 variant="ghost" 
                 size="sm" 
