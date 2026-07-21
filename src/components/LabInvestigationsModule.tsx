@@ -4,15 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import {
-  TestTube, Camera, Upload, Loader2, Check, AlertTriangle,
-  Plus, Trash2, FileText, Sparkles, ChevronDown
-} from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { TestTube, Check, Trash2, ChevronDown } from 'lucide-react';
 
 interface LabValue {
   id: string;
@@ -85,15 +79,36 @@ interface LabInvestigationsModuleProps {
 
 export default function LabInvestigationsModule({ onLabsChange }: LabInvestigationsModuleProps) {
   const [labs, setLabs] = useState<LabValue[]>([]);
-  const [isExtracting, setIsExtracting] = useState(false);
   const [activeCategory, setActiveCategory] = useState(labCategories[0].name);
-  const { toast } = useToast();
+
+  const determineFlag = (value: string, reference?: string): LabValue['flag'] => {
+    if (!value || !reference) return undefined;
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return undefined;
+    const rangeMatch = reference.match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)/);
+    if (rangeMatch) {
+      const low = parseFloat(rangeMatch[1]);
+      const high = parseFloat(rangeMatch[2]);
+      if (numValue < low) return 'low';
+      if (numValue > high) return 'high';
+      return 'normal';
+    }
+    if (reference.startsWith('<')) {
+      const threshold = parseFloat(reference.slice(1));
+      return numValue >= threshold ? 'high' : 'normal';
+    }
+    if (reference.startsWith('>')) {
+      const threshold = parseFloat(reference.slice(1));
+      return numValue <= threshold ? 'low' : 'normal';
+    }
+    return undefined;
+  };
 
   const handleLabChange = useCallback((labName: string, value: string, unit: string, reference?: string) => {
     setLabs(prev => {
       const existingIndex = prev.findIndex(l => l.name === labName);
-      const flag = determineFlag(labName, value, reference);
-      
+      const flag = determineFlag(value, reference);
+
       if (existingIndex >= 0) {
         const updated = [...prev];
         updated[existingIndex] = { ...updated[existingIndex], value, flag };
@@ -107,125 +122,6 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
       return prev;
     });
   }, [onLabsChange]);
-
-  const determineFlag = (name: string, value: string, reference?: string): 'high' | 'low' | 'normal' | 'critical' | undefined => {
-    if (!value || !reference) return undefined;
-    
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) return undefined;
-    
-    // Parse reference range
-    const rangeMatch = reference.match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)/);
-    if (rangeMatch) {
-      const low = parseFloat(rangeMatch[1]);
-      const high = parseFloat(rangeMatch[2]);
-      if (numValue < low) return 'low';
-      if (numValue > high) return 'high';
-      return 'normal';
-    }
-    
-    // Handle < or > references
-    if (reference.startsWith('<')) {
-      const threshold = parseFloat(reference.slice(1));
-      return numValue >= threshold ? 'high' : 'normal';
-    }
-    if (reference.startsWith('>')) {
-      const threshold = parseFloat(reference.slice(1));
-      return numValue <= threshold ? 'low' : 'normal';
-    }
-    
-    return undefined;
-  };
-
-  const MAX_LAB_IMAGE_SIZE_MB = 10;
-  const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      toast({ title: 'Invalid file type', description: 'Please upload a JPEG, PNG, or WebP image', variant: 'destructive' });
-      return;
-    }
-
-    if (file.size > MAX_LAB_IMAGE_SIZE_MB * 1024 * 1024) {
-      toast({ title: 'File too large', description: `Image must be under ${MAX_LAB_IMAGE_SIZE_MB}MB`, variant: 'destructive' });
-      return;
-    }
-
-    setIsExtracting(true);
-    toast({ title: 'Processing...', description: 'Extracting lab values from image' });
-
-    try {
-      // Convert to base64
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const base64 = reader.result as string;
-        
-        try {
-          const { data, error } = await supabase.functions.invoke('extract-lab-values', {
-            body: { imageBase64: base64 }
-          });
-
-          if (error) throw error;
-
-          if (data.labs && data.labs.length > 0) {
-            // Merge extracted labs with existing
-            const newLabs: LabValue[] = data.labs.map((lab: any) => ({
-              id: crypto.randomUUID(),
-              name: lab.name,
-              value: lab.value,
-              unit: lab.unit,
-              reference_range: lab.reference_range,
-              flag: lab.flag,
-            }));
-
-            setLabs(prev => {
-              // Update existing or add new
-              const updated = [...prev];
-              newLabs.forEach(newLab => {
-                const existingIndex = updated.findIndex(l => 
-                  l.name.toLowerCase() === newLab.name.toLowerCase()
-                );
-                if (existingIndex >= 0) {
-                  updated[existingIndex] = newLab;
-                } else {
-                  updated.push(newLab);
-                }
-              });
-              onLabsChange?.(updated);
-              return updated;
-            });
-
-            toast({ 
-              title: 'Success!', 
-              description: `Extracted ${newLabs.length} lab values from image` 
-            });
-          } else {
-            toast({ 
-              title: 'No labs found', 
-              description: data.error || 'Could not extract lab values from this image',
-              variant: 'destructive'
-            });
-          }
-        } catch (err: any) {
-          console.error('OCR error:', err);
-          toast({ 
-            title: 'Extraction failed', 
-            description: err.message || 'Failed to extract lab values',
-            variant: 'destructive'
-          });
-        } finally {
-          setIsExtracting(false);
-        }
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {
-      setIsExtracting(false);
-      toast({ title: 'Error', description: 'Failed to process image', variant: 'destructive' });
-    }
-  };
 
   const removeLab = (id: string) => {
     setLabs(prev => {
@@ -267,20 +163,7 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <CardContent className="pt-6">
-        <Tabs defaultValue="manual" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="manual" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Manual Entry
-            </TabsTrigger>
-            <TabsTrigger value="upload" className="flex items-center gap-2">
-              <Camera className="h-4 w-4" />
-              Upload / OCR
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="manual" className="space-y-4">
+          <CardContent className="pt-6 space-y-4">
             {/* Category Tabs */}
             <div className="flex flex-wrap gap-2">
               {labCategories.map(cat => (
@@ -326,106 +209,48 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
                   );
                 })}
             </div>
-          </TabsContent>
 
-          <TabsContent value="upload" className="space-y-4">
-            {/* Upload Area */}
-            <div className="border-2 border-dashed border-purple-300 dark:border-purple-700 rounded-lg p-8 text-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                id="lab-image-upload"
-                disabled={isExtracting}
-              />
-              <label
-                htmlFor="lab-image-upload"
-                className="cursor-pointer flex flex-col items-center gap-4"
-              >
-                {isExtracting ? (
-                  <>
-                    <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
-                      <Loader2 className="h-8 w-8 text-purple-600 animate-spin" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-purple-700 dark:text-purple-300">
-                        Extracting lab values...
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Using AI to read your lab report
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
-                      <Upload className="h-8 w-8 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-purple-700 dark:text-purple-300">
-                        Upload Lab Report Image
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Take a photo or upload an image of lab results
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Sparkles className="h-4 w-4 text-purple-500" />
-                      AI-powered OCR extraction
-                    </div>
-                  </>
-                )}
-              </label>
-            </div>
-
-            <p className="text-xs text-muted-foreground text-center">
-              Supports JPEG, PNG. The AI will extract lab values and auto-populate the fields.
-            </p>
-          </TabsContent>
-        </Tabs>
-
-        {/* Recorded Labs Summary */}
-        {labs.length > 0 && (
-          <div className="mt-6 pt-4 border-t">
-            <h4 className="font-medium mb-3 flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-500" />
-              Recorded Lab Values
-            </h4>
-            <ScrollArea className="h-[200px]">
-              <div className="space-y-2">
-                {labs.map(lab => (
-                  <div
-                    key={lab.id}
-                    className={`flex items-center justify-between p-2 rounded-lg border ${getFlagColor(lab.flag)}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="font-medium">{lab.name}</span>
-                      <span className="text-lg font-bold">{lab.value}</span>
-                      <span className="text-sm text-muted-foreground">{lab.unit}</span>
-                      {lab.flag && lab.flag !== 'normal' && (
-                        <Badge variant="outline" className={getFlagColor(lab.flag)}>
-                          {lab.flag.toUpperCase()}
-                        </Badge>
-                      )}
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeLab(lab.id)}
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+            {/* Recorded Labs Summary */}
+            {labs.length > 0 && (
+              <div className="mt-6 pt-4 border-t">
+                <h4 className="font-medium mb-3 flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-500" />
+                  Recorded Lab Values
+                </h4>
+                <ScrollArea className="h-[200px]">
+                  <div className="space-y-2">
+                    {labs.map(lab => (
+                      <div
+                        key={lab.id}
+                        className={`flex items-center justify-between p-2 rounded-lg border ${getFlagColor(lab.flag)}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="font-medium">{lab.name}</span>
+                          <span className="text-lg font-bold">{lab.value}</span>
+                          <span className="text-sm text-muted-foreground">{lab.unit}</span>
+                          {lab.flag && lab.flag !== 'normal' && (
+                            <Badge variant="outline" className={getFlagColor(lab.flag)}>
+                              {lab.flag.toUpperCase()}
+                            </Badge>
+                          )}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeLab(lab.id)}
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </div>
-            </ScrollArea>
-          </div>
-        )}
-      </CardContent>
+            )}
+          </CardContent>
         </CollapsibleContent>
-    </Card>
-  </Collapsible>
+      </Card>
+    </Collapsible>
   );
 }
