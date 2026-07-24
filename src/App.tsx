@@ -17,6 +17,7 @@ const SettingsPage = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ContrastTest = lazy(() => import("./pages/ContrastTest"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const VO2Max = lazy(() => import("./pages/VO2Max"));
 
 const queryClient = new QueryClient();
 
