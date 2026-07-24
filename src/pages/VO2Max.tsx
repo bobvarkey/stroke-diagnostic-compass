@@ -185,6 +185,34 @@ export default function VO2Max() {
                   </div>
                 )}
 
+                {timeResult && timePctPred !== null && predVO2 && (
+                  <Card className="bg-gradient-to-br from-primary/5 to-accent/5 border-primary/30">
+                    <CardContent className="pt-4 grid md:grid-cols-3 gap-3">
+                      <div>
+                        <div className="text-xs text-muted-foreground">Predicted VO₂ (Jones)</div>
+                        <div className="text-2xl font-black">{predVO2.toFixed(1)}</div>
+                        <div className="text-xs">mL/kg/min · {sex === "M" ? "Male" : "Female"}, age {ageNum}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">% Predicted</div>
+                        <div className="text-3xl font-black text-gradient-sunset">{timePctPred.toFixed(0)}%</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Functional class</div>
+                        <div className={`text-lg font-black ${percentPredictedLabel(timePctPred).color}`}>
+                          {percentPredictedLabel(timePctPred).label}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {timeResult && !predVO2 && (
+                  <div className="text-xs text-muted-foreground p-2 rounded-md bg-muted/30">
+                    Enter age and sex above to see % predicted VO₂ (Jones equation).
+                  </div>
+                )}
+
                 <div className="text-xs text-muted-foreground p-3 rounded-md bg-muted/40 font-mono">
                   VO₂ = 14.8 − 1.379·T + 0.451·T² − 0.012·T³  &nbsp;(T in minutes)
                 </div>
