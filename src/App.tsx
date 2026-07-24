@@ -43,6 +43,7 @@ const App = () => (
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/contrast-test" element={<ContrastTest />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/vo2-max" element={<VO2Max />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
