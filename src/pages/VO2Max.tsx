@@ -28,6 +28,22 @@ const interpret = (vo2: number) => {
   return { label: "Excellent", color: "text-teal-500" };
 };
 
+// Jones et al. predicted VO2max (mL/kg/min) from age & sex
+const predictedVO2 = (age: number, sex: string) => {
+  if (!age || age <= 0 || !sex) return null;
+  if (sex === "M") return 50.75 - 0.372 * age;
+  if (sex === "F") return 41.85 - 0.413 * age;
+  return null;
+};
+
+const percentPredictedLabel = (pct: number) => {
+  if (pct >= 100) return { label: "Normal (≥100%)", color: "text-emerald-500" };
+  if (pct >= 85) return { label: "Low-normal (85–99%)", color: "text-teal-500" };
+  if (pct >= 70) return { label: "Mildly reduced (70–84%)", color: "text-amber-500" };
+  if (pct >= 50) return { label: "Moderately reduced (50–69%)", color: "text-orange-500" };
+  return { label: "Severely reduced (<50%)", color: "text-red-500" };
+};
+
 export default function VO2Max() {
   const [minutes, setMinutes] = useState<string>("9");
   const [seconds, setSeconds] = useState<string>("30");
@@ -55,6 +71,11 @@ export default function VO2Max() {
     const vo2 = s.mets * 3.5;
     return { ...s, vo2, interp: interpret(vo2) };
   }, [stage]);
+
+  const ageNum = parseFloat(age) || 0;
+  const predVO2 = useMemo(() => predictedVO2(ageNum, sex), [ageNum, sex]);
+  const timePctPred = timeResult && predVO2 ? (timeResult.vo2 / predVO2) * 100 : null;
+  const stagePctPred = stageResult && predVO2 ? (stageResult.vo2 / predVO2) * 100 : null;
 
   return (
     <div className="min-h-screen relative bg-background">
@@ -164,6 +185,34 @@ export default function VO2Max() {
                   </div>
                 )}
 
+                {timeResult && timePctPred !== null && predVO2 && (
+                  <Card className="bg-gradient-to-br from-primary/5 to-accent/5 border-primary/30">
+                    <CardContent className="pt-4 grid md:grid-cols-3 gap-3">
+                      <div>
+                        <div className="text-xs text-muted-foreground">Predicted VO₂ (Jones)</div>
+                        <div className="text-2xl font-black">{predVO2.toFixed(1)}</div>
+                        <div className="text-xs">mL/kg/min · {sex === "M" ? "Male" : "Female"}, age {ageNum}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">% Predicted</div>
+                        <div className="text-3xl font-black text-gradient-sunset">{timePctPred.toFixed(0)}%</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Functional class</div>
+                        <div className={`text-lg font-black ${percentPredictedLabel(timePctPred).color}`}>
+                          {percentPredictedLabel(timePctPred).label}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {timeResult && !predVO2 && (
+                  <div className="text-xs text-muted-foreground p-2 rounded-md bg-muted/30">
+                    Enter age and sex above to see % predicted VO₂ (Jones equation).
+                  </div>
+                )}
+
                 <div className="text-xs text-muted-foreground p-3 rounded-md bg-muted/40 font-mono">
                   VO₂ = 14.8 − 1.379·T + 0.451·T² − 0.012·T³  &nbsp;(T in minutes)
                 </div>
@@ -215,6 +264,29 @@ export default function VO2Max() {
                         </CardContent>
                       </Card>
                     </div>
+                    {stagePctPred !== null && predVO2 && (
+                      <div className="grid md:grid-cols-3 gap-3 p-3 rounded-md bg-primary/5 border border-primary/20">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Predicted VO₂ (Jones)</div>
+                          <div className="text-xl font-black">{predVO2.toFixed(1)} <span className="text-xs font-normal">mL/kg/min</span></div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">% Predicted</div>
+                          <div className="text-2xl font-black text-gradient-sunset">{stagePctPred.toFixed(0)}%</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Functional class</div>
+                          <div className={`text-base font-black ${percentPredictedLabel(stagePctPred).color}`}>
+                            {percentPredictedLabel(stagePctPred).label}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {!predVO2 && (
+                      <div className="text-xs text-muted-foreground p-2 rounded-md bg-muted/30">
+                        Enter age and sex in the "By Total Time" tab to see % predicted VO₂.
+                      </div>
+                    )}
                     <div className="flex gap-2 text-sm p-3 rounded-md bg-muted/40">
                       <Info className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
                       <span>{stageResult.note}</span>
