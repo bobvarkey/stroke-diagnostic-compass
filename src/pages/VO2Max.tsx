@@ -72,6 +72,11 @@ export default function VO2Max() {
     return { ...s, vo2, interp: interpret(vo2) };
   }, [stage]);
 
+  const ageNum = parseFloat(age) || 0;
+  const predVO2 = useMemo(() => predictedVO2(ageNum, sex), [ageNum, sex]);
+  const timePctPred = timeResult && predVO2 ? (timeResult.vo2 / predVO2) * 100 : null;
+  const stagePctPred = stageResult && predVO2 ? (stageResult.vo2 / predVO2) * 100 : null;
+
   return (
     <div className="min-h-screen relative bg-background">
       <div className="bg-orb bg-orb-1" />
