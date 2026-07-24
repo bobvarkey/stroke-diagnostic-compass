@@ -28,6 +28,22 @@ const interpret = (vo2: number) => {
   return { label: "Excellent", color: "text-teal-500" };
 };
 
+// Jones et al. predicted VO2max (mL/kg/min) from age & sex
+const predictedVO2 = (age: number, sex: string) => {
+  if (!age || age <= 0 || !sex) return null;
+  if (sex === "M") return 50.75 - 0.372 * age;
+  if (sex === "F") return 41.85 - 0.413 * age;
+  return null;
+};
+
+const percentPredictedLabel = (pct: number) => {
+  if (pct >= 100) return { label: "Normal (≥100%)", color: "text-emerald-500" };
+  if (pct >= 85) return { label: "Low-normal (85–99%)", color: "text-teal-500" };
+  if (pct >= 70) return { label: "Mildly reduced (70–84%)", color: "text-amber-500" };
+  if (pct >= 50) return { label: "Moderately reduced (50–69%)", color: "text-orange-500" };
+  return { label: "Severely reduced (<50%)", color: "text-red-500" };
+};
+
 export default function VO2Max() {
   const [minutes, setMinutes] = useState<string>("9");
   const [seconds, setSeconds] = useState<string>("30");
