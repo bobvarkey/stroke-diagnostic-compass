@@ -264,6 +264,29 @@ export default function VO2Max() {
                         </CardContent>
                       </Card>
                     </div>
+                    {stagePctPred !== null && predVO2 && (
+                      <div className="grid md:grid-cols-3 gap-3 p-3 rounded-md bg-primary/5 border border-primary/20">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Predicted VO₂ (Jones)</div>
+                          <div className="text-xl font-black">{predVO2.toFixed(1)} <span className="text-xs font-normal">mL/kg/min</span></div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">% Predicted</div>
+                          <div className="text-2xl font-black text-gradient-sunset">{stagePctPred.toFixed(0)}%</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Functional class</div>
+                          <div className={`text-base font-black ${percentPredictedLabel(stagePctPred).color}`}>
+                            {percentPredictedLabel(stagePctPred).label}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {!predVO2 && (
+                      <div className="text-xs text-muted-foreground p-2 rounded-md bg-muted/30">
+                        Enter age and sex in the "By Total Time" tab to see % predicted VO₂.
+                      </div>
+                    )}
                     <div className="flex gap-2 text-sm p-3 rounded-md bg-muted/40">
                       <Info className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
                       <span>{stageResult.note}</span>
