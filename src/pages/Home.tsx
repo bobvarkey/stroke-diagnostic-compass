@@ -40,6 +40,7 @@ export default function Home() {
           </Link>
           <nav className="flex items-center gap-1 text-xs">
             <Link to="/calculators"><Button variant="ghost" size="sm"><Calculator className="h-3.5 w-3.5 mr-1"/>Calculators</Button></Link>
+            <Link to="/vo2-max"><Button variant="ghost" size="sm"><Zap className="h-3.5 w-3.5 mr-1"/>VO₂ Max</Button></Link>
             <Link to="/history"><Button variant="ghost" size="sm"><History className="h-3.5 w-3.5 mr-1"/>History</Button></Link>
             <Link to="/settings"><Button variant="ghost" size="sm"><Settings className="h-3.5 w-3.5 mr-1"/>Settings</Button></Link>
             <Link to="/workup"><Button size="sm" className="bg-gradient-sunset border-0 shadow-glow ml-2">Open App <ArrowRight className="h-3.5 w-3.5 ml-1"/></Button></Link>

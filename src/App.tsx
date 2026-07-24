@@ -17,6 +17,7 @@ const SettingsPage = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ContrastTest = lazy(() => import("./pages/ContrastTest"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const VO2Max = lazy(() => import("./pages/VO2Max"));
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/contrast-test" element={<ContrastTest />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/vo2-max" element={<VO2Max />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
