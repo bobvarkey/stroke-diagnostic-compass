@@ -576,6 +576,217 @@ const DRUGS: Drug[] = [
 ];
 
 /* ------------------------------------------------------------------ */
+/* Renal & hepatic dose adjustment (all drugs)                         */
+/* ------------------------------------------------------------------ */
+interface OrganAdjust {
+  renal: string;
+  hepatic: string;
+}
+
+const ORGAN_ADJUST: Record<string, OrganAdjust> = {
+  Aspirin: {
+    renal:
+      "CrCl ≥30: no adjustment. CrCl <30 / dialysis: antiplatelet doses (75–100 mg) still used but bleeding and uraemic platelet dysfunction increase — avoid high anti-inflammatory doses (>325 mg) which worsen GFR and cause Na/water retention.",
+    hepatic:
+      "Mild–moderate: no change. Severe (Child-Pugh C), cirrhosis with varices or platelets <50 ×10⁹/L: avoid — high variceal/GI bleeding risk. Avoid entirely in acute liver failure.",
+  },
+  Clopidogrel: {
+    renal:
+      "No dose adjustment at any CrCl including haemodialysis. Antiplatelet effect is attenuated in CKD (reduced responsiveness) — consider platelet function/CYP2C19 testing if recurrent events.",
+    hepatic:
+      "Prodrug requiring hepatic CYP2C19 activation. Mild–moderate: no adjustment but reduced efficacy possible. Severe (Child-Pugh C): avoid — impaired activation plus coagulopathy.",
+  },
+  Ticagrelor: {
+    renal:
+      "No dose adjustment at any CrCl, including dialysis (renal clearance negligible). Monitor for hyperuricaemia and creatinine rise, and for dyspnoea which is more troublesome in CKD.",
+    hepatic:
+      "Mild: no adjustment. Moderate: use with caution (no data, exposure increased). Severe (Child-Pugh C): CONTRAINDICATED — hepatic metabolism via CYP3A4 with coagulopathy risk.",
+  },
+  Prasugrel: {
+    renal:
+      "No dose adjustment for renal impairment or ESRD. Bleeding risk still elevated in advanced CKD — weigh carefully.",
+    hepatic:
+      "Mild–moderate (Child-Pugh A/B): no adjustment. Severe (Child-Pugh C): avoid. Contraindicated after stroke/TIA regardless of organ function.",
+  },
+  "Dipyridamole ER + Aspirin": {
+    renal:
+      "CrCl ≥30: no adjustment. CrCl <30: limited data — use with caution; hypotension and headache more common. Not studied in dialysis.",
+    hepatic:
+      "Hepatically metabolised (glucuronidation). Mild–moderate: caution. Severe hepatic impairment: avoid — combined with the aspirin component this markedly raises bleeding risk.",
+  },
+  Cilostazol: {
+    renal:
+      "CrCl >25: no adjustment. CrCl ≤25: use with caution, consider 50 mg BID; dialysis data limited. Active metabolites accumulate.",
+    hepatic:
+      "Moderate–severe hepatic impairment: CONTRAINDICATED. Mild: 50 mg BID and avoid CYP3A4/CYP2C19 inhibitors (diltiazem, omeprazole, ketoconazole → halve dose).",
+  },
+  Tirofiban: {
+    renal:
+      "Predominantly renal clearance. CrCl <30 mL/min (or <60 in some stroke protocols): reduce infusion rate by 50%. Dialysis: tirofiban is dialysable — avoid unless in a monitored protocol.",
+    hepatic:
+      "No formal hepatic adjustment (minimal hepatic metabolism). Coagulopathy of liver disease still raises bleeding risk — check platelets/fibrinogen before starting.",
+  },
+  Cangrelor: {
+    renal:
+      "No dose adjustment for any degree of renal impairment or dialysis — metabolised in plasma by dephosphorylation, independent of organ function.",
+    hepatic:
+      "No dose adjustment — plasma-esterase metabolism, not hepatic. Safe in liver disease from a pharmacokinetic standpoint; bleeding risk still applies.",
+  },
+  Eptifibatide: {
+    renal:
+      "CrCl <50 mL/min: give the standard bolus but HALVE the infusion to 1 mcg/kg/min. CrCl <30 mL/min or dialysis: CONTRAINDICATED.",
+    hepatic:
+      "No hepatic dose adjustment (renally cleared). Avoid in cirrhosis with coagulopathy or thrombocytopenia.",
+  },
+  Abciximab: {
+    renal:
+      "No dose adjustment (cleared by proteolysis / platelet binding), but bleeding risk is markedly higher in severe renal impairment — use with caution or avoid if CrCl <30.",
+    hepatic:
+      "No hepatic dose adjustment. Avoid in severe hepatic impairment with coagulopathy or platelets <100 ×10⁹/L.",
+  },
+  "Unfractionated Heparin (UFH)": {
+    renal:
+      "NO renal adjustment at any CrCl including dialysis — hepatic + reticuloendothelial clearance. Preferred parenteral anticoagulant when CrCl <30 mL/min.",
+    hepatic:
+      "Reduce empirically and titrate to aPTT/anti-Xa in severe hepatic impairment — clearance falls and baseline coagulopathy raises bleeding risk. Antithrombin deficiency in liver disease can cause apparent heparin resistance.",
+  },
+  "UFH (Prophylactic SC)": {
+    renal:
+      "No adjustment at any CrCl including dialysis — the prophylactic agent of choice when CrCl <30 mL/min instead of LMWH.",
+    hepatic:
+      "No fixed adjustment. In severe hepatic impairment monitor platelets and Hb; consider mechanical prophylaxis alone if INR already >1.8 or platelets <50 ×10⁹/L.",
+  },
+  Enoxaparin: {
+    renal:
+      "CrCl 30–50: no change, monitor anti-Xa in the frail/obese. CrCl <30: treatment 1 mg/kg SC ONCE DAILY (not q12h); prophylaxis 30 mg SC daily. Dialysis: avoid — use UFH. Check anti-Xa (peak 4 h post-dose, target 0.5–1.0 IU/mL for BD dosing).",
+    hepatic:
+      "No specific dose reduction, but avoid in Child-Pugh C, INR >1.8, or platelets <50 ×10⁹/L. Monitor anti-Xa rather than aPTT.",
+  },
+  Fondaparinux: {
+    renal:
+      "CrCl >50: full dose. CrCl 30–50: use with caution — reduce prophylaxis to 1.5 mg daily; treatment doses generally avoided. CrCl <30 or dialysis: CONTRAINDICATED (t½ prolongs to >20 h, no antidote).",
+    hepatic:
+      "No adjustment in mild–moderate impairment (renally cleared). Severe hepatic impairment: use with caution given bleeding risk; not removed by protamine.",
+  },
+  Warfarin: {
+    renal:
+      "No pharmacokinetic dose adjustment, but CKD raises bleeding risk and INR lability. CrCl <30 / dialysis: start low (2.5 mg), target INR 2–3 with more frequent monitoring; avoid supratherapeutic INR.",
+    hepatic:
+      "Hepatically metabolised with reduced factor synthesis — start at 2–2.5 mg with INR checks every 1–2 days. Severe impairment / cirrhosis: baseline INR is already raised and does not reflect anticoagulation — generally avoid.",
+  },
+  Apixaban: {
+    renal:
+      "Standard 5 mg BID. Reduce to 2.5 mg BID if ≥2 of: age ≥80 y, weight ≤60 kg, creatinine ≥1.5 mg/dL. CrCl 15–29: 2.5 mg BID (limited data). CrCl <15 / dialysis: not recommended in most guidelines (US label permits 5 mg BID in dialysis).",
+    hepatic:
+      "Child-Pugh A: no adjustment. Child-Pugh B: use with caution (limited data). Child-Pugh C or any hepatic disease with coagulopathy: CONTRAINDICATED. Check LFTs at baseline and annually.",
+  },
+  Rivaroxaban: {
+    renal:
+      "CrCl >50: 20 mg daily with the evening meal. CrCl 15–50: 15 mg daily. CrCl <15 / dialysis: AVOID (36% renal clearance of active drug).",
+    hepatic:
+      "Child-Pugh A: no adjustment. Child-Pugh B and C, or any hepatic disease with coagulopathy: CONTRAINDICATED — exposure and bleeding risk rise sharply.",
+  },
+  Dabigatran: {
+    renal:
+      "Most renally dependent DOAC (~80% renal). CrCl >30: 150 mg BID (110 mg BID if age ≥80 or high bleeding risk). CrCl 15–30: 75 mg BID (US) / avoid (EU). CrCl <15 or dialysis: CONTRAINDICATED. Recheck renal function at least annually and with any acute illness.",
+    hepatic:
+      "Minimal hepatic metabolism — no adjustment for mild–moderate impairment. Avoid if ALT/AST >2× ULN or in Child-Pugh C. Idarucizumab remains effective for reversal.",
+  },
+  Edoxaban: {
+    renal:
+      "CrCl 51–95: 60 mg daily. CrCl 15–50, weight ≤60 kg, or potent P-gp inhibitors: 30 mg daily. CrCl >95: DO NOT USE (reduced efficacy vs warfarin). CrCl <15 / dialysis: contraindicated.",
+    hepatic:
+      "Child-Pugh A: no adjustment. Child-Pugh B: caution, not recommended. Child-Pugh C: CONTRAINDICATED.",
+  },
+  Asundexian: {
+    renal:
+      "CrCl 30–50: reduce to 20 mg daily. CrCl <30: 10 mg daily or avoid (~2-fold exposure rise, sparse safety data). Not studied in dialysis.",
+    hepatic:
+      "Child-Pugh A: no adjustment. Child-Pugh B: caution, consider 20 mg daily. Child-Pugh C: CONTRAINDICATED. Avoid strong CYP3A4 inhibitors/inducers.",
+  },
+  Milvexian: {
+    renal:
+      "Mild–moderate impairment: no dose change in trials. CrCl <30: excluded from pivotal trials — avoid; if unavoidable use the lowest studied dose with close monitoring.",
+    hepatic:
+      "Child-Pugh A: no adjustment. Child-Pugh B: caution, limited data. Child-Pugh C or coagulopathic liver disease: CONTRAINDICATED (CYP3A4 substrate).",
+  },
+  Alteplase: {
+    renal:
+      "No dose adjustment at any CrCl or on dialysis (hepatic clearance). Advanced CKD independently increases symptomatic ICH and systemic bleeding — counsel accordingly, keep BP <180/105.",
+    hepatic:
+      "No dose change, but severe hepatic disease, cirrhosis with coagulopathy, INR >1.7, or oesophageal varices are contraindications to thrombolysis.",
+  },
+  Tenecteplase: {
+    renal:
+      "No dose adjustment for renal impairment or dialysis (hepatic clearance). Weight-based cap of 25 mg still applies.",
+    hepatic:
+      "No dose change. Contraindicated in significant hepatic dysfunction with coagulopathy, INR >1.7, or known varices.",
+  },
+  Idarucizumab: {
+    renal:
+      "No dose adjustment — full 5 g IV regardless of CrCl or dialysis status. Dabigatran rebound is more likely in renal failure: recheck dilute thrombin time/aPTT at 12–24 h and consider a second 5 g dose.",
+    hepatic:
+      "No dose adjustment (renally excreted monoclonal fragment). Safe in hepatic impairment.",
+  },
+  "Andexanet alfa": {
+    renal:
+      "No dose adjustment for renal impairment. Dose is driven by the Xa inhibitor, its dose, and the time since last intake — not by CrCl. Thrombotic risk (~10%) is higher in CKD; restart anticoagulation as soon as safe.",
+    hepatic:
+      "No dose adjustment. Use with caution in hepatic disease with baseline thrombophilia; monitor for thrombosis.",
+  },
+  "4F-PCC": {
+    renal:
+      "No dose adjustment — dose by INR and body weight (capped at 100 kg). Thromboembolic risk is higher in CKD, so avoid repeat dosing without documented ongoing coagulopathy.",
+    hepatic:
+      "No dose adjustment, but in liver disease the baseline INR reflects synthetic failure, not warfarin effect — do not chase INR normalisation. Give vitamin K and treat the underlying coagulopathy; consider fibrinogen replacement.",
+  },
+  "Vitamin K (Phytonadione)": {
+    renal:
+      "No renal dose adjustment at any CrCl including dialysis.",
+    hepatic:
+      "No dose adjustment, but response is blunted in hepatocellular failure because factor synthesis itself is impaired — expect partial INR correction and pair with 4F-PCC/FFP if bleeding.",
+  },
+  "Protamine Sulfate": {
+    renal:
+      "No dose adjustment. When reversing LMWH in renal failure the LMWH effect is prolonged — repeat protamine dosing may be needed and reversal remains partial (~60% of anti-Xa).",
+    hepatic:
+      "No dose adjustment. Give slowly (≤5 mg/min, max 50 mg per dose) in all patients to avoid hypotension, bradycardia and pulmonary hypertension.",
+  },
+  "Fresh Frozen Plasma (FFP)": {
+    renal:
+      "No dose adjustment, but the 10–15 mL/kg volume load is poorly tolerated in oligo-anuric CKD/dialysis — prefer 4F-PCC or fibrinogen concentrate; give furosemide or plan dialysis if FFP is unavoidable.",
+    hepatic:
+      "Volumes required to correct cirrhotic coagulopathy are often futile and cause volume overload/portal pressure rise. Prefer targeted factor and fibrinogen replacement guided by viscoelastic testing.",
+  },
+  Cryoprecipitate: {
+    renal:
+      "No dose adjustment. Lower volume than FFP, so preferable in fluid-restricted renal failure when fibrinogen replacement is required.",
+    hepatic:
+      "No dose adjustment. Fibrinogen consumption is common in liver failure — dose to a fibrinogen target >1.5 g/L (>2 g/L in active ICH) and recheck after each 10-unit pool.",
+  },
+  "Fibrinogen Concentrate": {
+    renal:
+      "No dose adjustment — small volume makes it the preferred fibrinogen source in dialysis/oliguric patients.",
+    hepatic:
+      "No dose adjustment. Preferred over cryoprecipitate in hepatic failure with volume overload; dose = (target − actual g/L) × body weight (kg) / 0.017.",
+  },
+  Platelets: {
+    renal:
+      "No dose adjustment. Uraemic platelet dysfunction responds better to DDAVP 0.3 mcg/kg IV, cryoprecipitate, or dialysis than to transfusion — transfuse only for count <50 ×10⁹/L with bleeding or planned neurosurgery.",
+    hepatic:
+      "No dose adjustment. Increments are blunted by splenic sequestration in portal hypertension — recheck the count 10–60 min post-transfusion and consider a thrombopoietin agonist for elective procedures.",
+  },
+};
+
+const DEFAULT_ORGAN_ADJUST: OrganAdjust = {
+  renal: "No specific renal dose adjustment published — assess CrCl, monitor for accumulation and bleeding.",
+  hepatic: "No specific hepatic dose adjustment published — use caution in Child-Pugh B/C and coagulopathy.",
+};
+
+const organAdjust = (name: string): OrganAdjust => ORGAN_ADJUST[name] ?? DEFAULT_ORGAN_ADJUST;
+
+
+/* ------------------------------------------------------------------ */
 /* Weight-based calculator — structured specs                          */
 /* ------------------------------------------------------------------ */
 type DoseUnit = "mg" | "mcg" | "U" | "mcg/min" | "mcg/kg/min" | "mg/kg" | "U/kg" | "U/hr";
