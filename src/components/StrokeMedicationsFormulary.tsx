@@ -1568,6 +1568,8 @@ const StrokeMedicationsFormulary: React.FC = () => {
                                     />
                                   )}
                                   <Row label="Monitoring" value={linked.monitoring} tone="warn" />
+                                  <Row label="Renal adjustment" value={organAdjust(linked.name).renal} tone="renal" />
+                                  <Row label="Hepatic adjustment" value={organAdjust(linked.name).hepatic} tone="hepatic" />
                                   {linked.evidence && (
                                     <p className="text-[10px] text-slate-400 italic">
                                       Guideline reference: {linked.evidence}
