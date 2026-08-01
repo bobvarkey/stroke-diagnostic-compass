@@ -30,6 +30,8 @@ import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
+import { FontSizeControl } from "./FontSizeControl";
+
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import IVTManagementCombined from "./IVTManagementCombined";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
