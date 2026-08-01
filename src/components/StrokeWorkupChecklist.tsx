@@ -45,7 +45,7 @@ import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
-import VascularMalformationScales, { PHASESScore } from "./VascularMalformationScales";
+import VascularMalformationScales, { UnrupturedAneurysmRiskScores } from "./VascularMalformationScales";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
