@@ -3,17 +3,15 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    // Check initial theme
-    const isDarkMode = document.documentElement.classList.contains('dark') ||
-      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    // Sunset Blaze tokens are dark-first: default to dark unless explicitly opted out
+    const isDarkMode = localStorage.getItem('theme') !== 'light';
     setIsDark(isDarkMode);
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    }
+    document.documentElement.classList.toggle('dark', isDarkMode);
   }, []);
+
 
   const toggleTheme = () => {
     const newIsDark = !isDark;
