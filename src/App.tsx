@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Home from "./pages/Home";
 import GlossaryDrawer from "./components/GlossaryDrawer";
 import FloatingNavButtons from "./components/FloatingNavButtons";
+import AcronymAutoTooltip from "./components/AcronymAutoTooltip";
 
 // Route-level code splitting — keeps the initial bundle small.
 const Index = lazy(() => import("./pages/Index"));
