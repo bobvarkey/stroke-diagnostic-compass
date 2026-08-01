@@ -615,14 +615,15 @@ export default function VascularMalformationScales() {
               </span>
               <ChevronDown className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`} />
             </CardTitle>
-            <p className="text-xs text-muted-foreground text-left">Spetzler–Martin · R₂eD AVM · PHASES · dAVF (Cognard & Borden)</p>
+            <p className="text-xs text-muted-foreground text-left">Spetzler–Martin · R₂eD AVM · PHASES & UIATS · dAVF (Cognard & Borden)</p>
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="space-y-6">
             <SpetzlerMartinScale />
             <R2eDAVMScore />
-            <PHASESScore />
+            <UnrupturedAneurysmRiskScores />
+
             <DAVFClassification />
           </CardContent>
         </CollapsibleContent>
