@@ -246,10 +246,11 @@ export function PHASESScore() {
     <Card className="border-l-4 border-l-purple-500">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
-          <Calculator className="h-5 w-5" /> PHASES — Aneurysm Rupture Risk (5-year)
+          <Calculator className="h-5 w-5" /> PHASES — 5-year rupture risk
         </CardTitle>
         <p className="text-xs text-muted-foreground">DSA / CTA / MRA · Greving JP, Lancet Neurol 2014.</p>
       </CardHeader>
+
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label className="text-sm font-semibold">P — Population</Label>
