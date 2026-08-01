@@ -1144,6 +1144,9 @@ const StrokeMedicationsFormulary: React.FC = () => {
           />
         )}
 
+        {/* Factor XIa inhibitor safety — shown on All & Anticoagulants tabs */}
+        {(tab === "all" || tab === "anticoagulant") && <FactorXIaSafetyChecklist />}
+
 
 
 
