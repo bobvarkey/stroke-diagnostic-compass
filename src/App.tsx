@@ -50,6 +50,7 @@ const App = () => (
           </Suspense>
           <GlossaryDrawer />
           <FloatingNavButtons />
+          <AcronymAutoTooltip />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
