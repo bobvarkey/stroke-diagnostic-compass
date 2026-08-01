@@ -358,6 +358,42 @@ const DRUGS: Drug[] = [
     notes: "Reversal: Andexanet or 4F-PCC.",
     evidence: "ENGAGE AF-TIMI 48",
   },
+  {
+    name: "Asundexian",
+    aliases: "Bayer's Factor XIa inhibitor",
+    category: "anticoagulant",
+    class: "Direct oral Factor XIa inhibitor (FXIa-I)",
+    indication: "Investigational — not approved. Evaluated for stroke prevention in AF and post-MI/antiphospholipid populations. NOT for routine clinical use.",
+    dose:
+      "Trial dosing (AF): 50 mg PO daily. Moderate renal impairment: 20 mg daily. Severe renal impairment: 10 mg daily. Lower doses in DAPT combinations (e.g., 10–20 mg daily + aspirin).",
+    route: "PO",
+    onset: "2–4 h; duration 24 h",
+    duration: "Investigational — trial-dependent",
+    contraindications:
+      "Active bleeding, not for use outside clinical trial; severe hepatic impairment; concurrent strong inhibitors/inducers (limited data)",
+    monitoring: "Renal function, Hb, bleeding; no routine coagulation test (PT/aPTT not sensitive)",
+    notes:
+      "OCEANIC-AF (Phase 3): asundexian 50 mg daily was inferior to apixaban for stroke prevention in AF with higher ischemic stroke rates. Development for AF was discontinued. Continued evaluation in other indications (e.g., post-MI, VTE prevention, antiphospholipid syndrome) with caution. No specific reversal agent; bleeding managed with 4F-PCC/supportive care.",
+    evidence: "OCEANIC-AF, OCEANIC-Stroke, OCEANIC-AFIB (discontinued for AF)",
+  },
+  {
+    name: "Milvexian",
+    aliases: "BMS-986177 / JNJ-70033093",
+    category: "anticoagulant",
+    class: "Direct oral Factor XIa inhibitor (FXIa-I)",
+    indication: "Investigational — not approved. Evaluated for VTE prevention, stroke prevention in AF, and post-ischemic stroke secondary prevention.",
+    dose:
+      "Phase 2 dosing: 25 mg, 50 mg, 100 mg, or 200 mg PO BID. In combination with aspirin: 25 mg BID + aspirin 100 mg daily commonly studied. Dose selection pending Phase 3 outcomes.",
+    route: "PO",
+    onset: "2–4 h; duration 12 h",
+    duration: "Investigational — trial-dependent",
+    contraindications:
+      "Active bleeding, not for routine use outside clinical trial; severe hepatic impairment; limited data in pregnancy",
+    monitoring: "Renal function, Hb, bleeding; no routine coagulation test",
+    notes:
+      "Factor XIa inhibition theoretically preserves hemostasis while reducing thrombosis — lower ICH risk than conventional anticoagulants. Phase 3 LIBREXIA program (VTE, AF, stroke) ongoing. No specific antidote; bleeding managed with 4F-PCC/supportive care.",
+    evidence: "ANT-005TWO, LIBREXIA-VTE, LIBREXIA-STROKE, LIBREXIA-AF (Phase 3)",
+  },
 
   /* --------------- Thrombolytics --------------- */
   {
