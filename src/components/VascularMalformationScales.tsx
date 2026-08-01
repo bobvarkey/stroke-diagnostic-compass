@@ -10,6 +10,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ChevronDown, Activity, Calculator, GitBranch, AlertTriangle } from "lucide-react";
 import { ZoomableImage } from "@/components/ZoomableImage";
+import { UIATSScore } from "@/components/UIATSScore";
+
 import cognardDavfImage from "@/assets/cognard-davf-classification.png.asset.json";
 
 /* =========================================================
