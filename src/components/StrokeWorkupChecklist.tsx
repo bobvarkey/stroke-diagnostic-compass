@@ -45,7 +45,7 @@ import PRIMEToolCalculator from "./PRIMEToolCalculator";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
-import VascularMalformationScales, { PHASESScore } from "./VascularMalformationScales";
+import VascularMalformationScales, { UnrupturedAneurysmRiskScores } from "./VascularMalformationScales";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
@@ -6370,10 +6370,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <SubarachnoidHemorrhage />
           </LazySection>
 
-          {/* PHASES Aneurysm Rupture Risk (5-year) */}
+          {/* Unruptured aneurysm risk scores — PHASES & UIATS */}
           <div id="phases-score">
-            <PHASESScore />
+            <UnrupturedAneurysmRiskScores />
           </div>
+
 
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Subarachnoid hemorrhage management — Always correlate with clinical presentation</p>

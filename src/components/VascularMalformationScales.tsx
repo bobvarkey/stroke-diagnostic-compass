@@ -10,6 +10,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ChevronDown, Activity, Calculator, GitBranch, AlertTriangle } from "lucide-react";
 import { ZoomableImage } from "@/components/ZoomableImage";
+import { UIATSScore } from "@/components/UIATSScore";
+
 import cognardDavfImage from "@/assets/cognard-davf-classification.png.asset.json";
 
 /* =========================================================
@@ -246,10 +248,11 @@ export function PHASESScore() {
     <Card className="border-l-4 border-l-purple-500">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
-          <Calculator className="h-5 w-5" /> PHASES — Aneurysm Rupture Risk (5-year)
+          <Calculator className="h-5 w-5" /> PHASES — 5-year rupture risk
         </CardTitle>
         <p className="text-xs text-muted-foreground">DSA / CTA / MRA · Greving JP, Lancet Neurol 2014.</p>
       </CardHeader>
+
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label className="text-sm font-semibold">P — Population</Label>
@@ -345,6 +348,41 @@ export function PHASESScore() {
     </Card>
   );
 }
+
+/* =========================================================
+ * 3b. Unruptured aneurysm risk scores — PHASES + UIATS
+ * ========================================================= */
+export function UnrupturedAneurysmRiskScores() {
+  const [tab, setTab] = useState("phases");
+  return (
+    <Card className="border-2 border-purple-200 dark:border-purple-800/60">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+          <Calculator className="h-5 w-5" /> Unruptured aneurysm risk scores
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">
+          PHASES (natural-history rupture risk) · UIATS (repair vs conservative management consensus score)
+        </p>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={tab} onValueChange={setTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="phases">PHASES</TabsTrigger>
+            <TabsTrigger value="uiats">UIATS</TabsTrigger>
+          </TabsList>
+          <TabsContent value="phases" className="mt-4">
+            <PHASESScore />
+          </TabsContent>
+          <TabsContent value="uiats" className="mt-4">
+            <UIATSScore />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+}
+
+
 
 /* =========================================================
  * 4. dAVF — Cognard & Borden Classification
@@ -577,14 +615,15 @@ export default function VascularMalformationScales() {
               </span>
               <ChevronDown className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`} />
             </CardTitle>
-            <p className="text-xs text-muted-foreground text-left">Spetzler–Martin · R₂eD AVM · PHASES · dAVF (Cognard & Borden)</p>
+            <p className="text-xs text-muted-foreground text-left">Spetzler–Martin · R₂eD AVM · PHASES & UIATS · dAVF (Cognard & Borden)</p>
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="space-y-6">
             <SpetzlerMartinScale />
             <R2eDAVMScore />
-            <PHASESScore />
+            <UnrupturedAneurysmRiskScores />
+
             <DAVFClassification />
           </CardContent>
         </CollapsibleContent>
