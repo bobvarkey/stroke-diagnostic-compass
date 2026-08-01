@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import AntiplateletSwitchingGuide from "./AntiplateletSwitchingGuide";
 import UFHMonitoringTimeline, { UFHRegimenId } from "./UFHMonitoringTimeline";
+import FactorXIaSafetyChecklist from "./FactorXIaSafetyChecklist";
 
 
 /* ------------------------------------------------------------------ */
@@ -1142,6 +1143,9 @@ const StrokeMedicationsFormulary: React.FC = () => {
             }}
           />
         )}
+
+        {/* Factor XIa inhibitor safety — shown on All & Anticoagulants tabs */}
+        {(tab === "all" || tab === "anticoagulant") && <FactorXIaSafetyChecklist />}
 
 
 
