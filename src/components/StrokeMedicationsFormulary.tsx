@@ -1191,6 +1191,8 @@ function drugToText(d: Drug): string {
   if (d.duration) lines.push(`Duration    : ${d.duration}`);
   lines.push(`Contra-Ind. : ${d.contraindications}`);
   lines.push(`Monitoring  : ${d.monitoring}`);
+  lines.push(`Renal adj.  : ${organAdjust(d.name).renal}`);
+  lines.push(`Hepatic adj.: ${organAdjust(d.name).hepatic}`);
   if (d.notes) lines.push(`Notes       : ${d.notes}`);
   if (d.evidence) lines.push(`Evidence    : ${d.evidence}`);
   return lines.join("\n");
