@@ -1159,6 +1159,8 @@ const DrugCard: React.FC<{
               <Row label="Onset & Duration" value={`${drug.onset || "Not specified"}${drug.duration ? ` · Duration: ${drug.duration}` : ""}`} />
               <Row label="Contraindications" value={drug.contraindications} tone="danger" />
               <Row label="Monitoring" value={drug.monitoring} tone="warn" />
+              <Row label="Renal adjustment" value={organAdjust(drug.name).renal} tone="renal" />
+              <Row label="Hepatic adjustment" value={organAdjust(drug.name).hepatic} tone="hepatic" />
               {drug.notes && <Row label="Notes" value={drug.notes} />}
               {drug.evidence && (
                 <p className="text-xs text-slate-400 italic pt-1 border-t border-slate-700">Evidence: {drug.evidence}</p>
