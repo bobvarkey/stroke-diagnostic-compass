@@ -30,6 +30,8 @@ import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
+import { FontSizeControl } from "./FontSizeControl";
+
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import IVTManagementCombined from "./IVTManagementCombined";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
@@ -5741,9 +5743,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Header with Theme Toggle */}
       <div className="relative text-center mb-6">
         {/* Theme Toggle - Fixed Position */}
-        <div className="absolute right-0 top-0">
+        <div className="absolute right-0 top-0 flex items-center gap-2">
+          <FontSizeControl />
           <ThemeToggle />
         </div>
+
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-relaxed">
           Acute Stroke Workup Checklist
