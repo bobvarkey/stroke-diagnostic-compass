@@ -1101,10 +1101,12 @@ const CATEGORY_STYLE: Record<
   "blood-product": { label: "Blood Products", badge: "bg-rose-500/15 text-rose-300 border-rose-400/30", icon: <Droplets className="h-4 w-4" /> },
 };
 
-const Row: React.FC<{ label: string; value: string; tone?: "danger" | "warn"; highlight?: boolean }> = ({ label, value, tone, highlight }) => {
+const Row: React.FC<{ label: string; value: string; tone?: "danger" | "warn" | "renal" | "hepatic"; highlight?: boolean }> = ({ label, value, tone, highlight }) => {
   const toneCls =
     tone === "danger" ? "text-red-300 bg-red-500/10 border-red-500/30"
     : tone === "warn" ? "text-amber-200 bg-amber-500/10 border-amber-500/30"
+    : tone === "renal" ? "text-emerald-100 bg-emerald-500/10 border-emerald-500/30"
+    : tone === "hepatic" ? "text-orange-100 bg-orange-500/10 border-orange-500/30"
     : highlight ? "text-cyan-100 bg-cyan-500/10 border-cyan-500/30"
     : "text-slate-200 bg-slate-800/40 border-slate-700";
   return (
