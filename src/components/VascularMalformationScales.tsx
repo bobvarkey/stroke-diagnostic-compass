@@ -348,6 +348,41 @@ export function PHASESScore() {
 }
 
 /* =========================================================
+ * 3b. Unruptured aneurysm risk scores — PHASES + UIATS
+ * ========================================================= */
+export function UnrupturedAneurysmRiskScores() {
+  const [tab, setTab] = useState("phases");
+  return (
+    <Card className="border-2 border-purple-200 dark:border-purple-800/60">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+          <Calculator className="h-5 w-5" /> Unruptured aneurysm risk scores
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">
+          PHASES (natural-history rupture risk) · UIATS (repair vs conservative management consensus score)
+        </p>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={tab} onValueChange={setTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="phases">PHASES</TabsTrigger>
+            <TabsTrigger value="uiats">UIATS</TabsTrigger>
+          </TabsList>
+          <TabsContent value="phases" className="mt-4">
+            <PHASESScore />
+          </TabsContent>
+          <TabsContent value="uiats" className="mt-4">
+            <UIATSScore />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+}
+
+
+
+/* =========================================================
  * 4. dAVF — Cognard & Borden Classification
  * ========================================================= */
 const COGNARD: { type: string; desc: string; cvr: string; ectasia: string; risk: string; color: string; mgmt: string }[] = [
