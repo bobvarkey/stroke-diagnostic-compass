@@ -9,6 +9,9 @@ import {
 } from "lucide-react";
 import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
 import ARISE1PDFReport from "@/components/ARISE1PDFReport";
+import { ZoomableImage } from "@/components/ZoomableImage";
+import hdcsWhat from "@/assets/hdcs-what.jpg.asset.json";
+import hdcsWhy from "@/assets/hdcs-why.jpg.asset.json";
 
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
