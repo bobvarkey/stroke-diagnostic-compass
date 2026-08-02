@@ -9,6 +9,9 @@ import {
 } from "lucide-react";
 import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
 import ARISE1PDFReport from "@/components/ARISE1PDFReport";
+import { ZoomableImage } from "@/components/ZoomableImage";
+import hdcsWhat from "@/assets/hdcs-what.jpg.asset.json";
+import hdcsWhy from "@/assets/hdcs-why.jpg.asset.json";
 
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
@@ -1850,6 +1853,61 @@ function SDHMonitoringImagingProtocol() {
   );
 }
 
+// ─── Hyperdense Capsule Sign ────────────────────────────────────────────────
+
+function HyperdenseCapsuleSign() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-orange-400 dark:border-orange-600 bg-gradient-to-br from-orange-50 dark:from-orange-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-orange-100/50 dark:bg-orange-900/30">
+            <CardTitle className="flex items-center justify-between text-orange-800 dark:text-orange-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5" />
+                <span>Hyperdense Capsule Sign (HDCS)</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <ZoomableImage src={hdcsWhat.url} alt="Hyperdense capsule sign on non-contrast CT with schematic of chronic subdural hematoma neomembrane" />
+              <ZoomableImage src={hdcsWhy.url} alt="Hyperdense capsule sign as a potential imaging biomarker for middle meningeal artery embolization benefit" />
+            </div>
+
+            <div className="p-3 rounded-lg border-2 border-orange-400 bg-orange-50 dark:bg-orange-950/20">
+              <h5 className="font-semibold text-orange-800 dark:text-orange-300 text-sm mb-2">What is it?</h5>
+              <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                <li>• Seen on <strong>non-contrast CT</strong>.</li>
+                <li>• Thin <strong>hyperattenuating peripheral capsule</strong> surrounding some nonacute (subacute/chronic) subdural hematomas.</li>
+                <li>• Represents the <strong>vascularized outer neomembrane</strong> with fragile neovascular vessels.</li>
+                <li>• Recently described as the <strong>Hyperdense Capsule Sign (HDCS)</strong> in a <em>Radiology</em> 2026 study.</li>
+              </ul>
+            </div>
+
+            <div className="p-3 rounded-lg border-2 border-sky-400 bg-sky-50 dark:bg-sky-950/20">
+              <h5 className="font-semibold text-sky-800 dark:text-sky-300 text-sm mb-2">Why does it matter?</h5>
+              <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                <li>• Proposed <strong>imaging biomarker</strong> of an active, vascularized neomembrane — the target of <strong>middle meningeal artery embolization (MMAE)</strong>.</li>
+                <li>• May help identify chronic SDHs that <strong>benefit more from MMAE</strong> than from drainage alone.</li>
+                <li>• Look for it on the initial NCCT and on interval scans; pair with volume trajectory when planning MMAE vs surgery.</li>
+              </ul>
+              <p className="text-[11px] text-muted-foreground italic mt-2">
+                Ref: <em>Radiology</em> 2026 — Hyperdense Capsule Sign in nonacute subdural hematoma. Hypothesis-generating; not yet a validated treatment-selection criterion.
+              </p>
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
+
 export default function SubduralHematoma() {
   return (
     <div className="space-y-4">
@@ -1874,6 +1932,7 @@ export default function SubduralHematoma() {
 
       <SDHClassification />
       <SDHDiagnosis />
+      <HyperdenseCapsuleSign />
       <SDHTreatmentIndications />
       <SDHReversalChecklist />
       <SDHSeizureProphylaxis />
