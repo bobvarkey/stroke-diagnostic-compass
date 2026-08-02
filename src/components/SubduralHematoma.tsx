@@ -1908,6 +1908,152 @@ function HyperdenseCapsuleSign() {
 }
 
 
+function SDHReportingChecklist() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const checklist = {
+    title: "SDH radiology reporting checklist with MMAE prognostic signs",
+    summary: "For chronic/subacute SDH, report the usual pressure-effect features and add imaging signs that may help predict MMAE response or failure.",
+    must_report_findings: [
+      "Thickness",
+      "Density / age",
+      "Acute component",
+      "Mass effect",
+      "Midline shift + level measured",
+      "Ventricular compression",
+      "Herniation",
+      "Interval change"
+    ],
+    mmae_prognostic_findings: {
+      favorable_or_better_response_associated: [
+        "Hyperdense capsule sign",
+        "Lower baseline hematoma density (< 20 HU in homogeneous hypodense cSDH)",
+        "Hypodense pattern on CT",
+        "Early- or intermediate-stage hematoma morphology",
+        "Distal embolysate penetration",
+        "Liquid embolic membrane penetration",
+        "Deeper compartment penetration of embolisate on follow-up CT",
+        "Angiographic non-opacification of frontal and parietal branches after MMAE"
+      ],
+      associated_with_worse_response_or_failure: [
+        "Small MMA diameter (< 1.5 mm)",
+        "Midline shift",
+        "Homogeneous and separated architectures before MMAE",
+        "Membrane enhancement on CT or MRI",
+        "Inner membrane enhancement",
+        "Blood-fluid level / contrast medium–blood fluid level",
+        "High hematoma density at 1 week after MMAE",
+        "Aggravation of the rainbow sign on ASL after MMAE"
+      ]
+    },
+    reporting_emphasis: {
+      key_message: "Before signing SDH, check the pressure and the membrane biology.",
+      why_it_matters: "Blood presence alone is not enough; mass effect and membrane/vascular features help estimate urgency and likely MMAE response."
+    },
+    suggested_structured_report: {
+      diagnosis: "Subdural hematoma",
+      description: [
+        "Location and laterality",
+        "Maximal thickness in mm",
+        "Density/age and any acute-on-chronic component",
+        "Mass effect",
+        "Midline shift in mm",
+        "Ventricular compression",
+        "Any herniation",
+        "Interval change compared with prior imaging",
+        "If chronic/subacute and MMAE is being considered: note hyperdense capsule sign, membrane/septation pattern, density pattern, and any imaging features suggesting better or worse embolization response"
+      ]
+    }
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-orange-400 dark:border-orange-600 bg-gradient-to-br from-orange-50 dark:from-orange-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-orange-100/50 dark:bg-orange-900/30">
+            <CardTitle className="flex items-center justify-between text-orange-800 dark:text-orange-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                <span>{checklist.title}</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-4">
+            <p className="text-xs text-muted-foreground">{checklist.summary}</p>
+
+            <div className="p-3 rounded-lg border-2 border-orange-400 bg-orange-50 dark:bg-orange-950/20">
+              <h5 className="font-semibold text-orange-800 dark:text-orange-300 text-sm mb-2">Must-report CT findings</h5>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
+                {checklist.must_report_findings.map((finding) => (
+                  <li key={finding} className="flex items-start gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 text-orange-600 dark:text-orange-400 shrink-0" />
+                    <span>{finding}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="p-3 rounded-lg border-2 border-emerald-400 bg-emerald-50 dark:bg-emerald-950/20">
+                <h5 className="font-semibold text-emerald-800 dark:text-emerald-300 text-sm mb-2">Favorable for MMAE response</h5>
+                <ul className="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
+                  {checklist.mmae_prognostic_findings.favorable_or_better_response_associated.map((finding) => (
+                    <li key={finding} className="flex items-start gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <span>{finding}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-3 rounded-lg border-2 border-red-400 bg-red-50 dark:bg-red-950/20">
+                <h5 className="font-semibold text-red-800 dark:text-red-300 text-sm mb-2">Worse response / failure</h5>
+                <ul className="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
+                  {checklist.mmae_prognostic_findings.associated_with_worse_response_or_failure.map((finding) => (
+                    <li key={finding} className="flex items-start gap-2">
+                      <XCircle className="h-3.5 w-3.5 mt-0.5 text-red-600 dark:text-red-400 shrink-0" />
+                      <span>{finding}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-lg border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/20">
+              <h5 className="font-semibold text-amber-800 dark:text-amber-300 text-sm mb-2">When to suspect the Hyperdense Capsule Sign</h5>
+              <ul className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                <li>• On non-contrast CT in <strong>chronic or subacute SDH</strong>, look for a thin peripheral hyperattenuating capsule surrounding the hematoma.</li>
+                <li>• It represents the <strong>vascularized outer neomembrane</strong>; suspect it especially when MMAE is under consideration.</li>
+                <li>• Pair with overall density, membrane/septation pattern, midline shift, and interval change.</li>
+              </ul>
+            </div>
+
+            <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/30">
+              <h5 className="font-semibold text-slate-800 dark:text-slate-300 text-sm mb-2">Reporting emphasis</h5>
+              <p className="text-xs text-slate-700 dark:text-slate-400">{checklist.reporting_emphasis.key_message}</p>
+              <p className="text-xs text-muted-foreground mt-1">{checklist.reporting_emphasis.why_it_matters}</p>
+              <div className="mt-3">
+                <h6 className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Suggested structured description</h6>
+                <ul className="text-xs space-y-1 text-slate-600 dark:text-slate-400">
+                  {checklist.suggested_structured_report.description.map((line, i) => (
+                    <li key={i}>• {line}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-muted-foreground italic">
+              Ref: Radiology 2026; AHA/ASA cSDH Scientific Statement 2025; emerging MMAE prognostic literature.
+            </p>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function SubduralHematoma() {
   return (
     <div className="space-y-4">
@@ -1933,6 +2079,7 @@ export default function SubduralHematoma() {
       <SDHClassification />
       <SDHDiagnosis />
       <HyperdenseCapsuleSign />
+      <SDHReportingChecklist />
       <SDHTreatmentIndications />
       <SDHReversalChecklist />
       <SDHSeizureProphylaxis />
