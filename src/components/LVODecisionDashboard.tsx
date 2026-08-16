@@ -34,6 +34,7 @@ import HeadsUpTest from "./HeadsUpTest";
 import ETICIScoreCalculator from "./ETICIScoreCalculator";
 import TALDefinitionGuide from "./TALDefinitionGuide";
 import CTACollateralGrading from "./CTACollateralGrading";
+import PostThrombectomyMarkers from "./PostThrombectomyMarkers";
 import { toast } from "@/hooks/use-toast";
 import ModuleCommentBox from "./ModuleCommentBox";
 
@@ -833,6 +834,9 @@ const LVODecisionDashboard: React.FC = () => {
                   </CollapsibleContent>
                 </Card>
               </Collapsible>
+
+              {/* Post-Thrombectomy Radiological Signs (HARM & GLOS) - NEW */}
+              <PostThrombectomyMarkers />
 
               {/* TAL Definition Guide - Collapsible */}
               <Collapsible>
