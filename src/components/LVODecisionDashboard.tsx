@@ -835,6 +835,9 @@ const LVODecisionDashboard: React.FC = () => {
                 </Card>
               </Collapsible>
 
+              {/* Post-Thrombectomy Radiological Signs (HARM & GLOS) - NEW */}
+              <PostThrombectomyMarkers />
+
               {/* TAL Definition Guide - Collapsible */}
               <Collapsible>
                 <Card className="border-indigo-200 dark:border-indigo-800">

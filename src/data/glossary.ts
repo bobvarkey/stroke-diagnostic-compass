@@ -74,6 +74,8 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   TXA: { term: "TXA", short: "Tranexamic Acid", full: "Antifibrinolytic, 1 g IV over 10 min. Adjunct for mucosal bleeding on anticoagulation; avoid in active thrombosis.", category: "Reversal" },
   HT: { term: "HT", short: "Haemorrhagic Transformation", full: "Bleeding into infarcted tissue. Risk rises with large core, reperfusion therapy, and early anticoagulation.", category: "Condition" },
   SBP: { term: "SBP", short: "Systolic Blood Pressure", full: "Post-IVT target <180 mmHg; ICH target 130–150 mmHg.", category: "Vitals" },
+  HARM: { term: "HARM", short: "Hyperintense Acute Reperfusion Marker", full: "Gadolinium enhancement in CSF spaces on post-contrast FLAIR imaging; a marker of blood-brain barrier disruption and predictor of neurologic deterioration.", category: "Imaging" },
+  GLOS: { term: "GLOS", short: "Global Late Gadolinium Obscuration Score", full: "Diffuse gadolinium-induced signal changes on post-contrast FLAIR imaging following thrombectomy.", category: "Imaging" },
 };
 
 export const GLOSSARY_TERMS = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
