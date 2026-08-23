@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   ChevronDown, AlertTriangle, Activity, Brain, Clock, Shield,
   Stethoscope, Syringe, Target, CheckCircle2, XCircle, ArrowRight,
-  RotateCcw, Layers, Scissors, Zap, BookOpen
+  RotateCcw, Layers, Scissors, Zap, BookOpen, ClipboardCheck
 } from "lucide-react";
 import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
 import ARISE1PDFReport from "@/components/ARISE1PDFReport";
@@ -1918,6 +1919,175 @@ function HyperdenseCapsuleSign() {
   );
 }
 
+// ─── MMAE Candidate Eligibility Checklist ───────────────────────────────────
+
+function MMAECandidateChecklist() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [checked, setChecked] = useState<Set<string>>(new Set());
+
+  const toggle = (id: string) => {
+    setChecked((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const imagingChecks = [
+    { id: "nonacute", label: "Nonacute SDH confirmed (subacute/chronic, >21 days preferred)", required: true },
+    { id: "hdcs", label: "Hyperdense Capsule Sign (HDCS) present on NCCT", highlight: true, required: false },
+    { id: "progressive", label: "Symptomatic or radiographically progressive collection", required: true },
+    { id: "no-emergency", label: "No emergency surgical indication (no severe MLS, herniation, or acute deterioration)", required: true },
+    { id: "anatomy", label: "MMA anatomy feasible on CTA — no dangerous ophthalmic/ICA supply or complete ophthalmic origin", required: true },
+  ];
+
+  const clinicalChecks = [
+    { id: "anticoag", label: "Anticoagulation/antiplatelet status reviewed and reversal plan documented" },
+    { id: "recurrence", label: "Recurrent cSDH after surgical drainage or high recurrence-risk profile" },
+    { id: "consent", label: "Informed consent obtained (investigational/institutional protocol if applicable)" },
+    { id: "candidate", label: "Patient is a suitable angiography candidate (acceptable renal function, no severe contrast allergy)" },
+  ];
+
+  const allImagingRequired = imagingChecks
+    .filter((c) => c.required)
+    .every((c) => checked.has(c.id));
+  const hdcsPresent = checked.has("hdcs");
+  const noEmergency = checked.has("no-emergency");
+
+  let result: { label: string; color: string; icon: React.ReactNode; text: string } = {
+    label: "Incomplete",
+    color: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+    icon: <AlertTriangle className="h-4 w-4" />,
+    text: "Complete the required imaging and clinical prerequisites to assess MMAE candidacy.",
+  };
+
+  if (!noEmergency) {
+    result = {
+      label: "Not eligible — urgent surgery",
+      color: "bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300",
+      icon: <XCircle className="h-4 w-4" />,
+      text: "Emergency surgical indication present. MMAE is not appropriate as first-line rescue; stabilize and evacuate if indicated.",
+    };
+  } else if (allImagingRequired && hdcsPresent && checked.size >= 6) {
+    result = {
+      label: "Strong MMAE candidate",
+      color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
+      icon: <CheckCircle2 className="h-4 w-4" />,
+      text: "HDCS-positive nonacute SDH with favorable anatomy and no emergency surgical indication. Consider MMAE, especially in recurrent or high-risk cases.",
+    };
+  } else if (allImagingRequired && checked.size >= 5) {
+    result = {
+      label: "Consider MMAE",
+      color: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
+      icon: <Activity className="h-4 w-4" />,
+      text: "Meets core imaging/clinical prerequisites. HDCS absence does not exclude MMAE but may reduce expected benefit; discuss in multidisciplinary setting.",
+    };
+  }
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="border-fuchsia-400 dark:border-fuchsia-600 bg-gradient-to-br from-fuchsia-50 dark:from-fuchsia-950/30 to-background">
+        <CollapsibleTrigger className="w-full">
+          <CardHeader className="bg-fuchsia-100/50 dark:bg-fuchsia-900/30">
+            <CardTitle className="flex items-center justify-between text-fuchsia-800 dark:text-fuchsia-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <ClipboardCheck className="h-5 w-5" />
+                <span>MMAE Candidate Eligibility Checklist</span>
+                <Badge variant="outline" className="border-fuchsia-400 text-fuchsia-600 dark:text-fuchsia-400 text-[10px]">HDCS-driven</Badge>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-6 space-y-4">
+            <div className="p-3 rounded-lg bg-fuchsia-50 dark:bg-fuchsia-950/20 border border-fuchsia-200 dark:border-fuchsia-700">
+              <p className="text-xs text-fuchsia-700 dark:text-fuchsia-400">
+                Use this checklist to screen nonacute SDH patients for <strong>middle meningeal artery embolization (MMAE)</strong> candidacy.
+                <strong> HDCS presence</strong> is highlighted as a potential imaging biomarker for better MMAE response.
+              </p>
+            </div>
+
+            {/* Result banner */}
+            <div className={`p-3 rounded-lg border-2 border-transparent ${result.color} flex items-start gap-2`}>
+              {result.icon}
+              <div>
+                <div className="text-xs font-bold">{result.label}</div>
+                <p className="text-[11px] mt-0.5 opacity-90">{result.text}</p>
+              </div>
+            </div>
+
+            {/* Imaging prerequisites */}
+            <div className="p-3 rounded-lg border-2 border-orange-400 bg-orange-50 dark:bg-orange-950/20">
+              <h5 className="font-semibold text-orange-800 dark:text-orange-300 text-sm mb-2 flex items-center gap-2">
+                <Target className="h-4 w-4" />
+                Key Imaging Prerequisites
+              </h5>
+              <ul className="space-y-2">
+                {imagingChecks.map((item) => (
+                  <li key={item.id} className="flex items-start gap-2">
+                    <Checkbox
+                      id={`mmae-${item.id}`}
+                      checked={checked.has(item.id)}
+                      onCheckedChange={() => toggle(item.id)}
+                      className={`mt-0.5 ${item.highlight ? 'border-orange-500 bg-orange-100 dark:bg-orange-900/40' : ''}`}
+                    />
+                    <label htmlFor={`mmae-${item.id}`} className={`text-xs cursor-pointer ${item.highlight ? 'text-orange-800 dark:text-orange-300 font-semibold' : 'text-foreground'}`}>
+                      {item.highlight && <span className="inline-flex items-center gap-1 mr-1"><Badge className="bg-orange-500 text-white text-[9px] px-1 py-0">HDCS</Badge></span>}
+                      {item.label}
+                      {item.required && <span className="text-destructive ml-1">*</span>}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Clinical prerequisites */}
+            <div className="p-3 rounded-lg border-2 border-fuchsia-300 dark:border-fuchsia-700 bg-fuchsia-50/50 dark:bg-fuchsia-950/10">
+              <h5 className="font-semibold text-fuchsia-800 dark:text-fuchsia-300 text-sm mb-2 flex items-center gap-2">
+                <Stethoscope className="h-4 w-4" />
+                Clinical Prerequisites
+              </h5>
+              <ul className="space-y-2">
+                {clinicalChecks.map((item) => (
+                  <li key={item.id} className="flex items-start gap-2">
+                    <Checkbox
+                      id={`mmae-${item.id}`}
+                      checked={checked.has(item.id)}
+                      onCheckedChange={() => toggle(item.id)}
+                      className="mt-0.5"
+                    />
+                    <label htmlFor={`mmae-${item.id}`} className="text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                      {item.label}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Progress */}
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Completed: {checked.size}/{imagingChecks.length + clinicalChecks.length}</span>
+              <button
+                onClick={() => setChecked(new Set())}
+                className="text-fuchsia-700 dark:text-fuchsia-400 hover:underline"
+                type="button"
+              >
+                Reset checklist
+              </button>
+            </div>
+
+            <p className="text-[11px] text-muted-foreground italic">
+              Ref: <em>Radiology</em> 2026 (HDCS as MMAE biomarker); EMBOLISE, MAGIC-MT, STEM trials; AHA/ASA cSDH Scientific Statement 2025.
+              Clinical trial registration no. NCT04700345. © RSNA, 2026.
+            </p>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 
 function SDHReportingChecklist() {
   const [isOpen, setIsOpen] = useState(false);
@@ -2090,6 +2260,7 @@ export default function SubduralHematoma() {
       <SDHClassification />
       <SDHDiagnosis />
       <HyperdenseCapsuleSign />
+      <MMAECandidateChecklist />
       <SDHReportingChecklist />
       <SDHTreatmentIndications />
       <SDHReversalChecklist />
