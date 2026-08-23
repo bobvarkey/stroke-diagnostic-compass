@@ -2032,10 +2032,10 @@ function MMAECandidateChecklist() {
                       onCheckedChange={() => toggle(item.id)}
                       className={`mt-0.5 ${item.highlight ? 'border-orange-500 bg-orange-100 dark:bg-orange-900/40' : ''}`}
                     />
-                    <label htmlFor={`mmae-${item.id}`} className={`text-xs cursor-pointer ${item.highlight ? 'text-orange-800 dark:text-orange-300 font-semibold' : 'text-slate-700 dark:text-slate-300'}`}>
+                    <label htmlFor={`mmae-${item.id}`} className={`text-xs cursor-pointer ${item.highlight ? 'text-orange-800 dark:text-orange-300 font-semibold' : 'text-foreground'}`}>
                       {item.highlight && <span className="inline-flex items-center gap-1 mr-1"><Badge className="bg-orange-500 text-white text-[9px] px-1 py-0">HDCS</Badge></span>}
                       {item.label}
-                      {item.required && <span className="text-red-500 ml-1">*</span>}
+                      {item.required && <span className="text-destructive ml-1">*</span>}
                     </label>
                   </li>
                 ))}
