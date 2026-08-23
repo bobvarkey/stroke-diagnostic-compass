@@ -1900,6 +1900,17 @@ function HyperdenseCapsuleSign() {
                 Ref: <em>Radiology</em> 2026 — Hyperdense Capsule Sign in nonacute subdural hematoma. Hypothesis-generating; not yet a validated treatment-selection criterion.
               </p>
             </div>
+
+            <div className="p-3 rounded-lg border-2 border-emerald-400 bg-emerald-50 dark:bg-emerald-950/20">
+              <h5 className="font-semibold text-emerald-800 dark:text-emerald-300 text-sm mb-2">HDCS & MMAE Patient Selection</h5>
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                For participants with nonacute SDH, the presence of the HDCS was associated with a lower rate of recurrence or progression among those who underwent MMAE compared with those receiving usual care. HDCS may potentially help identify candidates for MMAE for nonacute SDH.
+              </p>
+              <p className="text-[11px] text-muted-foreground italic mt-2">
+                Clinical trial registration no. NCT04700345<br />
+                © RSNA, 2026
+              </p>
+            </div>
           </CardContent>
         </CollapsibleContent>
       </Card>
