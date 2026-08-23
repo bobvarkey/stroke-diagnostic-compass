@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   ChevronDown, AlertTriangle, Activity, Brain, Clock, Shield,
   Stethoscope, Syringe, Target, CheckCircle2, XCircle, ArrowRight,
-  RotateCcw, Layers, Scissors, Zap, BookOpen
+  RotateCcw, Layers, Scissors, Zap, BookOpen, ClipboardCheck
 } from "lucide-react";
 import CSDHRecurrenceCalculator from "@/components/CSDHRecurrenceCalculator";
 import ARISE1PDFReport from "@/components/ARISE1PDFReport";
