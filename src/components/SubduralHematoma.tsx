@@ -2260,6 +2260,7 @@ export default function SubduralHematoma() {
       <SDHClassification />
       <SDHDiagnosis />
       <HyperdenseCapsuleSign />
+      <MMAECandidateChecklist />
       <SDHReportingChecklist />
       <SDHTreatmentIndications />
       <SDHReversalChecklist />
