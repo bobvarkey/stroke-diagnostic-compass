@@ -5840,7 +5840,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                 { id: "aspects-calculator", label: "ASPECTS" },
                 { id: "nihss-calculator", label: "NIHSS" },
                 { id: "gcs-calculator", label: "GCS" },
-                { id: "motor-control-dashboard", label: "Motor" },
+                
                 { id: "lab-investigations", label: "Labs" },
                 { id: "workup-checklist", label: "Checklist" },
               ].map(section => (
