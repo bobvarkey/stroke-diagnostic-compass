@@ -426,6 +426,17 @@ const RehabPlanModule: React.FC = () => {
               </div>
             )}
 
+            {ready && (
+              <div className="flex flex-wrap gap-1.5">
+                <Button size="sm" variant={view === "timeline" ? "default" : "outline"} className="h-7 gap-1.5 text-[11px]" onClick={() => setView("timeline")}>
+                  <GitCommitVertical className="h-3.5 w-3.5" /> Timeline
+                </Button>
+                <Button size="sm" variant={view === "cards" ? "default" : "outline"} className="h-7 gap-1.5 text-[11px]" onClick={() => setView("cards")}>
+                  <LayoutList className="h-3.5 w-3.5" /> Day cards
+                </Button>
+              </div>
+            )}
+
             <Separator />
 
             {!ready ? (
@@ -434,52 +445,140 @@ const RehabPlanModule: React.FC = () => {
               </p>
             ) : (
               <div className="space-y-3">
-                {plan.map((d) => (
-                  <div
-                    key={d.day}
-                    className={`rounded-lg border p-3 ${
-                      progress[d.day] ? "border-emerald-500/50 bg-emerald-500/5" : "border-border/60 bg-muted/20"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-2">
-                        <CalendarDays className="h-4 w-4 text-emerald-500 shrink-0" />
-                        <div>
-                          <p className="text-sm font-bold text-foreground">Day {d.day} · {d.date}</p>
-                          <p className="text-[11px] text-muted-foreground">{d.phase}</p>
+                {/* tier milestones rail */}
+                <div className="rounded-lg border border-indigo-500/30 bg-indigo-500/5 p-3">
+                  <p className="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 mb-2">Tier milestones — where this patient sits</p>
+                  <div className="grid gap-1.5 sm:grid-cols-3">
+                    {TIER_MILESTONES.map((m) => {
+                      const on = activeMilestones.has(m.key);
+                      return (
+                        <div
+                          key={m.key}
+                          className={`rounded-md border p-2 ${on ? "border-indigo-500/60 bg-indigo-500/15" : "border-border/50 bg-background/40 opacity-70"}`}
+                        >
+                          <p className={`text-[11px] font-semibold ${on ? "text-indigo-700 dark:text-indigo-200" : "text-foreground"}`}>{m.label}</p>
+                          <p className="text-[10px] leading-snug text-muted-foreground">{m.detail}</p>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {d.isReview && (
-                          <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-300 text-[10px]">
-                            <TrendingUp className="h-3 w-3 mr-1" />Review & progress
-                          </Badge>
-                        )}
-                        <label className="flex items-center gap-1.5 text-[11px] text-foreground cursor-pointer">
-                          <Checkbox
-                            checked={!!progress[d.day]}
-                            onCheckedChange={(c) => setProgress((p) => ({ ...p, [d.day]: !!c }))}
-                          />
-                          Done
-                        </label>
-                      </div>
-                    </div>
-                    <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                      {d.blocks.map((b, i) => (
-                        <div key={i} className="rounded-md border border-border/50 bg-background/40 p-2">
-                          <p className="text-[11px] font-semibold text-foreground">{b.time} — {b.focus}</p>
-                          <ul className="mt-1 space-y-1">
-                            {b.items.map((it, j) => (
-                              <li key={j} className="text-[11px] leading-snug text-muted-foreground flex gap-1.5">
-                                <span className="text-emerald-500">•</span><span>{it}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
-                ))}
+                </div>
+
+                {view === "timeline"
+                  ? weeks.map((w) => (
+                      <div key={w.week} className="rounded-lg border border-border/60 bg-muted/10 p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-bold text-foreground">Week {w.week}</p>
+                          <Badge variant="secondary" className="text-[10px]">
+                            {w.days.filter((d) => progress[d.day]).length}/{w.days.length} days done
+                          </Badge>
+                        </div>
+                        {w.goals.length > 0 && (
+                          <div className="mt-2 rounded-md border border-emerald-500/30 bg-emerald-500/5 p-2">
+                            <p className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+                              <Target className="h-3.5 w-3.5" /> Weekly goals
+                            </p>
+                            <ul className="mt-1 space-y-1">
+                              {w.goals.map((g, i) => (
+                                <li key={i} className="text-[11px] leading-snug text-muted-foreground">• {g}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <div className="mt-3 relative pl-5 border-l-2 border-emerald-500/30 space-y-3">
+                          {w.days.map((d) => (
+                            <div key={d.day} className="relative">
+                              <span
+                                className={`absolute -left-[27px] top-1.5 h-3 w-3 rounded-full border-2 ${
+                                  progress[d.day] ? "bg-emerald-500 border-emerald-500" : "bg-background border-emerald-500/50"
+                                }`}
+                              />
+                              <div className="flex items-start justify-between gap-3">
+                                <div>
+                                  <p className="text-xs font-bold text-foreground">Day {d.day} · {d.date}</p>
+                                  <p className="text-[10px] text-muted-foreground">{d.phase}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  {d.isReview && (
+                                    <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-300 text-[10px]">
+                                      <TrendingUp className="h-3 w-3 mr-1" />Review
+                                    </Badge>
+                                  )}
+                                  <label className="flex items-center gap-1.5 text-[10px] text-foreground cursor-pointer">
+                                    <Checkbox
+                                      checked={!!progress[d.day]}
+                                      onCheckedChange={(c) => setProgress((p) => ({ ...p, [d.day]: !!c }))}
+                                    />
+                                    Done
+                                  </label>
+                                </div>
+                              </div>
+                              <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+                                {d.blocks.map((b, i) => (
+                                  <div key={i} className="rounded-md border border-border/50 bg-background/40 p-2">
+                                    <p className="text-[11px] font-semibold text-foreground">{b.time} — {b.focus}</p>
+                                    <ul className="mt-1 space-y-1">
+                                      {b.items.map((it, j) => (
+                                        <li key={j} className="text-[11px] leading-snug text-muted-foreground flex gap-1.5">
+                                          <span className="text-emerald-500">•</span><span>{it}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  : plan.map((d) => (
+                      <div
+                        key={d.day}
+                        className={`rounded-lg border p-3 ${
+                          progress[d.day] ? "border-emerald-500/50 bg-emerald-500/5" : "border-border/60 bg-muted/20"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <CalendarDays className="h-4 w-4 text-emerald-500 shrink-0" />
+                            <div>
+                              <p className="text-sm font-bold text-foreground">Day {d.day} · {d.date}</p>
+                              <p className="text-[11px] text-muted-foreground">{d.phase}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {d.isReview && (
+                              <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-300 text-[10px]">
+                                <TrendingUp className="h-3 w-3 mr-1" />Review & progress
+                              </Badge>
+                            )}
+                            <label className="flex items-center gap-1.5 text-[11px] text-foreground cursor-pointer">
+                              <Checkbox
+                                checked={!!progress[d.day]}
+                                onCheckedChange={(c) => setProgress((p) => ({ ...p, [d.day]: !!c }))}
+                              />
+                              Done
+                            </label>
+                          </div>
+                        </div>
+                        <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                          {d.blocks.map((b, i) => (
+                            <div key={i} className="rounded-md border border-border/50 bg-background/40 p-2">
+                              <p className="text-[11px] font-semibold text-foreground">{b.time} — {b.focus}</p>
+                              <ul className="mt-1 space-y-1">
+                                {b.items.map((it, j) => (
+                                  <li key={j} className="text-[11px] leading-snug text-muted-foreground flex gap-1.5">
+                                    <span className="text-emerald-500">•</span><span>{it}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+
 
                 <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
                   <p className="text-[11px] font-semibold text-amber-700 dark:text-amber-300">Progression / regression rule</p>
