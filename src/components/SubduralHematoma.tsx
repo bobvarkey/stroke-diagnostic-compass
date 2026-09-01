@@ -13,6 +13,21 @@ import ARISE1PDFReport from "@/components/ARISE1PDFReport";
 import { ZoomableImage } from "@/components/ZoomableImage";
 import hdcsWhat from "@/assets/hdcs-what.jpg.asset.json";
 import hdcsWhy from "@/assets/hdcs-why.jpg.asset.json";
+import SDHChecklistExport from "@/components/SDHChecklistExport";
+
+/** Structured radiology report template shared by the reporting checklist and the export. */
+const SDH_REPORT_TEMPLATE = [
+  "Location and laterality",
+  "Maximal thickness in mm",
+  "Density/age and any acute-on-chronic component",
+  "Mass effect",
+  "Midline shift in mm",
+  "Ventricular compression",
+  "Any herniation",
+  "Interval change compared with prior imaging",
+  "If chronic/subacute and MMAE is being considered: note hyperdense capsule sign, membrane/septation pattern, density pattern, and any imaging features suggesting better or worse embolization response",
+];
+
 
 // ─── Classification & Clinical Features ─────────────────────────────────────
 
