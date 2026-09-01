@@ -234,8 +234,14 @@ const StrokePathwayTab: React.FC<Props> = ({ onGoToRecovery }) => {
         </Collapsible>
       </Card>
 
+      {/* Complex rehabilitation problems gate */}
+      <ComplexRehabProblemsScreen />
+
       {/* Structured rehab plan */}
       <RehabPlanModule />
+
+      {/* Day-by-day progress tracker */}
+      <RehabProgressTracker />
     </div>
   );
 };
