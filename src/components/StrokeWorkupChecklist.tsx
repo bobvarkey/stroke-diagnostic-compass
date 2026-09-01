@@ -5637,7 +5637,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   // Alt + ArrowLeft/ArrowRight cycles tabs; Alt + 1..7 jumps directly.
   // Radix Tabs already handle Arrow/Home/End/Enter/Space when a trigger is focused.
   const TAB_ORDER = useMemo(
-    () => ["ischemic", "hemorrhagic", "sah", "sdh", "cvt", "post-ivt", "medications"],
+    () => ["ischemic", "hemorrhagic", "sah", "sdh", "cvt", "post-ivt", "recovery", "medications"],
     [],
   );
   useEffect(() => {
@@ -5791,7 +5791,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-7 h-auto sticky top-0 z-40 mb-5 rounded-xl p-1.5 gap-1.5 bg-gradient-to-r from-background/95 via-card/90 to-background/95 backdrop-blur-xl border border-border/60 shadow-lg shadow-primary/5">
+        <TabsList className="hidden sm:grid w-full grid-cols-8 h-auto sticky top-0 z-40 mb-5 rounded-xl p-1.5 gap-1.5 bg-gradient-to-r from-background/95 via-card/90 to-background/95 backdrop-blur-xl border border-border/60 shadow-lg shadow-primary/5">
           <TabsTrigger value="ischemic" className="flex items-center justify-center gap-1.5 text-[13px] font-bold tracking-tight text-blue-700 dark:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 ring-1 ring-inset ring-blue-500/30 data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:ring-transparent data-[state=active]:shadow-md data-[state=active]:shadow-blue-500/40 data-[state=active]:scale-[1.03] px-2.5 py-2.5 rounded-lg transition-all">
             <Zap className="h-4 w-4 shrink-0" />
             Ischemic
