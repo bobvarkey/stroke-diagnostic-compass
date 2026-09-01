@@ -473,7 +473,7 @@ const StrokeMotorControlDashboard: React.FC = () => {
       label={label}
       value={s.cmsa[key] ?? ""}
       onChange={(v) => setS((p) => ({ ...p, cmsa: { ...p.cmsa, [key]: v } }))}
-      options={Object.entries(CMSA_STAGES).map(([k, d]) => ({ value: k, label: `Stage ${k}`, desc: d }))}
+      options={Object.entries(CMSA_STAGES).map(([k, d]) => ({ value: k, label: `Stage ${k} — ${d}`, desc: d }))}
       placeholder="Stage"
     />
   );
