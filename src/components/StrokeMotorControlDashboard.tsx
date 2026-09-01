@@ -67,13 +67,50 @@ const HEAD_CONTROL = [
 ];
 
 const FAC = [
-  { value: "0", label: "FAC 0 — Non-functional ambulation", desc: "Unable to walk or requires assistance of ≥2 people." },
-  { value: "1", label: "FAC 1 — Dependent level II", desc: "Continuous firm support from one person (weight-bearing + balance)." },
-  { value: "2", label: "FAC 2 — Dependent level I", desc: "Intermittent/continuous light touch for balance or coordination." },
-  { value: "3", label: "FAC 3 — Dependent for supervision", desc: "Verbal supervision / standby guarding without physical contact." },
-  { value: "4", label: "FAC 4 — Independent, level surfaces", desc: "Independent on level ground; help for stairs/slopes/uneven terrain." },
-  { value: "5", label: "FAC 5 — Independent", desc: "Independent on level and non-level surfaces, including stairs." },
+  { value: "0", label: "FAC 0 — Non-functional ambulation", desc: "Dependent: cannot walk, or needs help of ≥2 people, or walks only in parallel bars / with a harness. Wheelchair or hoist for all mobility." },
+  { value: "1", label: "FAC 1 — Dependent, level II (continuous manual contact)", desc: "Dependent: needs continuous firm hands-on support from ONE person who carries body weight AND assists balance. Cannot walk without that physical assistance." },
+  { value: "2", label: "FAC 2 — Dependent, level I (intermittent light contact)", desc: "Dependent: needs continuous or intermittent LIGHT touch from one person to assist balance or coordination only — no weight-bearing help required." },
+  { value: "3", label: "FAC 3 — Dependent for supervision", desc: "Dependent on a person being present: walks without any physical contact, but needs verbal cueing or standby guarding for safety on level ground." },
+  { value: "4", label: "FAC 4 — Independent, level surfaces only", desc: "Independent on level ground; still needs help or supervision for stairs, slopes, kerbs or uneven terrain." },
+  { value: "5", label: "FAC 5 — Independent everywhere", desc: "Independent on level and non-level surfaces, stairs and slopes, with or without an aid." },
 ];
+
+/* TIS subscale score qualifications ------------------------------------- */
+const TIS_STATIC = [
+  { value: "0", label: "0 — Cannot sit 10 s unsupported", desc: "Falls or needs support within 10 seconds of unsupported sitting (feet on floor, thighs fully on bed/chair). All further static items score 0." },
+  { value: "1", label: "1 — Sits 10 s only", desc: "Maintains unsupported sitting 10 s, but cannot keep position when the therapist crosses the unaffected leg over the affected leg." },
+  { value: "2", label: "2 — Sits 10 s + therapist-crossed legs", desc: "Holds sitting when the examiner crosses the unaffected over the affected leg, but cannot cross the legs actively." },
+  { value: "3", label: "3 — Partial active leg crossing", desc: "Actively crosses the unaffected over affected leg but with trunk displacement >10 cm backward or with hand support." },
+  { value: "4", label: "4 — Active leg crossing with minimal displacement", desc: "Crosses legs actively; slight trunk displacement or slow/compensated performance." },
+  { value: "5", label: "5 — Good static control", desc: "Sitting 10 s, tolerates crossed legs and actively crosses legs with minor compensation only." },
+  { value: "6", label: "6 — Near-normal static control", desc: "All static items achieved; only subtle asymmetry or hesitancy noted." },
+  { value: "7", label: "7 — Normal static sitting balance (max)", desc: "Sits 10 s unsupported, tolerates therapist-crossed legs, and actively crosses legs without trunk displacement or hand support." },
+];
+
+const TIS_DYNAMIC = [
+  { value: "0", label: "0 — No dynamic trunk activity", desc: "Cannot shorten/elongate either hemitrunk, no lateral flexion from elbow toward bed; falls or needs support with any weight shift." },
+  { value: "1", label: "1 — Minimal, compensated activity", desc: "Some movement toward the bed on the elbow but shortening/elongation absent, or achieved entirely by compensation (pushing, pulling, upper-limb support)." },
+  { value: "2", label: "2 — One side only, with compensation", desc: "Correct hemitrunk shortening on one side only; the opposite side absent or compensated." },
+  { value: "3", label: "3 — Both sides with heavy compensation", desc: "Elbow-to-bed movement both sides but consistently compensated and cannot return to start unaided." },
+  { value: "4", label: "4 — Both sides, returns with help", desc: "Shortening/elongation both sides; return to upright needs cueing or slight assist." },
+  { value: "5", label: "5 — Half of dynamic items correct", desc: "Approximately half the dynamic items performed without compensation; the rest compensated." },
+  { value: "6", label: "6 — Majority correct, one clear deficit", desc: "Most items correct; one item clearly compensated (usually affected-side shortening or pelvic lift)." },
+  { value: "7", label: "7 — Good dynamic control, mild asymmetry", desc: "Lateral flexion both sides and pelvic lift achieved; mild asymmetry or reduced range on the affected side." },
+  { value: "8", label: "8 — Near-normal dynamic control", desc: "All items achieved; occasional slowness or minor compensation only." },
+  { value: "9", label: "9 — Dynamic control with subtle deficit", desc: "All items correct and uncompensated except very subtle timing/ range asymmetry." },
+  { value: "10", label: "10 — Normal dynamic sitting balance (max)", desc: "Full uncompensated hemitrunk shortening/elongation on both sides and pelvic lifting both sides, returning to start unaided." },
+];
+
+const TIS_COORD = [
+  { value: "0", label: "0 — No selective rotation", desc: "Upper and lower trunk rotate as one block, or ≤2 of 6 rotation repetitions completed." },
+  { value: "1", label: "1 — Upper trunk rotation, asymmetric", desc: "Rotates shoulders 6× in 6 s but asymmetrically; lower trunk rotation absent." },
+  { value: "2", label: "2 — Upper trunk rotation symmetric only", desc: "Symmetric upper-trunk (shoulder girdle) rotation 6× in 6 s; pelvic rotation absent or blocked." },
+  { value: "3", label: "3 — Upper normal, lower asymmetric", desc: "Upper-trunk rotation normal; pelvic rotation 6× in 6 s but asymmetric or with upper-trunk substitution." },
+  { value: "4", label: "4 — Both segments rotate, mild asymmetry", desc: "Selective upper and lower trunk rotation achieved; one segment asymmetric or slower than 6 s." },
+  { value: "5", label: "5 — Near-normal coordination", desc: "Selective, symmetric rotation of both segments; slight slowing or effort noted." },
+  { value: "6", label: "6 — Normal trunk coordination (max)", desc: "Symmetric upper- and lower-trunk rotation, 6 repetitions each within 6 seconds, without segmental substitution." },
+];
+
 
 const MRS = [
   { value: "0", label: "mRS 0 — No symptoms", desc: "" },
