@@ -64,7 +64,7 @@ const SectionShell: React.FC<{
 }> = ({ id, title, subtitle, icon, accent, badge, children }) => {
   const [open, setOpen] = useState(false);
   return (
-    <Card id={id} className={`border-${accent}/30 bg-card/80 backdrop-blur`}>
+    <Card id={id} className={`${accent} bg-card/80 backdrop-blur`}>
       <Collapsible open={open} onOpenChange={setOpen}>
         <CollapsibleTrigger asChild>
           <CardHeader className="cursor-pointer rounded-t-lg transition-colors hover:bg-muted/40">
@@ -200,7 +200,7 @@ const SpeechSwallowCognitionModule: React.FC = () => {
         title="Swallow (dysphagia) module"
         subtitle="Bedside screen, IDDSI diet level and swallow rehab goals"
         icon={<Soup className="h-5 w-5 text-amber-500" />}
-        accent="amber-500"
+        accent="border-amber-500/30"
         badge={
           dysphagia ? (
             <Badge className="bg-red-500/20 text-[10px] text-red-700 dark:text-red-300">Dysphagia suspected</Badge>
@@ -254,7 +254,7 @@ const SpeechSwallowCognitionModule: React.FC = () => {
         title="Speech & communication module"
         subtitle="Aphasia/dysarthria classification with dose-matched therapy goals"
         icon={<MessageSquare className="h-5 w-5 text-sky-500" />}
-        accent="sky-500"
+        accent="border-sky-500/30"
         badge={
           commImpaired ? (
             <Badge className="bg-amber-500/20 text-[10px] text-amber-700 dark:text-amber-300">Impairment</Badge>
@@ -279,7 +279,7 @@ const SpeechSwallowCognitionModule: React.FC = () => {
         title="Cognition module"
         subtitle="Domain screen, MoCA banding and cognitive rehab goals"
         icon={<Brain className="h-5 w-5 text-violet-500" />}
-        accent="violet-500"
+        accent="border-violet-500/30"
         badge={
           cogImpaired ? (
             <Badge className="bg-amber-500/20 text-[10px] text-amber-700 dark:text-amber-300">
