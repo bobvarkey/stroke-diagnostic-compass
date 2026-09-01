@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/select";
 import {
   Activity, AlertTriangle, ChevronDown, ChevronLeft, ChevronRight,
-  Copy, Footprints, PersonStanding, RotateCcw, Check,
+  Copy, FileDown, Footprints, PersonStanding, RotateCcw, Check, Target,
 } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
 
 /* ---------------------------------- data ---------------------------------- */
 
@@ -124,8 +125,115 @@ const STEPS = [
   "3. Limb Motor Recovery",
   "4. Head & Trunk Control",
   "5. Mobility & Function",
-  "6. Clinical Summary",
+  "6. Rehab Goals",
+  "7. Clinical Summary",
 ];
+
+interface RehabGoal {
+  domain: "CMSA" | "FAC" | "mRS";
+  tier: string;
+  timeline: string;
+  exercises: string[];
+}
+
+const CMSA_GOALS: Record<string, Omit<RehabGoal, "domain" | "tier">> = {
+  flaccid: {
+    timeline: "Begin within 24–72 h (medically stable); reassess daily; expect slow change over weeks 1–4",
+    exercises: [
+      "Positioning & supported postures — hemiplegic limb protection, scapular/pelvic alignment; reposition every 2 h",
+      "Passive range of motion — full PROM all joints 1–2×/day; extra care at shoulder (support humeral head, no traction)",
+      "Facilitation of early activity — tapping, weight-bearing through affected limb, bilateral activities",
+      "Tone/flaccidity management — avoid sling traction on shoulder; consider supported arm tray; monitor for subluxation & shoulder pain",
+      "Sensory stimulation & family/caregiver education for handling techniques",
+    ],
+  },
+  synergy: {
+    timeline: "Weeks 1–6; progress as selective movement emerges; review weekly",
+    exercises: [
+      "Active-assisted movement — progress from gravity-eliminated to against-gravity",
+      "Task-oriented repetitive practice — reaching, grasp-and-release, sit-to-stand repetitions (high dose, ≥300 reps/week target)",
+      "Synergy reduction — weight-bearing out of synergy patterns, selective control drills, isolated joint movement practice",
+      "Spasticity management — prolonged stretch, positioning, consider botulinum toxin referral if focal spasticity limits function",
+      "Mirror therapy & bilateral arm training for upper-limb engagement",
+    ],
+  },
+  selective: {
+    timeline: "Weeks 4–24+; outpatient/transition phase; review every 2–4 weeks",
+    exercises: [
+      "Progressive resisted strengthening — affected limb 2–3×/week, moderate load (50–70% 1RM equivalents)",
+      "Fine motor & dexterity — graded manipulation, in-hand skills, handwriting/utensil practice",
+      "Constraint-induced movement therapy (CIMT) or modified CIMT if ≥10° wrist + 10° finger extension present",
+      "Aerobic conditioning — walking/cycling 20–40 min at 60–80% HR reserve, 3–5×/week",
+      "Functional task integration — ADL retraining, return-to-work/leisure simulation",
+    ],
+  },
+};
+
+const FAC_GOALS: Record<string, Omit<RehabGoal, "domain" | "tier">> = {
+  dependent: {
+    timeline: "Begin 24–48 h if stable; daily sessions; target supervised standing by week 2–4",
+    exercises: [
+      "Early mobilisation protocol — graded sitting on edge of bed → supported standing, 2×/day as tolerated",
+      "Sitting balance & trunk control — unsupported sitting, weight shifts, reaching tasks",
+      "Tilt table / standing frame for orthostatic tolerance and lower-limb loading",
+      "Assisted transfer training (bed↔chair) with consistent technique; hoist use only until safe manual transfer achieved",
+      "Pre-gait activities — weight shifting in standing, stepping in place with support",
+    ],
+  },
+  supervised: {
+    timeline: "Weeks 1–8; gait sessions ≥5×/week; wean physical assistance progressively",
+    exercises: [
+      "Body-weight–supported treadmill training or overground gait with close guarding",
+      "Gait quality drills — step symmetry, heel strike, knee control in stance; consider AFO assessment for foot drop",
+      "Strength & balance — sit-to-stand repetitions, single-leg stance progression, static/dynamic balance tasks",
+      "Walking aid fitting & training (stick/quad stick) with falls-prevention education",
+      "Endurance building — increase walking distance 10–20% weekly as tolerated",
+    ],
+  },
+  independent: {
+    timeline: "Weeks 4–24+; progress to community ambulation goals; review monthly",
+    exercises: [
+      "Community ambulation training — uneven surfaces, kerbs, slopes, stairs with/without rails",
+      "Dual-task walking — cognitive-motor tasks while walking for automaticity",
+      "Speed & endurance — goal ≥0.8–1.0 m/s gait speed; 30-min continuous walking target",
+      "Advanced balance — perturbation training, tandem walking, outdoor obstacle courses",
+      "Falls-prevention program and home/environmental assessment",
+    ],
+  },
+};
+
+const MRS_GOALS: Record<string, Omit<RehabGoal, "domain" | "tier">> = {
+  severe: {
+    timeline: "Start within 24–48 h of admission; daily MDT input; caregiver training before discharge",
+    exercises: [
+      "Early positioning & pressure-area care — 2-hourly repositioning, seating assessment",
+      "Chest physiotherapy & assisted mobility as tolerated",
+      "Passive/assisted transfers with hoist; train caregivers in safe handling",
+      "Seating & postural management — wheelchair prescription with trunk/head support as needed",
+      "Swallow-safe feeding positioning (with SLT); spasticity & contracture prevention program",
+    ],
+  },
+  moderate: {
+    timeline: "Weeks 1–12; structured inpatient/outpatient program 3–5×/week",
+    exercises: [
+      "ADL retraining — dressing, grooming, toileting with one-handed techniques & adaptive equipment",
+      "Supervised mobility progression — short indoor walks, stair practice with standby assist",
+      "Home exercise program — balance, strengthening and walking 30 min/day",
+      "Falls-risk mitigation — home assessment, grab rails, review of aids",
+      "Graded return to household tasks and social participation",
+    ],
+  },
+  mild: {
+    timeline: "Weeks 2–24; transition to self-directed program within 4–8 weeks",
+    exercises: [
+      "Aerobic conditioning — brisk walking, stationary cycling 30–40 min, 3–5×/week (post cardiac clearance)",
+      "Resistance training — whole-body, 2–3×/week, moderate–vigorous intensity",
+      "Return-to-work/driving assessment and community reintegration planning",
+      "Secondary prevention lifestyle coaching — exercise adherence, BP/diabetes/lipid control support",
+      "Fine-tune residual deficits — fatigue management, cognitive-motor integration",
+    ],
+  },
+};
 
 const pretty = (s: string) => s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 const NA = "—";
@@ -237,6 +345,31 @@ const StrokeMotorControlDashboard: React.FC = () => {
     return out;
   }, [s]);
 
+  const rehabGoals = useMemo((): RehabGoal[] => {
+    const goals: RehabGoal[] = [];
+    // CMSA — use the lowest recorded stage (worst-recovering segment)
+    const stages = Object.values(s.cmsa).filter(Boolean).map(Number);
+    if (stages.length) {
+      const min = Math.min(...stages);
+      const key = min <= 2 ? "flaccid" : min <= 4 ? "synergy" : "selective";
+      const tier = min <= 2 ? "CMSA 1–2 (flaccid / early synergy)" : min <= 4 ? "CMSA 3–4 (synergy-dominant)" : "CMSA 5–7 (selective movement)";
+      goals.push({ domain: "CMSA", tier, ...CMSA_GOALS[key] });
+    }
+    if (s.fac !== "") {
+      const f = Number(s.fac);
+      const key = f <= 1 ? "dependent" : f <= 3 ? "supervised" : "independent";
+      const tier = f <= 1 ? "FAC 0–1 (non-functional / dependent ambulation)" : f <= 3 ? "FAC 2–3 (assisted or supervised ambulation)" : "FAC 4–5 (independent ambulation)";
+      goals.push({ domain: "FAC", tier, ...FAC_GOALS[key] });
+    }
+    if (s.mrs !== "" && Number(s.mrs) < 6) {
+      const m = Number(s.mrs);
+      const key = m >= 4 ? "severe" : m === 3 ? "moderate" : "mild";
+      const tier = m >= 4 ? "mRS 4–5 (moderately severe–severe disability)" : m === 3 ? "mRS 3 (moderate disability)" : "mRS 0–2 (no-to-slight disability)";
+      goals.push({ domain: "mRS", tier, ...MRS_GOALS[key] });
+    }
+    return goals;
+  }, [s.cmsa, s.fac, s.mrs]);
+
   const report = useMemo(() => {
     const v = (x: any) => (x === "" || x === undefined || x === null ? NA : x);
     return [
@@ -249,10 +382,90 @@ const StrokeMotorControlDashboard: React.FC = () => {
       `FAC ${v(s.fac)}/5; walking aid ${pretty(s.walking_aid)}. Bed–chair transfer ${pretty(s.bed_to_chair)}; sit-to-stand ${pretty(s.sit_to_stand)}.`,
       `mRS ${v(s.mrs)}/6.`,
       `Rehabilitation priority: ${pretty(s.rehab_priority)}.`,
+      ...rehabGoals.map(
+        (g) =>
+          `Rehab goals (${g.tier}) — timeline: ${g.timeline}. Exercises: ${g.exercises.map((e) => e.replace(/—.*$/, "").trim()).join("; ")}.`,
+      ),
       alerts.length ? `Alerts: ${alerts.map((a) => `[${a.severity}] ${a.message}`).join(" ")}` : "",
       s.clinician_notes ? `Notes: ${s.clinician_notes}` : "",
     ].filter(Boolean).join("\n");
-  }, [s, motorSubtotal, tisTotal, tisInterpretation, alerts]);
+  }, [s, motorSubtotal, tisTotal, tisInterpretation, alerts, rehabGoals]);
+
+  const exportPDF = () => {
+    try {
+      const doc = new jsPDF();
+      const pageW = doc.internal.pageSize.getWidth();
+      const margin = 14;
+      const maxW = pageW - margin * 2;
+      let y = 18;
+
+      const ensure = (needed: number) => {
+        if (y + needed > doc.internal.pageSize.getHeight() - 14) {
+          doc.addPage();
+          y = 18;
+        }
+      };
+      const heading = (text: string) => {
+        ensure(12);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(text, margin, y);
+        y += 6;
+        doc.setDrawColor(120);
+        doc.line(margin, y, pageW - margin, y);
+        y += 6;
+      };
+      const para = (text: string, size = 10, bold = false) => {
+        doc.setFont("helvetica", bold ? "bold" : "normal");
+        doc.setFontSize(size);
+        for (const line of doc.splitTextToSize(text, maxW) as string[]) {
+          ensure(5);
+          doc.text(line, margin, y);
+          y += 5;
+        }
+        y += 1.5;
+      };
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Stroke Motor Control & Mobility Assessment", margin, y);
+      y += 7;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.text(`Generated: ${new Date().toLocaleString()} · Stroke Companion`, margin, y);
+      y += 9;
+
+      heading("Assessment Report");
+      para(report);
+
+      if (alerts.length) {
+        heading("Decision Alerts");
+        alerts.forEach((a) => para(`[${a.severity.toUpperCase()}] ${a.message}`));
+      }
+
+      if (rehabGoals.length) {
+        heading("Physiotherapy Goals & Timelines");
+        rehabGoals.forEach((g) => {
+          para(`${g.domain} — ${g.tier}`, 11, true);
+          para(`Timeline: ${g.timeline}`);
+          g.exercises.forEach((e) => para(`•  ${e}`, 9));
+          y += 2;
+        });
+      }
+
+      heading("Disclaimer");
+      para(
+        "Clinical documentation and rehabilitation tracking aid only. Does not replace formal NIHSS certification, validated administration manuals, neurological examination, physiotherapy assessment or local stroke protocols.",
+        8,
+      );
+
+      const name = s.patient_name ? s.patient_name.replace(/\s+/g, "_") : "patient";
+      doc.save(`motor-assessment-${name}-${new Date().toISOString().slice(0, 10)}.pdf`);
+      toast.success("PDF exported");
+    } catch {
+      toast.error("PDF export failed");
+    }
+  };
 
   const cmsaRow = (key: string, label: string) => (
     <LabelledSelect
@@ -260,7 +473,7 @@ const StrokeMotorControlDashboard: React.FC = () => {
       label={label}
       value={s.cmsa[key] ?? ""}
       onChange={(v) => setS((p) => ({ ...p, cmsa: { ...p.cmsa, [key]: v } }))}
-      options={Object.entries(CMSA_STAGES).map(([k, d]) => ({ value: k, label: `Stage ${k}`, desc: d }))}
+      options={Object.entries(CMSA_STAGES).map(([k, d]) => ({ value: k, label: `Stage ${k} — ${d}`, desc: d }))}
       placeholder="Stage"
     />
   );
@@ -570,8 +783,59 @@ const StrokeMotorControlDashboard: React.FC = () => {
               </div>
             )}
 
-            {/* STEP 6 */}
+            {/* STEP 6 — REHAB GOALS */}
             {step === 5 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4 text-emerald-500" />
+                  <p className="text-xs font-semibold text-foreground">Physiotherapy goals mapped from your CMSA, FAC and mRS entries</p>
+                </div>
+                {rehabGoals.length === 0 ? (
+                  <div className="rounded-lg border border-dashed border-border/60 bg-muted/20 p-4 text-center">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      No goals generated yet. Enter at least one CMSA stage (Step 3), FAC score (Step 5) or mRS score (Step 5) to see tailored physiotherapy exercises and timelines.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {rehabGoals.map((g) => (
+                      <div
+                        key={g.domain}
+                        className={`rounded-lg border p-3.5 space-y-2.5 ${
+                          g.domain === "CMSA"
+                            ? "border-emerald-500/40 bg-emerald-500/5"
+                            : g.domain === "FAC"
+                            ? "border-sky-500/40 bg-sky-500/5"
+                            : "border-amber-500/40 bg-amber-500/5"
+                        }`}
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <Badge variant="secondary" className="text-[11px] font-bold">{g.domain}</Badge>
+                          <p className="text-xs font-semibold text-foreground">{g.tier}</p>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground leading-snug">
+                          <strong className="text-foreground">Timeline:</strong> {g.timeline}
+                        </p>
+                        <ul className="space-y-1.5">
+                          {g.exercises.map((e, i) => (
+                            <li key={i} className="flex gap-2 text-xs leading-snug text-foreground/90">
+                              <Check className="h-3.5 w-3.5 shrink-0 mt-0.5 text-emerald-500" />
+                              <span>{e}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                    <p className="text-[10px] text-muted-foreground leading-snug">
+                      Goals auto-update as you change CMSA, FAC or mRS. Always individualise dose, frequency and precautions to the patient's medical status and local protocols.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* STEP 7 — CLINICAL SUMMARY */}
+            {step === 6 && (
               <div className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {[
@@ -602,6 +866,9 @@ const StrokeMotorControlDashboard: React.FC = () => {
                     onClick={() => { navigator.clipboard.writeText(report); toast.success("Assessment copied to clipboard"); }}
                   >
                     <Copy className="h-4 w-4 mr-1.5" /> Copy report
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={exportPDF}>
+                    <FileDown className="h-4 w-4 mr-1.5" /> Export PDF
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => { setS(initialState); setStep(0); toast.success("Assessment reset"); }}>
                     <RotateCcw className="h-4 w-4 mr-1.5" /> Reset
