@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, BarChart3, Calculator, Pill, ShieldAlert } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, BarChart3, Calculator, Pill, ShieldAlert, GitBranch } from "lucide-react";
 import SectionNavigator from "./SectionNavigator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
