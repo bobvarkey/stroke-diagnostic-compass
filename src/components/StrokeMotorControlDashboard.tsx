@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/select";
 import {
   Activity, AlertTriangle, ChevronDown, ChevronLeft, ChevronRight,
-  Copy, Footprints, PersonStanding, RotateCcw, Check,
+  Copy, FileDown, Footprints, PersonStanding, RotateCcw, Check, Target,
 } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
 
 /* ---------------------------------- data ---------------------------------- */
 
@@ -124,8 +125,115 @@ const STEPS = [
   "3. Limb Motor Recovery",
   "4. Head & Trunk Control",
   "5. Mobility & Function",
-  "6. Clinical Summary",
+  "6. Rehab Goals",
+  "7. Clinical Summary",
 ];
+
+interface RehabGoal {
+  domain: "CMSA" | "FAC" | "mRS";
+  tier: string;
+  timeline: string;
+  exercises: string[];
+}
+
+const CMSA_GOALS: Record<string, Omit<RehabGoal, "domain" | "tier">> = {
+  flaccid: {
+    timeline: "Begin within 24–72 h (medically stable); reassess daily; expect slow change over weeks 1–4",
+    exercises: [
+      "Positioning & supported postures — hemiplegic limb protection, scapular/pelvic alignment; reposition every 2 h",
+      "Passive range of motion — full PROM all joints 1–2×/day; extra care at shoulder (support humeral head, no traction)",
+      "Facilitation of early activity — tapping, weight-bearing through affected limb, bilateral activities",
+      "Tone/flaccidity management — avoid sling traction on shoulder; consider supported arm tray; monitor for subluxation & shoulder pain",
+      "Sensory stimulation & family/caregiver education for handling techniques",
+    ],
+  },
+  synergy: {
+    timeline: "Weeks 1–6; progress as selective movement emerges; review weekly",
+    exercises: [
+      "Active-assisted movement — progress from gravity-eliminated to against-gravity",
+      "Task-oriented repetitive practice — reaching, grasp-and-release, sit-to-stand repetitions (high dose, ≥300 reps/week target)",
+      "Synergy reduction — weight-bearing out of synergy patterns, selective control drills, isolated joint movement practice",
+      "Spasticity management — prolonged stretch, positioning, consider botulinum toxin referral if focal spasticity limits function",
+      "Mirror therapy & bilateral arm training for upper-limb engagement",
+    ],
+  },
+  selective: {
+    timeline: "Weeks 4–24+; outpatient/transition phase; review every 2–4 weeks",
+    exercises: [
+      "Progressive resisted strengthening — affected limb 2–3×/week, moderate load (50–70% 1RM equivalents)",
+      "Fine motor & dexterity — graded manipulation, in-hand skills, handwriting/utensil practice",
+      "Constraint-induced movement therapy (CIMT) or modified CIMT if ≥10° wrist + 10° finger extension present",
+      "Aerobic conditioning — walking/cycling 20–40 min at 60–80% HR reserve, 3–5×/week",
+      "Functional task integration — ADL retraining, return-to-work/leisure simulation",
+    ],
+  },
+};
+
+const FAC_GOALS: Record<string, Omit<RehabGoal, "domain" | "tier">> = {
+  dependent: {
+    timeline: "Begin 24–48 h if stable; daily sessions; target supervised standing by week 2–4",
+    exercises: [
+      "Early mobilisation protocol — graded sitting on edge of bed → supported standing, 2×/day as tolerated",
+      "Sitting balance & trunk control — unsupported sitting, weight shifts, reaching tasks",
+      "Tilt table / standing frame for orthostatic tolerance and lower-limb loading",
+      "Assisted transfer training (bed↔chair) with consistent technique; hoist use only until safe manual transfer achieved",
+      "Pre-gait activities — weight shifting in standing, stepping in place with support",
+    ],
+  },
+  supervised: {
+    timeline: "Weeks 1–8; gait sessions ≥5×/week; wean physical assistance progressively",
+    exercises: [
+      "Body-weight–supported treadmill training or overground gait with close guarding",
+      "Gait quality drills — step symmetry, heel strike, knee control in stance; consider AFO assessment for foot drop",
+      "Strength & balance — sit-to-stand repetitions, single-leg stance progression, static/dynamic balance tasks",
+      "Walking aid fitting & training (stick/quad stick) with falls-prevention education",
+      "Endurance building — increase walking distance 10–20% weekly as tolerated",
+    ],
+  },
+  independent: {
+    timeline: "Weeks 4–24+; progress to community ambulation goals; review monthly",
+    exercises: [
+      "Community ambulation training — uneven surfaces, kerbs, slopes, stairs with/without rails",
+      "Dual-task walking — cognitive-motor tasks while walking for automaticity",
+      "Speed & endurance — goal ≥0.8–1.0 m/s gait speed; 30-min continuous walking target",
+      "Advanced balance — perturbation training, tandem walking, outdoor obstacle courses",
+      "Falls-prevention program and home/environmental assessment",
+    ],
+  },
+};
+
+const MRS_GOALS: Record<string, Omit<RehabGoal, "domain" | "tier">> = {
+  severe: {
+    timeline: "Start within 24–48 h of admission; daily MDT input; caregiver training before discharge",
+    exercises: [
+      "Early positioning & pressure-area care — 2-hourly repositioning, seating assessment",
+      "Chest physiotherapy & assisted mobility as tolerated",
+      "Passive/assisted transfers with hoist; train caregivers in safe handling",
+      "Seating & postural management — wheelchair prescription with trunk/head support as needed",
+      "Swallow-safe feeding positioning (with SLT); spasticity & contracture prevention program",
+    ],
+  },
+  moderate: {
+    timeline: "Weeks 1–12; structured inpatient/outpatient program 3–5×/week",
+    exercises: [
+      "ADL retraining — dressing, grooming, toileting with one-handed techniques & adaptive equipment",
+      "Supervised mobility progression — short indoor walks, stair practice with standby assist",
+      "Home exercise program — balance, strengthening and walking 30 min/day",
+      "Falls-risk mitigation — home assessment, grab rails, review of aids",
+      "Graded return to household tasks and social participation",
+    ],
+  },
+  mild: {
+    timeline: "Weeks 2–24; transition to self-directed program within 4–8 weeks",
+    exercises: [
+      "Aerobic conditioning — brisk walking, stationary cycling 30–40 min, 3–5×/week (post cardiac clearance)",
+      "Resistance training — whole-body, 2–3×/week, moderate–vigorous intensity",
+      "Return-to-work/driving assessment and community reintegration planning",
+      "Secondary prevention lifestyle coaching — exercise adherence, BP/diabetes/lipid control support",
+      "Fine-tune residual deficits — fatigue management, cognitive-motor integration",
+    ],
+  },
+};
 
 const pretty = (s: string) => s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 const NA = "—";
