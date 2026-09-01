@@ -5826,7 +5826,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </TabsTrigger>
         </TabsList>
         <p className="hidden sm:block text-[11px] text-muted-foreground/80 -mt-3 mb-3 text-center">
-          Keyboard: <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">←/→</kbd> cycle tabs · <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">1-7</kbd> jump · <kbd className="px-1 rounded border">Tab</kbd> to focus, then <kbd className="px-1 rounded border">←/→</kbd> / <kbd className="px-1 rounded border">Enter</kbd>
+          Keyboard: <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">←/→</kbd> cycle tabs · <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">1-8</kbd> jump · <kbd className="px-1 rounded border">Tab</kbd> to focus, then <kbd className="px-1 rounded border">←/→</kbd> / <kbd className="px-1 rounded border">Enter</kbd>
         </p>
 
         {/* Ischemic Stroke Tab Content */}
@@ -6027,11 +6027,6 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* ISPS25 Stroke Phenotyping System */}
           <LazySection id="stroke-phenotyping">
             <ISPS25StrokePhenotyping />
-          </LazySection>
-
-          {/* Motor Control & Mobility Dashboard */}
-          <LazySection id="motor-control-dashboard">
-            <StrokeMotorControlDashboard />
           </LazySection>
 
           {/* Lab Investigations Module */}
