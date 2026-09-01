@@ -5816,6 +5816,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <AlertTriangle className="h-4 w-4 shrink-0" />
             Post IVT
           </TabsTrigger>
+          <TabsTrigger value="recovery" className="flex items-center justify-center gap-1.5 text-[13px] font-bold tracking-tight text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 ring-1 ring-inset ring-emerald-500/30 data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-500 data-[state=active]:to-green-500 data-[state=active]:ring-transparent data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/40 data-[state=active]:scale-[1.03] px-2.5 py-2.5 rounded-lg transition-all">
+            <Activity className="h-4 w-4 shrink-0" />
+            Recovery
+          </TabsTrigger>
           <TabsTrigger value="medications" className="flex items-center justify-center gap-1.5 text-[13px] font-bold tracking-tight text-teal-700 dark:text-teal-300 bg-teal-500/10 hover:bg-teal-500/20 ring-1 ring-inset ring-teal-500/30 data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-cyan-500 data-[state=active]:to-teal-500 data-[state=active]:ring-transparent data-[state=active]:shadow-md data-[state=active]:shadow-teal-500/40 data-[state=active]:scale-[1.03] px-2.5 py-2.5 rounded-lg transition-all">
             <Pill className="h-4 w-4 shrink-0" />
             Meds
