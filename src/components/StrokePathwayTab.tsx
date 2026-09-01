@@ -13,6 +13,7 @@ import {
 import RehabPlanModule from "@/components/RehabPlanModule";
 import ComplexRehabProblemsScreen from "@/components/ComplexRehabProblemsScreen";
 import RehabProgressTracker from "@/components/RehabProgressTracker";
+import RehabMilestonesDischarge from "@/components/RehabMilestonesDischarge";
 
 const RED_FLAGS: { key: string; label: string; action: string }[] = [
   { key: "worsening_motor", label: "New or worsening motor deficit", action: "Hold mobilisation. Urgent NIHSS, repeat imaging, notify stroke team." },
@@ -236,6 +237,9 @@ const StrokePathwayTab: React.FC<Props> = ({ onGoToRecovery }) => {
 
       {/* Complex rehabilitation problems gate */}
       <ComplexRehabProblemsScreen />
+
+      {/* Milestones & discharge criteria */}
+      <RehabMilestonesDischarge />
 
       {/* Structured rehab plan */}
       <RehabPlanModule />
