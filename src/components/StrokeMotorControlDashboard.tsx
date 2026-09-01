@@ -783,8 +783,59 @@ const StrokeMotorControlDashboard: React.FC = () => {
               </div>
             )}
 
-            {/* STEP 6 */}
+            {/* STEP 6 — REHAB GOALS */}
             {step === 5 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4 text-emerald-500" />
+                  <p className="text-xs font-semibold text-foreground">Physiotherapy goals mapped from your CMSA, FAC and mRS entries</p>
+                </div>
+                {rehabGoals.length === 0 ? (
+                  <div className="rounded-lg border border-dashed border-border/60 bg-muted/20 p-4 text-center">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      No goals generated yet. Enter at least one CMSA stage (Step 3), FAC score (Step 5) or mRS score (Step 5) to see tailored physiotherapy exercises and timelines.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {rehabGoals.map((g) => (
+                      <div
+                        key={g.domain}
+                        className={`rounded-lg border p-3.5 space-y-2.5 ${
+                          g.domain === "CMSA"
+                            ? "border-emerald-500/40 bg-emerald-500/5"
+                            : g.domain === "FAC"
+                            ? "border-sky-500/40 bg-sky-500/5"
+                            : "border-amber-500/40 bg-amber-500/5"
+                        }`}
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <Badge variant="secondary" className="text-[11px] font-bold">{g.domain}</Badge>
+                          <p className="text-xs font-semibold text-foreground">{g.tier}</p>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground leading-snug">
+                          <strong className="text-foreground">Timeline:</strong> {g.timeline}
+                        </p>
+                        <ul className="space-y-1.5">
+                          {g.exercises.map((e, i) => (
+                            <li key={i} className="flex gap-2 text-xs leading-snug text-foreground/90">
+                              <Check className="h-3.5 w-3.5 shrink-0 mt-0.5 text-emerald-500" />
+                              <span>{e}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                    <p className="text-[10px] text-muted-foreground leading-snug">
+                      Goals auto-update as you change CMSA, FAC or mRS. Always individualise dose, frequency and precautions to the patient's medical status and local protocols.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* STEP 7 — CLINICAL SUMMARY */}
+            {step === 6 && (
               <div className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {[
@@ -815,6 +866,9 @@ const StrokeMotorControlDashboard: React.FC = () => {
                     onClick={() => { navigator.clipboard.writeText(report); toast.success("Assessment copied to clipboard"); }}
                   >
                     <Copy className="h-4 w-4 mr-1.5" /> Copy report
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={exportPDF}>
+                    <FileDown className="h-4 w-4 mr-1.5" /> Export PDF
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => { setS(initialState); setStep(0); toast.success("Assessment reset"); }}>
                     <RotateCcw className="h-4 w-4 mr-1.5" /> Reset
