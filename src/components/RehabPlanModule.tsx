@@ -288,6 +288,23 @@ const RehabPlanModule: React.FC = () => {
 
   const completed = plan.filter((p) => progress[p.day]).length;
 
+  /* weekly goals derived from the active tiers */
+  const weeks = useMemo(() => {
+    if (!plan.length) return [];
+    const out: { week: number; days: DayPlan[]; goals: string[] }[] = [];
+    for (let i = 0; i < plan.length; i += 7) {
+      const days = plan.slice(i, i + 7);
+      const goals = [
+        tF && `Mobility: ${WEEKLY_MOB[tF]}`,
+        tC && `Upper limb: ${WEEKLY_UL[tC]}`,
+        tM && `Function & care: ${WEEKLY_GLOBAL[tM]}`,
+      ].filter(Boolean) as string[];
+      out.push({ week: out.length + 1, days, goals });
+    }
+    return out;
+  }, [plan, tC, tF, tM]);
+
+
   const planText = useMemo(() => {
     const head = [
       "STROKE REHABILITATION PLAN",
