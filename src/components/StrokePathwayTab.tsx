@@ -11,6 +11,8 @@ import {
   Activity, AlertTriangle, ArrowRight, ChevronDown, GitBranch, ShieldCheck, Stethoscope,
 } from "lucide-react";
 import RehabPlanModule from "@/components/RehabPlanModule";
+import ComplexRehabProblemsScreen from "@/components/ComplexRehabProblemsScreen";
+import RehabProgressTracker from "@/components/RehabProgressTracker";
 
 const RED_FLAGS: { key: string; label: string; action: string }[] = [
   { key: "worsening_motor", label: "New or worsening motor deficit", action: "Hold mobilisation. Urgent NIHSS, repeat imaging, notify stroke team." },
@@ -232,8 +234,14 @@ const StrokePathwayTab: React.FC<Props> = ({ onGoToRecovery }) => {
         </Collapsible>
       </Card>
 
+      {/* Complex rehabilitation problems gate */}
+      <ComplexRehabProblemsScreen />
+
       {/* Structured rehab plan */}
       <RehabPlanModule />
+
+      {/* Day-by-day progress tracker */}
+      <RehabProgressTracker />
     </div>
   );
 };
