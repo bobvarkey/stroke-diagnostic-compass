@@ -163,6 +163,38 @@ const phaseOf = (day: number) =>
 const PROGRESSION_RULE =
   "Progress when the patient completes the prescribed dose on 2 consecutive days with no red flag and Borg ≤13; regress one level if fatigue, pain >4/10, BP instability or new neurological change.";
 
+/* weekly goals by tier ---------------------------------------------------- */
+
+const WEEKLY_UL: Record<Tier, string> = {
+  flaccid: "Maintain full painless shoulder ROM, no subluxation increase, initiate 15 min/day mirror therapy",
+  synergy: "Achieve ≥100 task repetitions/day and one out-of-synergy reach with elbow extended",
+  selective: "Increase resisted load ~10% and complete 2 self-care ADLs with the affected hand unaided",
+};
+
+const WEEKLY_MOB: Record<FacTier, string> = {
+  dependent: "Tolerate 20 min upright standing and complete bed↔chair transfer with 1 assist",
+  supervised: "Increase walking distance 10–20% and progress to standby supervision on level ground",
+  independent: "Reach ≥0.8 m/s gait speed and 30 min continuous walking including kerbs and stairs",
+};
+
+const WEEKLY_GLOBAL: Record<MrsTier, string> = {
+  severe: "No pressure injury or contracture; caregiver independent in handling and safe feeding position",
+  moderate: "Independent in 2 additional ADLs and adherent to daily home exercise program",
+  mild: "Complete 150 min/week aerobic activity and progress return-to-work/driving readiness tasks",
+};
+
+const TIER_MILESTONES: { key: string; label: string; detail: string }[] = [
+  { key: "cmsa-flaccid", label: "CMSA 1–2 · Flaccid", detail: "Protect the limb: ROM, positioning, sensory input, mirror therapy" },
+  { key: "cmsa-synergy", label: "CMSA 3–4 · Synergy", detail: "High-repetition task practice, break obligatory synergy, manage spasticity" },
+  { key: "cmsa-selective", label: "CMSA 5–7 · Selective", detail: "Strength, dexterity, modified CIMT, ADL and vocational integration" },
+  { key: "fac-dependent", label: "FAC 0–1 · Dependent", detail: "Bed mobility, sitting balance, tilt/standing frame, assisted transfers" },
+  { key: "fac-supervised", label: "FAC 2–3 · Supervised", detail: "Overground gait with guarding, sit-to-stand, dynamic balance, stairs with rail" },
+  { key: "fac-independent", label: "FAC 4–5 · Independent", detail: "Community ambulation, dual-task, gait speed and endurance targets" },
+  { key: "mrs-severe", label: "mRS 4–5 · Severe", detail: "Pressure care, chest physio, contracture prevention, caregiver training" },
+  { key: "mrs-moderate", label: "mRS 2–3 · Moderate", detail: "ADL retraining, falls prevention, light aerobic work, energy conservation" },
+  { key: "mrs-mild", label: "mRS 0–1 · Mild", detail: "Conditioning, resistance training, return to work/driving, prevention coaching" },
+];
+
 /* ------------------------------- component ------------------------------- */
 
 interface DayPlan {
@@ -175,6 +207,7 @@ interface DayPlan {
 
 const RehabPlanModule: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const { state: shared } = useRehabSharedState();
   const [cmsa, setCmsa] = useState("");
   const [fac, setFac] = useState("");
   const [mrs, setMrs] = useState("");
@@ -184,11 +217,24 @@ const RehabPlanModule: React.FC = () => {
   const [startDate, setStartDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [progress, setProgress] = useState<Record<number, boolean>>({});
   const [notes, setNotes] = useState("");
+  const [view, setView] = useState<"cards" | "timeline">("timeline");
+
+  /* prefill from the Recovery module scores when the clinician has not overridden them */
+  React.useEffect(() => {
+    if (!cmsa && shared.cmsa != null) setCmsa(String(shared.cmsa));
+    if (fac === "" && shared.fac != null) setFac(String(shared.fac));
+    if (mrs === "" && shared.mrs != null) setMrs(String(shared.mrs));
+  }, [shared.cmsa, shared.fac, shared.mrs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const tC = cmsaTier(cmsa);
   const tF = facTier(fac);
   const tM = mrsTier(mrs);
   const ready = Boolean(tC || tF || tM);
+
+  const activeMilestones = new Set(
+    [tC && `cmsa-${tC}`, tF && `fac-${tF}`, tM && `mrs-${tM}`].filter(Boolean) as string[]
+  );
+
 
   const plan: DayPlan[] = useMemo(() => {
     if (!ready) return [];
