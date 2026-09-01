@@ -30,6 +30,7 @@ import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import StrokeMotorControlDashboard from "./StrokeMotorControlDashboard";
+import StrokePathwayTab from "./StrokePathwayTab";
 import { ThemeToggle } from "./ThemeToggle";
 import { SafeFontSizeControl } from "./FontSizeControlSafe";
 
@@ -5637,7 +5638,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   // Alt + ArrowLeft/ArrowRight cycles tabs; Alt + 1..7 jumps directly.
   // Radix Tabs already handle Arrow/Home/End/Enter/Space when a trigger is focused.
   const TAB_ORDER = useMemo(
-    () => ["ischemic", "hemorrhagic", "sah", "sdh", "cvt", "post-ivt", "recovery", "medications"],
+    () => ["ischemic", "hemorrhagic", "sah", "sdh", "cvt", "post-ivt", "recovery", "pathway", "medications"],
     [],
   );
   useEffect(() => {
@@ -5662,7 +5663,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         setActiveTab(TAB_ORDER[(idx - 1 + TAB_ORDER.length) % TAB_ORDER.length]);
-      } else if (/^[1-7]$/.test(e.key)) {
+      } else if (/^[1-9]$/.test(e.key)) {
         e.preventDefault();
         setActiveTab(TAB_ORDER[parseInt(e.key, 10) - 1]);
       }
@@ -5791,7 +5792,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-8 h-auto sticky top-0 z-40 mb-5 rounded-xl p-1.5 gap-1.5 bg-gradient-to-r from-background/95 via-card/90 to-background/95 backdrop-blur-xl border border-border/60 shadow-lg shadow-primary/5">
+        <TabsList className="hidden sm:grid w-full grid-cols-9 h-auto sticky top-0 z-40 mb-5 rounded-xl p-1.5 gap-1.5 bg-gradient-to-r from-background/95 via-card/90 to-background/95 backdrop-blur-xl border border-border/60 shadow-lg shadow-primary/5">
           <TabsTrigger value="ischemic" className="flex items-center justify-center gap-1.5 text-[13px] font-bold tracking-tight text-blue-700 dark:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 ring-1 ring-inset ring-blue-500/30 data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:ring-transparent data-[state=active]:shadow-md data-[state=active]:shadow-blue-500/40 data-[state=active]:scale-[1.03] px-2.5 py-2.5 rounded-lg transition-all">
             <Zap className="h-4 w-4 shrink-0" />
             Ischemic
@@ -5820,13 +5821,17 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <Activity className="h-4 w-4 shrink-0" />
             Recovery
           </TabsTrigger>
+          <TabsTrigger value="pathway" className="flex items-center justify-center gap-1.5 text-[13px] font-bold tracking-tight text-indigo-700 dark:text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 ring-1 ring-inset ring-indigo-500/30 data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-indigo-500 data-[state=active]:to-violet-500 data-[state=active]:ring-transparent data-[state=active]:shadow-md data-[state=active]:shadow-indigo-500/40 data-[state=active]:scale-[1.03] px-2.5 py-2.5 rounded-lg transition-all">
+            <GitBranch className="h-4 w-4 shrink-0" />
+            Pathway
+          </TabsTrigger>
           <TabsTrigger value="medications" className="flex items-center justify-center gap-1.5 text-[13px] font-bold tracking-tight text-teal-700 dark:text-teal-300 bg-teal-500/10 hover:bg-teal-500/20 ring-1 ring-inset ring-teal-500/30 data-[state=active]:text-white data-[state=active]:bg-gradient-to-br data-[state=active]:from-cyan-500 data-[state=active]:to-teal-500 data-[state=active]:ring-transparent data-[state=active]:shadow-md data-[state=active]:shadow-teal-500/40 data-[state=active]:scale-[1.03] px-2.5 py-2.5 rounded-lg transition-all">
             <Pill className="h-4 w-4 shrink-0" />
             Meds
           </TabsTrigger>
         </TabsList>
         <p className="hidden sm:block text-[11px] text-muted-foreground/80 -mt-3 mb-3 text-center">
-          Keyboard: <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">←/→</kbd> cycle tabs · <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">1-8</kbd> jump · <kbd className="px-1 rounded border">Tab</kbd> to focus, then <kbd className="px-1 rounded border">←/→</kbd> / <kbd className="px-1 rounded border">Enter</kbd>
+          Keyboard: <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">←/→</kbd> cycle tabs · <kbd className="px-1 rounded border">Alt</kbd>+<kbd className="px-1 rounded border">1-9</kbd> jump · <kbd className="px-1 rounded border">Tab</kbd> to focus, then <kbd className="px-1 rounded border">←/→</kbd> / <kbd className="px-1 rounded border">Enter</kbd>
         </p>
 
         {/* Ischemic Stroke Tab Content */}
@@ -6405,6 +6410,13 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </LazySection>
         </TabsContent>
 
+        {/* Stroke Pathway Tab Content */}
+        <TabsContent value="pathway" className="space-y-6">
+          <LazySection id="stroke-pathway">
+            <StrokePathwayTab onGoToRecovery={() => setActiveTab("recovery")} />
+          </LazySection>
+        </TabsContent>
+
         {/* Medications Formulary Tab */}
         <TabsContent value="medications" className="space-y-6">
           <LazySection id="medications-formulary">
@@ -6415,7 +6427,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-border/50 backdrop-blur-xl bg-background/90" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
-        <div className="grid grid-cols-8 h-16">
+        <div className="grid grid-cols-9 h-16">
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
             { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
@@ -6424,6 +6436,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
             { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },
             { value: "recovery", icon: <Activity className="h-5 w-5" />, label: "Recovery", activeColor: "text-emerald-500" },
+            { value: "pathway", icon: <GitBranch className="h-5 w-5" />, label: "Pathway", activeColor: "text-indigo-500" },
             { value: "medications", icon: <Pill className="h-5 w-5" />, label: "Meds", activeColor: "text-cyan-500" },
           ].map((tab) => (
             <button
