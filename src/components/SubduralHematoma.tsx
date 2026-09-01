@@ -2163,17 +2163,8 @@ function SDHReportingChecklist() {
     },
     suggested_structured_report: {
       diagnosis: "Subdural hematoma",
-      description: [
-        "Location and laterality",
-        "Maximal thickness in mm",
-        "Density/age and any acute-on-chronic component",
-        "Mass effect",
-        "Midline shift in mm",
-        "Ventricular compression",
-        "Any herniation",
-        "Interval change compared with prior imaging",
-        "If chronic/subacute and MMAE is being considered: note hyperdense capsule sign, membrane/septation pattern, density pattern, and any imaging features suggesting better or worse embolization response"
-      ]
+      description: SDH_REPORT_TEMPLATE
+
     }
   };
 
