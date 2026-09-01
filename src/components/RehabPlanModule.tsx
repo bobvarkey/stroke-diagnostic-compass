@@ -10,9 +10,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  CalendarDays, ChevronDown, ClipboardList, Copy, Dumbbell, RotateCcw, TrendingUp,
+  CalendarDays, ChevronDown, ClipboardList, Copy, Dumbbell, RotateCcw, TrendingUp, Target, LayoutList, GitCommitVertical,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useRehabSharedState } from "@/hooks/useRehabSharedState";
+
 
 /* ------------------------------- clinical data ---------------------------- */
 
