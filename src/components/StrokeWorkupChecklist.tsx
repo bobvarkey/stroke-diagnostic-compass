@@ -29,6 +29,7 @@ import FisherScaleCalculator from "./FisherScaleCalculator";
 import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
+import StrokeMotorControlDashboard from "./StrokeMotorControlDashboard";
 import { ThemeToggle } from "./ThemeToggle";
 import { SafeFontSizeControl } from "./FontSizeControlSafe";
 
@@ -5839,6 +5840,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                 { id: "aspects-calculator", label: "ASPECTS" },
                 { id: "nihss-calculator", label: "NIHSS" },
                 { id: "gcs-calculator", label: "GCS" },
+                { id: "motor-control-dashboard", label: "Motor" },
                 { id: "lab-investigations", label: "Labs" },
                 { id: "workup-checklist", label: "Checklist" },
               ].map(section => (
@@ -6021,6 +6023,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* ISPS25 Stroke Phenotyping System */}
           <LazySection id="stroke-phenotyping">
             <ISPS25StrokePhenotyping />
+          </LazySection>
+
+          {/* Motor Control & Mobility Dashboard */}
+          <LazySection id="motor-control-dashboard">
+            <StrokeMotorControlDashboard />
           </LazySection>
 
           {/* Lab Investigations Module */}
