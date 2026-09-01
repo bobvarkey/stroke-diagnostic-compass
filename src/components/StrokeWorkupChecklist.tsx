@@ -6423,6 +6423,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
             { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },
+            { value: "recovery", icon: <Activity className="h-5 w-5" />, label: "Recovery", activeColor: "text-emerald-500" },
             { value: "medications", icon: <Pill className="h-5 w-5" />, label: "Meds", activeColor: "text-cyan-500" },
           ].map((tab) => (
             <button
