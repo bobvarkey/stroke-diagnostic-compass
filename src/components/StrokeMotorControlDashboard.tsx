@@ -345,6 +345,31 @@ const StrokeMotorControlDashboard: React.FC = () => {
     return out;
   }, [s]);
 
+  const rehabGoals = useMemo((): RehabGoal[] => {
+    const goals: RehabGoal[] = [];
+    // CMSA — use the lowest recorded stage (worst-recovering segment)
+    const stages = Object.values(s.cmsa).filter(Boolean).map(Number);
+    if (stages.length) {
+      const min = Math.min(...stages);
+      const key = min <= 2 ? "flaccid" : min <= 4 ? "synergy" : "selective";
+      const tier = min <= 2 ? "CMSA 1–2 (flaccid / early synergy)" : min <= 4 ? "CMSA 3–4 (synergy-dominant)" : "CMSA 5–7 (selective movement)";
+      goals.push({ domain: "CMSA", tier, ...CMSA_GOALS[key] });
+    }
+    if (s.fac !== "") {
+      const f = Number(s.fac);
+      const key = f <= 1 ? "dependent" : f <= 3 ? "supervised" : "independent";
+      const tier = f <= 1 ? "FAC 0–1 (non-functional / dependent ambulation)" : f <= 3 ? "FAC 2–3 (assisted or supervised ambulation)" : "FAC 4–5 (independent ambulation)";
+      goals.push({ domain: "FAC", tier, ...FAC_GOALS[key] });
+    }
+    if (s.mrs !== "" && Number(s.mrs) < 6) {
+      const m = Number(s.mrs);
+      const key = m >= 4 ? "severe" : m === 3 ? "moderate" : "mild";
+      const tier = m >= 4 ? "mRS 4–5 (moderately severe–severe disability)" : m === 3 ? "mRS 3 (moderate disability)" : "mRS 0–2 (no-to-slight disability)";
+      goals.push({ domain: "mRS", tier, ...MRS_GOALS[key] });
+    }
+    return goals;
+  }, [s.cmsa, s.fac, s.mrs]);
+
   const report = useMemo(() => {
     const v = (x: any) => (x === "" || x === undefined || x === null ? NA : x);
     return [
