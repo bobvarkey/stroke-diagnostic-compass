@@ -735,19 +735,11 @@ const StrokeMotorControlDashboard: React.FC = () => {
                   17-item seated trunk-control assessment; higher score indicates better sitting trunk control. It does not assess standing balance, gait independence or isolated neck-extensor strength.
                 </p>
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold text-foreground">Static sitting (0–7)</Label>
-                    <Input className="h-9" type="number" min={0} max={7} value={s.tis_static} onChange={(e) => set("tis_static", e.target.value)} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold text-foreground">Dynamic sitting (0–10)</Label>
-                    <Input className="h-9" type="number" min={0} max={10} value={s.tis_dynamic} onChange={(e) => set("tis_dynamic", e.target.value)} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold text-foreground">Coordination (0–6)</Label>
-                    <Input className="h-9" type="number" min={0} max={6} value={s.tis_coord} onChange={(e) => set("tis_coord", e.target.value)} />
-                  </div>
+                  <LabelledSelect label="Static sitting (0–7)" value={s.tis_static} onChange={(v) => set("tis_static", v)} options={TIS_STATIC} />
+                  <LabelledSelect label="Dynamic sitting (0–10)" value={s.tis_dynamic} onChange={(v) => set("tis_dynamic", v)} options={TIS_DYNAMIC} />
+                  <LabelledSelect label="Coordination (0–6)" value={s.tis_coord} onChange={(v) => set("tis_coord", v)} options={TIS_COORD} />
                 </div>
+
                 <div className="rounded-lg border border-border/60 bg-muted/30 p-3 flex items-center justify-between">
                   <div>
                     <p className="text-xs text-muted-foreground">TIS total</p>
