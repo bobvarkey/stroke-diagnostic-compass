@@ -780,6 +780,37 @@ const StrokeMotorControlDashboard: React.FC = () => {
                   FAC is a 6-level measure of the physical assistance required for ambulation — it assesses walking independence, not gait quality, endurance or fall risk in isolation.
                 </p>
                 <LabelledSelect label="Functional Ambulation Category" value={s.fac} onChange={(v) => set("fac", v)} options={FAC} />
+                <div className="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2">
+                  <p className="text-xs font-semibold text-foreground">What "dependent" means at each FAC level</p>
+                  {FAC.map((f) => {
+                    const dependent = Number(f.value) <= 3;
+                    return (
+                      <div
+                        key={f.value}
+                        className={`rounded-md border p-2 ${
+                          s.fac === f.value
+                            ? "border-emerald-500/60 bg-emerald-500/10"
+                            : "border-border/50 bg-background/40"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-semibold text-foreground">{f.label}</p>
+                          <Badge
+                            variant="secondary"
+                            className={`text-[10px] shrink-0 ${dependent ? "bg-amber-500/15 text-amber-700 dark:text-amber-300" : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"}`}
+                          >
+                            {dependent ? (Number(f.value) === 3 ? "Dependent — supervision" : "Dependent — physical help") : "Independent"}
+                          </Badge>
+                        </div>
+                        <p className="text-[11px] leading-snug text-muted-foreground mt-1">{f.desc}</p>
+                      </div>
+                    );
+                  })}
+                  <p className="text-[10px] text-muted-foreground">
+                    FAC 0–2 = physical assistance required (manual contact). FAC 3 = no contact but a person must be present. FAC 4–5 = no person required.
+                  </p>
+                </div>
+
                 <div className="grid gap-3 sm:grid-cols-2">
                   <LabelledSelect label="Walking aid used" value={s.walking_aid} onChange={(v) => set("walking_aid", v)}
                     options={["none", "single_point_stick", "quad_stick", "walker_or_rollator", "parallel_bars", "ankle_foot_orthosis", "wheelchair_primary", "other", "not_recorded"].map((v) => ({ value: v, label: pretty(v) }))} />
