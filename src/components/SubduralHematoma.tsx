@@ -2065,6 +2065,20 @@ function MMAECandidateChecklist() {
               </ul>
             </div>
 
+            {/* Export */}
+            <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg border border-fuchsia-200 dark:border-fuchsia-700 bg-background/60">
+              <div className="text-xs text-muted-foreground">
+                One-click export of this checklist, the HDCS status and the structured report template.
+              </div>
+              <SDHChecklistExport
+                imagingChecks={imagingChecks}
+                clinicalChecks={clinicalChecks}
+                checked={checked}
+                result={{ label: result.label, text: result.text }}
+                reportingTemplate={SDH_REPORT_TEMPLATE}
+              />
+            </div>
+
             {/* Progress */}
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>Completed: {checked.size}/{imagingChecks.length + clinicalChecks.length}</span>
@@ -2076,6 +2090,7 @@ function MMAECandidateChecklist() {
                 Reset checklist
               </button>
             </div>
+
 
             <p className="text-[11px] text-muted-foreground italic">
               Ref: <em>Radiology</em> 2026 (HDCS as MMAE biomarker); EMBOLISE, MAGIC-MT, STEM trials; AHA/ASA cSDH Scientific Statement 2025.
