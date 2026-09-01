@@ -30,6 +30,7 @@ import InteractiveICHScoreCalculator from "./ICHScoreCalculator";
 import { nihssIconMap } from "./NIHSSIcons";
 import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import StrokeMotorControlDashboard from "./StrokeMotorControlDashboard";
+import SpeechSwallowCognitionModule from "./SpeechSwallowCognitionModule";
 import StrokePathwayTab from "./StrokePathwayTab";
 import { ThemeToggle } from "./ThemeToggle";
 import { SafeFontSizeControl } from "./FontSizeControlSafe";
@@ -6407,6 +6408,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Motor Control & Mobility Dashboard */}
           <LazySection id="motor-control-dashboard">
             <StrokeMotorControlDashboard />
+          </LazySection>
+          {/* Speech, swallow & cognition modules */}
+          <LazySection id="speech-swallow-cognition">
+            <SpeechSwallowCognitionModule />
           </LazySection>
         </TabsContent>
 
