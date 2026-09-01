@@ -382,10 +382,90 @@ const StrokeMotorControlDashboard: React.FC = () => {
       `FAC ${v(s.fac)}/5; walking aid ${pretty(s.walking_aid)}. Bed–chair transfer ${pretty(s.bed_to_chair)}; sit-to-stand ${pretty(s.sit_to_stand)}.`,
       `mRS ${v(s.mrs)}/6.`,
       `Rehabilitation priority: ${pretty(s.rehab_priority)}.`,
+      ...rehabGoals.map(
+        (g) =>
+          `Rehab goals (${g.tier}) — timeline: ${g.timeline}. Exercises: ${g.exercises.map((e) => e.replace(/—.*$/, "").trim()).join("; ")}.`,
+      ),
       alerts.length ? `Alerts: ${alerts.map((a) => `[${a.severity}] ${a.message}`).join(" ")}` : "",
       s.clinician_notes ? `Notes: ${s.clinician_notes}` : "",
     ].filter(Boolean).join("\n");
-  }, [s, motorSubtotal, tisTotal, tisInterpretation, alerts]);
+  }, [s, motorSubtotal, tisTotal, tisInterpretation, alerts, rehabGoals]);
+
+  const exportPDF = () => {
+    try {
+      const doc = new jsPDF();
+      const pageW = doc.internal.pageSize.getWidth();
+      const margin = 14;
+      const maxW = pageW - margin * 2;
+      let y = 18;
+
+      const ensure = (needed: number) => {
+        if (y + needed > doc.internal.pageSize.getHeight() - 14) {
+          doc.addPage();
+          y = 18;
+        }
+      };
+      const heading = (text: string) => {
+        ensure(12);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(text, margin, y);
+        y += 6;
+        doc.setDrawColor(120);
+        doc.line(margin, y, pageW - margin, y);
+        y += 6;
+      };
+      const para = (text: string, size = 10, bold = false) => {
+        doc.setFont("helvetica", bold ? "bold" : "normal");
+        doc.setFontSize(size);
+        for (const line of doc.splitTextToSize(text, maxW) as string[]) {
+          ensure(5);
+          doc.text(line, margin, y);
+          y += 5;
+        }
+        y += 1.5;
+      };
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Stroke Motor Control & Mobility Assessment", margin, y);
+      y += 7;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.text(`Generated: ${new Date().toLocaleString()} · Stroke Companion`, margin, y);
+      y += 9;
+
+      heading("Assessment Report");
+      para(report);
+
+      if (alerts.length) {
+        heading("Decision Alerts");
+        alerts.forEach((a) => para(`[${a.severity.toUpperCase()}] ${a.message}`));
+      }
+
+      if (rehabGoals.length) {
+        heading("Physiotherapy Goals & Timelines");
+        rehabGoals.forEach((g) => {
+          para(`${g.domain} — ${g.tier}`, 11, true);
+          para(`Timeline: ${g.timeline}`);
+          g.exercises.forEach((e) => para(`•  ${e}`, 9));
+          y += 2;
+        });
+      }
+
+      heading("Disclaimer");
+      para(
+        "Clinical documentation and rehabilitation tracking aid only. Does not replace formal NIHSS certification, validated administration manuals, neurological examination, physiotherapy assessment or local stroke protocols.",
+        8,
+      );
+
+      const name = s.patient_name ? s.patient_name.replace(/\s+/g, "_") : "patient";
+      doc.save(`motor-assessment-${name}-${new Date().toISOString().slice(0, 10)}.pdf`);
+      toast.success("PDF exported");
+    } catch {
+      toast.error("PDF export failed");
+    }
+  };
 
   const cmsaRow = (key: string, label: string) => (
     <LabelledSelect
