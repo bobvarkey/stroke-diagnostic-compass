@@ -76,6 +76,7 @@ export const NAV_GROUPS: NavGroupMeta[] = [
     items: [
       { id: "stroke-history", label: "Stroke History", icon: ClipboardList, color: "text-violet-400", parent: "Documentation", keywords: ["template","documentation"] },
       { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: FileText, color: "text-purple-400", parent: "Documentation", keywords: ["isps25","toast","etiology"] },
+      { id: "esus-workup", label: "ESUS Workup", icon: FileText, color: "text-yellow-400", parent: "Documentation", keywords: ["esus","carotid web","pfo","pascal","arch atheroma","device detected af","cancer"] },
       { id: "workup-checklist", label: "Workup Checklist", icon: ClipboardList, color: "text-indigo-400", parent: "Documentation", keywords: ["checklist","order set"] },
     ],
   },

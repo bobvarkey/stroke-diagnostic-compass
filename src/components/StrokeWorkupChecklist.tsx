@@ -44,6 +44,7 @@ import VascularAnatomyDiagram from "./VascularAnatomyDiagram";
 import PREVENTScoreCalculator from "./PREVENTScoreCalculator";
 import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
+import ESUSWorkupModule from "./ESUSWorkupModule";
 import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 import KDIGOHeatMap from "./KDIGOHeatMap";
 import PRIMEToolCalculator from "./PRIMEToolCalculator";
@@ -6033,6 +6034,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* ISPS25 Stroke Phenotyping System */}
           <LazySection id="stroke-phenotyping">
             <ISPS25StrokePhenotyping />
+          </LazySection>
+
+          {/* ESUS Workup Pathways */}
+          <LazySection id="esus-workup">
+            <ESUSWorkupModule />
           </LazySection>
 
           {/* Lab Investigations Module */}
