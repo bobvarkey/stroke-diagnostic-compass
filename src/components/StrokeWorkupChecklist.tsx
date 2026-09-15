@@ -6035,6 +6035,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <ISPS25StrokePhenotyping />
           </LazySection>
 
+          {/* ESUS Workup Pathways */}
+          <LazySection id="esus-workup">
+            <ESUSWorkupModule />
+          </LazySection>
+
           {/* Lab Investigations Module */}
           <LazySection id="lab-investigations">
             <LabInvestigationsModule />
