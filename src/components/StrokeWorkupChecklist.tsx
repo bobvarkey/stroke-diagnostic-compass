@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch } from "lucide-react";
 import SectionNavigator, { SectionItem } from "./SectionNavigator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
@@ -55,6 +55,7 @@ import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
+import ICHHematomaExpansion from "./ICHHematomaExpansion";
 
 interface TestItem {
   id: string;
@@ -6245,6 +6246,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             title="ICH Modules"
             sections={[
               { id: "acute-ich", label: "Acute ICH Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
+              { id: "ich-expansion", label: "Hematoma Expansion", icon: <ScanSearch className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "func-score", label: "FUNC Score", icon: <BarChart3 className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "sah-grading", label: "SAH Grading Scales", icon: <Activity className="h-3.5 w-3.5 text-purple-500" /> },
@@ -6258,6 +6260,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Acute ICH Management */}
           <div id="acute-ich">
             <AcuteICHManagement />
+          </div>
+
+          {/* Hematoma expansion definition, NCCT/CTA signs, BRAIN & spot-sign scores */}
+          <div id="ich-expansion">
+            <ICHHematomaExpansion />
           </div>
 
           {/* ICH Score Calculator - Interactive Version */}
