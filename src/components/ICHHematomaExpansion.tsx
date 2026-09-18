@@ -39,9 +39,9 @@ import {
 
 function scoreButtonClass(selected: boolean, accent = "red") {
   const selectedMap: Record<string, string> = {
-    red: "border-red-500 bg-red-100 dark:bg-red-900/40",
-    cyan: "border-cyan-500 bg-cyan-100 dark:bg-cyan-900/40",
-    indigo: "border-indigo-500 bg-indigo-100 dark:bg-indigo-900/40",
+    red: "border-red-600 bg-red-600 text-white",
+    cyan: "border-cyan-600 bg-cyan-600 text-white",
+    indigo: "border-indigo-600 bg-indigo-600 text-white",
   };
   const hoverMap: Record<string, string> = {
     red: "hover:border-red-300 dark:hover:border-red-600",
@@ -52,7 +52,10 @@ function scoreButtonClass(selected: boolean, accent = "red") {
     "p-3 rounded-lg border-2 text-center transition-all",
     selected
       ? selectedMap[accent]
-      : cn("border-slate-200 dark:border-slate-700", hoverMap[accent]),
+      : cn(
+          "border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-100",
+          hoverMap[accent],
+        ),
   );
 }
 
@@ -73,7 +76,9 @@ function OptionButton({
     <button type="button" onClick={onClick} className={scoreButtonClass(selected, accent)}>
       <div className="font-medium text-sm">{label}</div>
       {points !== undefined && (
-        <div className="text-xs text-slate-500 dark:text-slate-400">{points}</div>
+        <div className={cn("text-xs", selected ? "text-white/90" : "text-slate-500 dark:text-slate-400")}>
+          {points}
+        </div>
       )}
     </button>
   );
@@ -533,7 +538,7 @@ export default function ICHHematomaExpansion() {
                       </tbody>
                     </table>
                   </div>
-                  <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">
+                  <p className="mt-3 text-sm text-slate-700 dark:text-slate-200">
                     {NCCT_SIGNS_NOTE}
                   </p>
                 </AccordionContent>
@@ -600,7 +605,7 @@ export default function ICHHematomaExpansion() {
                         </ul>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 italic">
+                    <p className="text-sm text-slate-700 dark:text-slate-200">
                       The two are complementary rather than competing — leakage sign can be positive
                       even when a single-phase spot sign is negative.
                     </p>
