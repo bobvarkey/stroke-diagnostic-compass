@@ -10,6 +10,7 @@ import DIAS3Calculator from "./DIAS3Calculator";
 import SI2NCAL2CCalculator from "./SI2NCAL2CCalculator";
 import HeldnerCVTScore from "./HeldnerCVTScore";
 import CVTIntraclotThrombolysis from "./CVTIntraclotThrombolysis";
+import CVTProceduralTechniques from "./CVTProceduralTechniques";
 
 /* ─────────────────────────── Symptom Severity Scale ─────────────────────────── */
 
@@ -282,6 +283,7 @@ const CerebralVenousThrombosis: React.FC = () => (
   <div className="space-y-6">
     <CVTEvaluationPathway />
     <CVTIntraclotThrombolysis />
+    <CVTProceduralTechniques />
     <CVTEndovascularTechniques />
     <HeldnerCVTScore />
     <CVTGradingScale />

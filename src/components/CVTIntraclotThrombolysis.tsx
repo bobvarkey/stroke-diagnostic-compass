@@ -14,6 +14,7 @@ import {
   CVT_INTRACLOT_MONITORING,
   CVT_INTRACLOT_SOURCE_NOTE,
 } from "@/lib/cvtIntraclotThrombolysis";
+import { CVT_TECHNIQUE_ALTEPLASE } from "@/lib/cvtProceduralTechniques";
 
 const agentAccent: Record<(typeof CVT_INTRACLOT_AGENTS)[number]["id"], string> = {
   urokinase: "border-rose-300 bg-rose-50 dark:border-rose-800 dark:bg-rose-950/30",
@@ -198,6 +199,18 @@ const CVTIntraclotThrombolysis: React.FC = () => (
                 <strong>{CVT_INTRACLOT_ANTICOAGULATION.warfarinDuration}</strong>
               </li>
             </ul>
+          </div>
+
+          <div className="p-3 border border-border rounded-lg bg-muted/20">
+            <p className="text-[11px] text-muted-foreground">
+              A separate teaching reference describes continuous intrasinus alteplase{" "}
+              <strong className="text-foreground">{CVT_TECHNIQUE_ALTEPLASE.infusion}</strong> with
+              repeat angiography in{" "}
+              <strong className="text-foreground">{CVT_TECHNIQUE_ALTEPLASE.angioInterval}</strong>.
+              That range is not merged into this protocol (here:{" "}
+              <strong className="text-foreground">1 mg/h</strong>, 12-hour checks). See Procedural
+              techniques.
+            </p>
           </div>
 
           <div className="p-3 border border-amber-200 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-950/20 rounded-lg">
