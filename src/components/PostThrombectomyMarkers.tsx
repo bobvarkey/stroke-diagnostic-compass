@@ -8,9 +8,6 @@ import {
   Activity, 
   AlertTriangle, 
   Info, 
-  CheckCircle2, 
-  XCircle,
-  Clock,
   User,
   Zap
 } from "lucide-react";

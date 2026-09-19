@@ -296,4 +296,3 @@ export function UIATSScore() {
   );
 }
 
-export default UIATSScore;
