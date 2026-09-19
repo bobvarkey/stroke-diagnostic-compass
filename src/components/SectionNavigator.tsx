@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ChevronDown, ChevronRight, Home, ArrowLeft, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
+import { cn } from "@/lib/utils";
 
 export interface SectionItem {
   id: string;

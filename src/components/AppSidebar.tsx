@@ -41,6 +41,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface NavItem {
   id: string;
