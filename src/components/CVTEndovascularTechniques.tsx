@@ -49,7 +49,7 @@ export default function CVTEndovascularTechniques() {
               thrombectomy constructs built from these techniques.
             </p>
 
-            <figure className="rounded-lg overflow-hidden border border-slate-200 bg-white text-slate-900 dark:border-slate-700">
+            <figure className="teaching-figure rounded-lg overflow-hidden border border-slate-200 bg-white text-slate-900 dark:border-slate-700">
               <img
                 src={cvtEndovascularFigure}
                 alt="Endovascular techniques for cerebral venous thrombosis: panels A–D show jugular access with guiding catheter, distal access catheter, guidewire, and balloon in the superior sagittal sinus; sidebar lists venoplasty, dental floss technique, balloon anchor with mobile aspiration, and pipeline pigging."
