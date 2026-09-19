@@ -84,7 +84,7 @@ function ChoiceButton({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "rounded-lg border-2 px-3 py-2 text-xs font-semibold transition-all text-left",
+        "w-full rounded-lg border-2 px-3 py-2 text-xs font-semibold transition-all text-center",
         selected ? selectedMap[accent] : idleMap[accent],
       )}
     >
@@ -185,7 +185,7 @@ export default function CVTEvaluationPathway() {
               <button
                 type="button"
                 onClick={reset}
-                className="flex items-center gap-1 px-2 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded hover:bg-slate-300 dark:hover:bg-slate-600 shrink-0"
+                className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-800 dark:text-slate-100 bg-slate-200 dark:bg-slate-700 border border-slate-400 dark:border-slate-500 rounded hover:bg-slate-300 dark:hover:bg-slate-600 shrink-0"
               >
                 <RotateCcw className="h-3 w-3" />
                 Reset
