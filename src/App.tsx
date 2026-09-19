@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Preview from "./pages/Preview";
 import NotFound from "./pages/NotFound";
-import ComplianceOnboarding from "./compliance/ComplianceOnboarding";
 import PrivacyScreen from "./compliance/PrivacyScreen";
 import TermsScreen from "./compliance/TermsScreen";
 import DisclaimerScreen from "./compliance/DisclaimerScreen";
@@ -18,62 +17,11 @@ import { getFocusStyleOverrides } from "./services/accessibility";
 const queryClient = new QueryClient();
 
 /**
- * ComplianceGate — wraps the app and ensures the user has completed
- * the onboarding consent flow before accessing clinical features.
- * Uses localStorage so returning users don't re-onboard.
- */
-function ComplianceGate({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    // Check if onboarding was already completed
-    try {
-      const complete = localStorage.getItem("stroke_onboarding_complete");
-      setOnboardingComplete(complete === "true");
-    } catch {
-      setOnboardingComplete(false);
-    }
-  }, []);
-
-  // Show loading while checking
-  if (loading || onboardingComplete === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show onboarding if not yet completed
-  if (!onboardingComplete) {
-    return (
-      <ComplianceOnboarding
-        userId={user?.id || null}
-        onComplete={() => setOnboardingComplete(true)}
-        onSkipToApp={() => {
-          // Skip in demo mode — mark onboarding as complete for the session
-          try {
-            localStorage.setItem("stroke_onboarding_complete", "true");
-          } catch { /* noop */ }
-          setOnboardingComplete(true);
-        }}
-      />
-    );
-  }
-
-  return <>{children}</>;
-}
-
-/**
  * App — root component with routing and global setup.
- * 
+ *
  * Routes:
- *   /           — Main clinical app (protected by ComplianceGate)
- *   /preview    — Mobile preview landing (no compliance gate)
+ *   /           — Main clinical app (opens directly, no onboarding gate)
+ *   /preview    — Mobile preview landing
  *   /privacy    — Standalone privacy policy
  *   /terms      — Standalone terms of use
  *   /disclaimer — Standalone disclaimer
@@ -116,16 +64,9 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <Routes>
-              {/* Main app — protected by compliance gate */}
-              <Route
-                path="/"
-                element={
-                  <ComplianceGate>
-                    <Index />
-                  </ComplianceGate>
-                }
-              />
-              {/* Standalone compliance screens (no gate needed) */}
+              {/* Main app — opens directly */}
+              <Route path="/" element={<Index />} />
+              {/* Standalone compliance screens */}
               <Route path="/privacy" element={<PrivacyScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/terms" element={<TermsScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/disclaimer" element={<DisclaimerScreen standalone onBack={() => window.history.back()} />} />
