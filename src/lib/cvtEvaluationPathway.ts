@@ -5,10 +5,10 @@
  */
 
 export const CVT_PATHWAY_TITLE =
-  "Cerebral Venous Thrombosis Evaluation and Management";
+  "Cerebral Venous Thrombosis (CVT) Evaluation and Management";
 
 export const CVT_ANTICOAG_NOTE =
-  "Intracranial hemorrhage caused by CVT is not a contraindication to anticoagulation.";
+  "Intracranial hemorrhage caused by CVT is NOT a contraindication to anticoagulation.";
 
 export const CVT_ALTERNATIVE_DIAGNOSES = [
   "Arterial stroke",
@@ -47,12 +47,12 @@ export const CVT_ETIOLOGY = {
     title: "Initial laboratory tests",
     items: [
       "Hematocrit",
-      "Complete blood count",
+      "CBC",
       "Renal function",
       "Urinalysis",
       "Pregnancy test",
-      "Prothrombin time",
-      "Activated partial thromboplastin time",
+      "PT",
+      "aPTT",
     ],
   },
   additionalLabs: {
@@ -80,7 +80,7 @@ export const CVT_ABBREVIATIONS = [
 ] as const;
 
 export const CVT_DISCLAIMER =
-  "Adapted from the supplied SNIF flowchart. Recommendations are transcribed for bedside reference and have not been independently verified. Clinical judgment and institutional guidelines supersede this tool.";
+  "Adapted from supplied SNIF flowchart. Recommendations transcribed, not independently verified. Clinical judgment and institutional guidelines supersede this tool.";
 
 export const CVT_STABLE_DURATION = {
   transient: "Transient predisposing factors: 3–12 months",

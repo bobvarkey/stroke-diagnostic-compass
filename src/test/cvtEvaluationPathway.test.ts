@@ -13,7 +13,9 @@ import {
 
 describe("CVT evaluation pathway content", () => {
   it("uses the SNIF flowchart title", () => {
-    expect(CVT_PATHWAY_TITLE).toBe("Cerebral Venous Thrombosis Evaluation and Management");
+    expect(CVT_PATHWAY_TITLE).toBe(
+      "Cerebral Venous Thrombosis (CVT) Evaluation and Management",
+    );
   });
 
   it("lists the six alternative diagnoses from the slide", () => {
@@ -47,15 +49,15 @@ describe("CVT evaluation pathway content", () => {
       "Chemotherapeutic agents",
       "COVID-19 vaccination",
     ]);
-    expect(CVT_ETIOLOGY.initialLabs.items).toEqual(
-      expect.arrayContaining([
-        "Hematocrit",
-        "Complete blood count",
-        "Pregnancy test",
-        "Prothrombin time",
-        "Activated partial thromboplastin time",
-      ]),
-    );
+    expect(CVT_ETIOLOGY.initialLabs.items).toEqual([
+      "Hematocrit",
+      "CBC",
+      "Renal function",
+      "Urinalysis",
+      "Pregnancy test",
+      "PT",
+      "aPTT",
+    ]);
     expect(CVT_ETIOLOGY.additionalLabs.items).toEqual(
       expect.arrayContaining([
         "ESR",
@@ -75,7 +77,7 @@ describe("CVT evaluation pathway content", () => {
 
   it("includes a transcribed-not-verified disclaimer", () => {
     expect(CVT_DISCLAIMER).toMatch(/SNIF/);
-    expect(CVT_DISCLAIMER).toMatch(/not been independently verified/i);
+    expect(CVT_DISCLAIMER).toMatch(/not independently verified/i);
   });
 
   it("encodes stable-course duration rules", () => {

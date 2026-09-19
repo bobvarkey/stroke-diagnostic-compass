@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, AlertTriangle, Brain, Activity, Stethoscope, Eye } from "lucide-react";
 import CVTEvaluationPathway from "./CVTEvaluationPathway";
+import CVTEndovascularTechniques from "./CVTEndovascularTechniques";
 import CVTGradingScale from "./CVTGradingScale";
 import DIAS3Calculator from "./DIAS3Calculator";
 import SI2NCAL2CCalculator from "./SI2NCAL2CCalculator";
@@ -279,6 +280,7 @@ const CVDSeverityScale: React.FC = () => {
 const CerebralVenousThrombosis: React.FC = () => (
   <div className="space-y-6">
     <CVTEvaluationPathway />
+    <CVTEndovascularTechniques />
     <HeldnerCVTScore />
     <CVTGradingScale />
     <SI2NCAL2CCalculator />
