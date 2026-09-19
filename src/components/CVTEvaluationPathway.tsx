@@ -398,12 +398,26 @@ export default function CVTEvaluationPathway() {
                   <p className="text-xs text-orange-800 dark:text-orange-300 mt-0.5">
                     Intrasinus thrombolysis or endovascular thrombectomy
                   </p>
-                  <a
-                    href="#cvt-endovascular-techniques"
-                    className="mt-2 inline-flex text-xs font-semibold text-orange-800 underline-offset-2 hover:underline dark:text-orange-200"
-                  >
-                    Endovascular techniques →
-                  </a>
+                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                    <a
+                      href="#cvt-intraclot-thrombolysis"
+                      className="inline-flex text-xs font-semibold text-orange-800 underline-offset-2 hover:underline dark:text-orange-200"
+                    >
+                      Intraclot protocol →
+                    </a>
+                    <a
+                      href="#cvt-procedural-techniques"
+                      className="inline-flex text-xs font-semibold text-orange-800 underline-offset-2 hover:underline dark:text-orange-200"
+                    >
+                      Procedural techniques →
+                    </a>
+                    <a
+                      href="#cvt-endovascular-techniques"
+                      className="inline-flex text-xs font-semibold text-orange-800 underline-offset-2 hover:underline dark:text-orange-200"
+                    >
+                      Endovascular techniques →
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
