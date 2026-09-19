@@ -142,7 +142,7 @@ const TPAEligibilityChecklist: React.FC = () => {
 
       // If minor deficit is checked, prompt low NIHSS guidance
       if (relativePresent.includes("rel_minor_deficit")) {
-        details.push("📋 See 'Low NIHSS Disabling Deficit Guidance' below to determine if deficits are clearly disabling");
+        details.push("📋 See 'Low NIHSS Disabling Deficit Guidance' below and the Minor Non-Disabling Stroke module to separate disabling from non-disabling deficits");
       }
     } else if (hasBasicInclusion && hasTimeWindow) {
       status = "eligible";
@@ -506,6 +506,32 @@ const TPAEligibilityChecklist: React.FC = () => {
                 IVT should be strongly considered even with low NIHSS. Document the disabling nature of deficits clearly.
               </AlertDescription>
             </Alert>
+
+            <button
+              type="button"
+              onClick={() => {
+                window.dispatchEvent(
+                  new CustomEvent("force-mount-section", { detail: "minor-non-disabling-stroke" }),
+                );
+                const scroll = () => {
+                  const el = document.getElementById("minor-non-disabling-stroke");
+                  if (!el) return;
+                  const top = el.getBoundingClientRect().top + window.scrollY - 80;
+                  window.scrollTo({ top, behavior: "smooth" });
+                };
+                setTimeout(scroll, 50);
+                setTimeout(scroll, 300);
+              }}
+              className="w-full text-left p-3 rounded-lg border border-teal-500/30 bg-teal-500/5 hover:bg-teal-500/10 transition-colors"
+            >
+              <p className="text-xs text-teal-800 dark:text-teal-200 font-medium">
+                Complementary definition: Minor non-disabling stroke
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                If deficits are truly non-disabling, IV thrombolysis is Class 3 (No Benefit) and DAPT is preferred.
+                Open the dedicated module for BATHE wording and the NIHSS caveat.
+              </p>
+            </button>
           </CollapsibleContent>
         </Collapsible>
 

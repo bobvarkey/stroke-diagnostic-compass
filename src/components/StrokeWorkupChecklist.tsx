@@ -22,6 +22,7 @@ import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
+import MinorNonDisablingStroke from "./MinorNonDisablingStroke";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import CollapsibleModule from "./CollapsibleModule";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
@@ -5692,6 +5693,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
+              { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
@@ -5748,6 +5750,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* tPA Eligibility Checklist */}
           <LazySection id="tpa-eligibility">
             <TPAEligibilityChecklist />
+          </LazySection>
+
+          {/* Minor non-disabling stroke — BATHE definition + IVT Class 3 vs DAPT */}
+          <LazySection id="minor-non-disabling-stroke">
+            <MinorNonDisablingStroke />
           </LazySection>
 
           {/* Thrombolytics & Anticoagulants — grouped collapsibles per drug */}

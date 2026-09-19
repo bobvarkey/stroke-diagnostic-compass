@@ -73,6 +73,11 @@ const navGroups: NavGroup[] = [
         icon: <Zap className="h-4 w-4 text-amber-500" /> 
       },
       { 
+        id: "minor-non-disabling-stroke", 
+        label: "Minor Non-Disabling Stroke", 
+        icon: <Activity className="h-4 w-4 text-teal-500" /> 
+      },
+      { 
         id: "thrombolytics-anticoag", 
         label: "Thrombolytics & Anticoag", 
         icon: <Beaker className="h-4 w-4 text-amber-600" /> 
