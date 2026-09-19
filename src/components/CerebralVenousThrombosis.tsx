@@ -122,10 +122,10 @@ const CVDSeverityScale: React.FC = () => {
             <div className="p-3 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-lg">
               <h4 className="font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Scoring Guide</h4>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded text-center"><strong>0:</strong> Not present</div>
-                <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded text-center"><strong>1:</strong> Mild</div>
-                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded text-center"><strong>2:</strong> Moderate</div>
-                <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded text-center"><strong>3:</strong> Severe</div>
+                <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded text-center text-green-900 dark:text-green-100"><strong>0:</strong> Not present</div>
+                <div className="p-2 bg-yellow-100 dark:bg-yellow-900/40 rounded text-center text-yellow-900 dark:text-yellow-100"><strong>1:</strong> Mild</div>
+                <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded text-center text-orange-900 dark:text-orange-100"><strong>2:</strong> Moderate</div>
+                <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded text-center text-red-900 dark:text-red-100"><strong>3:</strong> Severe</div>
               </div>
             </div>
 

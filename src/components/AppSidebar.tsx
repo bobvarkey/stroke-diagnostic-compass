@@ -17,7 +17,9 @@ import {
   ChevronDown,
   Home,
   Stethoscope,
-  Droplets
+  Droplets,
+  Syringe,
+  Crosshair,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -38,7 +40,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
 
 interface NavItem {
   id: string;
@@ -91,6 +93,21 @@ const navGroups: NavGroup[] = [
         id: "cvt-management", 
         label: "CVT Management", 
         icon: <Brain className="h-4 w-4 text-purple-600" /> 
+      },
+      { 
+        id: "cvt-intraclot-thrombolysis", 
+        label: "CVT Intraclot Dosing", 
+        icon: <Syringe className="h-4 w-4 text-rose-500" /> 
+      },
+      { 
+        id: "cvt-procedural-techniques", 
+        label: "CVT Procedures", 
+        icon: <Crosshair className="h-4 w-4 text-teal-500" /> 
+      },
+      { 
+        id: "cvt-endovascular-techniques", 
+        label: "CVT Endovascular", 
+        icon: <Target className="h-4 w-4 text-orange-500" /> 
       },
       { 
         id: "lvo-dashboard", 
@@ -216,7 +233,9 @@ export function AppSidebar({ activeSection, onSectionClick }: AppSidebarProps) {
       setOpenMobile(false);
     }
 
-    // Force-mount the LazySection so it has real height before scrolling
+    // Switch workup tab first (CVT/ICH/SAH live on unmounted TabsContent).
+    window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: sectionId }));
+
     window.dispatchEvent(new CustomEvent('force-mount-section', { detail: sectionId }));
 
     const headerOffset = 80;

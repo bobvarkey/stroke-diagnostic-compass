@@ -74,6 +74,8 @@ export function runContrastAudit(): AccessibilityAudit {
     secondaryForeground: '#f0f4f8',
     muted: '#1a1f2c',            // hsl(222, 22%, 15%)
     mutedForeground: '#b8c4d0',  // hsl(210, 18%, 76%)
+    darkMutedForeground: '#c4ccd6', // hsl(210, 18%, 78%) — .dark notes/secondary
+    darkCard: '#0c1220',         // hsl(222, 47%, 9%)
     accent: '#1c3a42',           // hsl(190, 60%, 18%)
     accentForeground: '#ffffff',
     destructive: '#d9364e',      // hsl(355, 75%, 52%)
@@ -102,6 +104,7 @@ export function runContrastAudit(): AccessibilityAudit {
     { fg: 'mutedForeground', bg: 'muted', element: '.text-muted', context: 'Muted text on muted bg' },
     { fg: 'mutedForeground', bg: 'background', element: '.text-muted', context: 'Muted text on background' },
     { fg: 'mutedForeground', bg: 'card', element: '.text-muted', context: 'Muted text on card' },
+    { fg: 'darkMutedForeground', bg: 'darkCard', element: '.text-muted-dark', context: 'Dark-mode muted notes on card' },
     { fg: 'destructiveForeground', bg: 'destructive', element: '.btn-destructive', context: 'Destructive button' },
     { fg: 'accentForeground', bg: 'accent', element: '.badge-accent', context: 'Accent badge/text' },
     { fg: 'foreground', bg: 'medicalSection', element: '.medical-section', context: 'Medical section content' },

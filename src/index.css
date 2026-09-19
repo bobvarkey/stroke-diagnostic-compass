@@ -94,7 +94,7 @@
     --secondary-foreground: 270 60% 85%;
 
     --muted: 222 30% 14%;
-    --muted-foreground: 220 15% 60%;
+    --muted-foreground: 210 18% 78%;
 
     --accent: 190 50% 15%;
     --accent-foreground: 190 80% 80%;
@@ -142,6 +142,11 @@
 
   html {
     scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: dark;
   }
 
   body {
@@ -185,6 +190,11 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid hsl(var(--glass-border));
+  }
+
+  /* White teaching-figure cards stay light with dark text in dark mode. */
+  .dark figure.bg-white {
+    color: hsl(222 47% 11%);
   }
 
   .gradient-text {

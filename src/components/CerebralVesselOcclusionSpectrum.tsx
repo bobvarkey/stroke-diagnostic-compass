@@ -44,12 +44,12 @@ const CerebralVesselOcclusionSpectrum = () => {
 
         <CollapsibleContent>
           <CardContent className="pt-5 space-y-4">
-            <p className="text-xs text-indigo-800 dark:text-indigo-300">
+            <p className="text-xs text-indigo-900 dark:text-indigo-200">
               Angiogram-style teaching figure for imaging triage: occlusion site and vessel caliber
               stratify LVO, MeVO, SVO, and perforator stroke — and the treatment pathway that follows.
             </p>
 
-            <figure className="rounded-lg overflow-hidden border border-slate-200 bg-white dark:border-slate-700">
+            <figure className="rounded-lg overflow-hidden border border-slate-200 bg-white text-slate-900 dark:border-slate-700">
               <img
                 src={spectrumFigure}
                 alt="Spectrum of cerebral vessel occlusion in four angiogram-style columns: LVO (large vessel occlusion, 3 to 6 mm), MeVO (medium vessel occlusion, 1 to 3 mm, with PCA segments P1 to P4 labeled), SVO (small vessel occlusion, less than 1 mm), and perforator occlusion (50 to 500 micrometers)."

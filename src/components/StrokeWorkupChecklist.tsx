@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, memo } from "react";
+import React, { useState, useRef, useCallback, memo, useEffect } from "react";
 import LazySection from "./LazySection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,6 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch } from "lucide-react";
 import SectionNavigator, { SectionItem } from "./SectionNavigator";
+import {
+  getLazyParentSection,
+  getTabForSection,
+  NAVIGATE_SECTION_EVENT,
+} from "@/lib/sectionTabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
@@ -5636,6 +5641,57 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   const checkedTestNames = strokeTests.filter(t => checkedItems.has(t.id)).map(t => t.name);
   const categories = Array.from(new Set(strokeTests.map(test => test.category)));
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
+  const activeTabRef = useRef(activeTab);
+  activeTabRef.current = activeTab;
+
+  useEffect(() => {
+    const scrollToId = (sectionId: string, behavior: ScrollBehavior = "smooth") => {
+      const element = document.getElementById(sectionId);
+      if (!element) return false;
+      const headerOffset = 80;
+      const offsetPosition = element.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior });
+      return true;
+    };
+
+    const mountAndScroll = (sectionId: string) => {
+      const parent = getLazyParentSection(sectionId);
+      if (parent) {
+        window.dispatchEvent(new CustomEvent("force-mount-section", { detail: parent }));
+      }
+      window.dispatchEvent(new CustomEvent("force-mount-section", { detail: sectionId }));
+      [50, 150, 400, 800, 1600].forEach((ms) => {
+        window.setTimeout(() => scrollToId(sectionId, ms < 400 ? "instant" : "smooth"), ms);
+      });
+    };
+
+    const onNavigate = (e: Event) => {
+      const sectionId = (e as CustomEvent<string>).detail;
+      if (!sectionId) return;
+      const tab = getTabForSection(sectionId);
+      if (tab && tab !== activeTabRef.current) {
+        setActiveTab(tab);
+        window.setTimeout(() => mountAndScroll(sectionId), 50);
+        return;
+      }
+      mountAndScroll(sectionId);
+    };
+
+    const onHash = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      if (id) onNavigate(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
+    };
+
+    window.addEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
+    window.addEventListener("hashchange", onHash);
+    if (window.location.hash) {
+      onHash();
+    }
+    return () => {
+      window.removeEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
+      window.removeEventListener("hashchange", onHash);
+    };
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-[max(0.75rem,env(safe-area-inset-left))] sm:px-4 md:px-6 py-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-4 space-y-5">
@@ -6372,9 +6428,22 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
         {/* Cerebral Venous Thrombosis Tab Content */}
         <TabsContent value="cvt" className="space-y-6">
-          <LazySection id="cvt-management">
+          <SectionNavigator
+            title="CVT Modules"
+            sections={[
+              { id: "cvt-evaluation-pathway", label: "Evaluation pathway", icon: <Syringe className="h-3.5 w-3.5 text-purple-500" /> },
+              { id: "cvt-intraclot-thrombolysis", label: "Intraclot dosing", icon: <Syringe className="h-3.5 w-3.5 text-rose-500" /> },
+              { id: "cvt-procedural-techniques", label: "Procedural techniques", icon: <Crosshair className="h-3.5 w-3.5 text-teal-500" /> },
+              { id: "cvt-endovascular-techniques", label: "Endovascular A–D", icon: <Target className="h-3.5 w-3.5 text-orange-500" /> },
+            ]}
+            onNavigateToSection={(id) => {
+              window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
+            }}
+          />
+
+          <div id="cvt-management" className="scroll-mt-24">
             <CerebralVenousThrombosis />
-          </LazySection>
+          </div>
 
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Cerebral venous thrombosis evaluation and management - Always correlate with clinical presentation</p>

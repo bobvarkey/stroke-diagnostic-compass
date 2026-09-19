@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, ChevronDown, RotateCcw, AlertTriangle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { calculatorOptionClass, cn } from "@/lib/utils";
 
 interface Props {
   onScoreChange?: (score: number | null) => void;
@@ -62,7 +63,7 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
 
   const getMortalityData = (score: number | null): { mortality: string; color: string; bgColor: string; borderColor: string } => {
     if (score === null) {
-      return { mortality: "Complete all fields", color: "text-slate-500", bgColor: "bg-slate-100 dark:bg-slate-800", borderColor: "border-slate-200 dark:border-slate-700" };
+      return { mortality: "Complete all fields", color: "text-muted-foreground", bgColor: "bg-slate-100 dark:bg-slate-800", borderColor: "border-slate-200 dark:border-slate-700" };
     }
     
     const data: Record<number, { mortality: string; color: string; bgColor: string; borderColor: string }> = {
@@ -141,14 +142,10 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
                     <button
                       key={option.value}
                       onClick={() => setGcs(option.value as any)}
-                      className={`p-3 rounded-lg border-2 text-center transition-all ${
-                        gcs === option.value
-                          ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                          : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                      }`}
+                      className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(gcs === option.value))}
                     >
                       <div className="font-medium text-sm">{option.label}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">+{option.points} pts</div>
+                      <div className={cn("text-xs", gcs === option.value ? "text-white/90" : "text-muted-foreground")}>+{option.points} pts</div>
                     </button>
                   ))}
                 </div>
@@ -163,29 +160,14 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setIchVolume("<30")}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      ichVolume === "<30"
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(ichVolume === "<30"))}
                   >
                     <div className="font-medium text-sm">&lt; 30 mL</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+0 pts</div>
-                  </button>
-                  <button
-                    onClick={() => setIchVolume(">=30")}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      ichVolume === ">=30"
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    <div className={cn("text-xs", ichVolume === "<30" ? "text-white/90" : "text-muted-foreground")}>+0 pts</div>
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(ichVolume === ">=30"))}
                   >
                     <div className="font-medium text-sm">≥ 30 mL</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+1 pt</div>
-                  </button>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  ABC/2 formula: (A × B × C) / 2, where A = largest diameter, B = perpendicular diameter, C = number of slices × slice thickness
+                    <div className={cn("text-xs", ichVolume === ">=30" ? "text-white/90" : "text-muted-foreground")}>+1 pt</div> (A × B × C) / 2, where A = largest diameter, B = perpendicular diameter, C = number of slices × slice thickness
                 </p>
               </div>
 
@@ -198,30 +180,14 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setIvhPresent(false)}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      ivhPresent === false
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(ivhPresent === false))}
                   >
                     <div className="font-medium text-sm">No IVH</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+0 pts</div>
-                  </button>
-                  <button
-                    onClick={() => setIvhPresent(true)}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      ivhPresent === true
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    <div className={cn("text-xs", ivhPresent === false ? "text-white/90" : "text-muted-foreground")}>+0 pts</div>
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(ivhPresent === true))}
                   >
                     <div className="font-medium text-sm">IVH Present</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+1 pt</div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Infratentorial Origin */}
+                    <div className={cn("text-xs", ivhPresent === true ? "text-white/90" : "text-muted-foreground")}>+1 pt</div>
               <div className="space-y-2">
                 <h4 className="font-medium text-red-800 dark:text-red-300 text-sm flex items-center gap-2">
                   4. Infratentorial Origin
@@ -230,29 +196,14 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setInfratentorial(false)}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      infratentorial === false
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(infratentorial === false))}
                   >
                     <div className="font-medium text-sm">Supratentorial</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+0 pts</div>
-                  </button>
-                  <button
-                    onClick={() => setInfratentorial(true)}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      infratentorial === true
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    <div className={cn("text-xs", infratentorial === false ? "text-white/90" : "text-muted-foreground")}>+0 pts</div>
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(infratentorial === true))}
                   >
                     <div className="font-medium text-sm">Infratentorial</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+1 pt</div>
-                  </button>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Infratentorial = brainstem or cerebellum origin
+                    <div className={cn("text-xs", infratentorial === true ? "text-white/90" : "text-muted-foreground")}>+1 pt</div>
                 </p>
               </div>
 
@@ -265,29 +216,14 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setAge("<80")}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      age === "<80"
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(age === "<80"))}
                   >
                     <div className="font-medium text-sm">&lt; 80 years</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+0 pts</div>
-                  </button>
-                  <button
-                    onClick={() => setAge(">=80")}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      age === ">=80"
-                        ? "border-red-500 bg-red-100 dark:bg-red-900/40"
-                        : "border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-600"
-                    }`}
+                    <div className={cn("text-xs", age === "<80" ? "text-white/90" : "text-muted-foreground")}>+0 pts</div>
+                    className={cn("p-3 rounded-lg border-2 text-center transition-all", calculatorOptionClass(age === ">=80"))}
                   >
                     <div className="font-medium text-sm">≥ 80 years</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">+1 pt</div>
-                  </button>
-                </div>
-              </div>
-            </div>
+                    <div className={cn("text-xs", age === ">=80" ? "text-white/90" : "text-muted-foreground")}>+1 pt</div>
 
             {/* Score Display */}
             <div className={`mt-6 p-4 rounded-lg border-2 ${mortalityData.borderColor} ${mortalityData.bgColor}`}>
@@ -323,7 +259,7 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
                     className={`p-2 rounded border text-center ${item.color} ${score === item.score ? 'ring-2 ring-red-500' : ''}`}
                   >
                     <div className="font-bold">{item.score}</div>
-                    <div className="text-slate-600 dark:text-slate-400">{item.mortality}</div>
+                    <div className="text-slate-700 dark:text-slate-200">{item.mortality}</div>
                   </div>
                 ))}
               </div>
@@ -331,7 +267,7 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
 
             {/* Clinical Notes */}
             <div className="mt-4 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-700 rounded-lg">
-              <p className="text-xs text-red-600 dark:text-red-400">
+              <p className="text-xs text-red-800 dark:text-red-200">
                 <strong>Clinical Notes:</strong> The ICH Score was derived from a cohort study by Hemphill et al. (2001). 
                 It should be used to inform discussions about prognosis, not as the sole determinant of care decisions. 
                 Self-fulfilling prophecy from early care withdrawal can influence outcomes.
@@ -340,7 +276,7 @@ export default function ICHScoreCalculator({ onScoreChange }: Props) {
 
             {/* Warning */}
             <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700 rounded-lg">
-              <p className="text-xs text-amber-600 dark:text-amber-400">
+              <p className="text-xs text-amber-800 dark:text-amber-200">
                 <strong>⚠️ Caution:</strong> Do not use this score alone to make decisions about limiting care. 
                 Early aggressive treatment and avoidance of do-not-resuscitate orders in the first 24-48 hours may improve outcomes.
               </p>

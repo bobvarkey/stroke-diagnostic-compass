@@ -316,28 +316,28 @@ export default function CSDHRecurrenceCalculator() {
                         onClick={() => toggleFactor(factor.id)}
                         className={`w-full text-left p-2.5 rounded-lg border-2 transition-all duration-200 ${
                           isSelected
-                            ? "border-violet-500 dark:border-violet-400 bg-violet-100 dark:bg-violet-900/40 shadow-sm"
-                            : "border-muted bg-background hover:border-violet-300 dark:hover:border-violet-600"
+                            ? "border-violet-600 bg-violet-600 text-white shadow-sm"
+                            : "border-muted bg-background text-foreground hover:border-violet-300 dark:hover:border-violet-600"
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className={`text-xs font-semibold ${isSelected ? "text-violet-800 dark:text-violet-200" : "text-foreground"}`}>
+                              <span className={`text-xs font-semibold ${isSelected ? "text-white" : "text-foreground"}`}>
                                 {factor.label}
                               </span>
                               <Badge
                                 variant="secondary"
                                 className={`text-[10px] shrink-0 ${
                                   isSelected
-                                    ? "bg-violet-200 dark:bg-violet-800 text-violet-800 dark:text-violet-200"
+                                    ? "bg-white/20 text-white border-white/30"
                                     : ""
                                 }`}
                               >
                                 +{factor.points} pt{factor.points > 1 ? "s" : ""}
                               </Badge>
                             </div>
-                            <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
+                            <p className={`text-[10px] mt-0.5 leading-relaxed ${isSelected ? "text-white/90" : "text-muted-foreground"}`}>
                               {factor.description}
                             </p>
                           </div>
@@ -346,7 +346,7 @@ export default function CSDHRecurrenceCalculator() {
                               ? "bg-violet-500 dark:bg-violet-400 border-violet-500 dark:border-violet-400"
                               : "border-muted-foreground/30"
                           }`}>
-                            {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-white dark:text-violet-950" />}
+                            {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-white" />}
                           </div>
                         </div>
                       </button>

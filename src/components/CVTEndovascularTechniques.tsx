@@ -43,18 +43,19 @@ export default function CVTEndovascularTechniques() {
 
         <CollapsibleContent>
           <CardContent className="pt-5 space-y-4">
-            <p className="text-xs text-orange-800 dark:text-orange-300">
+            <p className="text-xs text-orange-900 dark:text-orange-200">
               Use when the management pathway reaches clinical or imaging progression (e.g. thrombus
               propagation) and endovascular therapy is being considered — intrasinus thrombolysis or
               thrombectomy constructs built from these techniques.
             </p>
 
-            <figure className="rounded-lg overflow-hidden border border-slate-200 bg-white dark:border-slate-700">
+            <figure className="rounded-lg overflow-hidden border border-slate-200 bg-white text-slate-900 dark:border-slate-700">
               <img
                 src={cvtEndovascularFigure}
                 alt="Endovascular techniques for cerebral venous thrombosis: panels A–D show jugular access with guiding catheter, distal access catheter, guidewire, and balloon in the superior sagittal sinus; sidebar lists venoplasty, dental floss technique, balloon anchor with mobile aspiration, and pipeline pigging."
                 className="w-full h-auto"
-                loading="lazy"
+                loading="eager"
+                decoding="async"
               />
               <figcaption className="px-3 py-2 text-[11px] text-slate-600 bg-slate-50 dark:bg-slate-900/80 dark:text-slate-300">
                 Source figure — {CVT_ENDOVASCULAR_ATTRIBUTION}
@@ -74,7 +75,7 @@ export default function CVTEndovascularTechniques() {
                       "w-full rounded-lg border-2 px-3 py-2 text-left transition-all",
                       techniqueId === item.id
                         ? "border-orange-600 bg-orange-600 text-white"
-                        : "border-orange-200 bg-orange-50 text-orange-900 hover:border-orange-400 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-100",
+                        : "border-orange-300 bg-orange-50 text-orange-900 hover:border-orange-400 dark:border-orange-700 dark:bg-orange-950/50 dark:text-orange-100",
                     )}
                   >
                     <p className="text-xs font-semibold">
@@ -102,7 +103,7 @@ export default function CVTEndovascularTechniques() {
                   {CVT_ENDOVASCULAR_PANELS.map((panel) => (
                     <div
                       key={panel.id}
-                      className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900/40"
+                      className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-900/70"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">

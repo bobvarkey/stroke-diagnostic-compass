@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronRight, Home, ArrowLeft, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
 
 export interface SectionItem {
   id: string;
@@ -21,6 +21,8 @@ const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, on
 
   const scrollToSection = (id: string) => {
     onNavigateToSection(id);
+
+    window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
 
     // Force-mount the LazySection containing the target so it has real height
     window.dispatchEvent(new CustomEvent('force-mount-section', { detail: id }));
