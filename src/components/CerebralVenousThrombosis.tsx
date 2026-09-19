@@ -2,8 +2,9 @@ import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, AlertTriangle, Brain, Activity, Stethoscope, Pill, Syringe, Eye } from "lucide-react";
-import cvtFlowchart from "@/assets/cvt-management-flowchart.png";
+import { ChevronDown, AlertTriangle, Brain, Activity, Stethoscope, Eye } from "lucide-react";
+import CVTEvaluationPathway from "./CVTEvaluationPathway";
+import CVTEndovascularTechniques from "./CVTEndovascularTechniques";
 import CVTGradingScale from "./CVTGradingScale";
 import DIAS3Calculator from "./DIAS3Calculator";
 import SI2NCAL2CCalculator from "./SI2NCAL2CCalculator";
@@ -274,162 +275,12 @@ const CVDSeverityScale: React.FC = () => {
   );
 };
 
-/* ─────────────────────────── CVT Management Flowchart ─────────────────────────── */
-
-const CVTManagementFlowchart: React.FC = () => (
-  <Card className="border-2 border-purple-200 dark:border-purple-800">
-    <Collapsible defaultOpen>
-      <CollapsibleTrigger asChild>
-        <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Syringe className="h-5 w-5 text-purple-500" />
-              <span className="text-base sm:text-lg">CVT Management Algorithm</span>
-            </div>
-            <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-          </CardTitle>
-        </CardHeader>
-      </CollapsibleTrigger>
-
-      <CollapsibleContent>
-        <CardContent className="space-y-6">
-          {/* Flowchart Image */}
-          <div className="rounded-lg overflow-hidden border border-border">
-            <img
-              src={cvtFlowchart}
-              alt="CVT Management Algorithm Flowchart"
-              className="w-full h-auto"
-              loading="lazy"
-            />
-          </div>
-
-          {/* Clinical Presentation */}
-          <div className="p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 rounded-lg">
-            <h4 className="font-semibold text-purple-700 dark:text-purple-300 mb-3 flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4" /> Clinical Presentation — When to Suspect CVT
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="space-y-1">
-                <p className="font-medium text-purple-800 dark:text-purple-200">Common Symptoms:</p>
-                <ul className="list-disc list-inside text-purple-600 dark:text-purple-400 space-y-0.5">
-                  <li>Severe headache (often progressive, worst in morning)</li>
-                  <li>Seizures (focal or generalized)</li>
-                  <li>Focal neurological deficits</li>
-                  <li>Papilledema / visual changes</li>
-                  <li>Altered consciousness</li>
-                </ul>
-              </div>
-              <div className="space-y-1">
-                <p className="font-medium text-purple-800 dark:text-purple-200">Risk Factors:</p>
-                <ul className="list-disc list-inside text-purple-600 dark:text-purple-400 space-y-0.5">
-                  <li>Oral contraceptive pills / pregnancy / postpartum</li>
-                  <li>Prothrombotic states (thrombophilia, APLS)</li>
-                  <li>Infections (otitis, mastoiditis, sinusitis)</li>
-                  <li>Malignancy, dehydration</li>
-                  <li>Head trauma, recent surgery</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Key Management Steps */}
-          <div className="space-y-3">
-            {/* Step 1: Imaging */}
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-              <h5 className="font-semibold text-amber-700 dark:text-amber-300 mb-1 flex items-center gap-2">
-                <span className="w-6 h-6 bg-amber-500 text-white rounded-full text-xs flex items-center justify-center font-bold">1</span>
-                Imaging Confirmation
-              </h5>
-              <p className="text-xs text-amber-600 dark:text-amber-400">
-                <strong>MRI with T2*/SWI + MR Venography</strong> (preferred) or <strong>CT Head with CT Venography</strong>. 
-                If no evidence → consider arterial stroke, idiopathic intracranial hypertension, meningitis, brain abscess, neoplasm.
-              </p>
-            </div>
-
-            {/* Step 2: Etiological Evaluation */}
-            <div className="p-3 bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 rounded-lg">
-              <h5 className="font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-2">
-                <span className="w-6 h-6 bg-slate-500 text-white rounded-full text-xs flex items-center justify-center font-bold">2</span>
-                Etiological Evaluation
-              </h5>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-slate-600 dark:text-slate-400 mt-2">
-                <div>
-                  <p className="font-medium text-slate-700 dark:text-slate-300">Clinical:</p>
-                  <p>Otitis, mastoiditis, facial infection, dehydration, head trauma, Behçet's, sarcoid, UC, malignancy, rheumatological conditions</p>
-                </div>
-                <div>
-                  <p className="font-medium text-slate-700 dark:text-slate-300">Exposures:</p>
-                  <p>OCP, chemotherapy, COVID-19 vaccination</p>
-                </div>
-                <div>
-                  <p className="font-medium text-slate-700 dark:text-slate-300">Labs:</p>
-                  <p>Hematocrit, CBC, renal function, urinalysis, pregnancy test, PT, aPTT, ESR, D-dimer, iron studies, hypercoag panel, APLA, MTHFR, homocysteine, serum protein electrophoresis</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 3: Mass Effect */}
-            <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <h5 className="font-semibold text-red-700 dark:text-red-300 mb-1 flex items-center gap-2">
-                <span className="w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center font-bold">!</span>
-                Mass Effect with Midline Shift or Herniation
-              </h5>
-              <p className="text-xs text-red-600 dark:text-red-400">
-                Consider <strong>decompressive hemicraniectomy</strong>. 
-                This is a neurosurgical emergency requiring urgent evaluation.
-              </p>
-            </div>
-
-            {/* Step 4: Anticoagulation */}
-            <div className="p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg">
-              <h5 className="font-semibold text-green-700 dark:text-green-300 mb-1 flex items-center gap-2">
-                <span className="w-6 h-6 bg-green-500 text-white rounded-full text-xs flex items-center justify-center font-bold">3</span>
-                Initiate Parenteral Anticoagulation
-              </h5>
-              <p className="text-xs text-green-600 dark:text-green-400">
-                <strong>SC LMWH (preferred)</strong> or <strong>unfractionated IV heparin</strong>.
-              </p>
-              <div className="mt-2 p-2 bg-green-100 dark:bg-green-900/30 rounded text-xs text-green-700 dark:text-green-300 font-medium">
-                ⚠️ NB: Intracranial hemorrhage as a consequence of CVT is <strong>NOT</strong> a contraindication for anticoagulation.
-              </div>
-            </div>
-
-            {/* Step 5: Stable vs Progression */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
-                <h5 className="font-semibold text-emerald-700 dark:text-emerald-300 mb-1 flex items-center gap-2">
-                  <Pill className="h-4 w-4" /> Stable CVT
-                </h5>
-                <ul className="text-xs text-emerald-600 dark:text-emerald-400 space-y-1 list-disc list-inside">
-                  <li>Transition to DOAC or warfarin</li>
-                  <li>Duration: 3–12 months for transient causes</li>
-                  <li>High-risk thrombophilia / recurrent VTE → indefinite OAC</li>
-                  <li>LMWH preferred during pregnancy</li>
-                </ul>
-              </div>
-              <div className="p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800 rounded-lg">
-                <h5 className="font-semibold text-rose-700 dark:text-rose-300 mb-1 flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4" /> Progression (Thrombus Propagation)
-                </h5>
-                <ul className="text-xs text-rose-600 dark:text-rose-400 space-y-1 list-disc list-inside">
-                  <li>Consider endovascular therapy</li>
-                  <li>Intrasinus thrombolysis</li>
-                  <li>Endovascular thrombectomy</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </CollapsibleContent>
-    </Collapsible>
-  </Card>
-);
-
 /* ─────────────────────────── Main Export ─────────────────────────── */
 
 const CerebralVenousThrombosis: React.FC = () => (
   <div className="space-y-6">
-    <CVTManagementFlowchart />
+    <CVTEvaluationPathway />
+    <CVTEndovascularTechniques />
     <HeldnerCVTScore />
     <CVTGradingScale />
     <SI2NCAL2CCalculator />
