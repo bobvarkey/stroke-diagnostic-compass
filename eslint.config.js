@@ -45,4 +45,11 @@ export default tseslint.config(
       "@typescript-eslint/no-require-imports": "warn",
     },
   },
+  {
+    // Auto-generated file — do not lint style rules against it.
+    files: ["src/integrations/supabase/previewAuthStorage.ts"],
+    rules: {
+      "prefer-const": "off",
+    },
+  },
 );
