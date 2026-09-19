@@ -78,4 +78,4 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   GLOS: { term: "GLOS", short: "Global Late Gadolinium Obscuration Score", full: "Diffuse gadolinium-induced signal changes on post-contrast FLAIR imaging following thrombectomy.", category: "Imaging" },
 };
 
-export const GLOSSARY_TERMS = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
+const GLOSSARY_TERMS = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
