@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, ChevronDown, RotateCcw } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { calculatorOptionClass, cn } from "@/lib/utils";
 
 interface Props {
   onScoreChange?: (scores: { fisher: number | null; modifiedFisher: number | null }) => void;
@@ -141,14 +142,10 @@ export default function FisherScaleCalculator({ onScoreChange }: Props) {
                       <button
                         key={option.value}
                         onClick={() => setSahThickness(option.value as any)}
-                        className={`p-3 rounded-lg border-2 text-left transition-all ${
-                          sahThickness === option.value
-                            ? "border-rose-500 bg-rose-100 dark:bg-rose-900/40"
-                            : "border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600"
-                        }`}
+                        className={cn("p-3 rounded-lg border-2 text-left transition-all", calculatorOptionClass(sahThickness === option.value, "rose"))}
                       >
                         <div className="font-medium text-sm">{option.label}</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">{option.desc}</div>
+                        <div className={cn("text-xs", sahThickness === option.value ? "text-white/90" : "text-muted-foreground")}>{option.desc}</div>
                       </button>
                     ))}
                   </div>
@@ -163,25 +160,17 @@ export default function FisherScaleCalculator({ onScoreChange }: Props) {
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => setIvhPresent(false)}
-                        className={`p-3 rounded-lg border-2 text-left transition-all ${
-                          ivhPresent === false
-                            ? "border-rose-500 bg-rose-100 dark:bg-rose-900/40"
-                            : "border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600"
-                        }`}
+                        className={cn("p-3 rounded-lg border-2 text-left transition-all", calculatorOptionClass(ivhPresent === false, "rose"))}
                       >
                         <div className="font-medium text-sm">No IVH</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">No blood in both lateral ventricles</div>
+                        <div className={cn("text-xs", ivhPresent === false ? "text-white/90" : "text-muted-foreground")}>No blood in both lateral ventricles</div>
                       </button>
                       <button
                         onClick={() => setIvhPresent(true)}
-                        className={`p-3 rounded-lg border-2 text-left transition-all ${
-                          ivhPresent === true
-                            ? "border-rose-500 bg-rose-100 dark:bg-rose-900/40"
-                            : "border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600"
-                        }`}
+                        className={cn("p-3 rounded-lg border-2 text-left transition-all", calculatorOptionClass(ivhPresent === true, "rose"))}
                       >
                         <div className="font-medium text-sm">IVH Present</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">Blood in both lateral ventricles</div>
+                        <div className={cn("text-xs", ivhPresent === true ? "text-white/90" : "text-muted-foreground")}>Blood in both lateral ventricles</div>
                       </button>
                     </div>
                   </div>
@@ -247,16 +236,12 @@ export default function FisherScaleCalculator({ onScoreChange }: Props) {
                       <button
                         key={option.grade}
                         onClick={() => setOriginalFisher(option.grade)}
-                        className={`p-4 rounded-lg border-2 text-left transition-all ${
-                          originalFisher === option.grade
-                            ? "border-rose-500 bg-rose-100 dark:bg-rose-900/40"
-                            : "border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600"
-                        }`}
+                        className={cn("p-4 rounded-lg border-2 text-left transition-all", calculatorOptionClass(originalFisher === option.grade, "rose"))}
                       >
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="font-medium">{option.label}</div>
-                            <div className="text-sm text-slate-600 dark:text-slate-400">{option.desc}</div>
+                            <div className={cn("text-sm", originalFisher === option.grade ? "text-white/90" : "text-muted-foreground")}>{option.desc}</div>
                           </div>
                           <Badge variant="outline" className={`
                             ${option.risk === "Low" ? "border-green-500 text-green-700 dark:text-green-300" : ""}

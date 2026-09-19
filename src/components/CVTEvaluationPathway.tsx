@@ -71,12 +71,12 @@ function ChoiceButton({
     slate: "border-slate-600 bg-slate-700 text-white",
   } as const;
   const idleMap = {
-    sky: "border-sky-200 text-sky-800 hover:border-sky-400 dark:border-sky-800 dark:text-sky-200",
-    red: "border-red-200 text-red-800 hover:border-red-400 dark:border-red-800 dark:text-red-200",
-    purple: "border-purple-200 text-purple-800 hover:border-purple-400 dark:border-purple-800 dark:text-purple-200",
-    amber: "border-amber-200 text-amber-800 hover:border-amber-400 dark:border-amber-800 dark:text-amber-200",
-    orange: "border-orange-200 text-orange-800 hover:border-orange-400 dark:border-orange-800 dark:text-orange-200",
-    slate: "border-slate-200 text-slate-800 hover:border-slate-400 dark:border-slate-600 dark:text-slate-200",
+    sky: "border-sky-300 bg-sky-100/90 text-sky-900 hover:border-sky-400 dark:border-sky-700 dark:bg-sky-950/60 dark:text-sky-100",
+    red: "border-red-300 bg-red-100/90 text-red-900 hover:border-red-400 dark:border-red-800 dark:bg-red-950/60 dark:text-red-100",
+    purple: "border-purple-300 bg-purple-100/90 text-purple-900 hover:border-purple-400 dark:border-purple-700 dark:bg-purple-950/60 dark:text-purple-100",
+    amber: "border-amber-300 bg-amber-100/90 text-amber-900 hover:border-amber-400 dark:border-amber-700 dark:bg-amber-950/60 dark:text-amber-100",
+    orange: "border-orange-300 bg-orange-100/90 text-orange-900 hover:border-orange-400 dark:border-orange-700 dark:bg-orange-950/60 dark:text-orange-100",
+    slate: "border-slate-300 bg-slate-100 text-slate-900 hover:border-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100",
   } as const;
 
   return (
@@ -161,7 +161,10 @@ export default function CVTEvaluationPathway() {
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <Card className="border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50/70 dark:from-purple-950/30 to-background">
+      <Card
+        id="cvt-evaluation-pathway"
+        className="scroll-mt-24 border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50/70 dark:from-purple-950/30 to-background"
+      >
         <CollapsibleTrigger className="w-full">
           <CardHeader className="bg-purple-100/50 dark:bg-purple-900/30">
             <CardTitle className="flex items-center justify-between text-purple-800 dark:text-purple-200 gap-2">
@@ -185,7 +188,7 @@ export default function CVTEvaluationPathway() {
               <button
                 type="button"
                 onClick={reset}
-                className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-800 dark:text-slate-100 bg-slate-200 dark:bg-slate-700 border border-slate-400 dark:border-slate-500 rounded hover:bg-slate-300 dark:hover:bg-slate-600 shrink-0"
+                className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-900 dark:text-white bg-slate-200 dark:bg-slate-600 border border-slate-400 dark:border-slate-400 rounded hover:bg-slate-300 dark:hover:bg-slate-500 shrink-0"
               >
                 <RotateCcw className="h-3 w-3" />
                 Reset
@@ -440,7 +443,7 @@ export default function CVTEvaluationPathway() {
 
             <Accordion type="multiple" className="w-full">
               <AccordionItem value="suspect" className="border-slate-200 dark:border-slate-700">
-                <AccordionTrigger className="text-sm font-semibold text-slate-800 dark:text-slate-200 hover:no-underline">
+                <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline">
                   When to suspect CVT — presentation and risk factors
                 </AccordionTrigger>
                 <AccordionContent>

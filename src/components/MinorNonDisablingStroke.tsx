@@ -109,7 +109,7 @@ const MinorNonDisablingStroke = () => {
             <section aria-labelledby="bathe-heading">
               <h3
                 id="bathe-heading"
-                className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-2"
+                className="text-sm font-semibold text-foreground mb-2"
               >
                 {C.assessEverydayFunctionHeading} — BATHE
               </h3>
@@ -133,10 +133,10 @@ const MinorNonDisablingStroke = () => {
                   );
                 })}
               </div>
-              <p className="mt-3 text-sm text-slate-800 dark:text-slate-100">
+              <p className="mt-3 text-sm text-foreground">
                 <strong>Core question:</strong> {C.coreQuestion}
               </p>
-              <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{C.baselineNote}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{C.baselineNote}</p>
             </section>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -185,39 +185,39 @@ const MinorNonDisablingStroke = () => {
 
             <Accordion type="multiple" className="w-full">
               <AccordionItem value="guideline" className="border-slate-200 dark:border-slate-700">
-                <AccordionTrigger className="text-sm font-semibold text-slate-800 dark:text-slate-100 hover:no-underline">
+                <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline">
                   <span className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                     {C.guidelineHeading}
                   </span>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <p className="text-sm text-slate-800 dark:text-slate-100">{C.guidelinePopulation}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                  <p className="text-sm text-foreground">{C.guidelinePopulation}</p>
+                  <p className="text-xs text-muted-foreground mt-2">
                     <strong>Example:</strong> {C.guidelineExample}
                   </p>
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="notes" className="border-slate-200 dark:border-slate-700">
-                <AccordionTrigger className="text-sm font-semibold text-slate-800 dark:text-slate-100 hover:no-underline">
+                <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline">
                   <span className="flex items-center gap-2">
                     <Info className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                     Scope, pretreatment, and definitions
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
+                <AccordionContent className="space-y-2 text-sm text-foreground">
                   <p>{C.preTreatment}</p>
                   <p>{C.scope}</p>
                   <p>{C.batheLimitation}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-muted-foreground">
                     {formatIvtClassEvidence()}
                   </p>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
 
-            <p className="text-[11px] text-center text-slate-500 dark:text-slate-400 leading-relaxed">
+            <p className="text-[11px] text-center text-muted-foreground leading-relaxed">
               {C.footer} {formatAbbreviations()}
             </p>
           </CardContent>

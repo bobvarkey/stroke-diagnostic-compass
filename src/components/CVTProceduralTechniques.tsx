@@ -35,9 +35,9 @@ import {
 const CVTProceduralTechniques: React.FC = () => (
   <Card
     id="cvt-procedural-techniques"
-    className="border-2 border-teal-200 dark:border-teal-800"
+    className="scroll-mt-24 border-2 border-teal-200 dark:border-teal-800"
   >
-    <Collapsible className="group">
+    <Collapsible className="group" defaultOpen>
       <CollapsibleTrigger asChild>
         <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
           <CardTitle className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -64,7 +64,7 @@ const CVTProceduralTechniques: React.FC = () => (
                 className="inline-flex items-center rounded-md border border-teal-200 dark:border-teal-800 bg-teal-50 dark:bg-teal-950/40 px-2 py-1 text-[11px] text-teal-800 dark:text-teal-200"
               >
                 <span className="font-semibold">{item.label}</span>
-                <span className="mx-1 text-teal-400 dark:text-teal-600">·</span>
+                <span className="mx-1 text-teal-600 dark:text-teal-300">·</span>
                 <span className="text-teal-700 dark:text-teal-300">{item.summary}</span>
               </span>
             ))}
@@ -96,7 +96,7 @@ const CVTProceduralTechniques: React.FC = () => (
 
           <Accordion type="multiple" className="rounded-lg border border-border px-3">
             <AccordionItem value="access">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Crosshair className="h-4 w-4 text-teal-500" />
                   Arterial and venous access
@@ -111,7 +111,7 @@ const CVTProceduralTechniques: React.FC = () => (
             </AccordionItem>
 
             <AccordionItem value="pharm">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Syringe className="h-4 w-4 text-rose-500" />
                   Pharmacological thrombolysis
@@ -178,7 +178,7 @@ const CVTProceduralTechniques: React.FC = () => (
             </AccordionItem>
 
             <AccordionItem value="aspiration">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Wind className="h-4 w-4 text-sky-500" />
                   Direct aspiration thrombectomy
@@ -190,7 +190,7 @@ const CVTProceduralTechniques: React.FC = () => (
             </AccordionItem>
 
             <AccordionItem value="stent">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Anchor className="h-4 w-4 text-indigo-500" />
                   Stent retriever thrombectomy
@@ -203,7 +203,7 @@ const CVTProceduralTechniques: React.FC = () => (
             </AccordionItem>
 
             <AccordionItem value="balloon">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Waves className="h-4 w-4 text-amber-500" />
                   Balloon thrombectomy
@@ -219,7 +219,7 @@ const CVTProceduralTechniques: React.FC = () => (
             </AccordionItem>
 
             <AccordionItem value="angioplasty">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Gauge className="h-4 w-4 text-orange-500" />
                   Balloon angioplasty and stenting
@@ -232,7 +232,7 @@ const CVTProceduralTechniques: React.FC = () => (
             </AccordionItem>
 
             <AccordionItem value="angiojet">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Waves className="h-4 w-4 text-slate-500" />
                   AngioJet
@@ -241,14 +241,14 @@ const CVTProceduralTechniques: React.FC = () => (
               <AccordionContent className="text-xs space-y-2">
                 <p className="text-muted-foreground">{CVT_ANGIOJET.mechanism}.</p>
                 <p className="text-muted-foreground">{CVT_ANGIOJET.practical}.</p>
-                <div className="p-2 rounded-md bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                <div className="p-2 rounded-md bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-200">
                   <strong>Evidence note:</strong> {CVT_ANGIOJET.evidenceNote}.
                 </div>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="act" className="border-b-0">
-              <AccordionTrigger className="text-sm py-3 hover:no-underline">
+              <AccordionTrigger className="text-sm py-3 hover:no-underline text-foreground">
                 <span className="flex items-center gap-2">
                   <Gauge className="h-4 w-4 text-emerald-500" />
                   Periprocedural anticoagulation
@@ -257,7 +257,7 @@ const CVTProceduralTechniques: React.FC = () => (
               <AccordionContent className="text-xs space-y-2">
                 <p className="text-muted-foreground">{CVT_PERIPROCEDURAL_AC.context}.</p>
                 <div className="p-3 rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/30 text-center">
-                  <div className="text-[11px] uppercase tracking-wide text-emerald-600 dark:text-emerald-400 font-semibold">
+                  <div className="text-[11px] uppercase tracking-wide text-emerald-700 dark:text-emerald-300 font-semibold">
                     Suite ACT target
                   </div>
                   <div className="text-2xl font-bold text-emerald-800 dark:text-emerald-200">

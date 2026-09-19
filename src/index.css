@@ -94,7 +94,7 @@
     --secondary-foreground: 270 60% 85%;
 
     --muted: 222 30% 14%;
-    --muted-foreground: 220 15% 60%;
+    --muted-foreground: 210 18% 78%;
 
     --accent: 190 50% 15%;
     --accent-foreground: 190 80% 80%;
@@ -142,6 +142,11 @@
 
   html {
     scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: dark;
   }
 
   body {
@@ -292,4 +297,9 @@ html {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+}
+
+/* Light teaching-figure panels keep dark text on the white card in dark mode. */
+.dark .teaching-figure {
+  color: hsl(222 47% 11%);
 }

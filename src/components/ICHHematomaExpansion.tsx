@@ -121,7 +121,7 @@ function SpotSignScoreCalculator() {
         <button
           type="button"
           onClick={reset}
-          className="flex items-center gap-1 px-2 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded hover:bg-slate-300 dark:hover:bg-slate-600 shrink-0"
+          className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-900 dark:text-white bg-slate-200 dark:bg-slate-600 rounded hover:bg-slate-300 dark:hover:bg-slate-500 shrink-0"
         >
           <RotateCcw className="h-3 w-3" />
           Reset
@@ -295,7 +295,7 @@ function BrainScoreCalculator() {
         <button
           type="button"
           onClick={reset}
-          className="flex items-center gap-1 px-2 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded hover:bg-slate-300 dark:hover:bg-slate-600 shrink-0"
+          className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-900 dark:text-white bg-slate-200 dark:bg-slate-600 rounded hover:bg-slate-300 dark:hover:bg-slate-500 shrink-0"
         >
           <RotateCcw className="h-3 w-3" />
           Reset
@@ -509,7 +509,7 @@ export default function ICHHematomaExpansion() {
 
             <Accordion type="multiple" className="w-full">
               <AccordionItem value="ncct" className="border-slate-200 dark:border-slate-700">
-                <AccordionTrigger className="text-sm font-semibold text-slate-800 dark:text-slate-200 hover:no-underline">
+                <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline">
                   Non-Contrast CT Signs — Summary
                 </AccordionTrigger>
                 <AccordionContent>

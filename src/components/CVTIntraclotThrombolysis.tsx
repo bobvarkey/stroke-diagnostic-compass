@@ -27,16 +27,16 @@ const agentText: Record<(typeof CVT_INTRACLOT_AGENTS)[number]["id"], string> = {
 };
 
 const agentMuted: Record<(typeof CVT_INTRACLOT_AGENTS)[number]["id"], string> = {
-  urokinase: "text-rose-600 dark:text-rose-400",
-  alteplase: "text-fuchsia-600 dark:text-fuchsia-400",
+  urokinase: "text-rose-700 dark:text-rose-300",
+  alteplase: "text-fuchsia-700 dark:text-fuchsia-300",
 };
 
 const CVTIntraclotThrombolysis: React.FC = () => (
   <Card
     id="cvt-intraclot-thrombolysis"
-    className="border-2 border-rose-200 dark:border-rose-800"
+    className="scroll-mt-24 border-2 border-rose-200 dark:border-rose-800"
   >
-    <Collapsible className="group">
+    <Collapsible className="group" defaultOpen>
       <CollapsibleTrigger asChild>
         <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
           <CardTitle className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -68,7 +68,7 @@ const CVTIntraclotThrombolysis: React.FC = () => (
                 </div>
                 <div className={`text-xs sm:text-sm font-medium ${agentText[agent.id]}`}>
                   Bolus {agent.bolus}
-                  <span className="text-muted-foreground font-normal"> then </span>
+                  <span className="opacity-80 font-normal"> then </span>
                   {agent.infusion}
                 </div>
               </div>
@@ -178,7 +178,7 @@ const CVTIntraclotThrombolysis: React.FC = () => (
           </div>
 
           <div className="p-3 bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-700 rounded-lg">
-            <p className="text-xs text-slate-700 dark:text-slate-300">
+            <p className="text-xs text-slate-800 dark:text-slate-200">
               <strong>Source note (study context):</strong> {CVT_INTRACLOT_SOURCE_NOTE}.
             </p>
           </div>
