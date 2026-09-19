@@ -29,6 +29,7 @@ import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendati
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import MeVOOrientalTrial from "./MeVOOrientalTrial";
+import CerebralVesselOcclusionSpectrum from "./CerebralVesselOcclusionSpectrum";
 import LAILipidRiskClassification from "./LAILipidRiskClassification";
 import LipidTherapyIntensificationGuide from "./LipidTherapyIntensificationGuide";
 import ETICIScoreCalculator from "./ETICIScoreCalculator";
@@ -5696,6 +5697,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
+              { id: "vessel-occlusion-spectrum", label: "Occlusion Spectrum", icon: <Brain className="h-3.5 w-3.5 text-indigo-500" /> },
               { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
               { id: "vascular-anatomy", label: "Vascular Anatomy", icon: <Heart className="h-3.5 w-3.5 text-red-400" /> },
               { id: "aspects-calculator", label: "ASPECTS Calculator", icon: <Calculator className="h-3.5 w-3.5 text-teal-500" /> },
@@ -5938,6 +5940,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* ORIENTAL-MeVO Trial */}
           <LazySection id="mevo-oriental">
             <MeVOOrientalTrial />
+          </LazySection>
+
+          {/* Spectrum of Cerebral Vessel Occlusion — LVO / MeVO / SVO / perforator teaching */}
+          <LazySection id="vessel-occlusion-spectrum">
+            <CerebralVesselOcclusionSpectrum />
           </LazySection>
 
           {/* LVO Decision Dashboard - Integrated Treatment Recommendation (includes Collateral Grading, HeadsUp, eTICI, TAL) */}

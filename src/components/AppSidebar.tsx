@@ -102,6 +102,11 @@ const navGroups: NavGroup[] = [
         label: "MeVO (ORIENTAL)", 
         icon: <Target className="h-4 w-4 text-violet-500" /> 
       },
+      { 
+        id: "vessel-occlusion-spectrum", 
+        label: "Occlusion Spectrum", 
+        icon: <Brain className="h-4 w-4 text-indigo-500" /> 
+      },
     ]
   },
   {
