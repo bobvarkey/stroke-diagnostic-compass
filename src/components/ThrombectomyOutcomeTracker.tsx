@@ -40,7 +40,7 @@ const ThrombectomyOutcomeTracker: React.FC = () => {
     mortality: false
   });
 
-  const updateOutcome = (field: keyof OutcomeData, value: any) => {
+  const updateOutcome = (field: keyof OutcomeData, value: OutcomeData[keyof OutcomeData]) => {
     setOutcome(prev => ({ ...prev, [field]: value }));
   };
 

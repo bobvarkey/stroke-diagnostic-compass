@@ -129,7 +129,7 @@ ${calculatedScores ? JSON.stringify(calculatedScores, null, 2) : "No scores calc
 Please provide a comprehensive analysis of what investigations are missing and whether the stated diagnosis is appropriate.${additionalNotes ? " Pay special attention to the additional notes/context provided by the clinician." : ""}`;
 
     // Build the user content - if image is provided, use multimodal message
-    let userContent: any;
+    let userContent: string | Array<{ type: string; text?: string; image_url?: { url: string } }>;
     if (imageBase64) {
       userContent = [
         { type: "text", text: userPrompt },

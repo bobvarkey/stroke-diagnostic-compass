@@ -141,7 +141,7 @@ export default function FisherScaleCalculator({ onScoreChange }: Props) {
                     ].map((option) => (
                       <button
                         key={option.value}
-                        onClick={() => setSahThickness(option.value as any)}
+                        onClick={() => setSahThickness(option.value as "none" | "thin" | "thick")}
                         className={cn("p-3 rounded-lg border-2 text-left transition-all", calculatorOptionClass(sahThickness === option.value, "rose"))}
                       >
                         <div className="font-medium text-sm">{option.label}</div>

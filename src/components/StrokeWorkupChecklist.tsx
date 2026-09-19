@@ -6,6 +6,9 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+type NIHSSItemMeta = { canBeUntestable?: boolean; neverUntestable?: boolean; untestableReason?: string };
 import SectionNavigator, { SectionItem } from "./SectionNavigator";
 import {
   getLazyParentSection,
@@ -306,7 +309,7 @@ const striveMarkers = [
   { name: "Brain Atrophy", desc: "Lower brain volume not due to focal injury; global and regional assessment" },
 ];
 
-const categoryIcons: Record<string, any> = {
+const categoryIcons: Record<string, LucideIcon> = {
   "Basic Laboratory": TestTube,
   "Chemistry Profile": TestTube,
   "Coagulation": Activity,
@@ -1622,8 +1625,8 @@ function VisualNIHSSCalculator() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {nihssItems.map((item) => {
                 const isUntestable = scores[item.item] === "UN";
-                const canBeUntestable = (item as any).canBeUntestable;
-                const neverUntestable = (item as any).neverUntestable;
+                const canBeUntestable = (item as NIHSSItemMeta).canBeUntestable;
+                const neverUntestable = (item as NIHSSItemMeta).neverUntestable;
                 
                 return (
                   <div
@@ -1671,7 +1674,7 @@ function VisualNIHSSCalculator() {
                         <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded text-xs text-amber-800 dark:text-amber-300">
                           <strong>Marked as Untestable</strong>
                           <p className="text-amber-700 dark:text-amber-400 mt-1">
-                            Reason: {(item as any).untestableReason}
+                            Reason: {(item as NIHSSItemMeta).untestableReason}
                           </p>
                         </div>
                         <textarea
@@ -1739,7 +1742,7 @@ function VisualNIHSSCalculator() {
                           {itemId}. {item?.name}
                         </div>
                         <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                          {untestableReasons[itemId] || (item as any)?.untestableReason || "No reason documented"}
+                          {untestableReasons[itemId] || (item as NIHSSItemMeta)?.untestableReason || "No reason documented"}
                         </div>
                       </div>
                     );
@@ -1901,7 +1904,7 @@ function VisualNIHSSCalculator() {
                                 </td>
                                 <td className="border border-black p-2">
                                   {isUN ? (
-                                    <span>{untestableReasons[itemId] || (item as any)?.untestableReason || "____________________"}</span>
+                                    <span>{untestableReasons[itemId] || (item as NIHSSItemMeta)?.untestableReason || "____________________"}</span>
                                   ) : (
                                     <span className="text-gray-400">N/A - Tested normally</span>
                                   )}
@@ -2001,7 +2004,7 @@ function VisualNIHSSCalculator() {
                             const item = nihssItems.find(i => i.item === itemId);
                             return (
                               <div key={itemId} className="text-xs text-amber-700 dark:text-amber-400">
-                                <strong>{itemId}.</strong> {item?.name}: {untestableReasons[itemId] || (item as any)?.untestableReason || "Reason not documented"}
+                                <strong>{itemId}.</strong> {item?.name}: {untestableReasons[itemId] || (item as NIHSSItemMeta)?.untestableReason || "Reason not documented"}
                               </div>
                             );
                           })}
@@ -5626,7 +5629,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
     sex: patient?.sex || undefined,
     lastKnownWell: patient?.last_known_well ? patient.last_known_well.slice(0, 16) : undefined,
   });
-  const [calculatedScores, setCalculatedScores] = useState<Record<string, any>>({});
+  const [calculatedScores, setCalculatedScores] = useState<Record<string, number | string>>({});
 
   const handleCheck = (testId: string) => {
     const newChecked = new Set(checkedItems);

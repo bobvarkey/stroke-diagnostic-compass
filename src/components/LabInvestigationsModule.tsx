@@ -171,7 +171,7 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
 
           if (data.labs && data.labs.length > 0) {
             // Merge extracted labs with existing
-            const newLabs: LabValue[] = data.labs.map((lab: any) => ({
+            const newLabs: LabValue[] = data.labs.map((lab: Omit<LabValue, "id">) => ({
               id: crypto.randomUUID(),
               name: lab.name,
               value: lab.value,
@@ -208,11 +208,11 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
               variant: 'destructive'
             });
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('OCR error:', err);
           toast({ 
             title: 'Extraction failed', 
-            description: err.message || 'Failed to extract lab values',
+            description: err instanceof Error ? err.message : 'Failed to extract lab values',
             variant: 'destructive'
           });
         } finally {
