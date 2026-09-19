@@ -62,7 +62,7 @@ const parseCaseText = (text: string): CaseFields => {
   const genderMatch = lower.match(/\b(male|female|man|woman|boy|girl)\b/);
   const lkwMatch = text.match(/(?:last known well|lkw|onset)[:-]?\s*([^.\n]+)/i);
   const nihssMatch = text.match(/nihss[:-]?\s*(\d{1,2})/i);
-  const complaint = text.split(/[\.\n]/)[0]?.trim() || "";
+  const complaint = text.split(/[.\n]/)[0]?.trim() || "";
 
   return {
     age: ageMatch?.[1] ?? "",

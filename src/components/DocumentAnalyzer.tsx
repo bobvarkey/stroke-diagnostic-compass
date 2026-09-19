@@ -220,7 +220,7 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
                     input.type = 'file';
                     input.accept = 'image/*';
                     input.multiple = true;
-                    input.onchange = (e) => handleFileUpload(e as any);
+                    input.onchange = (e) => handleFileUpload(e as unknown as React.ChangeEvent<HTMLInputElement>);
                     input.click();
                   }}
                   className="flex items-center gap-2 border-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40"
