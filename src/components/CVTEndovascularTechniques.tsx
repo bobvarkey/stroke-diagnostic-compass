@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, Info, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
+import cvtEndovascularFigure from "@/assets/cvt-endovascular-techniques.png";
 import {
   CVT_ENDOVASCULAR_ATTRIBUTION,
   CVT_ENDOVASCULAR_LABELS,
@@ -15,7 +16,7 @@ import {
 } from "@/lib/cvtEndovascularTechniques";
 
 export default function CVTEndovascularTechniques() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [techniqueId, setTechniqueId] = useState<CvtEndovascularTechniqueId>("venoplasty");
   const technique = getCvtEndovascularTechnique(techniqueId);
 
@@ -47,6 +48,18 @@ export default function CVTEndovascularTechniques() {
               propagation) and endovascular therapy is being considered — intrasinus thrombolysis or
               thrombectomy constructs built from these techniques.
             </p>
+
+            <figure className="rounded-lg overflow-hidden border border-slate-200 bg-white dark:border-slate-700">
+              <img
+                src={cvtEndovascularFigure}
+                alt="Endovascular techniques for cerebral venous thrombosis: panels A–D show jugular access with guiding catheter, distal access catheter, guidewire, and balloon in the superior sagittal sinus; sidebar lists venoplasty, dental floss technique, balloon anchor with mobile aspiration, and pipeline pigging."
+                className="w-full h-auto"
+                loading="lazy"
+              />
+              <figcaption className="px-3 py-2 text-[11px] text-slate-600 bg-slate-50 dark:bg-slate-900/80 dark:text-slate-300">
+                Source figure — {CVT_ENDOVASCULAR_ATTRIBUTION}
+              </figcaption>
+            </figure>
 
             <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] gap-3">
               <div className="space-y-2">

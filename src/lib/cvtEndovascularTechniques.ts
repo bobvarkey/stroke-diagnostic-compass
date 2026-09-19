@@ -6,7 +6,7 @@
 export const CVT_ENDOVASCULAR_TITLE = "Endovascular Techniques for Cerebral Venous Thrombosis";
 
 export const CVT_ENDOVASCULAR_ATTRIBUTION =
-  "Adapted from a slide by Prof. Shakir Husain. Educational reference only — not a procedural manual.";
+  "Adapted from slide by Prof. Shakir Husain. Educational reference only — not a procedural manual.";
 
 export const CVT_ENDOVASCULAR_LABELS = [
   { abbr: "GC", definition: "Guiding Catheter" },
