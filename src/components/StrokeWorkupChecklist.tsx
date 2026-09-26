@@ -749,9 +749,10 @@ function AcuteICHManagement() {
               <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-3">Anticoagulation Reversal</h4>
               <p className="text-sm text-amber-700 dark:text-amber-400 mb-4 font-medium">Discontinue anticoagulation therapy immediately. Rapid reversal should be performed as soon as possible.</p>
               <div className="mb-4 border-l-4 border-primary bg-card/80 p-3 text-sm text-card-foreground space-y-1">
-                <p className="font-semibold">Updated NCS/SCCM guidance · Factor Xa inhibitor–associated spontaneous ICH</p>
+                <p className="font-semibold">NCS/SCCM focused guideline update · Factor Xa inhibitor–associated ICH</p>
                 <p>Favor 4-factor PCC over andexanet alfa when reversal is indicated. ANNEXA-I found better hematoma control with andexanet but no mortality or functional benefit and more thrombotic events. Evidence is limited; this is not a strong universal recommendation.</p>
                 <p>Confirm the drug, last dose, renal function, and reversal already administered before repeating treatment in transfers. Do not combine andexanet and PCC. Andexanet was withdrawn from the US market in December 2025; availability varies internationally.</p>
+                <a href="https://sciety.org/articles/activity/10.21203/rs.3.rs-8928593/v1" target="_blank" rel="noopener noreferrer" className="inline-block text-primary underline underline-offset-2">NCS/SCCM focused update · abstract</a>
               </div>
               
               <div className="grid md:grid-cols-4 gap-3">
