@@ -413,7 +413,7 @@ function SDHTreatmentIndications() {
               </h5>
               <ul className="text-xs space-y-1 text-rose-700 dark:text-rose-400">
                 <li>• <strong>Warfarin:</strong> Reverse with 4F-PCC + IV Vitamin K (target INR &lt;1.4)</li>
-                <li>• <strong>DOACs:</strong> Idarucizumab (dabigatran) or Andexanet alfa (FXa inhibitors)</li>
+                <li>• <strong>DOACs:</strong> Idarucizumab (dabigatran); for factor Xa inhibitors discuss 4F-PCC per local SDH protocol. Updated NCS/SCCM spontaneous ICH guidance favors 4F-PCC over andexanet; applicability to SDH requires clinical judgment. Check reversal already given during transfer; do not combine andexanet with PCC.</li>
                 <li>• <strong>Antiplatelets:</strong> Consider platelet transfusion only if surgical emergency (PATCH trial negative)</li>
                 <li>• <strong>Timing of resumption:</strong> Individualize; typically 2-4 weeks post-intervention for high-risk AF patients</li>
                 <li>• <strong>cSDH on anticoagulation:</strong> Higher recurrence (~30%); MMA embolization may reduce this</li>

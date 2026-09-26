@@ -440,7 +440,7 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                   <span className="font-bold text-indigo-700 dark:text-indigo-400">LAIS</span>
                   <span className="ml-1 px-1.5 py-0.5 bg-indigo-500 text-white text-xs rounded">Neuroprotection</span>
                   <p className="text-gray-700 dark:text-gray-300 mt-1">
-                    <strong>Loberamisal</strong> (dual-target neuroprotection) within 48h for AIS (NIHSS 7–20): <strong>+13% absolute increase</strong> in excellent functional outcomes at 90 days.
+                    <strong>Loberamisal</strong> (investigational IV neuroprotection): the phase 3 LAIS trial studied treatment within 48 hours of ischemic stroke and reported roughly <strong>70% versus 57%</strong> complete functional independence at 90 days (about +13 percentage points). This trial-specific window is <strong>not</strong> an extension of IV thrombolysis eligibility. It may complement, not replace, timely thrombolysis or thrombectomy; confirm local approval and protocol before use.
                   </p>
                 </div>
                 

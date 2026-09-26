@@ -746,8 +746,13 @@ function AcuteICHManagement() {
 
             {/* Anticoagulation Reversal Algorithm */}
             <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-200 dark:border-amber-700">
-              <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-3">Anticoagulation Reversal - Class 1 Recommendation</h4>
+              <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-3">Anticoagulation Reversal</h4>
               <p className="text-sm text-amber-700 dark:text-amber-400 mb-4 font-medium">Discontinue anticoagulation therapy immediately. Rapid reversal should be performed as soon as possible.</p>
+              <div className="mb-4 border-l-4 border-primary bg-card/80 p-3 text-sm text-card-foreground space-y-1">
+                <p className="font-semibold">Updated NCS/SCCM guidance · Factor Xa inhibitor–associated spontaneous ICH</p>
+                <p>Favor 4-factor PCC over andexanet alfa when reversal is indicated. ANNEXA-I found better hematoma control with andexanet but no mortality or functional benefit and more thrombotic events. Evidence is limited; this is not a strong universal recommendation.</p>
+                <p>Confirm the drug, last dose, renal function, and reversal already administered before repeating treatment in transfers. Do not combine andexanet and PCC. Andexanet was withdrawn from the US market in December 2025; availability varies internationally.</p>
+              </div>
               
               <div className="grid md:grid-cols-4 gap-3">
                 {/* VKA */}
@@ -795,12 +800,12 @@ function AcuteICHManagement() {
                       <p className="text-amber-600 dark:text-amber-500">History: When last dose taken</p>
                     </div>
                     <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded">
-                      <p className="font-medium text-green-700 dark:text-green-400">If Andexanet alfa available:</p>
-                      <p className="text-green-600 dark:text-green-500">Andexanet alpha (Class 2a)</p>
+                      <p className="font-medium text-green-700 dark:text-green-400">Preferred under updated NCS/SCCM guidance:</p>
+                      <p className="text-green-600 dark:text-green-500">4-factor PCC for factor Xa inhibitor–associated spontaneous ICH, per local protocol.</p>
                     </div>
                     <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded">
-                      <p className="font-medium text-orange-700 dark:text-orange-400">If NOT available:</p>
-                      <p className="text-orange-600 dark:text-orange-500">4 Factor PCC or aPCC (Class 2b)</p>
+                      <p className="font-medium text-orange-700 dark:text-orange-400">Andexanet alfa:</p>
+                      <p className="text-orange-600 dark:text-orange-500">Not preferred; weigh thrombotic risk and local availability. Do not give with PCC.</p>
                     </div>
                   </div>
                 </div>
@@ -840,18 +845,18 @@ function AcuteICHManagement() {
                   <div className="mt-2 flex gap-2 text-xs">
                     <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded flex-1">
                       <p className="font-medium text-green-700 dark:text-green-400">Yes:</p>
-                      <p className="text-green-600 dark:text-green-500">Platelet transfusion & desmopressin if hemorrhage expansion or post-operative potential harm</p>
+                      <p className="text-green-600 dark:text-green-500">For aspirin-associated ICH requiring emergent neurosurgery, platelet transfusion may be considered; coordinate with neurosurgery.</p>
                     </div>
                     <div className="p-2 bg-pink-100 dark:bg-pink-900/40 rounded flex-1">
                       <p className="font-medium text-pink-700 dark:text-pink-400">No:</p>
-                      <p className="text-pink-600 dark:text-pink-500">Uncertain (avoid routine platelet transfusion)</p>
+                      <p className="text-pink-600 dark:text-pink-500">Do not transfuse platelets for non-surgical spontaneous ICH (PATCH: harm).</p>
                     </div>
                   </div>
                 </div>
                 <div className="p-3 bg-white dark:bg-pink-950/30 rounded border border-pink-200 dark:border-pink-700">
                   <h5 className="font-medium text-pink-700 dark:text-pink-400 mb-2">P2Y12 Inhibitors</h5>
                   <p className="text-sm text-pink-600 dark:text-pink-400">Efficacy of hemostatic agents remain uncertain</p>
-                  <p className="text-xs text-pink-500 dark:text-pink-500 mt-2">Critical Point: REVERSE trial: P2Y12 + platelet transfusion harmful (avoid routine platelet transfusion)</p>
+                  <p className="text-xs text-pink-500 dark:text-pink-500 mt-2">PATCH: avoid routine platelets in non-surgical spontaneous ICH. Updated NCS/SCCM guidance makes no recommendation for desmopressin; clinical benefit is unproven.</p>
                 </div>
               </div>
             </div>
