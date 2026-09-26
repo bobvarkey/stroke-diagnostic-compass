@@ -750,9 +750,9 @@ function AcuteICHManagement() {
               <p className="text-sm text-amber-700 dark:text-amber-400 mb-4 font-medium">Discontinue anticoagulation therapy immediately. Rapid reversal should be performed as soon as possible.</p>
               <div className="mb-4 border-l-4 border-primary bg-card/80 p-3 text-sm text-card-foreground space-y-1">
                 <p className="font-semibold">NCS/SCCM focused guideline update · Factor Xa inhibitor–associated ICH</p>
-                <p>Favor 4-factor PCC over andexanet alfa when reversal is indicated. ANNEXA-I found better hematoma control with andexanet but no mortality or functional benefit and more thrombotic events. Evidence is limited; this is not a strong universal recommendation.</p>
-                <p>Confirm the drug, last dose, renal function, and reversal already administered before repeating treatment in transfers. Do not combine andexanet and PCC. Andexanet was withdrawn from the US market in December 2025; availability varies internationally.</p>
-                <a href="https://sciety.org/articles/activity/10.21203/rs.3.rs-8928593/v1" target="_blank" rel="noopener noreferrer" className="inline-block text-primary underline underline-offset-2">NCS/SCCM focused update · abstract</a>
+                <p>Conditional recommendation: favor 4-factor PCC over andexanet alfa when reversal is indicated. ANNEXA-I found better hematoma control with andexanet but no mortality or functional benefit. In pooled data, thrombosis was higher (RR 1.37 overall; RR 1.99 in observational spontaneous IPH cohorts). Evidence remains limited.</p>
+                <p>Confirm the drug, last dose, renal function, and reversal already administered before repeating treatment in transfers. Avoid andexanet plus PCC unless exceptional benefit outweighs thrombotic risk. Andexanet was withdrawn from the US market in December 2025; availability varies internationally.</p>
+                <a href="https://link.springer.com/article/10.1007/s12028-026-02601-4" target="_blank" rel="noopener noreferrer" className="inline-block text-primary underline underline-offset-2">NCS/SCCM focused update · Neurocritical Care, September 24, 2026</a>
               </div>
               
               <div className="grid md:grid-cols-4 gap-3">
@@ -806,7 +806,7 @@ function AcuteICHManagement() {
                     </div>
                     <div className="p-2 bg-orange-100 dark:bg-orange-900/40 rounded">
                       <p className="font-medium text-orange-700 dark:text-orange-400">Andexanet alfa:</p>
-                      <p className="text-orange-600 dark:text-orange-500">Not preferred; weigh thrombotic risk and local availability. Do not give with PCC.</p>
+                      <p className="text-orange-600 dark:text-orange-500">Not preferred; weigh thrombotic risk and local availability. Avoid combining with PCC except when benefit clearly outweighs risk.</p>
                     </div>
                   </div>
                 </div>
@@ -846,7 +846,7 @@ function AcuteICHManagement() {
                   <div className="mt-2 flex gap-2 text-xs">
                     <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded flex-1">
                       <p className="font-medium text-green-700 dark:text-green-400">Yes:</p>
-                      <p className="text-green-600 dark:text-green-500">For aspirin-associated ICH requiring emergent neurosurgery, platelet transfusion may be considered; coordinate with neurosurgery.</p>
+                      <p className="text-green-600 dark:text-green-500">For spontaneous IPH on aspirin undergoing neurosurgery, the updated guideline conditionally recommends platelet transfusion; coordinate with neurosurgery.</p>
                     </div>
                     <div className="p-2 bg-pink-100 dark:bg-pink-900/40 rounded flex-1">
                       <p className="font-medium text-pink-700 dark:text-pink-400">No:</p>

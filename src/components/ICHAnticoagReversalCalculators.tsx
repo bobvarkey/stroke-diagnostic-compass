@@ -243,7 +243,7 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
         <div className="space-y-3">
           <div className="border-l-4 border-destructive bg-card p-3 text-sm text-card-foreground space-y-1">
             <p className="font-semibold">Not preferred for factor Xa inhibitor–associated spontaneous ICH</p>
-            <p>Updated NCS/SCCM guidance favors 4F-PCC. Confirm whether reversal was already given before transfer; never combine andexanet with PCC. Andexanet was withdrawn in the US in December 2025 but may remain available internationally. The regimen below is historical/international reference only, not a treatment recommendation.</p>
+            <p>Updated NCS/SCCM guidance conditionally favors 4F-PCC. Confirm whether reversal was already given before transfer; avoid combining andexanet with PCC unless benefit clearly outweighs thrombotic risk. Andexanet was withdrawn in the US in December 2025 but may remain available internationally. The regimen below is historical/international reference only, not a treatment recommendation.</p>
           </div>
           <div className="p-3 bg-white/80 dark:bg-gray-900/60 rounded-lg">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Factor Xa Inhibitor</span>
