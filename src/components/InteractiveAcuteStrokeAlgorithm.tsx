@@ -440,7 +440,7 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
                   <span className="font-bold text-indigo-700 dark:text-indigo-400">LAIS</span>
                   <span className="ml-1 px-1.5 py-0.5 bg-indigo-500 text-white text-xs rounded">Neuroprotection</span>
                   <p className="text-gray-700 dark:text-gray-300 mt-1">
-                    <strong>Loberamisal</strong> (dual-target neuroprotection) within 48h for AIS (NIHSS 7–20): <strong>+13% absolute increase</strong> in excellent functional outcomes at 90 days.
+                    <strong>Loberamisal</strong> (investigational IV neuroprotection): in the phase 3 LAIS trial (998 patients, 32 hospitals), treatment within 48 hours of ischemic stroke achieved 90-day mRS 0–1 in <strong>69.7% versus 56.4%</strong> with placebo (+13.3 percentage points). Patients undergoing thrombectomy were excluded. This trial-specific window is <strong>not</strong> an extension of IV thrombolysis eligibility; it may complement, not replace, reperfusion care. Confirm local approval and protocol before use. <a href="https://jamanetwork.com/journals/jama/fullarticle/2854043" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">JAMA · LAIS trial</a>.
                   </p>
                 </div>
                 

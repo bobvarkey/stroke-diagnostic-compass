@@ -241,6 +241,10 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
       {/* ===== Andexanet Alfa (FXa Inhibitors) ===== */}
       {activeTab === "andexanet" && (
         <div className="space-y-3">
+          <div className="border-l-4 border-destructive bg-card p-3 text-sm text-card-foreground space-y-1">
+            <p className="font-semibold">Not preferred for factor Xa inhibitor–associated spontaneous ICH</p>
+            <p>Updated NCS/SCCM guidance conditionally favors 4F-PCC. Confirm whether reversal was already given before transfer; avoid combining andexanet with PCC unless benefit clearly outweighs thrombotic risk. Andexanet was withdrawn in the US in December 2025 but may remain available internationally. The regimen below is historical/international reference only, not a treatment recommendation.</p>
+          </div>
           <div className="p-3 bg-white/80 dark:bg-gray-900/60 rounded-lg">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Factor Xa Inhibitor</span>
             <div className="flex flex-wrap gap-2">
@@ -314,7 +318,7 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
           </div>
 
           <div className="p-3 bg-orange-50 dark:bg-orange-900/30 rounded-lg text-xs space-y-1">
-            <p className="font-semibold text-orange-700 dark:text-orange-400">If Andexanet NOT available:</p>
+            <p className="font-semibold text-orange-700 dark:text-orange-400">Preferred 4F-PCC approach under updated NCS/SCCM guidance:</p>
             <ul className="text-orange-600 dark:text-orange-500 space-y-1">
               <li>• 4F-PCC 50 IU/kg → <strong>{Math.min(weight * 50, 5000)} IU</strong> (Class 2b)</li>
               <li>• aPCC (FEIBA) 50 IU/kg → <strong>{Math.min(weight * 50, 5000)} IU</strong></li>
@@ -323,7 +327,7 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
 
           <div className="p-2 bg-red-50 dark:bg-red-900/30 rounded text-xs text-red-600 dark:text-red-400 flex items-start gap-2">
             <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            <span>ANNEXA-I trial: ↑ thrombotic events (10%). Monitor for VTE/MI/stroke post-reversal.</span>
+            <span>ANNEXA-I: improved hematoma control but no mortality or functional benefit; increased thrombosis. Monitor for VTE/MI/stroke post-reversal.</span>
           </div>
         </div>
       )}
@@ -459,7 +463,7 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
             <p className="text-xs sm:text-sm text-pink-600 dark:text-pink-400 mt-1">
               0.3 mcg/kg × {weight} kg · IV over 15–30 min
             </p>
-            <p className="text-xs text-pink-500 mt-1 italic">For antiplatelet reversal pre-neurosurgery (Class 2b)</p>
+            <p className="text-xs text-pink-500 mt-1 italic">Reference dose only; updated NCS/SCCM guidance makes no recommendation for desmopressin in spontaneous ICH.</p>
           </div>
 
           <div className="p-3 bg-white/80 dark:bg-gray-900/60 rounded-lg text-xs space-y-2">
@@ -477,8 +481,7 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
           <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg text-xs space-y-1">
             <p className="font-semibold text-amber-700 dark:text-amber-400">Indications in ICH:</p>
             <ul className="text-amber-600 dark:text-amber-500 space-y-1">
-              <li>• Aspirin reversal when proceeding to <strong>emergent neurosurgery</strong></li>
-              <li>• Antiplatelet-associated ICH with hemorrhage expansion</li>
+              <li>• Clinical benefit in antiplatelet-associated spontaneous ICH is unproven; do not use routinely.</li>
               <li>• Uremic platelet dysfunction</li>
               <li>• von Willebrand disease</li>
             </ul>
@@ -486,7 +489,7 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
 
           <div className="p-2 bg-red-50 dark:bg-red-900/30 rounded text-xs text-red-600 dark:text-red-400 flex items-start gap-2">
             <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            <span>REVERSE trial: Routine platelet transfusion in antiplatelet-ICH is <strong>HARMFUL</strong>. Use desmopressin only for surgical candidates.</span>
+            <span>PATCH: Routine platelet transfusion in non-surgical spontaneous ICH is <strong>HARMFUL</strong>. For aspirin users needing emergent neurosurgery, discuss platelet transfusion. No recommendation for desmopressin.</span>
           </div>
         </div>
       )}
