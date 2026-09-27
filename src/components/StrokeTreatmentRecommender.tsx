@@ -192,6 +192,12 @@ const StrokeTreatmentRecommender: React.FC = () => {
       if (ivtWindow && ivtEligible) actions.push("Consider starting IVT while awaiting imaging if no contraindications");
     }
 
+    // Loberamisal (investigational IV neuroprotection) — 48-hour window
+    if (timeHours <= 48) {
+      rationale.push(`Within 48-hour Loberamisal window (${timeHours.toFixed(1)}h from LKW) — investigational IV neuroprotection (LAIS phase 3)`);
+      actions.push("Loberamisal (investigational): LAIS phase 3 (998 pts, 32 hospitals) — 90-day mRS 0–1 (complete functional independence) in 69.7% vs 56.4% with placebo (+13.3 pp) when given within 48h. Complements, not replaces, thrombolysis/thrombectomy. Confirm local approval and protocol.");
+    }
+
     // tPA dosing if applicable
     let tpaDose;
     if ((pathway === "ivt_only" || pathway === "ivt_evt") && !isNaN(weight) && weight > 0) {
