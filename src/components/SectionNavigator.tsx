@@ -9,6 +9,7 @@ export interface SectionItem {
   label: string;
   icon: React.ReactNode;
   color?: string;
+  keywords?: string;
 }
 
 interface SectionNavigatorProps {
@@ -19,6 +20,9 @@ interface SectionNavigatorProps {
 
 const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, onNavigateToSection }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const visible = q ? sections.filter((s) => `${s.label} ${s.keywords ?? ""}`.toLowerCase().includes(q)) : sections;
 
   const scrollToSection = (id: string) => {
     onNavigateToSection(id);
@@ -69,8 +73,17 @@ const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, on
       {/* Section Grid */}
       {isOpen && (
         <div className="px-3 pb-3">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search sections (e.g. D-dimer, OCCULT-5)"
+            aria-label="Search sections"
+            className="w-full mb-2 min-h-[44px] rounded-lg border border-border bg-background px-3 text-sm"
+          />
+          {visible.length === 0 && <p className="text-xs text-muted-foreground px-1 pb-2">No matching sections.</p>}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5">
-            {sections.map((section) => (
+            {visible.map((section) => (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
