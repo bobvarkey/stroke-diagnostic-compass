@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ShieldAlert, AlertTriangle, ExternalLink } from "lucide-react";
-import { useCollapsibleState } from "@/hooks/useCollapsibleState";
+import { useState } from "react";
 
 /**
  * Anticoagulant Reversal — NCS/SCCM focused guideline update (Neurocritical Care, Sept 2026).
@@ -9,7 +9,8 @@ import { useCollapsibleState } from "@/hooks/useCollapsibleState";
  * antithrombotic-associated intracranial hemorrhage.
  */
 const AnticoagulantReversalSection: React.FC = () => {
-  const { isOpen, toggle } = useCollapsibleState("anticoagulant-reversal");
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen((v) => !v);
 
   return (
     <Card className="border-border/60 bg-card/80 backdrop-blur">
