@@ -35,6 +35,7 @@ import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import CollapsibleModule from "./CollapsibleModule";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendation";
+import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
 import MeVOOrientalTrial from "./MeVOOrientalTrial";
@@ -5764,6 +5765,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
+              { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "vessel-occlusion-spectrum", label: "Occlusion Spectrum", icon: <Brain className="h-3.5 w-3.5 text-indigo-500" /> },
               { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
@@ -5803,6 +5805,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Recurrent stroke on aspirin + clopidogrel — switch-to-Ticagrelor pathway */}
           <LazySection id="recurrent-dapt">
             <RecurrentStrokeDAPTRecommendation />
+          </LazySection>
+
+          {/* Anticoagulant Reversal — NCS/SCCM guideline update (PCC, andexanet, platelets, desmopressin) */}
+          <LazySection id="anticoagulant-reversal">
+            <AnticoagulantReversalSection />
           </LazySection>
 
           {/* Stroke Code System */}
