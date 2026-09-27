@@ -63,6 +63,7 @@ import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
+import DDimerStrokeModule from "./DDimerStrokeModule";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 import ICHHematomaExpansion from "./ICHHematomaExpansion";
@@ -5776,7 +5777,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "lipid-risk", label: "Lipid Risk", icon: <Pill className="h-3.5 w-3.5 text-yellow-500" /> },
               { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
               { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
-              { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" /> },
+              { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
+              { id: "d-dimer-stroke", label: "Elevated D-dimer", icon: <TestTube className="h-3.5 w-3.5 text-rose-400" />, keywords: "d-dimer ddimer dimer fibrin occult-5 occult cancer malignancy feu ddu dic ttp dvt pe hypercoagulable" },
               { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
             ]}
             onNavigateToSection={(id) => {
@@ -6093,6 +6095,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Lab Investigations Module */}
           <LazySection id="lab-investigations">
             <LabInvestigationsModule />
+          </LazySection>
+
+          {/* Elevated D-dimer in Ischemic Stroke */}
+          <LazySection id="d-dimer-stroke">
+            <DDimerStrokeModule />
           </LazySection>
 
           {/* Progress Overview & Workup Checklist */}
