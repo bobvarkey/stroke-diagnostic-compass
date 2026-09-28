@@ -65,6 +65,8 @@ import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
 import DDimerStrokeModule from "./DDimerStrokeModule";
+import OccultCancerScreeningSection from "./OccultCancerScreeningSection";
+import ICHAntithromboticGuideline from "./ICHAntithromboticGuideline";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 import ICHHematomaExpansion from "./ICHHematomaExpansion";
@@ -5781,6 +5783,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
               { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
               { id: "d-dimer-stroke", label: "Elevated D-dimer", icon: <TestTube className="h-3.5 w-3.5 text-rose-400" />, keywords: "d-dimer ddimer dimer fibrin occult-5 occult cancer malignancy feu ddu dic ttp dvt pe hypercoagulable" },
+              { id: "occult-cancer-screening", label: "Occult Cancer Screening", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "occult cancer malignancy screening occult-5 ct pet mammography imaging tumor" },
               { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
             ]}
             onNavigateToSection={(id) => {
@@ -6106,7 +6109,12 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           {/* Elevated D-dimer in Ischemic Stroke */}
           <LazySection id="d-dimer-stroke">
-            <DDimerStrokeModule />
+            <DDimerStrokeModule onScoreChange={(st) => setCalculatedScores(prev => ({ ...prev, occult5: st.notApplicable ? "N/A (known cancer)" : st.definitive ? `${st.min}/5` : `${st.min}-${st.max} (provisional)` }))} />
+          </LazySection>
+
+          {/* Targeted occult cancer screening — driven by OCCULT-5 */}
+          <LazySection id="occult-cancer-screening">
+            <OccultCancerScreeningSection />
           </LazySection>
 
           {/* Progress Overview & Workup Checklist */}
@@ -6339,6 +6347,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             title="ICH Modules"
             sections={[
               { id: "acute-ich", label: "Acute ICH Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
+              { id: "ich-antithrombotic", label: "Antithrombotic ICH (NCS/SCCM)", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc andexanet platelets aspirin viscoelastic teg rotem reversal ncs sccm" },
               { id: "ich-expansion", label: "Hematoma Expansion", icon: <ScanSearch className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "func-score", label: "FUNC Score", icon: <BarChart3 className="h-3.5 w-3.5 text-blue-500" /> },
@@ -6354,6 +6363,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <div id="acute-ich">
             <AcuteICHManagement />
           </div>
+
+          <LazySection id="ich-antithrombotic">
+            <ICHAntithromboticGuideline />
+          </LazySection>
 
           {/* Hematoma expansion definition, NCCT/CTA signs, BRAIN & spot-sign scores */}
           <div id="ich-expansion">

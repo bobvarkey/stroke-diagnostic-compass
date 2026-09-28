@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Droplets, AlertTriangle, ShieldAlert, Info } from "lucide-react";
 import CollapsibleModule from "./CollapsibleModule";
 import { Input } from "@/components/ui/input";
@@ -68,7 +68,10 @@ const TriSelect = ({ label, value, onChange }: { label: string; value: Tri; onCh
   </div>
 );
 
-export default function DDimerStrokeModule() {
+export const OCCULT5_EVENT = "occult5-updated";
+export interface Occult5State { min: number; max: number; definitive: boolean; notApplicable: boolean }
+
+export default function DDimerStrokeModule({ onScoreChange }: { onScoreChange?: (s: Occult5State) => void } = {}) {
   const [age, setAge] = useState("");
   const [sex, setSex] = useState<"female" | "male" | "unknown">("unknown");
   const [esus, setEsus] = useState<Tri>("unknown");
@@ -108,6 +111,14 @@ export default function DDimerStrokeModule() {
   const ulnN = parseFloat(uln);
   const aboveUln = ddUgL !== null && !isNaN(ulnN) && ulnN > 0 ? ddUgL / ulnN : null;
   const cancerKnown = cancer === "yes";
+
+  useEffect(() => {
+    const st: Occult5State = { min: result.min, max: result.max, definitive: result.definitive, notApplicable: cancerKnown };
+    try { localStorage.setItem("occult5", JSON.stringify(st)); } catch { /* ignore */ }
+    window.dispatchEvent(new CustomEvent(OCCULT5_EVENT, { detail: st }));
+    onScoreChange?.(st);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result.min, result.max, result.definitive, cancerKnown]);
 
   const interp = (() => {
     if (cancerKnown) return { tone: "border-amber-500/60 bg-amber-500/10", text: "Known active cancer — OCCULT-5 is not applicable for occult-cancer screening. Evaluate stroke mechanism and cancer activity." };
