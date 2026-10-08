@@ -54,7 +54,7 @@ import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
 import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 import KDIGOHeatMap from "./KDIGOHeatMap";
-import PRIMEToolCalculator from "./PRIMEToolCalculator";
+import CancerStrokeRiskModule from "./CancerStrokeRiskModule";
 import StrokeCodeSystem from "./StrokeCodeSystem";
 import InteractiveAcuteStrokeAlgorithm from "./InteractiveAcuteStrokeAlgorithm";
 import ThrombolyticDoseCalculator from "./ThrombolyticDoseCalculator";
@@ -67,7 +67,6 @@ import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
-import DDimerStrokeModule from "./DDimerStrokeModule";
 import OccultCancerScreeningSection from "./OccultCancerScreeningSection";
 import ICHAntithromboticGuideline from "./ICHAntithromboticGuideline";
 import ICHReversalPlanner from "./ICHReversalPlanner";
@@ -5796,12 +5795,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
               { id: "prevent-score", label: "PREVENT Score", icon: <ShieldAlert className="h-3.5 w-3.5 text-emerald-500" /> },
               { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
-              { id: "prime-tool", label: "PRIME Tool", icon: <Calculator className="h-3.5 w-3.5 text-violet-500" /> },
+              { id: "cancer-stroke-risk", label: "Cancer & Stroke Risk (PRIME + OCCULT-5)", icon: <Calculator className="h-3.5 w-3.5 text-rose-500" />, keywords: "prime malignancy cancer stroke risk ohri occult-5 occult d-dimer ddimer dimer fibrin feu ddu" },
               { id: "lipid-risk", label: "Lipid Risk", icon: <Pill className="h-3.5 w-3.5 text-yellow-500" /> },
               { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
               { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
               { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
-              { id: "d-dimer-stroke", label: "Elevated D-dimer", icon: <TestTube className="h-3.5 w-3.5 text-rose-400" />, keywords: "d-dimer ddimer dimer fibrin occult-5 occult cancer malignancy feu ddu dic ttp dvt pe hypercoagulable" },
               { id: "occult-cancer-screening", label: "Occult Cancer Screening", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "occult cancer malignancy screening occult-5 ct pet mammography imaging tumor active cancer aha 2026 causality nbte dic tumor embolism marantic" },
               { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
             ]}
@@ -6128,9 +6126,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <KDIGOHeatMap />
           </LazySection>
 
-          {/* PRIME Tool - Cancer Stroke Risk */}
-          <LazySection id="prime-tool">
-            <PRIMEToolCalculator />
+          {/* Cancer & Stroke Risk — PRIME + OCCULT-5 combined */}
+          <LazySection id="cancer-stroke-risk">
+            <CancerStrokeRiskModule onOccult5Change={(st) => setCalculatedScores(prev => ({ ...prev, occult5: st.notApplicable ? "N/A (known cancer)" : st.definitive ? `${st.min}/5` : `${st.min}-${st.max} (provisional)` }))} />
           </LazySection>
 
           {/* LAI 2024 Lipid Risk Classification */}
@@ -6151,11 +6149,6 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Lab Investigations Module */}
           <LazySection id="lab-investigations">
             <LabInvestigationsModule />
-          </LazySection>
-
-          {/* Elevated D-dimer in Ischemic Stroke */}
-          <LazySection id="d-dimer-stroke">
-            <DDimerStrokeModule onScoreChange={(st) => setCalculatedScores(prev => ({ ...prev, occult5: st.notApplicable ? "N/A (known cancer)" : st.definitive ? `${st.min}/5` : `${st.min}-${st.max} (provisional)` }))} />
           </LazySection>
 
           {/* Targeted occult cancer screening — driven by OCCULT-5 */}

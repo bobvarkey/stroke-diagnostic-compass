@@ -72,7 +72,7 @@ const TriSelect = ({ label, value, onChange }: { label: string; value: Tri; onCh
 export const OCCULT5_EVENT = "occult5-updated";
 export interface Occult5State { min: number; max: number; definitive: boolean; notApplicable: boolean }
 
-export default function DDimerStrokeModule({ onScoreChange }: { onScoreChange?: (s: Occult5State) => void } = {}) {
+export default function DDimerStrokeModule({ onScoreChange, embedded }: { onScoreChange?: (s: Occult5State) => void; embedded?: boolean } = {}) {
   const [age, setAge] = useState("");
   const [sex, setSex] = useState<"female" | "male" | "unknown">("unknown");
   const [esus, setEsus] = useState<Tri>("unknown");
@@ -128,13 +128,7 @@ export default function DDimerStrokeModule({ onScoreChange }: { onScoreChange?: 
     return { tone: "border-sky-500/60 bg-sky-500/10", text: `Provisional score ${result.min}–${result.max}: complete unknown items (or verify assay comparability) before interpreting.` };
   })();
 
-  return (
-    <CollapsibleModule
-      title="Elevated D-dimer in Ischemic Stroke"
-      subtitle="Interpretation, alternative causes & OCCULT-5"
-      icon={<Droplets className="h-5 w-5 text-rose-400" />}
-      badge={<Badge variant="outline" className="text-[10px]">OCCULT-5</Badge>}
-    >
+  const body = (
       <div className="space-y-4">
         <div className="rounded-lg border border-border p-3 text-sm flex gap-2">
           <Info className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
@@ -272,6 +266,18 @@ export default function DDimerStrokeModule({ onScoreChange }: { onScoreChange?: 
           </TabsContent>
         </Tabs>
       </div>
+  );
+
+  if (embedded) return body;
+
+  return (
+    <CollapsibleModule
+      title="Elevated D-dimer in Ischemic Stroke"
+      subtitle="Interpretation, alternative causes & OCCULT-5"
+      icon={<Droplets className="h-5 w-5 text-rose-400" />}
+      badge={<Badge variant="outline" className="text-[10px]">OCCULT-5</Badge>}
+    >
+      {body}
     </CollapsibleModule>
   );
 }
