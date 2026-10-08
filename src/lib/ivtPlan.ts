@@ -39,21 +39,23 @@ export function ivtDecision(t: IvtTreeInput, c: IvtContraSnapshot | null): IvtOu
   const evt = t.lvo === "yes";
   const evtNote = evt ? (t.evtAvailable === "no" ? " Transfer urgently for thrombectomy (drip-and-ship)." : " Proceed to thrombectomy without waiting for IVT response.") : "";
   if (c && c.absolute.length > 0) return { kind: "no-ivt", plusEvt: evt, text: `Absolute contraindication: ${c.absolute.join("; ")}.${evt ? " Thrombectomy alone if eligible." : " Antiplatelet therapy per minor/major stroke pathway."}` };
+  if (!c || c.status === "incomplete") return { kind: "incomplete", text: "Complete the tPA/TNK contraindications assessment before recommending IVT." };
   if (t.window === "gt24") return { kind: "no-ivt", plusEvt: false, text: "Beyond 24 h — IVT not indicated; secondary prevention pathway." };
   if (!t.disabling) return { kind: "incomplete", text: "Is the deficit disabling?" };
-  if (t.disabling === "no" && !evt) return { kind: "no-ivt", plusEvt: false, text: "Minor non-disabling deficit — IVT not recommended (PRISMS/ARAMIS); use DAPT for 21 days." };
+  if (t.disabling === "no") return { kind: "no-ivt", plusEvt: evt, text: "Non-disabling deficit — IVT not routinely recommended. Assess antiplatelet eligibility by mechanism, severity, timing and bleeding risk; if LVO, obtain specialist EVT review." };
+  if (!t.lvo || (evt && !t.evtAvailable)) return { kind: "incomplete", text: "Complete vascular imaging / LVO status and on-site EVT availability; parallel IVT assessment must not delay treatment." };
   const caution = c && c.relative.length > 0 ? ` Relative contraindications to weigh: ${c.relative.join("; ")}.` : "";
   if (t.window === "lt4_5") return { kind: "ivt", plusEvt: evt, text: `Within 4.5 h, disabling deficit: give IVT — tenecteplase 0.25 mg/kg bolus (max 25 mg) or alteplase 0.9 mg/kg.${caution}${evtNote}` };
   if (!t.mismatch) return { kind: "incomplete", text: "Extended window: is there DWI-FLAIR or CT perfusion mismatch?" };
   if (t.mismatch === "yes") {
-    if (t.window === "9to24" && !evt) return { kind: "ivt", plusEvt: false, text: `9–24 h with perfusion mismatch, no LVO: consider tenecteplase (TRACE-III/CHABLIS evidence; individualise).${caution}` };
+    if (t.window === "9to24") return { kind: "no-ivt", plusEvt: evt, text: `9–24 h is not a routine IVT recommendation from a generic mismatch flag. Trial-specific imaging / vessel criteria and specialist protocol required; assess EVT separately.${caution}` };
     return { kind: "ivt", plusEvt: evt, text: `${t.window === "wakeup" ? "Wake-up/unknown onset" : "Extended window"} with imaging mismatch: consider IVT (WAKE-UP / EXTEND).${caution}${evtNote}` };
   }
   return { kind: "no-ivt", plusEvt: evt, text: `No imaging mismatch beyond 4.5 h — IVT not recommended.${evt ? " Assess for thrombectomy (DAWN/DEFUSE-3 criteria)." : ""}` };
 }
 
 export function reperfusionStep(c: IvtContraSnapshot | null, t: IvtTreeInput | null): PlanStep {
-  const base = { id: "reperfusion", phase: "Treatment" as const, title: "Clot-busting (IVT) / thrombectomy decision", sectionId: "ivt-decision-tree" };
+  const base = { id: "reperfusion", phase: "Treatment" as const, title: "IVT eligibility & treatment choice", sectionId: "ivt-decision-tree" };
   if (c && c.absolute.length > 0) {
     return { ...base, status: "pending", detail: `IVT on hold — absolute contraindication: ${c.absolute.join("; ")}. Consider thrombectomy alone if LVO.`, actionLabel: "Review contraindications", sectionId: "tpa-eligibility" };
   }

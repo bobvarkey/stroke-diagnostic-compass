@@ -136,7 +136,10 @@ export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput 
   const [abInv, abTx] = abcd2Steps(abcd2);
   const ischemic = pathways.strokeType !== "ich";
   const hemorrhagic = pathways.strokeType !== "ischemic";
-  const prevention = preventionSteps(pathways.prevention, pathways.strokeType);
+  const prevention = preventionSteps({ ...pathways.prevention,
+    recentIvt: pathways.ivt.given === "yes" ? "yes" : pathways.prevention.recentIvt,
+    bleedingExcluded: ivtTree?.ischemicOnCT === "no" ? "no" : pathways.prevention.bleedingExcluded,
+  }, pathways.strokeType);
   // Shared scores inform workup, but treatment requires mechanism, timing and bleeding checks.
   const guardedAbTx = { ...abTx, status: "info" as const, detail: `${abcd2 ? `ABCD² ${abcd2.score}. ` : "ABCD² not recorded. "}Use the secondary prevention pathway to confirm diagnosis, NIHSS, presentation time, mechanism and bleeding exclusions before choosing antiplatelets.` };
   return [
