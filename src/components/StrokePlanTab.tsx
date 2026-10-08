@@ -1,0 +1,74 @@
+import { useEffect, useState } from "react";
+import { ClipboardList, ArrowRight, CheckCircle2, AlertTriangle, Circle, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { OCCULT5_EVENT } from "./DDimerStrokeModule";
+import {
+  buildPlan, readJSON, ICH_REVERSAL_EVENT, ICH_REVERSAL_KEY, OCCULT5_KEY,
+  type IchReversalInput, type Occult5Snapshot, type PlanStep,
+} from "@/lib/strokePlan";
+import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
+
+const ICON = {
+  done: <CheckCircle2 className="h-5 w-5 text-emerald-500" />,
+  action: <AlertTriangle className="h-5 w-5 text-red-500" />,
+  pending: <Circle className="h-5 w-5 text-amber-500" />,
+  info: <Info className="h-5 w-5 text-sky-500" />,
+};
+const LABEL = { done: "Done", action: "Action", pending: "Pending", info: "Review" };
+
+export default function StrokePlanTab() {
+  const [occult, setOccult] = useState(() => readJSON<Occult5Snapshot>(OCCULT5_KEY));
+  const [ich, setIch] = useState(() => readJSON<IchReversalInput>(ICH_REVERSAL_KEY));
+
+  useEffect(() => {
+    const o = (e: Event) => setOccult((e as CustomEvent<Occult5Snapshot>).detail);
+    const i = (e: Event) => setIch((e as CustomEvent<IchReversalInput>).detail);
+    window.addEventListener(OCCULT5_EVENT, o);
+    window.addEventListener(ICH_REVERSAL_EVENT, i);
+    return () => { window.removeEventListener(OCCULT5_EVENT, o); window.removeEventListener(ICH_REVERSAL_EVENT, i); };
+  }, []);
+
+  const plan = buildPlan(occult, ich);
+  const phases = ["Investigation", "Treatment", "Secondary prevention"] as const;
+  const go = (s: PlanStep) => window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: s.sectionId }));
+  const actions = plan.filter((p) => p.status === "action" || p.status === "pending");
+
+  return (
+    <div id="stroke-plan" className="space-y-5">
+      <div className="glass-strong rounded-xl p-4">
+        <div className="flex items-center gap-2 mb-1">
+          <ClipboardList className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-bold">Stroke Pathway & Plan</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">Scores and flags from other tabs update this plan automatically. Tap a next step to jump to it.</p>
+        <div className="flex flex-wrap gap-2 mt-3">
+          <Badge variant="outline">OCCULT-5: {!occult ? "—" : occult.notApplicable ? "N/A" : occult.definitive ? occult.min : `${occult.min}–${occult.max}`}</Badge>
+          <Badge variant="outline">ICH antithrombotic: {ich?.agent ?? "—"}</Badge>
+          <Badge variant="outline">{actions.length} open step{actions.length === 1 ? "" : "s"}</Badge>
+        </div>
+      </div>
+
+      {phases.map((ph) => (
+        <section key={ph} className="space-y-2">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">{ph}</h3>
+          {plan.filter((p) => p.phase === ph).map((s) => (
+            <div key={s.id} className="glass rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex items-start gap-3 flex-1">
+                {ICON[s.status]}
+                <div>
+                  <p className="font-semibold text-sm">{s.title} <Badge variant="secondary" className="ml-1 text-[10px]">{LABEL[s.status]}</Badge></p>
+                  <p className="text-sm text-muted-foreground">{s.detail}</p>
+                </div>
+              </div>
+              <Button size="sm" className="min-h-[44px] shrink-0" onClick={() => go(s)}>
+                {s.actionLabel} <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          ))}
+        </section>
+      ))}
+      <p className="text-xs text-muted-foreground">Decision support only — confirm every step clinically and per local protocol.</p>
+    </div>
+  );
+}
