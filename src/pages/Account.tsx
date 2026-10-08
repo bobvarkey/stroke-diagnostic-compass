@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement, isEntitlementActive } from "@/hooks/useEntitlement";
 import { cancelSubscription, startTrial } from "@/lib/billing";
+import { clearLocalRecords } from "@/lib/patientRecords";
 
 function SignInForm() {
   const { toast } = useToast();
@@ -66,7 +67,7 @@ export default function Account() {
               <Button asChild variant="outline" className="min-h-11"><Link to="/pricing">{sub ? "Change plan" : "See plans"}</Link></Button>
               {sub?.status === "active" && <Button variant="destructive" className="min-h-11" disabled={busy} onClick={() => { if (confirm("Cancel at the end of the current period?")) act(cancelSubscription, "Subscription will end at the period end"); }}>Cancel subscription</Button>}
               <Button asChild variant="outline" className="min-h-11"><Link to="/patients">My patient records</Link></Button>
-              <Button variant="ghost" className="min-h-11" onClick={() => supabase.auth.signOut()}>Sign out</Button>
+              <Button variant="ghost" className="min-h-11" onClick={async () => { await supabase.auth.signOut(); await clearLocalRecords(); }}>Sign out</Button>
             </div>
           </section>
         </>
