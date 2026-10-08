@@ -1,4 +1,5 @@
 import { reperfusionStep, type IvtContraSnapshot, type IvtTreeInput } from "./ivtPlan";
+import { EMPTY_PATHWAYS, ivtCareSteps, evtSteps, ichCareSteps, preventionSteps, type TreatmentPathways } from "./treatmentPathways";
 /**
  * Shared Stroke Plan state + pure rules (OCCULT-5, ICH antithrombotic reversal).
  * Scores are stored in localStorage and broadcast via window events so the
@@ -131,19 +132,19 @@ export function ichReversalStep(i: IchReversalInput | null): PlanStep {
   return { ...base, status: "action", detail: recs.map((r) => r.text).join(" ") || "Review recommendations.", actionLabel: "Open reversal planner" };
 }
 
-export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null, abcd2: Abcd2Snapshot | null = null, ivtContra: IvtContraSnapshot | null = null, ivtTree: IvtTreeInput | null = null, sich: SichSnapshot | null = null): PlanStep[] {
+export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null, abcd2: Abcd2Snapshot | null = null, ivtContra: IvtContraSnapshot | null = null, ivtTree: IvtTreeInput | null = null, sich: SichSnapshot | null = null, pathways: TreatmentPathways = EMPTY_PATHWAYS): PlanStep[] {
   const [abInv, abTx] = abcd2Steps(abcd2);
+  const ischemic = pathways.strokeType !== "ich";
+  const hemorrhagic = pathways.strokeType !== "ischemic";
+  const prevention = preventionSteps(pathways.prevention, pathways.strokeType);
+  // Shared scores inform workup, but treatment requires mechanism, timing and bleeding checks.
+  const guardedAbTx = { ...abTx, status: "info" as const, detail: `${abcd2 ? `ABCD² ${abcd2.score}. ` : "ABCD² not recorded. "}Use the secondary prevention pathway to confirm diagnosis, NIHSS, presentation time, mechanism and bleeding exclusions before choosing antiplatelets.` };
   return [
     { id: "nihss", phase: "Investigation", title: "Baseline NIHSS", status: "info", detail: "Document severity to guide reperfusion.", actionLabel: "Open NIHSS", sectionId: "nihss-calculator" },
     { id: "labs", phase: "Investigation", title: "Labs incl. coagulation & D-dimer", status: "info", detail: "CBC, coagulation, renal function, D-dimer.", actionLabel: "Open lab investigations", sectionId: "lab-investigations" },
-    abInv,
-    occult5Step(occult),
-    ...sichSteps(sich),
-    reperfusionStep(ivtContra, ivtTree),
-    abTx,
-    ichReversalStep(ich),
-    { id: "ich-mgmt", phase: "Treatment", title: "Acute ICH management", status: "info", detail: "BP, hematoma expansion, neurosurgical review.", actionLabel: "Open ICH tab", sectionId: "acute-ich" },
-    { id: "dapt", phase: "Secondary prevention", title: "Antiplatelet strategy", status: "info", detail: "DAPT / recurrent-on-DAPT ticagrelor pathway.", actionLabel: "Open DAPT pathway", sectionId: "recurrent-dapt" },
+    ...(ischemic ? [abInv, occult5Step(occult), reperfusionStep(ivtContra, ivtTree), guardedAbTx, ...ivtCareSteps(pathways.ivt, ivtTree, ivtContra), ...evtSteps(pathways.evt, ivtTree)] : []),
+    ...(hemorrhagic ? [...sichSteps(sich), ichReversalStep(ich), ...ichCareSteps(pathways.ich)] : []),
+    ...prevention,
   ];
 }
 

@@ -32,6 +32,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTDecisionTree from "./IVTDecisionTree";
+import TreatmentPathwayModule from "./TreatmentPathwayModule";
 import { ThriveScoreCalculator, ModifiedRankinScaleCalculator, SecondaryICHScoreCalculator } from "./OutcomeScoreCalculators";
 import MinorNonDisablingStroke from "./MinorNonDisablingStroke";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
@@ -5782,6 +5783,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA / TNK Contraindications", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" />, keywords: "tpa tnk tenecteplase alteplase ivt thrombolysis contraindications eligibility checklist" },
               { id: "ivt-decision-tree", label: "IVT Decision Tree", icon: <ClipboardList className="h-3.5 w-3.5 text-emerald-500" />, keywords: "ivt decision tree thrombolysis tnk tpa wake-up mismatch lvo thrombectomy extended window" },
+              { id: "ivt-care-pathway", label: "IVT Treatment & Monitoring", icon: <ClipboardList className="h-3.5 w-3.5 text-primary" />, keywords: "ivt preparation bp glucose 24 hour monitoring plan" },
+              { id: "evt-pathway", label: "Thrombectomy Pathway", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy transfer basilar large core plan" },
+              { id: "secondary-prevention-pathway", label: "Secondary Prevention Pathway", icon: <Heart className="h-3.5 w-3.5 text-primary" />, keywords: "secondary prevention af esus dapt anticoagulation carotid bp lipids plan" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
@@ -5862,6 +5866,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <LazySection id="ivt-decision-tree">
             <IVTDecisionTree />
           </LazySection>
+          <LazySection id="ivt-care-pathway"><TreatmentPathwayModule kind="ivt" /></LazySection>
+          <LazySection id="evt-pathway"><TreatmentPathwayModule kind="evt" /></LazySection>
+          <LazySection id="secondary-prevention-pathway"><TreatmentPathwayModule kind="prevention" /></LazySection>
 
           {/* Minor non-disabling stroke — BATHE definition + IVT Class 3 vs DAPT */}
           <LazySection id="minor-non-disabling-stroke">
@@ -6391,6 +6398,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             title="ICH Modules"
             sections={[
               { id: "acute-ich", label: "Acute ICH Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
+              { id: "ich-care-pathway", label: "ICH Care Pathway", icon: <ShieldAlert className="h-3.5 w-3.5 text-primary" />, keywords: "ich pathway plan bp surgery seizure hydrocephalus vte" },
               { id: "ich-antithrombotic", label: "Antithrombotic ICH (NCS/SCCM)", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc andexanet platelets aspirin viscoelastic teg rotem reversal ncs sccm" },
               { id: "ich-expansion", label: "Hematoma Expansion", icon: <ScanSearch className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" />, keywords: "ich score hemphill mortality gcs volume ivh infratentorial" },
@@ -6408,6 +6416,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <div id="acute-ich">
             <AcuteICHManagement />
           </div>
+          <LazySection id="ich-care-pathway"><TreatmentPathwayModule kind="ich" /></LazySection>
 
           <LazySection id="ich-antithrombotic">
             <ICHAntithromboticGuideline />
