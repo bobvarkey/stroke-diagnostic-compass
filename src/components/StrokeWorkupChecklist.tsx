@@ -5671,7 +5671,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
     const scrollToId = (sectionId: string, behavior: ScrollBehavior = "smooth") => {
       const parentId = getLazyParentSection(sectionId);
       if (parentId) {
-        const trigger = document.getElementById(parentId)?.querySelector<HTMLElement>('[data-state="closed"][aria-expanded="false"]');
+        const trigger = document.getElementById(parentId)?.querySelector<HTMLElement>('[data-state="closed"][aria-expanded="false"]:not([role="combobox"])');
         trigger?.click();
       }
       const element = document.getElementById(sectionId);
