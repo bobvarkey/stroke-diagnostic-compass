@@ -21,6 +21,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "ich-reversal-planner": "hemorrhagic",
   "stroke-plan": "plan",
   "nihss-calculator": "ischemic",
+  "abcd2-score": "ischemic",
   "lab-investigations": "ischemic",
   "d-dimer-stroke": "ischemic",
   "occult-cancer-screening": "ischemic",
