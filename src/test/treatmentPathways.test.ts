@@ -33,7 +33,7 @@ describe("connected treatment pathways", () => {
   });
   it("transfer requires team acceptance and availability", () => {
     expect(evtSteps({ ...p.evt, teamAccepted: "no", onsite: "no" }, tree)[1].status).toBe("pending");
-    expect(evtSteps({ ...p.evt, teamAccepted: "yes", onsite: "no" }, tree)[1].status).toBe("action");
+    expect(evtSteps({ ...p.evt, vessel: "anterior", within24: "yes", imagingReviewed: "yes", teamAccepted: "yes", onsite: "no" }, tree)[1].status).toBe("action");
   });
   it("medium/distal and beyond-24h occlusions do not automatically trigger EVT", () => {
     expect(evtSteps({ ...p.evt, vessel: "medium" }, tree)[0].status).toBe("info");
@@ -41,6 +41,10 @@ describe("connected treatment pathways", () => {
   });
   it("hemorrhage blocks ischemic EVT selection", () => {
     expect(evtSteps({ ...p.evt, vessel: "anterior", within24: "yes", imagingReviewed: "yes" }, { ...tree, ischemicOnCT: "no" })[0].status).toBe("info");
+    expect(evtSteps({ ...p.evt, vessel: "anterior", within24: "yes", imagingReviewed: "yes", teamAccepted: "yes", onsite: "no" }, { ...tree, ischemicOnCT: "no" })[1].status).toBe("pending");
+  });
+  it("invalid BP values cannot activate the ICH BP step", () => {
+    for (const sbp of ["0", "301", "NaN", ""]) expect(ichCareSteps({ ...p.ich, confirmed: "yes", mildModerate: "yes", sbp })[1].status).toBe("pending");
   });
   it("ICH BP plan is pending without severity and SBP", () => {
     expect(ichCareSteps({ ...p.ich, confirmed: "yes", sbp: "170" })[1].status).toBe("pending");
