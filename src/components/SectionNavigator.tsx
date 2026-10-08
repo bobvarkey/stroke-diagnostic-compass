@@ -32,7 +32,7 @@ const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, on
     // Force-mount the LazySection containing the target so it has real height
     window.dispatchEvent(new CustomEvent('force-mount-section', { detail: id }));
 
-    const headerOffset = 80;
+    const headerOffset = 136;
     const scrollToTarget = (behavior: ScrollBehavior = 'smooth') => {
       const element = document.getElementById(id);
       if (!element) return;
