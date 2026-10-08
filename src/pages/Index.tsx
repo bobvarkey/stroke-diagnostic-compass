@@ -5,7 +5,8 @@ import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, Users, LogOut, Shield, Play } from "lucide-react";
+import { ChevronUp, Users, LogOut, Shield, Play, Home, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Json } from "@/integrations/supabase/types";
@@ -45,6 +46,7 @@ const DEMO_PATIENT: Patient = {
 
 const Index = () => {
   const { user, profile, isAdmin, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [activeSection, setActiveSection] = useState<string>("");
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -186,6 +188,29 @@ const Index = () => {
         <SidebarInset className="flex-1">
           <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b px-2 sm:px-4 glass-strong safe-top">
             <SidebarTrigger className="-ml-1" />
+
+            {/* Home & Back navigation */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => window.history.back()}
+              className="h-9 w-9"
+              aria-label="Go back to previous page"
+              title="Back"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+              className="h-9 w-9"
+              aria-label="Go to home page"
+              title="Home"
+            >
+              <Home className="h-4 w-4" />
+            </Button>
+
             
             {/* Patient info */}
             <div className="flex items-center gap-1.5 sm:gap-2 ml-1 sm:ml-2 min-w-0">
