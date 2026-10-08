@@ -8,6 +8,13 @@
       "when": 1791473950986,
       "tag": "0000_user_entitlements",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791474327267,
+      "tag": "0001_razorpay_billing",
+      "breakpoints": true
     }
   ]
 }

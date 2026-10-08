@@ -145,6 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    try { const { clearLocalRecords } = await import("@/lib/patientRecords"); await clearLocalRecords(); } catch { /* ignore */ }
     setUser(null);
     setProfile(null);
     setIsAdmin(false);

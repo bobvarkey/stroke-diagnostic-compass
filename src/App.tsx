@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Preview from "./pages/Preview";
 import NotFound from "./pages/NotFound";
 import Account from "./pages/Account";
+import Pricing from "./pages/Pricing";
+import Patients from "./pages/Patients";
 import PrivacyScreen from "./compliance/PrivacyScreen";
 import TermsScreen from "./compliance/TermsScreen";
 import DisclaimerScreen from "./compliance/DisclaimerScreen";
@@ -75,6 +77,8 @@ const App = () => {
               <Route path="/disclaimer" element={<DisclaimerScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/settings" element={<SettingsScreen onBack={() => window.history.back()} />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/patients" element={<Patients />} />
               {/* Preview / marketing page */}
               <Route path="/preview" element={<Preview />} />
               {/* Catch-all */}
