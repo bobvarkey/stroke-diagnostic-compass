@@ -334,6 +334,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_entitlements: {
+        Row: {
+          amount_minor: number | null
+          created_at: string
+          currency: string | null
+          expires_at: string | null
+          id: string
+          kind: string
+          plan_code: string | null
+          razorpay_subscription_id: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_minor?: number | null
+          created_at?: string
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          kind: string
+          plan_code?: string | null
+          razorpay_subscription_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_minor?: number | null
+          created_at?: string
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          plan_code?: string | null
+          razorpay_subscription_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_feedback: {
         Row: {
           created_at: string
@@ -383,6 +428,7 @@ export type Database = {
     Functions: {
       can_access_patient: { Args: { _patient_id: string }; Returns: boolean }
       get_username: { Args: { _user_id: string }; Returns: string }
+      has_premium_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
