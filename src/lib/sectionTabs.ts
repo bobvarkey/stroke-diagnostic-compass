@@ -30,6 +30,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "thrombolytics-anticoag": "ischemic",
   "lab-investigations": "ischemic",
   "d-dimer-stroke": "ischemic",
+  "cancer-stroke-risk": "ischemic",
   "occult-cancer-screening": "ischemic",
   "treatment-recommender": "ischemic",
   "recurrent-dapt": "ischemic",
