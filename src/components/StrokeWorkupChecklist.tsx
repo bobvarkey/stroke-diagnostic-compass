@@ -4234,7 +4234,7 @@ function HASBLEDCalculator() {
 }
 
 // ABCD2 Score Calculator Component
-function ABCD2Calculator() {
+function ABCD2Calculator({ onScoreChange }: { onScoreChange?: (score: number) => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
@@ -4274,6 +4274,10 @@ function ABCD2Calculator() {
   const totalScore = criteriaItems.reduce((sum, item) => {
     return sum + (criteria.has(item.id) ? item.points : 0);
   }, 0);
+
+  useEffect(() => {
+    onScoreChange?.(totalScore);
+  }, [totalScore, onScoreChange]);
 
   const getRiskLevel = (score: number) => {
     if (score <= 1) return { level: "Low", color: "bg-green-500", day2Risk: "0%", day7Risk: "0.4%", day90Risk: "1.0%", recommendation: "Outpatient workup may be appropriate" };
@@ -5781,6 +5785,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "vascular-anatomy", label: "Vascular Anatomy", icon: <Heart className="h-3.5 w-3.5 text-red-400" /> },
               { id: "aspects-calculator", label: "ASPECTS Calculator", icon: <Calculator className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
+              { id: "abcd2-score", label: "ABCD² Score", icon: <Brain className="h-3.5 w-3.5 text-sky-500" />, keywords: "abcd2 abcd tia transient ischemic attack risk stratification age blood pressure weakness speech duration diabetes" },
               { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
               { id: "prevent-score", label: "PREVENT Score", icon: <ShieldAlert className="h-3.5 w-3.5 text-emerald-500" /> },
               { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
@@ -6077,6 +6082,15 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Visual NIHSS Calculator */}
           <LazySection id="nihss-calculator">
             <VisualNIHSSCalculator />
+          </LazySection>
+
+          {/* ABCD2 Score - TIA Stroke Risk */}
+          <LazySection id="abcd2-score">
+            <ABCD2Calculator
+              onScoreChange={useCallback((score: number) => {
+                setCalculatedScores(prev => ({ ...prev, abcd2: score }));
+              }, [])}
+            />
           </LazySection>
 
           {/* Visual GCS Calculator */}
