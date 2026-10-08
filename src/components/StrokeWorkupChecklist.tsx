@@ -1,3 +1,4 @@
+import { registerBackHandler } from "@/lib/navHistory";
 import { publishAbcd2 } from "@/lib/strokePlan";
 import React, { useState, useRef, useCallback, memo, useEffect } from "react";
 import LazySection from "./LazySection";
