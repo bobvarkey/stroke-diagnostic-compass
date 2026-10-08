@@ -5785,6 +5785,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "vascular-anatomy", label: "Vascular Anatomy", icon: <Heart className="h-3.5 w-3.5 text-red-400" /> },
               { id: "aspects-calculator", label: "ASPECTS Calculator", icon: <Calculator className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
+              { id: "abcd2-score", label: "ABCD² Score", icon: <Brain className="h-3.5 w-3.5 text-sky-500" />, keywords: "abcd2 abcd tia transient ischemic attack risk stratification age blood pressure weakness speech duration diabetes" },
               { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
               { id: "prevent-score", label: "PREVENT Score", icon: <ShieldAlert className="h-3.5 w-3.5 text-emerald-500" /> },
               { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
