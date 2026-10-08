@@ -32,6 +32,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTDecisionTree from "./IVTDecisionTree";
+import { ThriveScoreCalculator, ModifiedRankinScaleCalculator, SecondaryICHScoreCalculator } from "./OutcomeScoreCalculators";
 import MinorNonDisablingStroke from "./MinorNonDisablingStroke";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import CollapsibleModule from "./CollapsibleModule";
@@ -5790,6 +5791,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "aspects-calculator", label: "ASPECTS Calculator", icon: <Calculator className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "nihss-calculator", label: "NIHSS Calculator", icon: <BarChart3 className="h-3.5 w-3.5 text-indigo-500" /> },
               { id: "abcd2-score", label: "ABCD² Score", icon: <Brain className="h-3.5 w-3.5 text-sky-500" />, keywords: "abcd2 abcd tia transient ischemic attack risk stratification age blood pressure weakness speech duration diabetes" },
+              { id: "thrive-score", label: "THRIVE Score", icon: <Calculator className="h-3.5 w-3.5 text-emerald-500" />, keywords: "thrive outcome prognosis mortality nihss age hypertension diabetes af" },
+              { id: "mrs-scale", label: "Modified Rankin Scale", icon: <Calculator className="h-3.5 w-3.5 text-sky-500" />, keywords: "mrs modified rankin scale disability outcome 90 day functional independence" },
               { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
               { id: "prevent-score", label: "PREVENT Score", icon: <ShieldAlert className="h-3.5 w-3.5 text-emerald-500" /> },
               { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
@@ -6102,6 +6105,14 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             />
           </LazySection>
 
+          <LazySection id="thrive-score">
+            <ThriveScoreCalculator />
+          </LazySection>
+
+          <LazySection id="mrs-scale">
+            <ModifiedRankinScaleCalculator />
+          </LazySection>
+
           {/* Visual GCS Calculator */}
           <LazySection id="gcs-calculator">
             <VisualGCSCalculator />
@@ -6384,7 +6395,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "acute-ich", label: "Acute ICH Management", icon: <ShieldAlert className="h-3.5 w-3.5 text-red-500" /> },
               { id: "ich-antithrombotic", label: "Antithrombotic ICH (NCS/SCCM)", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc andexanet platelets aspirin viscoelastic teg rotem reversal ncs sccm" },
               { id: "ich-expansion", label: "Hematoma Expansion", icon: <ScanSearch className="h-3.5 w-3.5 text-rose-500" /> },
-              { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" /> },
+              { id: "ich-score", label: "ICH Score", icon: <Calculator className="h-3.5 w-3.5 text-amber-500" />, keywords: "ich score hemphill mortality gcs volume ivh infratentorial" },
+              { id: "secondary-ich-score", label: "Secondary ICH (sICH) Score", icon: <Calculator className="h-3.5 w-3.5 text-rose-500" />, keywords: "secondary ich sich score vascular cause avm aneurysm cta dsa" },
               { id: "func-score", label: "FUNC Score", icon: <BarChart3 className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "sah-grading", label: "SAH Grading Scales", icon: <Activity className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "fisher-scale", label: "Fisher Scale", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
@@ -6420,6 +6432,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               }, [])}
             />
           </div>
+
+          <LazySection id="secondary-ich-score">
+            <SecondaryICHScoreCalculator />
+          </LazySection>
 
           {/* FUNC Score Calculator */}
           <div id="func-score">
