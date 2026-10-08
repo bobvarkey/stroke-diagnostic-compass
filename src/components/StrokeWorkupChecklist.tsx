@@ -6083,6 +6083,15 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <VisualNIHSSCalculator />
           </LazySection>
 
+          {/* ABCD2 Score - TIA Stroke Risk */}
+          <LazySection id="abcd2-score">
+            <ABCD2Calculator
+              onScoreChange={useCallback((score: number) => {
+                setCalculatedScores(prev => ({ ...prev, abcd2: score }));
+              }, [])}
+            />
+          </LazySection>
+
           {/* Visual GCS Calculator */}
           <LazySection id="gcs-calculator">
             <VisualGCSCalculator />
