@@ -9,7 +9,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-import { tabColor } from "@/lib/tabColors";
   RefreshCw,
   Pill,
   Clock,
@@ -20,6 +19,7 @@ import { tabColor } from "@/lib/tabColors";
   CheckCircle2,
   ArrowRight,
 } from "lucide-react";
+import { tabColor } from "@/lib/tabColors";
 
 /**
  * Summary Recommendation for the Field — Recurrent ischemic stroke
