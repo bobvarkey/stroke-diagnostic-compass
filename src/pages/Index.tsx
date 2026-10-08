@@ -170,7 +170,7 @@ const Index = () => {
 
       <div className="min-h-screen flex w-full relative z-10">
         <AppSidebar activeSection={activeSection} onSectionClick={setActiveSection} />
-        <SidebarInset className="flex-1">
+        <SidebarInset className="flex-1 min-w-0">
           <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b px-2 sm:px-4 glass-strong safe-top">
             <SidebarTrigger className="-ml-1" />
 

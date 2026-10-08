@@ -1,11 +1,27 @@
 import { reperfusionStep, ivtDecision } from "@/lib/ivtPlan";
 import { describe, expect, it } from "vitest";
-import { ichReversalRecommendations, occult5Step, ichReversalStep, abcd2Steps } from "@/lib/strokePlan";
+import { ichReversalRecommendations, occult5Step, ichReversalStep, abcd2Steps, sichSteps, buildPlan } from "@/lib/strokePlan";
 import { getTabForSection } from "@/lib/sectionTabs";
 
 const base = { neurosurgery: false, traumatic: false, reversalAlreadyGiven: false };
 
 describe("stroke plan rules", () => {
+  it("sICH 2 prompts CTA with a conditional catheter angiogram step in the plan", () => {
+    const score = { score: 2, complete: true, selections: [0, 0, 0, 0] };
+    const [cta, dsa] = sichSteps(score);
+    expect(cta.status).toBe("action");
+    expect(cta.sectionId).toBe("sich-cta");
+    expect(dsa.status).toBe("info");
+    expect(dsa.sectionId).toBe("sich-dsa");
+    expect(buildPlan(null, null, null, null, null, score).some((s) => s.id === "sich-cta" && s.status === "action")).toBe(true);
+    expect(getTabForSection(dsa.sectionId)).toBe("hemorrhagic");
+  });
+  it("sICH 1 does not automatically order vascular imaging", () => {
+    expect(sichSteps({ score: 1, complete: true, selections: [0, 0, 0, 0] }).map((s) => s.status)).toEqual(["info", "info"]);
+  });
+  it("incomplete sICH remains pending even when the partial score is high", () => {
+    expect(sichSteps({ score: 2, complete: false, selections: [2, null, null, null] }).map((s) => s.status)).toEqual(["pending", "pending"]);
+  });
   it("prefers 4F-PCC and avoids andexanet for Xa inhibitors", () => {
     const r = ichReversalRecommendations({ ...base, agent: "xa" });
     expect(r.find((x) => x.level === "do")?.text).toMatch(/4F-PCC/);

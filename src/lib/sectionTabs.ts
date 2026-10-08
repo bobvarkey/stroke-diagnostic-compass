@@ -25,6 +25,8 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "thrive-score": "ischemic",
   "mrs-scale": "ischemic",
   "secondary-ich-score": "hemorrhagic",
+  "sich-cta": "hemorrhagic",
+  "sich-dsa": "hemorrhagic",
   "tpa-eligibility": "ischemic",
   "ivt-decision-tree": "ischemic",
   "thrombolytics-anticoag": "ischemic",
@@ -44,6 +46,8 @@ export const SECTION_TO_TAB: Record<string, string> = {
 };
 
 const LAZY_PARENT: Record<string, string> = {
+  "sich-cta": "secondary-ich-score",
+  "sich-dsa": "secondary-ich-score",
   "cvt-evaluation-pathway": "cvt-management",
   "cvt-intraclot-thrombolysis": "cvt-management",
   "cvt-procedural-techniques": "cvt-management",

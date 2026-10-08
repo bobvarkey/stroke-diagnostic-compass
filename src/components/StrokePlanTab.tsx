@@ -6,6 +6,7 @@ import { OCCULT5_EVENT } from "./DDimerStrokeModule";
 import {
   buildPlan, readJSON, ICH_REVERSAL_EVENT, ICH_REVERSAL_KEY, OCCULT5_KEY, ABCD2_KEY, ABCD2_EVENT, type Abcd2Snapshot,
   type IchReversalInput, type Occult5Snapshot, type PlanStep,
+  SICH_KEY, SICH_EVENT, type SichSnapshot,
 } from "@/lib/strokePlan";
 import { IVT_CONTRA_EVENT, IVT_CONTRA_KEY, IVT_TREE_EVENT, IVT_TREE_KEY, type IvtContraSnapshot, type IvtTreeInput } from "@/lib/ivtPlan";
 import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
@@ -21,6 +22,13 @@ const LABEL = { done: "Done", action: "Action", pending: "Pending", info: "Revie
 export default function StrokePlanTab() {
   const [occult, setOccult] = useState(() => readJSON<Occult5Snapshot>(OCCULT5_KEY));
   const [ich, setIch] = useState(() => readJSON<IchReversalInput>(ICH_REVERSAL_KEY));
+  const [sich, setSich] = useState(() => readJSON<SichSnapshot>(SICH_KEY));
+  useEffect(() => {
+    const sync = () => setSich(readJSON<SichSnapshot>(SICH_KEY));
+    window.addEventListener(SICH_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => { window.removeEventListener(SICH_EVENT, sync); window.removeEventListener("storage", sync); };
+  }, []);
 
   const [ivtContra, setIvtContra] = useState(() => readJSON<IvtContraSnapshot>(IVT_CONTRA_KEY));
   const [ivtTree, setIvtTree] = useState(() => readJSON<IvtTreeInput>(IVT_TREE_KEY));
@@ -45,7 +53,7 @@ export default function StrokePlanTab() {
     return () => { window.removeEventListener(OCCULT5_EVENT, o); window.removeEventListener(ICH_REVERSAL_EVENT, i); };
   }, []);
 
-  const plan = buildPlan(occult, ich, abcd2, ivtContra, ivtTree);
+  const plan = buildPlan(occult, ich, abcd2, ivtContra, ivtTree, sich);
   const phases = ["Investigation", "Treatment", "Secondary prevention"] as const;
   const go = (s: PlanStep) => window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: s.sectionId }));
   const actions = plan.filter((p) => p.status === "action" || p.status === "pending");
@@ -61,6 +69,7 @@ export default function StrokePlanTab() {
         <div className="flex flex-wrap gap-2 mt-3">
           <Badge variant="outline">OCCULT-5: {!occult ? "—" : occult.notApplicable ? "N/A" : occult.definitive ? occult.min : `${occult.min}–${occult.max}`}</Badge>
           <Badge variant="outline">ABCD²: {abcd2 ? abcd2.score : "—"}</Badge>
+          <Badge variant="outline">sICH: {sich ? `${sich.score}/6${sich.complete ? "" : " (incomplete)"}` : "—"}</Badge>
           <Badge variant="outline">IVT contraindications: {!ivtContra ? "—" : ivtContra.absolute.length ? `${ivtContra.absolute.length} absolute` : "none absolute"}</Badge>
           <Badge variant="outline">ICH antithrombotic: {ich?.agent ?? "—"}</Badge>
           <Badge variant="outline">{actions.length} open step{actions.length === 1 ? "" : "s"}</Badge>

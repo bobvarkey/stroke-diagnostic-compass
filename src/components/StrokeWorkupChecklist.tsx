@@ -5668,9 +5668,14 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
   useEffect(() => {
     const scrollToId = (sectionId: string, behavior: ScrollBehavior = "smooth") => {
+      const parentId = getLazyParentSection(sectionId);
+      if (parentId) {
+        const trigger = document.getElementById(parentId)?.querySelector<HTMLElement>('[data-state="closed"][aria-expanded="false"]');
+        trigger?.click();
+      }
       const element = document.getElementById(sectionId);
       if (!element) return false;
-      const headerOffset = 80;
+      const headerOffset = 136;
       const offsetPosition = element.getBoundingClientRect().top + window.scrollY - headerOffset;
       window.scrollTo({ top: offsetPosition, behavior });
       return true;
@@ -5734,8 +5739,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-7 h-14 mb-5 glass-strong rounded-xl p-1">
+        {/* Floating condition tabs remain accessible while reading any section. */}
+        <TabsList aria-label="Stroke condition tabs" className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-40 flex sm:grid w-full sm:grid-cols-7 h-14 mb-5 glass-strong rounded-lg p-1 overflow-x-auto justify-start sm:justify-center [&>button]:shrink-0 [&>button]:min-h-11 [&>button]:min-w-[84px] sm:[&>button]:min-w-0">
           <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-blue/15 border-accent-blue/40 text-accent-blue hover:bg-accent-blue/25 data-[state=active]:bg-accent-blue data-[state=active]:border-accent-blue data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Zap className="h-4 w-4 shrink-0" />
             Ischemic
