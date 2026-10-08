@@ -61,5 +61,5 @@ export function reperfusionStep(c: IvtContraSnapshot | null, t: IvtTreeInput | n
   const o = ivtDecision(t, c);
   if (o.kind === "incomplete") return { ...base, status: "pending", detail: o.text, actionLabel: "Continue decision tree" };
   if (o.kind === "ivt") return { ...base, status: "action", detail: o.text, actionLabel: "Open IVT doses", sectionId: "thrombolytics-anticoag" };
-  return { ...base, status: o.plusEvt ? "action" : "info", detail: o.text, actionLabel: "Review decision tree" };
+  return { ...base, status: o.kind === "no-ivt" && o.plusEvt ? "action" : "info", detail: o.text, actionLabel: "Review decision tree" };
 }
