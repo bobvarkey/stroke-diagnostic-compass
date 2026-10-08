@@ -60,8 +60,9 @@ describe("stroke plan rules", () => {
   });
   it("IVT tree: ≤4.5 h disabling with no contraindication gives IVT; non-disabling without LVO does not", () => {
     const t = { ischemicOnCT: "yes", window: "lt4_5", disabling: "yes", lvo: "no", mismatch: "", evtAvailable: "" } as const;
-    expect(ivtDecision(t, null).kind).toBe("ivt");
-    expect(ivtDecision({ ...t, disabling: "no" }, null).kind).toBe("no-ivt");
+    const checked = { status: "eligible", absolute: [], relative: [] } as const;
+    expect(ivtDecision(t, { ...checked, absolute: [], relative: [] }).kind).toBe("ivt");
+    expect(ivtDecision({ ...t, disabling: "no" }, { ...checked, absolute: [], relative: [] }).kind).toBe("no-ivt");
     expect(ivtDecision({ ...t, ischemicOnCT: "no" }, null).kind).toBe("stop");
   });
 });

@@ -29,6 +29,14 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "sich-dsa": "hemorrhagic",
   "tpa-eligibility": "ischemic",
   "ivt-decision-tree": "ischemic",
+  "ivt-care-pathway": "ischemic",
+  "evt-pathway": "ischemic",
+  "ich-care-pathway": "hemorrhagic",
+  "secondary-prevention-pathway": "ischemic",
+  "lvo-dashboard": "ischemic",
+  "aspects-calculator": "ischemic",
+  "ctp-penumbra": "ischemic",
+  "lipid-risk": "ischemic",
   "thrombolytics-anticoag": "ischemic",
   "lab-investigations": "ischemic",
   "d-dimer-stroke": "ischemic",
@@ -46,6 +54,10 @@ export const SECTION_TO_TAB: Record<string, string> = {
 };
 
 const LAZY_PARENT: Record<string, string> = {
+  "ivt-care-pathway": "ivt-care-pathway",
+  "evt-pathway": "evt-pathway",
+  "ich-care-pathway": "ich-care-pathway",
+  "secondary-prevention-pathway": "secondary-prevention-pathway",
   "sich-cta": "secondary-ich-score",
   "sich-dsa": "secondary-ich-score",
   "cvt-evaluation-pathway": "cvt-management",

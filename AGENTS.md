@@ -1,6 +1,7 @@
 # Stroke Companion — Agent Notes
 
 ## Architecture rules
+- **Treatment pathways use pure rules and a shared event/storage snapshot**, with stroke-type filtering in the Plan and registered next-action targets; treatment eligibility and documented completion remain distinct.
 
 - **Secondary ICH selections publish a completed/incomplete snapshot to the shared Plan state**; CTA and conditional DSA steps use registered section targets so links activate ICH and mount/open the calculator.
 - **Condition tabs stay sticky below the application header**, with horizontally scrollable touch targets on narrow screens; section scrolling reserves space for both bars.

@@ -10,6 +10,10 @@ import {
 } from "@/lib/strokePlan";
 import { IVT_CONTRA_EVENT, IVT_CONTRA_KEY, IVT_TREE_EVENT, IVT_TREE_KEY, type IvtContraSnapshot, type IvtTreeInput } from "@/lib/ivtPlan";
 import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
+import { useTreatmentPathways } from "@/hooks/useTreatmentPathways";
+import { Label } from "./ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import type { TreatmentPathways } from "@/lib/treatmentPathways";
 
 const ICON = {
   done: <CheckCircle2 className="h-5 w-5 text-emerald-500" />,
@@ -20,6 +24,7 @@ const ICON = {
 const LABEL = { done: "Done", action: "Action", pending: "Pending", info: "Review" };
 
 export default function StrokePlanTab() {
+  const { state: pathways, update } = useTreatmentPathways();
   const [occult, setOccult] = useState(() => readJSON<Occult5Snapshot>(OCCULT5_KEY));
   const [ich, setIch] = useState(() => readJSON<IchReversalInput>(ICH_REVERSAL_KEY));
   const [sich, setSich] = useState(() => readJSON<SichSnapshot>(SICH_KEY));
@@ -53,7 +58,7 @@ export default function StrokePlanTab() {
     return () => { window.removeEventListener(OCCULT5_EVENT, o); window.removeEventListener(ICH_REVERSAL_EVENT, i); };
   }, []);
 
-  const plan = buildPlan(occult, ich, abcd2, ivtContra, ivtTree, sich);
+  const plan = buildPlan(occult, ich, abcd2, ivtContra, ivtTree, sich, pathways);
   const phases = ["Investigation", "Treatment", "Secondary prevention"] as const;
   const go = (s: PlanStep) => window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: s.sectionId }));
   const actions = plan.filter((p) => p.status === "action" || p.status === "pending");
@@ -66,6 +71,14 @@ export default function StrokePlanTab() {
           <h2 className="text-lg font-bold">Stroke Pathway & Plan</h2>
         </div>
         <p className="text-sm text-muted-foreground">Scores and flags from other tabs update this plan automatically. Tap a next step to jump to it.</p>
+        <div className="mt-3 space-y-2 max-w-md">
+          <Label htmlFor="plan-stroke-type">Confirmed stroke pathway</Label>
+          <Select value={pathways.strokeType || "unknown"} onValueChange={v => update("strokeType", (v === "unknown" ? "" : v) as TreatmentPathways["strokeType"])}>
+            <SelectTrigger id="plan-stroke-type" className="min-h-11"><SelectValue /></SelectTrigger>
+            <SelectContent><SelectItem value="unknown">Not confirmed — review both pathways</SelectItem><SelectItem value="ischemic">Ischemic stroke / TIA</SelectItem><SelectItem value="ich">Spontaneous ICH</SelectItem></SelectContent>
+          </Select>
+          {!pathways.strokeType && <p className="text-sm text-muted-foreground">Stroke type unconfirmed: ischemic and ICH steps are alternatives, not a combined treatment order.</p>}
+        </div>
         <div className="flex flex-wrap gap-2 mt-3">
           <Badge variant="outline">OCCULT-5: {!occult ? "—" : occult.notApplicable ? "N/A" : occult.definitive ? occult.min : `${occult.min}–${occult.max}`}</Badge>
           <Badge variant="outline">ABCD²: {abcd2 ? abcd2.score : "—"}</Badge>
