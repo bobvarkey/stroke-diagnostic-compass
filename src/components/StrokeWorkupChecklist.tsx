@@ -67,6 +67,8 @@ import LabInvestigationsModule from "./LabInvestigationsModule";
 import DDimerStrokeModule from "./DDimerStrokeModule";
 import OccultCancerScreeningSection from "./OccultCancerScreeningSection";
 import ICHAntithromboticGuideline from "./ICHAntithromboticGuideline";
+import ICHReversalPlanner from "./ICHReversalPlanner";
+import StrokePlanTab from "./StrokePlanTab";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 import ICHHematomaExpansion from "./ICHHematomaExpansion";
@@ -5726,7 +5728,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
-        <TabsList className="hidden sm:grid w-full grid-cols-6 h-14 mb-5 glass-strong rounded-xl p-1">
+        <TabsList className="hidden sm:grid w-full grid-cols-7 h-14 mb-5 glass-strong rounded-xl p-1">
           <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-2 rounded-lg transition-all">
             <Zap className="h-4 w-4 shrink-0" />
             Ischemic
@@ -5751,6 +5753,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <Layers className="h-4 w-4 shrink-0" />
             SDH
           </TabsTrigger>
+          <TabsTrigger value="plan" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+            <ClipboardList className="h-4 w-4 shrink-0" />
+            Plan
+          </TabsTrigger>
         </TabsList>
 
         {/* Ischemic Stroke Tab Content */}
@@ -5768,6 +5774,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
               { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
+              { id: "ischemic-ich-options", label: "ICH Treatment Options", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "ich hemorrhagic transformation reversal pcc andexanet platelets plan" },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "vessel-occlusion-spectrum", label: "Occlusion Spectrum", icon: <Brain className="h-3.5 w-3.5 text-indigo-500" /> },
               { id: "ctp-penumbra", label: "CTP Penumbra", icon: <Brain className="h-3.5 w-3.5 text-cyan-500" /> },
@@ -5813,6 +5820,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Anticoagulant Reversal — NCS/SCCM guideline update (PCC, andexanet, platelets, desmopressin) */}
           <LazySection id="anticoagulant-reversal">
             <AnticoagulantReversalSection />
+          </LazySection>
+
+          {/* ICH treatment options (hemorrhagic transformation / antithrombotic ICH) — feeds Stroke Plan */}
+          <LazySection id="ischemic-ich-options">
+            <ICHReversalPlanner title="ICH Treatment Options — Reversal (NCS/SCCM)" />
           </LazySection>
 
           {/* Stroke Code System */}
@@ -6368,6 +6380,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <ICHAntithromboticGuideline />
           </LazySection>
 
+          <LazySection id="ich-reversal-planner">
+            <ICHReversalPlanner />
+          </LazySection>
+
           {/* Hematoma expansion definition, NCCT/CTA signs, BRAIN & spot-sign scores */}
           <div id="ich-expansion">
             <ICHHematomaExpansion />
@@ -6501,11 +6517,15 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <SubduralHematoma />
           </LazySection>
         </TabsContent>
+
+        <TabsContent value="plan" className="space-y-6">
+          <StrokePlanTab />
+        </TabsContent>
       </Tabs>
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-border/50 backdrop-blur-xl bg-background/90" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
-        <div className="grid grid-cols-6 h-16">
+        <div className="grid grid-cols-7 h-16">
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
             { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
@@ -6513,6 +6533,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
             { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },
+            { value: "plan", icon: <ClipboardList className="h-5 w-5" />, label: "Plan", activeColor: "text-emerald-500" },
           ].map((tab) => (
             <button
               key={tab.value}
