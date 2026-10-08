@@ -6527,13 +6527,13 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-border/50 backdrop-blur-xl bg-background/90" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
         <div className="grid grid-cols-7 h-16">
           {[
-            { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", activeColor: "text-primary" },
-            { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", activeColor: "text-amber-500" },
-            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post IVT-ICH", activeColor: "text-rose-500" },
-            { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", activeColor: "text-purple-500" },
-            { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", activeColor: "text-red-500" },
-            { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", activeColor: "text-orange-500" },
-            { value: "plan", icon: <ClipboardList className="h-5 w-5" />, label: "Plan", activeColor: "text-emerald-500" },
+            { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", color: "text-accent-blue", pill: "bg-accent-blue/20" },
+            { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", color: "text-accent-amber", pill: "bg-accent-amber/20" },
+            { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post IVT-ICH", color: "text-accent-rose", pill: "bg-accent-rose/20" },
+            { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", color: "text-accent-purple", pill: "bg-accent-purple/20" },
+            { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", color: "text-red-400", pill: "bg-red-500/20" },
+            { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", color: "text-orange-400", pill: "bg-orange-500/20" },
+            { value: "plan", icon: <ClipboardList className="h-5 w-5" />, label: "Plan", color: "text-emerald-400", pill: "bg-emerald-500/20" },
           ].map((tab) => (
             <button
               key={tab.value}
@@ -6541,14 +6541,12 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
                 setActiveTab(tab.value);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className={`flex flex-col items-center justify-center gap-0.5 transition-all active:scale-95 ${
-                activeTab === tab.value
-                  ? `${tab.activeColor} font-semibold`
-                  : 'text-muted-foreground'
+              className={`flex flex-col items-center justify-center gap-0.5 transition-all active:scale-95 ${tab.color} ${
+                activeTab === tab.value ? 'font-semibold' : 'opacity-60'
               }`}
             >
               <div className={`p-1 rounded-lg transition-all ${
-                activeTab === tab.value ? 'bg-primary/10' : ''
+                activeTab === tab.value ? tab.pill : ''
               }`}>
                 {tab.icon}
               </div>
