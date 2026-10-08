@@ -5790,7 +5790,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
               { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
               { id: "d-dimer-stroke", label: "Elevated D-dimer", icon: <TestTube className="h-3.5 w-3.5 text-rose-400" />, keywords: "d-dimer ddimer dimer fibrin occult-5 occult cancer malignancy feu ddu dic ttp dvt pe hypercoagulable" },
-              { id: "occult-cancer-screening", label: "Occult Cancer Screening", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "occult cancer malignancy screening occult-5 ct pet mammography imaging tumor" },
+              { id: "occult-cancer-screening", label: "Occult Cancer Screening", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "occult cancer malignancy screening occult-5 ct pet mammography imaging tumor active cancer aha 2026 causality nbte dic tumor embolism marantic" },
               { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
             ]}
             onNavigateToSection={(id) => {
