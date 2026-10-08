@@ -4,6 +4,7 @@ import CollapsibleModule from "./CollapsibleModule";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { OCCULT5_EVENT, type Occult5State } from "./DDimerStrokeModule";
+import cancerStrokeClassification from "@/assets/cancer-stroke-classification.jpeg";
 
 const readStored = (): Occult5State | null => {
   try { const v = localStorage.getItem("occult5"); return v ? JSON.parse(v) : null; } catch { return null; }
@@ -56,6 +57,52 @@ export default function OccultCancerScreeningSection() {
           <Button size="sm" variant="outline" className="min-h-[44px]" onClick={() => document.getElementById("d-dimer-stroke")?.scrollIntoView({ behavior: "smooth" })}>
             Open OCCULT-5 calculator <ArrowRight className="h-4 w-4 ml-1" />
           </Button>
+        </div>
+
+        <div className="rounded-lg border border-rose-500/40 bg-rose-500/10 p-3 space-y-3">
+          <p className="font-semibold flex items-center gap-2 text-rose-300">
+            <AlertTriangle className="h-4 w-4" />
+            Classifying Stroke in Active Cancer
+            <span className="ml-1 rounded bg-rose-600 px-2 py-0.5 text-[10px] font-bold text-white">AHA 2026</span>
+          </p>
+          <div className="rounded-lg border border-border bg-white p-3 dark:bg-gray-900">
+            <img
+              src={cancerStrokeClassification}
+              alt="Classification of ischemic stroke in active cancer — Probable, Possible, and Unlikely cancer-mediated causality with treatment guidance (Navi et al., Stroke 2026)"
+              className="h-auto w-full rounded-lg"
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-3">
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-2">
+              <p className="font-bold text-amber-300">Probable Causality</p>
+              <ul className="mt-1 space-y-0.5 text-amber-200/90">
+                <li>• Non-bacterial thrombotic endocarditis (NBTE)</li>
+                <li>• Overt DIC (ISTH DIC Score ≥5)</li>
+                <li>• Tumor embolism</li>
+              </ul>
+            </div>
+            <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-2">
+              <p className="font-bold text-emerald-300">Possible Causality</p>
+              <ul className="mt-1 space-y-0.5 text-emerald-200/90">
+                <li>• D-dimer &gt;2500 ng/mL</li>
+                <li>• Multi-territory infarcts</li>
+                <li>• Bilateral microemboli (HITS on TCD)</li>
+                <li>• Absent SVS despite occlusion</li>
+              </ul>
+            </div>
+            <div className="rounded-lg border border-purple-500/40 bg-purple-500/10 p-2">
+              <p className="font-bold text-purple-300">Unlikely</p>
+              <p className="mt-1 text-purple-200/90">Not meeting criteria for probable or possible cancer-mediated causality</p>
+            </div>
+          </div>
+          <div className="rounded-lg bg-muted/50 p-2 text-xs text-muted-foreground">
+            <strong>Key points:</strong> Up to 15% of ischemic stroke patients have cancer; ~50% of strokes in active cancer are cryptogenic.
+            Recurrence risk 14–29% at 1 year (highest in first 3 months). IVT and EVT eligible per standard criteria; avoid IVT in brain metastases.
+            For secondary prevention: known mechanism → treat mechanism; ESUS phenotype → equipoise DOAC vs aspirin; avoid routine VKA.
+          </div>
+          <p className="text-xs italic text-muted-foreground">
+            Ref: Navi BB, Kasner SE, Cushman M, et al. Stroke. 2026. doi:10.1161/STR.0000000000000517
+          </p>
         </div>
 
         <div className="space-y-2">
