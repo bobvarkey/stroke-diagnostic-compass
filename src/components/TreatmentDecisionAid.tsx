@@ -475,7 +475,7 @@ const TreatmentDecisionAid: React.FC = () => {
           <TabsList className="grid w-full grid-cols-5 h-auto gap-1 bg-muted/60 p-1">
             <TabsTrigger 
               value="no-tpa-vs-tpa" 
-              className={`text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1 ${tabColor("blue")}`}
+              className={`text-xs px-2 py-2 flex flex-col items-center gap-1 ${tabColor("blue")}`}
             >
               <ArrowRightLeft className="h-3 w-3" />
               <span className="hidden sm:inline">No tPA vs tPA</span>
@@ -483,7 +483,7 @@ const TreatmentDecisionAid: React.FC = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="early-vs-late-tpa"
-              className={`text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1 ${tabColor("cyan")}`}
+              className={`text-xs px-2 py-2 flex flex-col items-center gap-1 ${tabColor("cyan")}`}
             >
               <Clock className="h-3 w-3" />
               <span className="hidden sm:inline">Early vs Late tPA</span>
@@ -491,7 +491,7 @@ const TreatmentDecisionAid: React.FC = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="lvo-medical-vs-evt"
-              className={`text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1 ${tabColor("emerald")}`}
+              className={`text-xs px-2 py-2 flex flex-col items-center gap-1 ${tabColor("emerald")}`}
             >
               <Scale className="h-3 w-3" />
               <span className="hidden sm:inline">LVO: Med vs EVT</span>
@@ -499,7 +499,7 @@ const TreatmentDecisionAid: React.FC = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="ivt-alone-vs-ivt-evt"
-              className={`text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1 ${tabColor("amber")}`}
+              className={`text-xs px-2 py-2 flex flex-col items-center gap-1 ${tabColor("amber")}`}
             >
               <Scale className="h-3 w-3" />
               <span className="hidden sm:inline">IVT vs IVT+EVT</span>
@@ -507,7 +507,7 @@ const TreatmentDecisionAid: React.FC = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="late-lvo-medical-vs-evt"
-              className={`text-xs px-2 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-purple-800 flex flex-col items-center gap-1 ${tabColor("rose")}`}
+              className={`text-xs px-2 py-2 flex flex-col items-center gap-1 ${tabColor("rose")}`}
             >
               <AlertTriangle className="h-3 w-3" />
               <span className="hidden sm:inline">Late LVO EVT</span>

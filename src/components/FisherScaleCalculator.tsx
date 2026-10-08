@@ -113,13 +113,13 @@ export default function FisherScaleCalculator({ onScoreChange }: Props) {
 
             <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "original" | "modified")}>
               <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="modified">Modified Fisher Scale</TabsTrigger>
-                <TabsTrigger value="original">Original Fisher Scale</TabsTrigger>
+                <TabsTrigger value="modified" className={`text-xs sm:text-sm font-semibold ${tabColor("orange")}`}>Modified Fisher Scale</TabsTrigger>
+                <TabsTrigger value="original" className={`text-xs sm:text-sm font-semibold ${tabColor("teal")}`}>Original Fisher Scale</TabsTrigger>
               </TabsList>
 
               {/* Modified Fisher Scale */}
-              <TabsContent value="modified" className={`space-y-4 ${tabColor("orange")}`}>
-                <div className={`flex justify-end ${tabColor("teal")}`}>
+              <TabsContent value="modified" className="space-y-4">
+                <div className="flex justify-end">
                   <button
                     onClick={resetCalculator}
                     className="flex items-center gap-1 px-2 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
