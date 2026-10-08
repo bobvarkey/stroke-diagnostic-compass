@@ -15,6 +15,7 @@ import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import type { TreatmentPathways } from "@/lib/treatmentPathways";
 import { Textarea } from "./ui/textarea";
+import SavePlanRecord from "./SavePlanRecord";
 import { enrichPlan, historyFlags, HISTORY_NOTES_KEY, HISTORY_NOTES_EVENT } from "@/lib/planEnrichment";
 
 const ICON = {
@@ -104,6 +105,8 @@ export default function StrokePlanTab() {
         <Textarea id="history-notes" value={notes} maxLength={5000} rows={5} onChange={(e) => saveNotes(e.target.value)} placeholder="e.g. 72 y/o, AF on apixaban (last dose 08:00), HTN, prior surgery 2 weeks ago…" />
         {flags.length > 0 && <div className="flex flex-wrap gap-2">{flags.map((f) => <Badge key={f.label} variant="outline" className="border-primary/50">{f.label}</Badge>)}</div>}
       </div>
+
+      <SavePlanRecord notes={notes} plan={plan} />
 
       {phases.map((ph) => (
         <section key={ph} className="space-y-2">
