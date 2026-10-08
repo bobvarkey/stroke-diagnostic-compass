@@ -31,6 +31,7 @@ import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
+import IVTDecisionTree from "./IVTDecisionTree";
 import MinorNonDisablingStroke from "./MinorNonDisablingStroke";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import CollapsibleModule from "./CollapsibleModule";
@@ -5775,6 +5776,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA / TNK Contraindications", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" />, keywords: "tpa tnk tenecteplase alteplase ivt thrombolysis contraindications eligibility checklist" },
+              { id: "ivt-decision-tree", label: "IVT Decision Tree", icon: <ClipboardList className="h-3.5 w-3.5 text-emerald-500" />, keywords: "ivt decision tree thrombolysis tnk tpa wake-up mismatch lvo thrombectomy extended window" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
@@ -5848,6 +5850,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* tPA Eligibility Checklist */}
           <LazySection id="tpa-eligibility">
             <TPAEligibilityChecklist />
+          </LazySection>
+
+          {/* IVT Decision Tree — feeds the Plan tab */}
+          <LazySection id="ivt-decision-tree">
+            <IVTDecisionTree />
           </LazySection>
 
           {/* Minor non-disabling stroke — BATHE definition + IVT Class 3 vs DAPT */}

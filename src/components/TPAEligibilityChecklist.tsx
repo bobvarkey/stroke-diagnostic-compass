@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { publish, IVT_CONTRA_KEY, IVT_CONTRA_EVENT } from "@/lib/ivtPlan";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -156,6 +157,15 @@ const TPAEligibilityChecklist: React.FC = () => {
 
     return { status, message, details, absolutePresent, relativePresent, inclusionMet };
   }, [inclusionChecked, absoluteChecked, relativeChecked]);
+
+  useEffect(() => {
+    const a = eligibilityAssessment;
+    const touched = a.inclusionMet + a.absolutePresent.length + a.relativePresent.length > 0;
+    const lab = (list: typeof absoluteContraindications, ids: string[]) => ids.map((id) => list.find((c) => c.id === id)?.label ?? id);
+    publish(IVT_CONTRA_KEY, IVT_CONTRA_EVENT, touched ? {
+      status: a.status, absolute: lab(absoluteContraindications, a.absolutePresent), relative: lab(relativeContraindications, a.relativePresent),
+    } : null);
+  }, [eligibilityAssessment]);
 
   const getStatusColor = (status: EligibilityStatus) => {
     switch (status) {

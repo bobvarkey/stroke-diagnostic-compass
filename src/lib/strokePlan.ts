@@ -1,3 +1,4 @@
+import { reperfusionStep, type IvtContraSnapshot, type IvtTreeInput } from "./ivtPlan";
 /**
  * Shared Stroke Plan state + pure rules (OCCULT-5, ICH antithrombotic reversal).
  * Scores are stored in localStorage and broadcast via window events so the
@@ -104,14 +105,14 @@ export function ichReversalStep(i: IchReversalInput | null): PlanStep {
   return { ...base, status: "action", detail: recs.map((r) => r.text).join(" ") || "Review recommendations.", actionLabel: "Open reversal planner" };
 }
 
-export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null, abcd2: Abcd2Snapshot | null = null): PlanStep[] {
+export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null, abcd2: Abcd2Snapshot | null = null, ivtContra: IvtContraSnapshot | null = null, ivtTree: IvtTreeInput | null = null): PlanStep[] {
   const [abInv, abTx] = abcd2Steps(abcd2);
   return [
     { id: "nihss", phase: "Investigation", title: "Baseline NIHSS", status: "info", detail: "Document severity to guide reperfusion.", actionLabel: "Open NIHSS", sectionId: "nihss-calculator" },
     { id: "labs", phase: "Investigation", title: "Labs incl. coagulation & D-dimer", status: "info", detail: "CBC, coagulation, renal function, D-dimer.", actionLabel: "Open lab investigations", sectionId: "lab-investigations" },
     abInv,
     occult5Step(occult),
-    { id: "reperfusion", phase: "Treatment", title: "Reperfusion decision", status: "info", detail: "IVT / EVT eligibility, Loberamisal (investigational, ≤48 h).", actionLabel: "Open treatment recommender", sectionId: "treatment-recommender" },
+    reperfusionStep(ivtContra, ivtTree),
     abTx,
     ichReversalStep(ich),
     { id: "ich-mgmt", phase: "Treatment", title: "Acute ICH management", status: "info", detail: "BP, hematoma expansion, neurosurgical review.", actionLabel: "Open ICH tab", sectionId: "acute-ich" },
