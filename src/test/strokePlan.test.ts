@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ichReversalRecommendations, occult5Step, ichReversalStep } from "@/lib/strokePlan";
+import { ichReversalRecommendations, occult5Step, ichReversalStep, abcd2Steps } from "@/lib/strokePlan";
 import { getTabForSection } from "@/lib/sectionTabs";
 
 const base = { neurosurgery: false, traumatic: false, reversalAlreadyGiven: false };
@@ -28,5 +28,12 @@ describe("stroke plan rules", () => {
   it("routes plan targets to their tabs", () => {
     expect(getTabForSection("stroke-plan")).toBe("plan");
     expect(getTabForSection("d-dimer-stroke")).toBe("ischemic");
+  });
+  it("ABCD2 ≥4 makes workup and DAPT action steps; <4 does not", () => {
+    const [inv, tx] = abcd2Steps({ score: 4 });
+    expect(inv.status).toBe("action"); expect(inv.phase).toBe("Investigation");
+    expect(tx.status).toBe("action"); expect(tx.phase).toBe("Treatment"); expect(tx.detail).toMatch(/21 days/);
+    expect(abcd2Steps({ score: 3 }).every((st) => st.status !== "action")).toBe(true);
+    expect(abcd2Steps(null)[0].status).toBe("pending");
   });
 });

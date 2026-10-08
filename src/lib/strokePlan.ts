@@ -16,6 +16,32 @@ export interface IchReversalInput {
 export const ICH_REVERSAL_KEY = "ichReversal";
 export const ICH_REVERSAL_EVENT = "ich-reversal-updated";
 export const OCCULT5_KEY = "occult5";
+export const ABCD2_KEY = "abcd2";
+export const ABCD2_EVENT = "abcd2-updated";
+export interface Abcd2Snapshot { score: number }
+
+export function publishAbcd2(s: Abcd2Snapshot | null) {
+  try { if (s) localStorage.setItem(ABCD2_KEY, JSON.stringify(s)); else localStorage.removeItem(ABCD2_KEY); } catch { /* ignore */ }
+  window.dispatchEvent(new CustomEvent(ABCD2_EVENT, { detail: s }));
+}
+
+/** ABCD² ≥4 = high early-recurrence risk (2-day stroke risk ~4–8%). */
+export function abcd2Steps(s: Abcd2Snapshot | null): PlanStep[] {
+  const inv = { id: "abcd2-workup", phase: "Investigation" as const, title: "TIA risk (ABCD²) & urgent workup", sectionId: "abcd2-score" };
+  const tx = { id: "abcd2-treatment", phase: "Treatment" as const, title: "TIA / minor stroke antiplatelet start", sectionId: "recurrent-dapt" };
+  if (!s) return [
+    { ...inv, status: "pending", detail: "ABCD² not calculated (TIA patients).", actionLabel: "Calculate ABCD²" },
+    { ...tx, status: "pending", detail: "Awaiting ABCD² / NIHSS to choose single vs dual antiplatelet.", actionLabel: "Open DAPT pathway" },
+  ];
+  if (s.score >= 4) return [
+    { ...inv, status: "action", detail: `ABCD² ${s.score} (high risk): admit or rapid TIA clinic within 24 h — urgent CTA/carotid imaging, MRI-DWI, ECG and cardiac monitoring.`, actionLabel: "Review ABCD²" },
+    { ...tx, status: "action", detail: `ABCD² ${s.score} ≥4 without contraindication: start DAPT — aspirin + clopidogrel for 21 days (CHANCE/POINT) or aspirin + ticagrelor for 30 days (THALES), then single antiplatelet.`, actionLabel: "Open DAPT pathway" },
+  ];
+  return [
+    { ...inv, status: "info", detail: `ABCD² ${s.score} (<4): still complete vascular imaging, ECG and MRI promptly — a low score does not exclude carotid stenosis or AF.`, actionLabel: "Review ABCD²" },
+    { ...tx, status: "info", detail: `ABCD² ${s.score} <4: single antiplatelet usually; consider DAPT if imaging shows symptomatic stenosis or acute infarct.`, actionLabel: "Open DAPT pathway" },
+  ];
+}
 
 export interface Rec { level: "do" | "avoid" | "consider" | "info"; text: string }
 
@@ -78,12 +104,15 @@ export function ichReversalStep(i: IchReversalInput | null): PlanStep {
   return { ...base, status: "action", detail: recs.map((r) => r.text).join(" ") || "Review recommendations.", actionLabel: "Open reversal planner" };
 }
 
-export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null): PlanStep[] {
+export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null, abcd2: Abcd2Snapshot | null = null): PlanStep[] {
+  const [abInv, abTx] = abcd2Steps(abcd2);
   return [
     { id: "nihss", phase: "Investigation", title: "Baseline NIHSS", status: "info", detail: "Document severity to guide reperfusion.", actionLabel: "Open NIHSS", sectionId: "nihss-calculator" },
     { id: "labs", phase: "Investigation", title: "Labs incl. coagulation & D-dimer", status: "info", detail: "CBC, coagulation, renal function, D-dimer.", actionLabel: "Open lab investigations", sectionId: "lab-investigations" },
+    abInv,
     occult5Step(occult),
     { id: "reperfusion", phase: "Treatment", title: "Reperfusion decision", status: "info", detail: "IVT / EVT eligibility, Loberamisal (investigational, ≤48 h).", actionLabel: "Open treatment recommender", sectionId: "treatment-recommender" },
+    abTx,
     ichReversalStep(ich),
     { id: "ich-mgmt", phase: "Treatment", title: "Acute ICH management", status: "info", detail: "BP, hematoma expansion, neurosurgical review.", actionLabel: "Open ICH tab", sectionId: "acute-ich" },
     { id: "dapt", phase: "Secondary prevention", title: "Antiplatelet strategy", status: "info", detail: "DAPT / recurrent-on-DAPT ticagrelor pathway.", actionLabel: "Open DAPT pathway", sectionId: "recurrent-dapt" },
