@@ -331,18 +331,19 @@ export default function TirofibanDoseCalculator() {
                   <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
                     <Badge className="mb-2 bg-amber-600">Loading Infusion — over 30 minutes</Badge>
                     <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
-                      {ivDose.loadingTotalMg} mg
+                      {ivDose.loadingVolumeMl} mL
                     </div>
                     <div className="text-xl font-bold text-amber-700 dark:text-amber-300">
-                      = {ivDose.loadingVolumeMl} mL
+                      = {ivDose.loadingTotalMg} mg
                     </div>
                     <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                      {ivDose.loadRate} mcg/kg/min × {weightNum} kg × 30 min (total dose = mg; volume = mg ÷ 50 mcg/mL)
+                      {ivDose.loadRate} mcg/kg/min × {weightNum} kg × 30 min (volume = mL drawn from the 50 mcg/mL bag; dose = mL × 50 mcg/mL)
                     </div>
                     <div className="text-xs text-amber-700 dark:text-amber-400 mt-2">
                       Pump rate: <strong>{ivDose.loadingMlPerHr} mL/hr</strong> run for 30 min → delivers{" "}
-                      <strong>{ivDose.loadingTotalMg} mg</strong> ({ivDose.loadingVolumeMl} mL) in total
+                      <strong>{ivDose.loadingVolumeMl} mL</strong> ({ivDose.loadingTotalMg} mg) in total
                     </div>
+
                     {ivDose.cappedTriggered && (
                       <div className="mt-2 p-2 bg-amber-200/60 dark:bg-amber-800/40 rounded text-[11px] text-amber-800 dark:text-amber-200">
                         ⚠ SAO cap: total loading should not exceed <strong>1 mg</strong> ({ivDose.cappedLoadingMg} mg suggested cap).
@@ -401,7 +402,7 @@ export default function TirofibanDoseCalculator() {
                     Pump rate for 30 min
                   </div>
                   <div className="text-sm font-bold text-blue-700 dark:text-blue-300 mt-2">
-                    Total: {ivDose.loadingTotalMg} mg ({ivDose.loadingVolumeMl} mL)
+                    Total: {ivDose.loadingVolumeMl} mL ({ivDose.loadingTotalMg} mg)
                   </div>
                 </div>
 
