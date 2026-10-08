@@ -27,16 +27,16 @@ interface Patient {
   updated_at: string;
 }
 
-// Demo patient for demonstration mode
+// Default working patient (app opens directly, no sign-in required)
 const DEMO_PATIENT: Patient = {
-  id: "demo-patient-001",
-  patient_id: "DEMO-001",
-  name: "Demo Patient",
+  id: "local-patient-001",
+  patient_id: "PATIENT-001",
+  name: "Current Patient",
   weight: 70,
   age: 65,
   sex: "M",
   last_known_well: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-  demographics: { mrn: "DEMO-001", chief_complaint: "Left-sided weakness" },
+  demographics: { mrn: "PATIENT-001", chief_complaint: "Left-sided weakness" },
   clinical_data: {},
   created_by: null,
   last_edited_by: null,
@@ -132,7 +132,7 @@ const Index = () => {
       setIsDemoMode(false);
       setSelectedPatient(null);
       setPatientData({});
-      toast({ title: 'Demo ended', description: 'Exited demonstration mode' });
+      
       return;
     }
     await signOut();
@@ -141,25 +141,10 @@ const Index = () => {
     toast({ title: 'Signed out', description: 'You have been logged out' });
   };
 
-  const handleEnterDemoMode = () => {
-    setIsDemoMode(true);
-    setSelectedPatient(DEMO_PATIENT);
-    setPatientData({});
-    toast({ 
-      title: 'Demo Mode Active', 
-      description: 'Exploring with sample patient data. Changes will not be saved.' 
-    });
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSkipToApp = () => {
-    setIsDemoMode(true);
-    setSelectedPatient(DEMO_PATIENT);
-    setPatientData({});
-  };
 
   // Show loading state
   if (loading) {
@@ -221,12 +206,6 @@ const Index = () => {
                 <span className="text-sm text-muted-foreground hidden sm:inline truncate">
                   {selectedPatient.name}
                 </span>
-              )}
-              {isDemoMode && (
-                <Badge variant="secondary" className="bg-accent-amber/15 text-amber-700 dark:text-amber-300 border-amber-300/30 text-xs shrink-0">
-                  <Play className="h-3 w-3 mr-1" />
-                  <span className="hidden sm:inline">Demo</span>
-                </Badge>
               )}
             </div>
 
