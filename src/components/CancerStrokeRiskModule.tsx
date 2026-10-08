@@ -34,7 +34,7 @@ const CancerStrokeRiskModule = ({ onOccult5Change }: Props) => {
           <TabsTrigger value="occult5" className={tabColor("amber")}>OCCULT-5 — Occult Cancer</TabsTrigger>
         </TabsList>
         <TabsContent value="prime" className="mt-3">
-          <PRIMEToolCalculator embedded />
+          <PRIMEToolCalculator />
         </TabsContent>
         <TabsContent value="occult5" className="mt-3">
           <DDimerStrokeModule embedded onScoreChange={onOccult5Change} />
