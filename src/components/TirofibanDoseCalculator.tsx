@@ -256,6 +256,42 @@ export default function TirofibanDoseCalculator() {
           </Alert>
         )}
 
+        {/* Dilution & bag preparation */}
+        <div className="p-4 rounded-lg border border-cyan-200 dark:border-cyan-700 bg-background/60 space-y-2">
+          <div className="flex items-center gap-2">
+            <FlaskConical className="h-4 w-4 text-cyan-600" />
+            <span className="text-sm font-medium text-cyan-800 dark:text-cyan-300">
+              Tirofiban Dilution & Bag Preparation
+            </span>
+          </div>
+          <div className="text-xs text-muted-foreground space-y-1.5">
+            <p>
+              <strong className="text-cyan-700 dark:text-cyan-400">Target IV concentration: 50 mcg/mL</strong> — every
+              mL/hr rate and mL volume calculated on this page assumes this concentration.
+            </p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>
+                <strong>Premixed bag (no dilution needed):</strong> 12.5 mg / 250 mL = 50 mcg/mL ready-to-use. If the
+                12.5 mg / 500 mL (25 mcg/mL) bag is used instead, halve all pump rates.
+              </li>
+              <li>
+                <strong>Dilute from concentrated vial:</strong> add 1 × 12.5 mg/50 mL vial (250 mcg/mL) to 250 mL 0.9%
+                NaCl → ~50 mcg/mL; or add 5 × 2.5 mg/50 mL vials (total 12.5 mg) to 250 mL 0.9% NaCl → ~50 mcg/mL.
+              </li>
+              <li>Diluent: 0.9% sodium chloride or 5% dextrose (D5W). Do not mix with other concentrates.</li>
+              <li>
+                <strong>IA rescue:</strong> use the concentrated 250 mcg/mL (12.5 mg/50 mL) solution undiluted via
+                microcatheter, or dilute to 50 mcg/mL per protocol — see the IA Rescue tab for mL per bolus.
+              </li>
+              <li className="text-red-700 dark:text-red-400">
+                <strong>⚠ Concentration check before programming the pump:</strong> the concentrated 250 mcg/mL vial at
+                the same mL/hr settings delivers a 5× overdose. Always confirm the bag concentration (50 vs 250 mcg/mL).
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
         {/* Mode tabs */}
         <Tabs value={activeMode} onValueChange={(v) => setActiveMode(v as typeof activeMode)}>
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
@@ -293,16 +329,19 @@ export default function TirofibanDoseCalculator() {
               <div className="space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
-                    <Badge className="mb-2 bg-amber-600">Loading Infusion</Badge>
+                    <Badge className="mb-2 bg-amber-600">Loading Infusion — over 30 minutes</Badge>
                     <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
                       {ivDose.loadingTotalMg} mg
                     </div>
+                    <div className="text-xl font-bold text-amber-700 dark:text-amber-300">
+                      = {ivDose.loadingVolumeMl} mL
+                    </div>
                     <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                      total over 30 min ({ivDose.loadRate} mcg/kg/min × {weightNum} kg)
+                      {ivDose.loadRate} mcg/kg/min × {weightNum} kg × 30 min (total dose = mg; volume = mg ÷ 50 mcg/mL)
                     </div>
                     <div className="text-xs text-amber-700 dark:text-amber-400 mt-2">
-                      = <strong>{ivDose.loadingVolumeMl} mL</strong> @ 50 mcg/mL<br />
-                      Pump rate: <strong>{ivDose.loadingMlPerHr} mL/hr</strong> × 30 min
+                      Pump rate: <strong>{ivDose.loadingMlPerHr} mL/hr</strong> run for 30 min → delivers{" "}
+                      <strong>{ivDose.loadingTotalMg} mg</strong> ({ivDose.loadingVolumeMl} mL) in total
                     </div>
                     {ivDose.cappedTriggered && (
                       <div className="mt-2 p-2 bg-amber-200/60 dark:bg-amber-800/40 rounded text-[11px] text-amber-800 dark:text-amber-200">
@@ -310,6 +349,7 @@ export default function TirofibanDoseCalculator() {
                       </div>
                     )}
                   </div>
+
 
                   <div className="p-4 bg-green-100 dark:bg-green-900/40 rounded-lg border-2 border-green-400">
                     <Badge className="mb-2 bg-green-600">Maintenance Infusion</Badge>
@@ -353,14 +393,18 @@ export default function TirofibanDoseCalculator() {
             {isValidWeight && ivDose && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-lg border-2 border-blue-400">
-                  <Badge className="mb-2 bg-blue-600">Loading (30 min)</Badge>
+                  <Badge className="mb-2 bg-blue-600">Loading — over 30 minutes</Badge>
                   <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
                     {ivDose.loadingMlPerHr} mL/hr
                   </div>
                   <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                    Total {ivDose.loadingTotalMg} mg ({ivDose.loadingVolumeMl} mL)
+                    Pump rate for 30 min
+                  </div>
+                  <div className="text-sm font-bold text-blue-700 dark:text-blue-300 mt-2">
+                    Total: {ivDose.loadingTotalMg} mg ({ivDose.loadingVolumeMl} mL)
                   </div>
                 </div>
+
                 <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-lg border-2 border-blue-400">
                   <Badge className="mb-2 bg-blue-600">Maintenance × 24 h</Badge>
                   <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
@@ -415,17 +459,18 @@ export default function TirofibanDoseCalculator() {
             {isValidWeight && instantDose ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
-                  <Badge className="mb-2 bg-amber-600">Loading (30 min)</Badge>
+                  <Badge className="mb-2 bg-amber-600">Loading — over 30 minutes</Badge>
                   <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
                     {instantDose.loadingMlPerHr} mL/hr
                   </div>
                   <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                    {instantDose.loadRate} mcg/kg/min × {weightNum} kg
+                    Pump rate for 30 min ({instantDose.loadRate} mcg/kg/min × {weightNum} kg)
                   </div>
-                  <div className="text-xs text-amber-700 dark:text-amber-400 mt-2">
-                    Total: <strong>{instantDose.loadingTotalMg} mg</strong> ({instantDose.loadingVolumeMl} mL @ 50 mcg/mL)
+                  <div className="text-sm font-bold text-amber-700 dark:text-amber-300 mt-2">
+                    Total: {instantDose.loadingTotalMg} mg ({instantDose.loadingVolumeMl} mL @ 50 mcg/mL)
                   </div>
                 </div>
+
                 <div className="p-4 bg-amber-100 dark:bg-amber-900/40 rounded-lg border-2 border-amber-400">
                   <Badge className="mb-2 bg-amber-600">Maintenance × up to 47.5 h</Badge>
                   <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
