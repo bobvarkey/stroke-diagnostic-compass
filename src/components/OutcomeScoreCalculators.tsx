@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, Activity, Gauge, Droplets } from "lucide-react";
+import { publishSich, readJSON, SICH_KEY, type SichSnapshot } from "@/lib/strokePlan";
 
 type Opt = { pts: number; l: string };
 function Item({ q, opts, value, onChange }: { q: string; opts: Opt[]; value: number | null; onChange: (i: number) => void }) {
@@ -125,7 +126,14 @@ const SICH: { q: string; o: Opt[] }[] = [
   { q: "Neither known hypertension nor impaired coagulation", o: [{ pts: 0, l: "No (HTN or coagulopathy present)" }, { pts: 1, l: "Yes (neither)" }] },
 ];
 export function SecondaryICHScoreCalculator() {
-  const s = useScore(SICH.map((t) => t.o));
+  const [sel, setSel] = useState<(number | null)[]>(() => readJSON<SichSnapshot>(SICH_KEY)?.selections ?? SICH.map(() => null));
+  const done = sel.every((v) => v !== null);
+  const total = sel.reduce<number>((sum, v, i) => sum + (v === null ? 0 : SICH[i]?.o[v]?.pts ?? 0), 0);
+  const update = (next: (number | null)[]) => {
+    setSel(next);
+    publishSich({ selections: next, complete: next.every((v) => v !== null), score: next.reduce<number>((sum, v, i) => sum + (v === null ? 0 : SICH[i]?.o[v]?.pts ?? 0), 0) });
+  };
+  const s = { sel, done, total, set: (i: number) => (v: number) => update(sel.map((old, j) => j === i ? v : old)), reset: () => { setSel(SICH.map(() => null)); publishSich(null); } };
   const high = s.total >= 2;
   return (
     <Shell title="Secondary ICH (sICH) Score — Vascular Cause" icon={<Droplets className="h-5 w-5 text-rose-500" />}>
@@ -134,6 +142,14 @@ export function SecondaryICHScoreCalculator() {
       <div className={`rounded-xl border-2 p-4 ${!s.done ? "border-border" : high ? "border-red-500/50 bg-red-500/10" : "border-emerald-500/50 bg-emerald-500/10"}`}>
         <p className="font-bold text-lg">sICH score {s.total}/6 {!s.done && <span className="text-sm font-normal">(incomplete)</span>}</p>
         {s.done && <p className="text-sm">{high ? "Higher probability of a vascular lesion — obtain CTA/CTV; consider DSA if CTA negative and suspicion remains." : "Low probability of a vascular lesion — CTA still reasonable in lobar ICH, age <70 or no hypertension history."}</p>}
+      </div>
+      <div id="sich-cta" className="scroll-mt-40 space-y-1 border-t border-border pt-3">
+        <h4 className="font-semibold text-sm">CT angiogram (CTA) / CT venogram (CTV)</h4>
+        <p className="text-sm text-muted-foreground">For higher suspicion, obtain CTA to assess arterial vascular causes. Add CTV if cerebral venous thrombosis is suspected. Review findings with the stroke and neuroradiology teams.</p>
+      </div>
+      <div id="sich-dsa" className="scroll-mt-40 space-y-1 border-t border-border pt-3">
+        <h4 className="font-semibold text-sm">Catheter angiogram (DSA)</h4>
+        <p className="text-sm text-muted-foreground">Consider DSA after negative or inconclusive CTA when suspicion remains, or to clarify a suspected vascular lesion. Discuss the indication, timing and procedural risks with the neurovascular team.</p>
       </div>
       <p className="text-xs text-muted-foreground">Delgado Almandoz JE et al. AJNR 2010. Supports, does not replace, clinical judgment; AHA 2022 ICH guideline recommends CTA in most spontaneous ICH.</p>
       <Button size="sm" variant="ghost" onClick={s.reset}>Reset</Button>

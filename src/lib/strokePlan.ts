@@ -21,6 +21,32 @@ export const ABCD2_KEY = "abcd2";
 export const ABCD2_EVENT = "abcd2-updated";
 export interface Abcd2Snapshot { score: number }
 
+export const SICH_KEY = "secondaryIchScore";
+export const SICH_EVENT = "secondary-ich-score-updated";
+export interface SichSnapshot { score: number; complete: boolean; selections: (number | null)[] }
+
+export function publishSich(s: SichSnapshot | null) {
+  try { if (s) localStorage.setItem(SICH_KEY, JSON.stringify(s)); else localStorage.removeItem(SICH_KEY); } catch { /* storage may be unavailable */ }
+  window.dispatchEvent(new CustomEvent(SICH_EVENT, { detail: s }));
+}
+
+export function sichSteps(s: SichSnapshot | null): PlanStep[] {
+  const cta = { id: "sich-cta", phase: "Investigation" as const, title: "Secondary ICH: CT angiogram (CTA)", sectionId: "sich-cta" };
+  const dsa = { id: "sich-dsa", phase: "Investigation" as const, title: "Secondary ICH: catheter angiogram (DSA)", sectionId: "sich-dsa" };
+  if (!s?.complete) return [
+    { ...cta, status: "pending", detail: "Complete the secondary ICH score; urgent vascular imaging must not wait for a score when clinically indicated.", actionLabel: "Complete sICH score", sectionId: "secondary-ich-score" },
+    { ...dsa, status: "pending", detail: "Await vascular imaging and specialist assessment before deciding on catheter angiography.", actionLabel: "Review sICH score", sectionId: "secondary-ich-score" },
+  ];
+  if (s.score >= 2) return [
+    { ...cta, status: "action", detail: `sICH ${s.score}/6: higher suspicion of an underlying vascular cause — obtain CTA; add CTV when a venous cause is suspected.`, actionLabel: "Review CTA step" },
+    { ...dsa, status: "info", detail: `sICH ${s.score}/6: consider catheter angiography if CTA is negative or inconclusive and suspicion remains; suspicious CTA findings warrant specialist review. Not an automatic order based on score alone.`, actionLabel: "Review catheter angiogram" },
+  ];
+  return [
+    { ...cta, status: "info", detail: `sICH ${s.score}/6: lower probability does not exclude a vascular lesion; select CTA/CTV based on location, age, history and imaging.`, actionLabel: "Review CTA step" },
+    { ...dsa, status: "info", detail: "Catheter angiography remains a specialist decision if noninvasive imaging or clinical features raise suspicion, regardless of a low score.", actionLabel: "Review catheter angiogram" },
+  ];
+}
+
 export function publishAbcd2(s: Abcd2Snapshot | null) {
   try { if (s) localStorage.setItem(ABCD2_KEY, JSON.stringify(s)); else localStorage.removeItem(ABCD2_KEY); } catch { /* ignore */ }
   window.dispatchEvent(new CustomEvent(ABCD2_EVENT, { detail: s }));
@@ -105,13 +131,14 @@ export function ichReversalStep(i: IchReversalInput | null): PlanStep {
   return { ...base, status: "action", detail: recs.map((r) => r.text).join(" ") || "Review recommendations.", actionLabel: "Open reversal planner" };
 }
 
-export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null, abcd2: Abcd2Snapshot | null = null, ivtContra: IvtContraSnapshot | null = null, ivtTree: IvtTreeInput | null = null): PlanStep[] {
+export function buildPlan(occult: Occult5Snapshot | null, ich: IchReversalInput | null, abcd2: Abcd2Snapshot | null = null, ivtContra: IvtContraSnapshot | null = null, ivtTree: IvtTreeInput | null = null, sich: SichSnapshot | null = null): PlanStep[] {
   const [abInv, abTx] = abcd2Steps(abcd2);
   return [
     { id: "nihss", phase: "Investigation", title: "Baseline NIHSS", status: "info", detail: "Document severity to guide reperfusion.", actionLabel: "Open NIHSS", sectionId: "nihss-calculator" },
     { id: "labs", phase: "Investigation", title: "Labs incl. coagulation & D-dimer", status: "info", detail: "CBC, coagulation, renal function, D-dimer.", actionLabel: "Open lab investigations", sectionId: "lab-investigations" },
     abInv,
     occult5Step(occult),
+    ...sichSteps(sich),
     reperfusionStep(ivtContra, ivtTree),
     abTx,
     ichReversalStep(ich),
