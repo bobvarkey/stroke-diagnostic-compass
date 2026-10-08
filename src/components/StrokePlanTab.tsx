@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { OCCULT5_EVENT } from "./DDimerStrokeModule";
 import {
-  buildPlan, readJSON, ICH_REVERSAL_EVENT, ICH_REVERSAL_KEY, OCCULT5_KEY,
+  buildPlan, readJSON, ICH_REVERSAL_EVENT, ICH_REVERSAL_KEY, OCCULT5_KEY, ABCD2_KEY, ABCD2_EVENT, type Abcd2Snapshot,
   type IchReversalInput, type Occult5Snapshot, type PlanStep,
 } from "@/lib/strokePlan";
 import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
@@ -21,6 +21,13 @@ export default function StrokePlanTab() {
   const [occult, setOccult] = useState(() => readJSON<Occult5Snapshot>(OCCULT5_KEY));
   const [ich, setIch] = useState(() => readJSON<IchReversalInput>(ICH_REVERSAL_KEY));
 
+  const [abcd2, setAbcd2] = useState(() => readJSON<Abcd2Snapshot>(ABCD2_KEY));
+  useEffect(() => {
+    const a = (e: Event) => setAbcd2((e as CustomEvent<Abcd2Snapshot | null>).detail);
+    window.addEventListener(ABCD2_EVENT, a);
+    return () => window.removeEventListener(ABCD2_EVENT, a);
+  }, []);
+
   useEffect(() => {
     const o = (e: Event) => setOccult((e as CustomEvent<Occult5Snapshot>).detail);
     const i = (e: Event) => setIch((e as CustomEvent<IchReversalInput>).detail);
@@ -29,7 +36,7 @@ export default function StrokePlanTab() {
     return () => { window.removeEventListener(OCCULT5_EVENT, o); window.removeEventListener(ICH_REVERSAL_EVENT, i); };
   }, []);
 
-  const plan = buildPlan(occult, ich);
+  const plan = buildPlan(occult, ich, abcd2);
   const phases = ["Investigation", "Treatment", "Secondary prevention"] as const;
   const go = (s: PlanStep) => window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: s.sectionId }));
   const actions = plan.filter((p) => p.status === "action" || p.status === "pending");
@@ -44,6 +51,7 @@ export default function StrokePlanTab() {
         <p className="text-sm text-muted-foreground">Scores and flags from other tabs update this plan automatically. Tap a next step to jump to it.</p>
         <div className="flex flex-wrap gap-2 mt-3">
           <Badge variant="outline">OCCULT-5: {!occult ? "—" : occult.notApplicable ? "N/A" : occult.definitive ? occult.min : `${occult.min}–${occult.max}`}</Badge>
+          <Badge variant="outline">ABCD²: {abcd2 ? abcd2.score : "—"}</Badge>
           <Badge variant="outline">ICH antithrombotic: {ich?.agent ?? "—"}</Badge>
           <Badge variant="outline">{actions.length} open step{actions.length === 1 ? "" : "s"}</Badge>
         </div>

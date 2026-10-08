@@ -1,3 +1,4 @@
+import { publishAbcd2 } from "@/lib/strokePlan";
 import React, { useState, useRef, useCallback, memo, useEffect } from "react";
 import LazySection from "./LazySection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -4277,7 +4278,8 @@ function ABCD2Calculator({ onScoreChange }: { onScoreChange?: (score: number) =>
 
   useEffect(() => {
     onScoreChange?.(totalScore);
-  }, [totalScore, onScoreChange]);
+    publishAbcd2(criteria.size > 0 ? { score: totalScore } : null);
+  }, [totalScore, onScoreChange, criteria.size]);
 
   const getRiskLevel = (score: number) => {
     if (score <= 1) return { level: "Low", color: "bg-green-500", day2Risk: "0%", day7Risk: "0.4%", day90Risk: "1.0%", recommendation: "Outpatient workup may be appropriate" };
