@@ -8,6 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Syringe, AlertTriangle, Info, Calculator, Clock, ChevronDown } from "lucide-react";
 import ModuleCommentBox from "./ModuleCommentBox";
+import { tabColor } from "@/lib/tabColors";
 
 interface DoseResult {
   totalDose: number;
@@ -114,13 +115,13 @@ export default function ThrombolyticDoseCalculator() {
         {/* Agent Tabs */}
         <Tabs value={activeAgent} onValueChange={(v) => setActiveAgent(v as "alteplase" | "tenecteplase" | "ia_tpa")}>
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="alteplase" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm">
+            <TabsTrigger value="alteplase" className={`text-xs sm:text-sm ${tabColor("blue")}`}>
               IV Alteplase
             </TabsTrigger>
-            <TabsTrigger value="tenecteplase" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-xs sm:text-sm">
+            <TabsTrigger value="tenecteplase" className={`text-xs sm:text-sm ${tabColor("green")}`}>
               IV TNK
             </TabsTrigger>
-            <TabsTrigger value="ia_tpa" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm">
+            <TabsTrigger value="ia_tpa" className={`text-xs sm:text-sm ${tabColor("purple")}`}>
               IA tPA
             </TabsTrigger>
           </TabsList>

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { tabColor } from "@/lib/tabColors";
 
 type Tri = "yes" | "no" | "unknown";
 type Unit = "ug/L" | "mg/L" | "ng/mL";
@@ -142,9 +143,9 @@ export default function DDimerStrokeModule({ onScoreChange }: { onScoreChange?: 
 
         <Tabs defaultValue="calc">
           <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="calc" className="text-xs font-semibold">OCCULT-5</TabsTrigger>
-            <TabsTrigger value="causes" className="text-xs font-semibold">Causes</TabsTrigger>
-            <TabsTrigger value="rules" className="text-xs font-semibold">Rules</TabsTrigger>
+            <TabsTrigger value="calc" className={`text-xs font-semibold ${tabColor("amber")}`}>OCCULT-5</TabsTrigger>
+            <TabsTrigger value="causes" className={`text-xs font-semibold ${tabColor("sky")}`}>Causes</TabsTrigger>
+            <TabsTrigger value="rules" className={`text-xs font-semibold ${tabColor("violet")}`}>Rules</TabsTrigger>
           </TabsList>
 
           <TabsContent value="calc" className="space-y-4 pt-3">

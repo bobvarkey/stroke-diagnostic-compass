@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { tabColor } from "@/lib/tabColors";
 
 interface LabValue {
   id: string;
@@ -260,11 +261,11 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
       <CardContent className="pt-6">
         <Tabs defaultValue="manual" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="manual" className="flex items-center gap-2">
+            <TabsTrigger value="manual" className={`flex items-center gap-2 ${tabColor("teal")}`}>
               <FileText className="h-4 w-4" />
               Manual Entry
             </TabsTrigger>
-            <TabsTrigger value="upload" className="flex items-center gap-2">
+            <TabsTrigger value="upload" className={`flex items-center gap-2 ${tabColor("violet")}`}>
               <Camera className="h-4 w-4" />
               Upload / OCR
             </TabsTrigger>

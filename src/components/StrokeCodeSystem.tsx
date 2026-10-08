@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { tabColor } from "@/lib/tabColors";
 
 interface StrokeContact {
   id: string;
@@ -473,20 +474,20 @@ export default function StrokeCodeSystem() {
       </CardHeader>
       <CardContent className="p-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-4 rounded-none border-b bg-red-100/50 dark:bg-red-900/30">
-            <TabsTrigger value="activate" className="flex items-center gap-2">
+          <TabsList className="w-full grid grid-cols-4 rounded-none border-b bg-muted/60">
+            <TabsTrigger value="activate" className={`flex items-center gap-2 ${tabColor("red")}`}>
               <AlertTriangle className="h-4 w-4" />
               Activate Code
             </TabsTrigger>
-            <TabsTrigger value="contacts" className="flex items-center gap-2">
+            <TabsTrigger value="contacts" className={`flex items-center gap-2 ${tabColor("orange")}`}>
               <Users className="h-4 w-4" />
               Contacts
             </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2">
+            <TabsTrigger value="settings" className={`flex items-center gap-2 ${tabColor("amber")}`}>
               <Settings className="h-4 w-4" />
               Settings
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2">
+            <TabsTrigger value="history" className={`flex items-center gap-2 ${tabColor("violet")}`}>
               <History className="h-4 w-4" />
               Audit Trail
             </TabsTrigger>

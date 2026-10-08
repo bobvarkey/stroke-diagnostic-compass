@@ -9,6 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
+import { tabColor } from "@/lib/tabColors";
   RefreshCw,
   Pill,
   Clock,
@@ -68,16 +69,16 @@ const RecurrentStrokeDAPTRecommendation: React.FC = () => {
 
             <Tabs defaultValue="pathway" className="w-full">
               <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
-                <TabsTrigger value="pathway" className="text-xs gap-1">
+                <TabsTrigger value="pathway" className={`text-xs gap-1 ${tabColor("rose")}`}>
                   <ArrowRight className="h-3.5 w-3.5" /> Pathway
                 </TabsTrigger>
-                <TabsTrigger value="dosing" className="text-xs gap-1">
+                <TabsTrigger value="dosing" className={`text-xs gap-1 ${tabColor("amber")}`}>
                   <Pill className="h-3.5 w-3.5" /> Dosing
                 </TabsTrigger>
-                <TabsTrigger value="monitoring" className="text-xs gap-1">
+                <TabsTrigger value="monitoring" className={`text-xs gap-1 ${tabColor("emerald")}`}>
                   <Shield className="h-3.5 w-3.5" /> Monitoring
                 </TabsTrigger>
-                <TabsTrigger value="refs" className="text-xs gap-1">
+                <TabsTrigger value="refs" className={`text-xs gap-1 ${tabColor("sky")}`}>
                   <BookOpen className="h-3.5 w-3.5" /> References
                 </TabsTrigger>
               </TabsList>

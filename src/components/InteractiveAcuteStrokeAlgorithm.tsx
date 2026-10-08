@@ -13,6 +13,7 @@ import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.jpeg";
 import evtDecisionTree2026 from "@/assets/evt-decision-tree-2026.jpeg";
 import antiplateletAlgorithm2026 from "@/assets/antiplatelet-algorithm-2026.jpeg";
 import InteractiveEVTDecisionTree from "./InteractiveEVTDecisionTree";
+import { tabColor } from "@/lib/tabColors";
 
 interface AlgorithmInputs {
   lastKnownWell: string;
@@ -356,17 +357,17 @@ const InteractiveAcuteStrokeAlgorithm: React.FC = () => {
             {/* Internal Navigation Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-3 mb-6">
-                <TabsTrigger value="guidelines" className="flex items-center gap-2">
+                <TabsTrigger value="guidelines" className={`flex items-center gap-2 ${tabColor("blue")}`}>
                   <BookOpen className="h-4 w-4" />
                   <span className="hidden sm:inline">Guidelines & Trials</span>
                   <span className="sm:hidden">Evidence</span>
                 </TabsTrigger>
-                <TabsTrigger value="assessment" className="flex items-center gap-2">
+                <TabsTrigger value="assessment" className={`flex items-center gap-2 ${tabColor("emerald")}`}>
                   <ClipboardList className="h-4 w-4" />
                   <span className="hidden sm:inline">Patient Assessment</span>
                   <span className="sm:hidden">Assess</span>
                 </TabsTrigger>
-                <TabsTrigger value="pathways" className="flex items-center gap-2">
+                <TabsTrigger value="pathways" className={`flex items-center gap-2 ${tabColor("amber")}`}>
                   <GitBranch className="h-4 w-4" />
                   <span className="hidden sm:inline">Treatment Pathways</span>
                   <span className="sm:hidden">Pathways</span>
