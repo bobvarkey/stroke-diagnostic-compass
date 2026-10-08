@@ -1,5 +1,6 @@
 import Dexie, { type Table } from "dexie";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type { PlanStep } from "@/lib/strokePlan";
 
 /** A saved patient record: history notes + imaging steps + treatment plan snapshot. */
@@ -25,7 +26,7 @@ export const IMAGING_STEP = /(ct|mri|cta|angiogram|imaging|scan|dsa)/i;
 function toRow(r: PatientRecord) {
   return {
     id: r.id, patient_id: r.label, created_by: r.owner_id, last_edited_by: r.owner_id,
-    clinical_data: { stroke_record: { notes: r.notes, plan: r.plan, updated_at: r.updated_at, deleted: r.deleted } },
+    clinical_data: JSON.parse(JSON.stringify({ stroke_record: { notes: r.notes, plan: r.plan, updated_at: r.updated_at, deleted: r.deleted } })) as Json,
   };
 }
 
