@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Preview from "./pages/Preview";
 import NotFound from "./pages/NotFound";
+import Account from "./pages/Account";
 import PrivacyScreen from "./compliance/PrivacyScreen";
 import TermsScreen from "./compliance/TermsScreen";
 import DisclaimerScreen from "./compliance/DisclaimerScreen";
@@ -73,6 +74,7 @@ const App = () => {
               <Route path="/terms" element={<TermsScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/disclaimer" element={<DisclaimerScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/settings" element={<SettingsScreen onBack={() => window.history.back()} />} />
+              <Route path="/account" element={<Account />} />
               {/* Preview / marketing page */}
               <Route path="/preview" element={<Preview />} />
               {/* Catch-all */}
