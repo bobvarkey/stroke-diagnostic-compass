@@ -4275,6 +4275,10 @@ function ABCD2Calculator({ onScoreChange }: { onScoreChange?: (score: number) =>
     return sum + (criteria.has(item.id) ? item.points : 0);
   }, 0);
 
+  useEffect(() => {
+    onScoreChange?.(totalScore);
+  }, [totalScore, onScoreChange]);
+
   const getRiskLevel = (score: number) => {
     if (score <= 1) return { level: "Low", color: "bg-green-500", day2Risk: "0%", day7Risk: "0.4%", day90Risk: "1.0%", recommendation: "Outpatient workup may be appropriate" };
     if (score <= 3) return { level: "Low-Moderate", color: "bg-yellow-500", day2Risk: "1.3%", day7Risk: "1.2%", day90Risk: "3.1%", recommendation: "Consider urgent evaluation within 24-48 hours" };
