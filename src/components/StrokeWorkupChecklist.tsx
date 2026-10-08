@@ -1,3 +1,4 @@
+import { registerBackHandler } from "@/lib/navHistory";
 import { publishAbcd2 } from "@/lib/strokePlan";
 import React, { useState, useRef, useCallback, memo, useEffect } from "react";
 import LazySection from "./LazySection";
@@ -5666,6 +5667,28 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
   const activeTabRef = useRef(activeTab);
   activeTabRef.current = activeTab;
+  // Remember visited condition tabs so the header Back button returns to the previous tab first.
+  const tabHistoryRef = useRef<string[]>([]);
+  const goingBackRef = useRef(false);
+  const prevTabRef = useRef(activeTab);
+  useEffect(() => {
+    if (prevTabRef.current !== activeTab) {
+      if (!goingBackRef.current) tabHistoryRef.current.push(prevTabRef.current);
+      goingBackRef.current = false;
+      prevTabRef.current = activeTab;
+    }
+  }, [activeTab]);
+  useEffect(() => {
+    registerBackHandler(() => {
+      const prev = tabHistoryRef.current.pop();
+      if (!prev) return false;
+      goingBackRef.current = true;
+      setActiveTab(prev);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return true;
+    });
+    return () => registerBackHandler(null);
+  }, []);
 
   useEffect(() => {
     const scrollToId = (sectionId: string, behavior: ScrollBehavior = "smooth") => {

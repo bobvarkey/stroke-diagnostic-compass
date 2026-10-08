@@ -5,6 +5,7 @@ import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
+import { goBack } from "@/lib/navHistory";
 import { ChevronUp, Users, LogOut, Shield, Play, Home, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -178,9 +179,9 @@ const Index = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.history.back()}
+              onClick={() => goBack(() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); })}
               className="h-9 w-9"
-              aria-label="Go back to previous page"
+              aria-label="Go back to previous tab or page"
               title="Back"
             >
               <ArrowLeft className="h-4 w-4" />

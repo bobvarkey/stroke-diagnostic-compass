@@ -13,6 +13,7 @@ import TermsScreen from "./compliance/TermsScreen";
 import DisclaimerScreen from "./compliance/DisclaimerScreen";
 import SettingsScreen from "./compliance/SettingsScreen";
 import { getFocusStyleOverrides } from "./services/accessibility";
+import GlobalNavButtons from "@/components/GlobalNavButtons";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <GlobalNavButtons />
             <Routes>
               {/* Main app — opens directly */}
               <Route path="/" element={<Index />} />
