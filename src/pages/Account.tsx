@@ -10,7 +10,7 @@ import { useEntitlement, isEntitlementActive } from "@/hooks/useEntitlement";
 import { cancelSubscription, startTrial } from "@/lib/billing";
 import { clearLocalRecords } from "@/lib/patientRecords";
 
-function SignInForm() {
+export function SignInForm() {
   const { toast } = useToast();
   const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"in" | "up">("in"); const [busy, setBusy] = useState(false);

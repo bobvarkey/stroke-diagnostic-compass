@@ -17,6 +17,7 @@ import DisclaimerScreen from "./compliance/DisclaimerScreen";
 import SettingsScreen from "./compliance/SettingsScreen";
 import { getFocusStyleOverrides } from "./services/accessibility";
 import GlobalNavButtons from "@/components/GlobalNavButtons";
+import HomePaywall from "@/components/HomePaywall";
 
 const queryClient = new QueryClient();
 
@@ -70,7 +71,7 @@ const App = () => {
             <GlobalNavButtons />
             <Routes>
               {/* Main app — opens directly */}
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<HomePaywall><Index /></HomePaywall>} />
               {/* Standalone compliance screens */}
               <Route path="/privacy" element={<PrivacyScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/terms" element={<TermsScreen standalone onBack={() => window.history.back()} />} />
