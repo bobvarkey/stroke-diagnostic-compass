@@ -46,6 +46,7 @@ const DEMO_PATIENT: Patient = {
 
 const Index = () => {
   const { user, profile, isAdmin, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [activeSection, setActiveSection] = useState<string>("");
   const [showScrollTop, setShowScrollTop] = useState(false);
