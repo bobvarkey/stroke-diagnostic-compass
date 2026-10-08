@@ -468,7 +468,7 @@ export default function TirofibanDoseCalculator() {
                     Pump rate for 30 min ({instantDose.loadRate} mcg/kg/min × {weightNum} kg)
                   </div>
                   <div className="text-sm font-bold text-amber-700 dark:text-amber-300 mt-2">
-                    Total: {instantDose.loadingTotalMg} mg ({instantDose.loadingVolumeMl} mL @ 50 mcg/mL)
+                    Total: {instantDose.loadingVolumeMl} mL ({instantDose.loadingTotalMg} mg @ 50 mcg/mL)
                   </div>
                 </div>
 
