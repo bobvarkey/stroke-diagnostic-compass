@@ -29,11 +29,15 @@ import {
   Bell,
   Building,
   UserPlus,
-  Activity
+  Activity,
+  FileText,
+  Download,
+  ExternalLink
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { tabColor } from "@/lib/tabColors";
+import simpleStrokeCodePdf from "@/assets/simple-stroke-code.pdf.asset.json";
 
 interface StrokeContact {
   id: string;
@@ -448,9 +452,33 @@ export default function StrokeCodeSystem() {
     window.location.href = `tel:${phone}`;
   };
 
+  const simpleStrokeCodeReference = (
+    <div className="border-b border-border bg-card/80 p-4 space-y-3">
+      <div className="flex items-center gap-2">
+        <FileText className="h-5 w-5 text-primary shrink-0" />
+        <h3 className="font-semibold text-foreground">Simple Stroke Code — PDF</h3>
+      </div>
+      <p className="text-sm text-muted-foreground">2 pages · NIHSS scoring and thrombolysis reference</p>
+      <div className="flex flex-wrap gap-2">
+        <Button asChild variant="outline" className="min-h-11">
+          <a href={simpleStrokeCodePdf.url} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="h-4 w-4" /> Open PDF
+          </a>
+        </Button>
+        <Button asChild variant="outline" className="min-h-11">
+          <a href={simpleStrokeCodePdf.url} download="simple-stroke-code.pdf">
+            <Download className="h-4 w-4" /> Download PDF
+          </a>
+        </Button>
+      </div>
+      <p className="text-xs text-muted-foreground">Uploaded reference; verify treatment decisions against current guidelines and your local stroke protocol.</p>
+    </div>
+  );
+
   if (loading) {
     return (
       <Card className="border-2 border-red-500 bg-red-50/50 dark:bg-red-950/30">
+        {simpleStrokeCodeReference}
         <CardContent className="p-8 text-center">
           <Activity className="h-8 w-8 animate-spin mx-auto text-red-500" />
           <p className="mt-2 text-muted-foreground">Loading Stroke Code System...</p>
@@ -473,6 +501,7 @@ export default function StrokeCodeSystem() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
+        {simpleStrokeCodeReference}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full grid grid-cols-4 rounded-none border-b bg-muted/60">
             <TabsTrigger value="activate" className={`flex items-center gap-2 ${tabColor("red")}`}>
