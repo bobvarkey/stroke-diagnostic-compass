@@ -4234,7 +4234,7 @@ function HASBLEDCalculator() {
 }
 
 // ABCD2 Score Calculator Component
-function ABCD2Calculator() {
+function ABCD2Calculator({ onScoreChange }: { onScoreChange?: (score: number) => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [criteria, setCriteria] = useState<Set<string>>(new Set());
 
