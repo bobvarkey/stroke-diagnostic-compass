@@ -5774,7 +5774,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "treatment-recommender", label: "Treatment Pathway", icon: <Brain className="h-3.5 w-3.5 text-primary" /> },
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
-              { id: "tpa-eligibility", label: "tPA Eligibility", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" /> },
+              { id: "tpa-eligibility", label: "tPA / TNK Contraindications", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" />, keywords: "tpa tnk tenecteplase alteplase ivt thrombolysis contraindications eligibility checklist" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },

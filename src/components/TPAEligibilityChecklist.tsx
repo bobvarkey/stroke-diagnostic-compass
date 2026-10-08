@@ -229,7 +229,7 @@ const TPAEligibilityChecklist: React.FC = () => {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Syringe className="h-5 w-5 text-primary" />
-            IV tPA Eligibility Checklist
+            tPA / TNK IVT Contraindications Checklist
           </CardTitle>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -238,6 +238,17 @@ const TPAEligibilityChecklist: React.FC = () => {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="rounded-lg border border-blue-500/40 bg-blue-500/10 p-3 text-sm">
+            <p className="font-bold text-blue-700 dark:text-blue-300">Alteplase (tPA)</p>
+            <p>0.9 mg/kg (max 90 mg): 10% bolus over 1 min, rest over 60 min.</p>
+          </div>
+          <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm">
+            <p className="font-bold text-emerald-700 dark:text-emerald-300">Tenecteplase (TNK)</p>
+            <p>0.25 mg/kg single IV bolus over 5 s (max 25 mg). Same contraindications as alteplase; no infusion needed.</p>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground">The contraindications below apply to both agents. Tick any that are present — one absolute contraindication means do not give IVT.</p>
         {/* Real-time Status Display */}
         <Alert className={cn("transition-all", getStatusColor(eligibilityAssessment.status))}>
           <div className="flex items-start gap-3">
