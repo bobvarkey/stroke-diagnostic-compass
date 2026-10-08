@@ -15,6 +15,7 @@ import {
   PREDICTScoreCalculator
 } from "./SAHScaleCalculators";
 import FisherScaleCalculator from "./FisherScaleCalculator";
+import { tabColor } from "@/lib/tabColors";
 
 // ─── Diagnostic Algorithm ───────────────────────────────────────────────────
 
@@ -442,11 +443,11 @@ function SAHComplicationsManagement() {
           <CardContent className="pt-6">
             <Tabs value={activeComplTab} onValueChange={setActiveComplTab}>
               <TabsList className="grid grid-cols-2 sm:grid-cols-5 gap-1 h-auto p-1 mb-4">
-                <TabsTrigger value="vasospasm" className="text-[10px] sm:text-xs px-1">Vasospasm/DCI</TabsTrigger>
-                <TabsTrigger value="rebleeding" className="text-[10px] sm:text-xs px-1">Rebleeding</TabsTrigger>
-                <TabsTrigger value="hydrocephalus" className="text-[10px] sm:text-xs px-1">Hydrocephalus</TabsTrigger>
-                <TabsTrigger value="seizures" className="text-[10px] sm:text-xs px-1">Seizures</TabsTrigger>
-                <TabsTrigger value="systemic" className="text-[10px] sm:text-xs px-1">Systemic</TabsTrigger>
+                <TabsTrigger value="vasospasm" className={`text-[10px] sm:text-xs px-1 ${tabColor("red")}`}>Vasospasm/DCI</TabsTrigger>
+                <TabsTrigger value="rebleeding" className={`text-[10px] sm:text-xs px-1 ${tabColor("rose")}`}>Rebleeding</TabsTrigger>
+                <TabsTrigger value="hydrocephalus" className={`text-[10px] sm:text-xs px-1 ${tabColor("purple")}`}>Hydrocephalus</TabsTrigger>
+                <TabsTrigger value="seizures" className={`text-[10px] sm:text-xs px-1 ${tabColor("amber")}`}>Seizures</TabsTrigger>
+                <TabsTrigger value="systemic" className={`text-[10px] sm:text-xs px-1 ${tabColor("teal")}`}>Systemic</TabsTrigger>
               </TabsList>
 
               {/* Vasospasm / DCI */}

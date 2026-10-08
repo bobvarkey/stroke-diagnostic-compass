@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Syringe, AlertTriangle, Info, Calculator, Activity, Clock, Droplets } from "lucide-react";
 import ModuleCommentBox from "./ModuleCommentBox";
+import { tabColor } from "@/lib/tabColors";
 
 type Regimen = "low" | "intermediate" | "pci";
 
@@ -319,13 +320,13 @@ export default function CangrelorDoseCalculator() {
         {/* Regimen Tabs */}
         <Tabs value={regimen} onValueChange={(v) => setRegimen(v as Regimen)}>
           <TabsList className="grid w-full grid-cols-3 h-auto">
-            <TabsTrigger value="low" className="text-[11px] sm:text-xs whitespace-normal py-2">
+            <TabsTrigger value="low" className={`text-[11px] sm:text-xs whitespace-normal py-2 ${tabColor("teal")}`}>
               Low-dose<br /><span className="opacity-70">(no bolus)</span>
             </TabsTrigger>
-            <TabsTrigger value="intermediate" className="text-[11px] sm:text-xs whitespace-normal py-2">
+            <TabsTrigger value="intermediate" className={`text-[11px] sm:text-xs whitespace-normal py-2 ${tabColor("amber")}`}>
               Intermediate<br /><span className="opacity-70">(stroke stenting)</span>
             </TabsTrigger>
-            <TabsTrigger value="pci" className="text-[11px] sm:text-xs whitespace-normal py-2">
+            <TabsTrigger value="pci" className={`text-[11px] sm:text-xs whitespace-normal py-2 ${tabColor("rose")}`}>
               PCI dose<br /><span className="opacity-70">(cardiac label)</span>
             </TabsTrigger>
           </TabsList>

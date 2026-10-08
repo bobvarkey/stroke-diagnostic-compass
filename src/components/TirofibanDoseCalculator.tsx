@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Switch } from "@/components/ui/switch";
 import { Syringe, AlertTriangle, Info, Calculator, Activity, FlaskConical } from "lucide-react";
 import ModuleCommentBox from "./ModuleCommentBox";
+import { tabColor } from "@/lib/tabColors";
 
 /**
  * Tirofiban Dosing Calculator for Acute Ischemic Stroke
@@ -295,16 +296,16 @@ export default function TirofibanDoseCalculator() {
         {/* Mode tabs */}
         <Tabs value={activeMode} onValueChange={(v) => setActiveMode(v as typeof activeMode)}>
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
-            <TabsTrigger value="iv" className="data-[state=active]:bg-cyan-600 data-[state=active]:text-white text-[11px] sm:text-sm">
+            <TabsTrigger value="iv" className={`text-[11px] sm:text-sm ${tabColor("cyan")}`}>
               Standard IV
             </TabsTrigger>
-            <TabsTrigger value="post_ivt" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-[11px] sm:text-sm">
+            <TabsTrigger value="post_ivt" className={`text-[11px] sm:text-sm ${tabColor("blue")}`}>
               Post-IVT/EVT
             </TabsTrigger>
-            <TabsTrigger value="instant" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white text-[11px] sm:text-sm">
+            <TabsTrigger value="instant" className={`text-[11px] sm:text-sm ${tabColor("amber")}`}>
               Post-TNK (INSTANT)
             </TabsTrigger>
-            <TabsTrigger value="ia" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-[11px] sm:text-sm">
+            <TabsTrigger value="ia" className={`text-[11px] sm:text-sm ${tabColor("purple")}`}>
               IA Rescue
             </TabsTrigger>
           </TabsList>

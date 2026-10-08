@@ -5,6 +5,7 @@ import { Brain, ChevronDown, RotateCcw } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { calculatorOptionClass, cn } from "@/lib/utils";
+import { tabColor } from "@/lib/tabColors";
 
 interface Props {
   onScoreChange?: (scores: { fisher: number | null; modifiedFisher: number | null }) => void;
@@ -112,8 +113,8 @@ export default function FisherScaleCalculator({ onScoreChange }: Props) {
 
             <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "original" | "modified")}>
               <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="modified">Modified Fisher Scale</TabsTrigger>
-                <TabsTrigger value="original">Original Fisher Scale</TabsTrigger>
+                <TabsTrigger value="modified" className={`text-xs sm:text-sm font-semibold ${tabColor("orange")}`}>Modified Fisher Scale</TabsTrigger>
+                <TabsTrigger value="original" className={`text-xs sm:text-sm font-semibold ${tabColor("teal")}`}>Original Fisher Scale</TabsTrigger>
               </TabsList>
 
               {/* Modified Fisher Scale */}
