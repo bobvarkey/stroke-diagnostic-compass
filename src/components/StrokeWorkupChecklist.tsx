@@ -5729,31 +5729,31 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Desktop/Tablet top tabs - hidden on mobile */}
         <TabsList className="hidden sm:grid w-full grid-cols-7 h-14 mb-5 glass-strong rounded-xl p-1">
-          <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+          <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-blue/15 border-accent-blue/40 text-accent-blue hover:bg-accent-blue/25 data-[state=active]:bg-accent-blue data-[state=active]:border-accent-blue data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Zap className="h-4 w-4 shrink-0" />
             Ischemic
           </TabsTrigger>
-          <TabsTrigger value="hemorrhagic" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-amber data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+          <TabsTrigger value="hemorrhagic" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-amber/15 border-accent-amber/40 text-accent-amber hover:bg-accent-amber/25 data-[state=active]:bg-accent-amber data-[state=active]:border-accent-amber data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Droplets className="h-4 w-4 shrink-0" />
             ICH
           </TabsTrigger>
-          <TabsTrigger value="post-ivt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-rose data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+          <TabsTrigger value="post-ivt" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-rose/15 border-accent-rose/40 text-accent-rose hover:bg-accent-rose/25 data-[state=active]:bg-accent-rose data-[state=active]:border-accent-rose data-[state=active]:text-white data-[state=active]:shadow-lg">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             Post IVT-ICH
           </TabsTrigger>
-          <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-accent-purple data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+          <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-purple/15 border-accent-purple/40 text-accent-purple hover:bg-accent-purple/25 data-[state=active]:bg-accent-purple data-[state=active]:border-accent-purple data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Brain className="h-4 w-4 shrink-0" />
             CVT
           </TabsTrigger>
-          <TabsTrigger value="sah" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+          <TabsTrigger value="sah" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-red-500/15 border-red-500/40 text-red-400 hover:bg-red-500/25 data-[state=active]:bg-red-600 data-[state=active]:border-red-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Droplets className="h-4 w-4 shrink-0" />
             SAH
           </TabsTrigger>
-          <TabsTrigger value="sdh" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+          <TabsTrigger value="sdh" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-orange-500/15 border-orange-500/40 text-orange-400 hover:bg-orange-500/25 data-[state=active]:bg-orange-600 data-[state=active]:border-orange-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Layers className="h-4 w-4 shrink-0" />
             SDH
           </TabsTrigger>
-          <TabsTrigger value="plan" className="flex items-center gap-1 text-xs font-semibold data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md px-2 rounded-lg transition-all">
+          <TabsTrigger value="plan" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-emerald-500/15 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/25 data-[state=active]:bg-emerald-600 data-[state=active]:border-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
             <ClipboardList className="h-4 w-4 shrink-0" />
             Plan
           </TabsTrigger>
