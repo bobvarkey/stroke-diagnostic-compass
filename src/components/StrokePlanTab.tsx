@@ -14,6 +14,8 @@ import { useTreatmentPathways } from "@/hooks/useTreatmentPathways";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import type { TreatmentPathways } from "@/lib/treatmentPathways";
+import { Textarea } from "./ui/textarea";
+import { enrichPlan, historyFlags, HISTORY_NOTES_KEY, HISTORY_NOTES_EVENT } from "@/lib/planEnrichment";
 
 const ICON = {
   done: <CheckCircle2 className="h-5 w-5 text-emerald-500" />,
@@ -58,7 +60,14 @@ export default function StrokePlanTab() {
     return () => { window.removeEventListener(OCCULT5_EVENT, o); window.removeEventListener(ICH_REVERSAL_EVENT, i); };
   }, []);
 
-  const plan = buildPlan(occult, ich, abcd2, ivtContra, ivtTree, sich, pathways);
+  const [notes, setNotes] = useState(() => localStorage.getItem(HISTORY_NOTES_KEY) ?? "");
+  const saveNotes = (v: string) => {
+    setNotes(v);
+    try { localStorage.setItem(HISTORY_NOTES_KEY, v); } catch { /* storage full */ }
+    window.dispatchEvent(new CustomEvent(HISTORY_NOTES_EVENT, { detail: v }));
+  };
+  const flags = historyFlags(notes);
+  const plan = enrichPlan(buildPlan(occult, ich, abcd2, ivtContra, ivtTree, sich, pathways), notes);
   const phases = ["Investigation", "Treatment", "Secondary prevention"] as const;
   const go = (s: PlanStep) => window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: s.sectionId }));
   const actions = plan.filter((p) => p.status === "action" || p.status === "pending");
@@ -89,6 +98,13 @@ export default function StrokePlanTab() {
         </div>
       </div>
 
+      <div id="patient-history-notes" className="glass rounded-xl p-4 space-y-2">
+        <Label htmlFor="history-notes" className="font-semibold">Patient history notes</Label>
+        <p className="text-sm text-muted-foreground">Type the patient's history. Key items (blood thinners, AF, cancer, prior bleeding, surgery, seizure, pregnancy, kidney disease, contrast allergy…) are picked up and added to the matching steps below. Saved on this device only.</p>
+        <Textarea id="history-notes" value={notes} maxLength={5000} rows={5} onChange={(e) => saveNotes(e.target.value)} placeholder="e.g. 72 y/o, AF on apixaban (last dose 08:00), HTN, prior surgery 2 weeks ago…" />
+        {flags.length > 0 && <div className="flex flex-wrap gap-2">{flags.map((f) => <Badge key={f.label} variant="outline" className="border-primary/50">{f.label}</Badge>)}</div>}
+      </div>
+
       {phases.map((ph) => (
         <section key={ph} className="space-y-2">
           <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">{ph}</h3>
@@ -99,6 +115,12 @@ export default function StrokePlanTab() {
                 <div>
                   <p className="font-semibold text-sm">{s.title} <Badge variant="secondary" className="ml-1 text-[10px]">{LABEL[s.status]}</Badge></p>
                   <p className="text-sm text-muted-foreground">{s.detail}</p>
+                  {s.historyNotes.map((n) => <p key={n} className="text-sm mt-1 border-l-2 border-primary pl-2"><span className="font-semibold">From history:</span> {n}</p>)}
+                  {s.references.length > 0 && (
+                    <ul className="mt-1 space-y-0.5 text-xs">
+                      {s.references.map((r) => <li key={r.url}><a href={r.url} target="_blank" rel="noopener noreferrer" className="underline text-primary">{r.label}</a></li>)}
+                    </ul>
+                  )}
                 </div>
               </div>
               <Button size="sm" className="min-h-[44px] shrink-0" onClick={() => go(s)}>

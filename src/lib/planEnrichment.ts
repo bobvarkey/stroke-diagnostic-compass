@@ -59,7 +59,7 @@ export type EnrichedStep = PlanStep & { references: Reference[]; historyNotes: s
 export function enrichPlan(plan: PlanStep[], notes: string): EnrichedStep[] {
   const flags = historyFlags(notes);
   return plan.map((s) => {
-    const key = s.id === "ivt-reperfusion" || s.id.startsWith("ivt-decision") ? "ivt-eligibility" : s.id;
+    const key = s.id === "reperfusion" || s.id === "ivt-preparation" ? "ivt-eligibility" : s.id;
     return { ...s, references: STEP_REFERENCES[key] ?? STEP_REFERENCES[s.id] ?? [], historyNotes: flags.filter((f) => f.steps.includes(s.id) || f.steps.includes(key)).map((f) => f.note) };
   });
 }
