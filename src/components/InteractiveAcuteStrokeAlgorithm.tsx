@@ -12,7 +12,6 @@ import ModuleCommentBox from "./ModuleCommentBox";
 import evtAlgorithmImage from "@/assets/evt-eligibility-algorithm.jpeg";
 import evtDecisionTree2026 from "@/assets/evt-decision-tree-2026.jpeg";
 import antiplateletAlgorithm2026 from "@/assets/antiplatelet-algorithm-2026.jpeg";
-import cancerStrokeClassification from "@/assets/cancer-stroke-classification.jpeg";
 import InteractiveEVTDecisionTree from "./InteractiveEVTDecisionTree";
 
 interface AlgorithmInputs {
