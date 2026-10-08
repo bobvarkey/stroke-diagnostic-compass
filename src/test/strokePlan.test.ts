@@ -1,3 +1,4 @@
+import { reperfusionStep, ivtDecision } from "@/lib/ivtPlan";
 import { describe, expect, it } from "vitest";
 import { ichReversalRecommendations, occult5Step, ichReversalStep, abcd2Steps } from "@/lib/strokePlan";
 import { getTabForSection } from "@/lib/sectionTabs";
@@ -35,5 +36,16 @@ describe("stroke plan rules", () => {
     expect(tx.status).toBe("action"); expect(tx.phase).toBe("Treatment"); expect(tx.detail).toMatch(/21 days/);
     expect(abcd2Steps({ score: 3 }).every((st) => st.status !== "action")).toBe(true);
     expect(abcd2Steps(null)[0].status).toBe("pending");
+  });
+  it("one absolute IVT contraindication puts reperfusion step on Pending with the reason", () => {
+    const st = reperfusionStep({ status: "ineligible", absolute: ["Platelet count <100,000/mm³"], relative: [] }, null);
+    expect(st.status).toBe("pending");
+    expect(st.detail).toMatch(/Platelet count/);
+  });
+  it("IVT tree: ≤4.5 h disabling with no contraindication gives IVT; non-disabling without LVO does not", () => {
+    const t = { ischemicOnCT: "yes", window: "lt4_5", disabling: "yes", lvo: "no", mismatch: "", evtAvailable: "" } as const;
+    expect(ivtDecision(t, null).kind).toBe("ivt");
+    expect(ivtDecision({ ...t, disabling: "no" }, null).kind).toBe("no-ivt");
+    expect(ivtDecision({ ...t, ischemicOnCT: "no" }, null).kind).toBe("stop");
   });
 });
