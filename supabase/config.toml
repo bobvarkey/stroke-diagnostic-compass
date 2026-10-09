@@ -8,3 +8,22 @@ verify_jwt = false
 
 [functions.analyze-document]
 verify_jwt = false
+
+# Billing. All five validate the caller themselves: the webhook by HMAC over the raw body,
+# the other four by requireUser() (_shared/billing.ts:19-28). Razorpay cannot present a JWT,
+# so the gateway must not demand one — otherwise every webhook 401s and no entitlement is
+# ever granted.
+[functions.billing-webhook]
+verify_jwt = false
+
+[functions.billing-create-subscription]
+verify_jwt = false
+
+[functions.billing-verify]
+verify_jwt = false
+
+[functions.billing-cancel]
+verify_jwt = false
+
+[functions.billing-start-trial]
+verify_jwt = false

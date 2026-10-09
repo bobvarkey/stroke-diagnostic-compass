@@ -8,6 +8,28 @@ export const PLAN_DISPLAY: Record<PlanCode, { name: string; inr: string; usd: st
   stroke_yearly: { name: "Stroke Yearly", inr: "₹5,000", usd: "$50", period: "year" },
 };
 
+/** Annual first: it is the default option presented to the user. */
+export const PLAN_ORDER: PlanCode[] = ["stroke_yearly", "stroke_monthly"];
+
+/** Percentage saved by paying yearly instead of monthly, derived from the displayed amounts so the
+ *  badge can never drift out of step with the prices. Returns null if the amounts are unparseable. */
+export function annualSavingPercent(): number | null {
+  const monthly = Number(PLAN_DISPLAY.stroke_monthly.inr.replace(/[^\d]/g, ""));
+  const yearly = Number(PLAN_DISPLAY.stroke_yearly.inr.replace(/[^\d]/g, ""));
+  if (!monthly || !yearly) return null;
+  return Math.round((1 - yearly / (monthly * 12)) * 100);
+}
+
+/** Formats a server-recorded charge for display. Amounts are stored in minor units (paise/cents). */
+export function formatAmount(minor: number | null, currency: string | null): string | null {
+  if (minor === null || !currency) return null;
+  try {
+    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(minor / 100);
+  } catch {
+    return `${minor / 100} ${currency}`;
+  }
+}
+
 async function invoke<T>(name: string, body?: unknown): Promise<T> {
   const { data, error } = await supabase.functions.invoke(name, { body: body ?? {} });
   if (error) {
@@ -20,6 +42,10 @@ async function invoke<T>(name: string, body?: unknown): Promise<T> {
 
 export const startTrial = () => invoke<{ expires_at: string }>("billing-start-trial");
 export const cancelSubscription = () => invoke<{ ok: boolean }>("billing-cancel");
+
+/** Admin-only, server-side grant of permanent developer access. The server checks the caller's
+ *  role; nothing here can grant access on its own. */
+export const grantDeveloper = (userId: string) => invoke<{ ok: boolean }>("billing-grant-developer", { user_id: userId });
 
 declare global { interface Window { Razorpay?: new (o: Record<string, unknown>) => { open: () => void } } }
 
@@ -38,7 +64,7 @@ export async function subscribe(plan: PlanCode, onDone: (verified: boolean) => v
   const { subscription_id, key_id, label } = await invoke<{ subscription_id: string; key_id: string; label: string }>("billing-create-subscription", { plan });
   await loadCheckout();
   new window.Razorpay!({
-    key: key_id, subscription_id, name: "Stroke Companion", description: label,
+    key: key_id, subscription_id, name: "StrokeSuite ID", description: label,
     handler: async (r: Record<string, string>) => {
       try { const v = await invoke<{ verified: boolean }>("billing-verify", r); onDone(v.verified); } catch { onDone(false); }
     },

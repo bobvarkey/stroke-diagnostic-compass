@@ -37,6 +37,27 @@ serve(async (req) => {
       );
     }
 
+    // Premium gate. This endpoint spends a paid API key, so entitlement is enforced here and not
+    // only in the UI. The client above carries the caller's JWT, and RLS lets them read only their
+    // own entitlement rows.
+    const userId = data.claims.sub as string;
+    const { data: ents } = await supabase
+      .from('user_entitlements')
+      .select('kind,status,expires_at')
+      .eq('user_id', userId);
+    const now = Date.now();
+    const premium = (ents ?? []).some((e: { kind: string; status: string; expires_at: string | null }) => {
+      if (e.status !== 'active' && e.status !== 'cancelled') return false;
+      if (e.kind === 'developer') return e.status === 'active' && e.expires_at === null;
+      return e.expires_at !== null && new Date(e.expires_at).getTime() > now;
+    });
+    if (!premium) {
+      return new Response(
+        JSON.stringify({ error: 'Premium access required' }),
+        { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const body = await req.json();
     const { documentText, additionalNotes, imageBase64, checkedTests, demographics, calculatedScores } = body;
 

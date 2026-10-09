@@ -12,13 +12,15 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [react(), mode === "development" && componentTagger(),
     VitePWA({
-      registerType: "autoUpdate",
+      // "prompt", not "autoUpdate": a new worker waits until the user applies it from
+      // PwaUpdatePrompt, so the app is never swapped out from under a clinician mid-entry.
+      registerType: "prompt",
       injectRegister: null,
       devOptions: { enabled: false },
       filename: "sw.js",
       includeAssets: ["favicon.png", "app-icon-192.png", "app-icon-512.png"],
       manifest: {
-        name: "Stroke Companion",
+        name: "StrokeSuite ID",
         short_name: "Stroke",
         description: "Evidence-based stroke decision support",
         start_url: "/",

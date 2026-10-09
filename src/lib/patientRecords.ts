@@ -52,7 +52,11 @@ export async function syncRecords(ownerId: string): Promise<boolean> {
     const sr = (row.clinical_data as { stroke_record?: { notes: string; plan: PatientRecord["plan"]; updated_at: string; deleted?: boolean } } | null)?.stroke_record;
     if (!sr) continue;
     const local = await db.records.get(row.id);
-    if (local && local.sync_status === "pending" && local.updated_at > sr.updated_at) continue;
+    // A local edit that never reached the server must not be overwritten or relabelled. If a push
+    // failed, this row is still pending; leave it alone so the next sync retries it. Overwriting it
+    // here both discarded the clinician's edit and stamped it "synced", reporting a sync that never
+    // happened. Patients.tsx already shows pending rows as "not uploaded yet".
+    if (local?.sync_status === "pending") continue;
     await db.records.put({ id: row.id, owner_id: ownerId, label: row.patient_id, notes: sr.notes, plan: sr.plan ?? [], updated_at: sr.updated_at, deleted: !!sr.deleted, sync_status: "synced" });
   }
   return true;

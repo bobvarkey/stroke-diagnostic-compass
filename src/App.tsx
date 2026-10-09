@@ -18,6 +18,8 @@ import SettingsScreen from "./compliance/SettingsScreen";
 import { getFocusStyleOverrides } from "./services/accessibility";
 import GlobalNavButtons from "@/components/GlobalNavButtons";
 import HomePaywall from "@/components/HomePaywall";
+import PwaUpdatePrompt from "@/components/PwaUpdatePrompt";
+import { EntitlementProvider } from "@/hooks/EntitlementProvider";
 
 const queryClient = new QueryClient();
 
@@ -64,9 +66,11 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <EntitlementProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <PwaUpdatePrompt />
           <BrowserRouter>
             <GlobalNavButtons />
             <Routes>
@@ -87,6 +91,7 @@ const App = () => {
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
+        </EntitlementProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

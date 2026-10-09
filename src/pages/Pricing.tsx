@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement } from "@/hooks/useEntitlement";
-import { PLAN_DISPLAY, startTrial, subscribe, type PlanCode } from "@/lib/billing";
+import { PLAN_DISPLAY, PLAN_ORDER, annualSavingPercent, startTrial, subscribe } from "@/lib/billing";
 
 const FEATURES = ["Stroke Plan tab with live next steps", "Saved patient records, viewable offline", "All calculators and pathways"];
 
@@ -43,11 +43,20 @@ export default function Pricing() {
       )}
 
       <div className="grid sm:grid-cols-2 gap-4">
-        {(Object.keys(PLAN_DISPLAY) as PlanCode[]).map((code) => {
+        {PLAN_ORDER.map((code) => {
           const p = PLAN_DISPLAY[code];
+          const recommended = code === "stroke_yearly";
+          const saving = annualSavingPercent();
           return (
-            <section key={code} className="glass rounded-xl p-5 space-y-3">
-              <h2 className="text-xl font-bold">{p.name}</h2>
+            <section key={code} className={`glass rounded-xl p-5 space-y-3 ${recommended ? "ring-2 ring-primary" : ""}`}>
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <h2 className="text-xl font-bold">{p.name}</h2>
+                {recommended && (
+                  <span className="text-xs font-semibold rounded-full bg-primary px-2 py-0.5 text-primary-foreground">
+                    Recommended{saving ? ` · save ${saving}%` : ""}
+                  </span>
+                )}
+              </div>
               <p className="text-2xl font-bold tabular-nums">{p.inr}<span className="text-sm font-normal text-muted-foreground"> / {p.period}</span></p>
               <p className="text-sm text-muted-foreground">{p.usd} / {p.period} outside India</p>
               <ul className="space-y-1 text-sm">{FEATURES.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-primary shrink-0" />{f}</li>)}</ul>

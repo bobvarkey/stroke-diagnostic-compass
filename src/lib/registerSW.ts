@@ -15,5 +15,12 @@ export async function registerAppServiceWorker() {
     return;
   }
   const { registerSW } = await import("virtual:pwa-register");
-  registerSW({ immediate: true });
+  // registerType is "prompt": a waiting worker does NOT take over on its own. We surface it and let
+  // the clinician apply it, so the app never reloads underneath someone mid-entry.
+  const updateSW = registerSW({
+    immediate: true,
+    onNeedRefresh() { window.dispatchEvent(new CustomEvent("pwa-update-available")); },
+    onOfflineReady() { window.dispatchEvent(new CustomEvent("pwa-offline-ready")); },
+  });
+  window.addEventListener("pwa-apply-update", () => { void updateSW(true); });
 }
