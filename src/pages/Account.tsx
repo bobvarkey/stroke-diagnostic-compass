@@ -10,6 +10,7 @@ import { useEntitlement, isEntitlementActive } from "@/hooks/useEntitlement";
 import { useAuth } from "@/hooks/useAuth";
 import { cancelSubscription, startTrial, grantDeveloper, formatAmount, PLAN_DISPLAY, type PlanCode } from "@/lib/billing";
 import { clearLocalRecords } from "@/lib/patientRecords";
+import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
 
 /** Human label for an entitlement row: the plan's display name where we know it, else the kind. */
 const planName = (code: string | null, kind: string) =>
@@ -138,6 +139,7 @@ export default function Account() {
   return (
     <main className="min-h-screen p-4 pt-20 max-w-xl mx-auto space-y-4">
       <h1 className="text-2xl font-bold">Account</h1>
+      <SubscriptionStatusBadge />
       {!user ? <SignInForm /> : (
         <>
           <section className="glass rounded-xl p-4 space-y-2">

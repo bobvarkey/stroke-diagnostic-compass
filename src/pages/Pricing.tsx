@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement } from "@/hooks/useEntitlement";
+import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
 import { PLAN_DISPLAY, PLAN_ORDER, annualSavingPercent, startTrial, subscribe } from "@/lib/billing";
 
 const FEATURES = ["Stroke Plan tab with live next steps", "Saved patient records, viewable offline", "All calculators and pathways"];
@@ -25,6 +26,7 @@ export default function Pricing() {
       <header className="text-center space-y-2">
         <h1 className="text-3xl font-bold">Stroke Pro</h1>
         <p className="text-muted-foreground">Start with a free 3-day trial. Cancel anytime.</p>
+        <SubscriptionStatusBadge />
         {hasPremium && <p className="text-sm font-semibold text-primary">You already have access — thank you!</p>}
       </header>
 
