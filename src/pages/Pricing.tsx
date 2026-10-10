@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement } from "@/hooks/useEntitlement";
 import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
-import { PLAN_DISPLAY, PLAN_ORDER, annualSavingPercent, startTrial, subscribe } from "@/lib/billing";
+import { PLAN_DISPLAY, plansFor, annualSavingPercent, preferredCurrency, startTrial, subscribe } from "@/lib/billing";
 
 const FEATURES = ["Stroke Plan tab with live next steps", "Saved patient records, viewable offline", "All calculators and pathways"];
 
@@ -14,6 +14,7 @@ export default function Pricing() {
   const { toast } = useToast();
   const [busy, setBusy] = useState<string | null>(null);
   const trialUsed = ents.some((e) => e.kind === "trial");
+  const currency = preferredCurrency();
 
   const run = async (key: string, fn: () => Promise<void>) => {
     setBusy(key);
@@ -45,10 +46,10 @@ export default function Pricing() {
       )}
 
       <div className="grid sm:grid-cols-2 gap-4">
-        {PLAN_ORDER.map((code) => {
+        {plansFor(currency).map((code) => {
           const p = PLAN_DISPLAY[code];
-          const recommended = code === "stroke_yearly";
-          const saving = annualSavingPercent();
+          const recommended = p.period === "year";
+          const saving = annualSavingPercent(currency);
           return (
             <section key={code} className={`glass rounded-xl p-5 space-y-3 ${recommended ? "ring-2 ring-primary" : ""}`}>
               <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -59,8 +60,7 @@ export default function Pricing() {
                   </span>
                 )}
               </div>
-              <p className="text-2xl font-bold tabular-nums">{p.inr}<span className="text-sm font-normal text-muted-foreground"> / {p.period}</span></p>
-              <p className="text-sm text-muted-foreground">{p.usd} / {p.period} outside India</p>
+              <p className="text-2xl font-bold tabular-nums">{p.amount}<span className="text-sm font-normal text-muted-foreground"> / {p.period}</span></p>
               <ul className="space-y-1 text-sm">{FEATURES.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-primary shrink-0" />{f}</li>)}</ul>
               <Button className="w-full min-h-11" disabled={!user || busy !== null} onClick={() => run(code, () => subscribe(code, async (ok) => {
                 toast({ title: ok ? "Payment received" : "Payment not confirmed", description: ok ? "Access unlocks as soon as Razorpay confirms (usually seconds)." : "If you were charged, access will unlock once Razorpay confirms." });

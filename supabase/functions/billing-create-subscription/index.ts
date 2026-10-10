@@ -1,7 +1,7 @@
 import { z } from "npm:zod@3";
 import { corsHeaders, json, requireUser, razorpayAuth, PLANS } from "../_shared/billing.ts";
 
-const Body = z.object({ plan: z.enum(["stroke_monthly", "stroke_yearly"]) });
+const Body = z.object({ plan: z.enum(["stroke_monthly", "stroke_yearly", "stroke_monthly_usd", "stroke_yearly_usd"]) });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -12,7 +12,10 @@ Deno.serve(async (req) => {
   const auth = razorpayAuth();
   const plan = PLANS[parsed.data.plan];
   const planId = Deno.env.get(plan.env);
-  if (!auth || !planId) return json({ error: "Billing is not configured yet" }, 503);
+  if (!auth) return json({ error: "Billing is not configured yet" }, 503);
+  // Fail closed on the requested currency rather than falling back to the other plan, which would
+  // charge a different amount than the page just quoted.
+  if (!planId) return json({ error: `${plan.currency} billing is not available yet` }, 503);
 
   const res = await fetch("https://api.razorpay.com/v1/subscriptions", {
     method: "POST",

@@ -1,24 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { PlanCode } from "@/lib/planCatalog";
 
-export type PlanCode = "stroke_monthly" | "stroke_yearly";
-
-/** Display-only catalog. Real plan ids and charged amounts live on the server. */
-export const PLAN_DISPLAY: Record<PlanCode, { name: string; inr: string; usd: string; period: string }> = {
-  stroke_monthly: { name: "Stroke Monthly", inr: "₹500", usd: "$5", period: "month" },
-  stroke_yearly: { name: "Stroke Yearly", inr: "₹5,000", usd: "$50", period: "year" },
-};
-
-/** Annual first: it is the default option presented to the user. */
-export const PLAN_ORDER: PlanCode[] = ["stroke_yearly", "stroke_monthly"];
-
-/** Percentage saved by paying yearly instead of monthly, derived from the displayed amounts so the
- *  badge can never drift out of step with the prices. Returns null if the amounts are unparseable. */
-export function annualSavingPercent(): number | null {
-  const monthly = Number(PLAN_DISPLAY.stroke_monthly.inr.replace(/[^\d]/g, ""));
-  const yearly = Number(PLAN_DISPLAY.stroke_yearly.inr.replace(/[^\d]/g, ""));
-  if (!monthly || !yearly) return null;
-  return Math.round((1 - yearly / (monthly * 12)) * 100);
-}
+/** The price list lives in a dependency-free module so it can be tested without a Supabase client. */
+export {
+  PLAN_DISPLAY, plansFor, monthlyPlan, yearlyPlan,
+  annualSavingPercent, currencyForRegion, preferredCurrency,
+} from "@/lib/planCatalog";
+export type { PlanCode, Currency, PlanDisplay } from "@/lib/planCatalog";
 
 /** Formats a server-recorded charge for display. Amounts are stored in minor units (paise/cents). */
 export function formatAmount(minor: number | null, currency: string | null): string | null {
