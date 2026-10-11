@@ -841,6 +841,14 @@ function SDHMedicalManagement() {
                   verdict: "Hypothesis-generating",
                   color: "border-violet-300",
                 },
+                {
+                  drug: "Bevacizumab (intra-arterial, via MMA)",
+                  dose: "2 mg/kg per treated hemisphere, infused selectively into the middle meningeal artery over 5–10 minutes via microcatheter into the proximal MMA. Bilateral cSDH: 2 mg/kg each side (total 4 mg/kg). First reported case used 200 mg (exactly 2 mg/kg) on the affected side.",
+                  evidence: "Dose used consistently by the Cooper Health / Ajith Thomas group: first reported case, early series of 12 hemispheres in 8 patients, and the 2026 AJNR series (35 hemispheres in 25 patients). Ongoing trials continue at 2 mg/kg per hemisphere; dose-escalation studies test higher amounts only as an adjunct to standard MMA embolization.",
+                  notes: "The 2 mg/kg dose was chosen conservatively — about one-fifth of typical intra-arterial doses used for glioblastoma — to limit systemic exposure and theoretical wound-healing concerns while still targeting the VEGF-rich subdural membranes.",
+                  verdict: "Investigational",
+                  color: "border-rose-300",
+                },
               ].map((med) => (
                 <div key={med.drug} className={`p-3 rounded-lg border ${med.color} dark:border-opacity-50 bg-background`}>
                   <div className="flex items-center justify-between mb-1">
