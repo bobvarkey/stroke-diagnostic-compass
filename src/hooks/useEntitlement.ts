@@ -16,8 +16,14 @@ export function useEntitlement() {
   const [ents, setEnts] = useState<Entitlement[] | null>(null);
   const refresh = useCallback(async () => {
     if (!user) { setEnts([]); return; }
-    const { data } = await supabase.from("user_entitlements").select("kind,status,expires_at,plan_code,amount_minor,currency");
-    setEnts((data as Entitlement[]) ?? []);
+    const [{ data }, { data: memberUntil }] = await Promise.all([
+      supabase.from("user_entitlements").select("kind,status,expires_at,plan_code,amount_minor,currency"),
+      supabase.rpc("my_enterprise_access"),
+    ]);
+    const list = (data as Entitlement[]) ?? [];
+    // Seat on someone else's Enterprise plan, resolved server-side from the confirmed email.
+    if (memberUntil) list.push({ kind: "enterprise_member", status: "active", expires_at: memberUntil as string, plan_code: "stroke_enterprise", amount_minor: null, currency: null });
+    setEnts(list);
   }, [user]);
   useEffect(() => { refresh(); }, [refresh]);
   const loading = authLoading || ents === null;

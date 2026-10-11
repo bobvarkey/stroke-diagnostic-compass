@@ -11,6 +11,8 @@ export function subscriptionStatus(ents: Entitlement[], now = Date.now()): { sta
   const sub = ents.find((e) => e.kind === "subscription");
   const plan = sub?.plan_code ? PLAN_DISPLAY[sub.plan_code as PlanCode]?.name ?? sub.plan_code : null;
   if (sub && isEntitlementActive(sub, now)) return { status: "active", until: sub.expires_at, plan };
+  const member = ents.find((e) => e.kind === "enterprise_member" && isEntitlementActive(e, now));
+  if (member) return { status: "active", until: member.expires_at, plan: "Enterprise team member" };
   const trial = ents.find((e) => e.kind === "trial");
   if (trial && isEntitlementActive(trial, now)) return { status: "trial", until: trial.expires_at, plan: "Free trial" };
   if (sub && (sub.status === "paused" || sub.status === "halted")) return { status: "paused", until: sub.expires_at, plan };
