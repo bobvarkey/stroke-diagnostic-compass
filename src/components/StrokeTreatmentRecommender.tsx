@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ModuleCommentBox from "./ModuleCommentBox";
+import { thrombolyticDoses, type ThrombolyticDose } from "@/lib/thrombolyticDose";
 
 interface PatientInputs {
   nihss: string;
@@ -35,7 +36,9 @@ interface Recommendation {
   rationale: string[];
   actions: string[];
   warnings: string[];
-  tpaDose?: { bolus: string; infusion: string; total: string };
+  tpaDose?: ThrombolyticDose;
+  /** Offered alongside alteplase for every IVT pathway; the choice is per local protocol. */
+  tnkDose?: ThrombolyticDose;
 }
 
 const StrokeTreatmentRecommender: React.FC = () => {
@@ -198,21 +201,15 @@ const StrokeTreatmentRecommender: React.FC = () => {
       actions.push("Loberamisal (investigational): LAIS phase 3 (998 pts, 32 hospitals) — 90-day mRS 0–1 (complete functional independence) in 69.7% vs 56.4% with placebo (+13.3 pp) when given within 48h. Complements, not replaces, thrombolysis/thrombectomy. Confirm local approval and protocol.");
     }
 
-    // tPA dosing if applicable
-    let tpaDose;
-    if ((pathway === "ivt_only" || pathway === "ivt_evt") && !isNaN(weight) && weight > 0) {
-      const cappedWeight = Math.min(weight, 100); // max 90mg
-      const totalDose = Math.min(cappedWeight * 0.9, 90);
-      const bolus = totalDose * 0.1;
-      const infusion = totalDose * 0.9;
-      tpaDose = {
-        total: `${totalDose.toFixed(1)} mg`,
-        bolus: `${bolus.toFixed(1)} mg IV push over 1 min`,
-        infusion: `${infusion.toFixed(1)} mg IV infusion over 60 min`,
-      };
+    // Thrombolytic dosing if applicable — both options for every IVT pathway.
+    let tpaDose: ThrombolyticDose | undefined;
+    let tnkDose: ThrombolyticDose | undefined;
+    if (pathway === "ivt_only" || pathway === "ivt_evt") {
+      const doses = thrombolyticDoses(weight);
+      if (doses) { tpaDose = doses.alteplase; tnkDose = doses.tenecteplase; }
     }
 
-    return { pathway, title, urgency, rationale, actions, warnings, tpaDose };
+    return { pathway, title, urgency, rationale, actions, warnings, tpaDose, tnkDose };
   }, [inputs]);
 
   const getPathwayColor = (pathway: Pathway) => {
@@ -433,11 +430,13 @@ const StrokeTreatmentRecommender: React.FC = () => {
               </div>
             )}
 
-            {/* tPA Dosing */}
+            {/* Thrombolytic Dosing — alteplase and tenecteplase are alternatives for the same
+                indication, so both are shown at the weight entered and the choice is left to the
+                local protocol rather than gated on anything this tool knows. */}
             {recommendation.tpaDose && (
               <div className="p-3 rounded-lg border bg-primary/5 border-primary/20">
                 <h5 className="text-sm font-medium mb-2 flex items-center gap-2">
-                  <Syringe className="h-4 w-4 text-primary" /> Calculated tPA Dosing
+                  <Syringe className="h-4 w-4 text-primary" /> Calculated Alteplase (tPA) Dosing
                 </h5>
                 <div className="grid gap-1 text-xs">
                   <div className="flex items-center gap-2">
@@ -454,6 +453,33 @@ const StrokeTreatmentRecommender: React.FC = () => {
                     <span>{recommendation.tpaDose.infusion}</span>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {recommendation.tnkDose && (
+              <div className="p-3 rounded-lg border bg-primary/5 border-primary/20">
+                <h5 className="text-sm font-medium mb-2 flex items-center gap-2">
+                  <Syringe className="h-4 w-4 text-primary" /> Calculated TNK (tenecteplase) Dosing
+                </h5>
+                <div className="grid gap-1 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs min-w-[60px]">Total</Badge>
+                    <span className="font-semibold">{recommendation.tnkDose.total}</span>
+                    <span className="text-muted-foreground">(0.25 mg/kg, max 25 mg)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs min-w-[60px]">Bolus</Badge>
+                    <span>{recommendation.tnkDose.bolus}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs min-w-[60px]">Infusion</Badge>
+                    <span>{recommendation.tnkDose.infusion ?? "None — single bolus"}</span>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground pt-2">
+                  Alternative to alteplase, chosen by local protocol. Same contraindications; give as a
+                  single bolus with no infusion.
+                </p>
               </div>
             )}
           </div>
