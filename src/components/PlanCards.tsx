@@ -4,19 +4,20 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement } from "@/hooks/useEntitlement";
 import {
-  PLAN_DISPLAY, plansFor, preferredCurrency, annualSavingPercent,
-  startTrial, subscribe, ENTERPRISE_PLAN, ENTERPRISE_SEATS, type PlanCode,
+  PLAN_DISPLAY, plansFor, annualSavingPercent,
+  startTrial, subscribe, ENTERPRISE_PLAN, ENTERPRISE_SEATS, type PlanCode, type Currency,
 } from "@/lib/billing";
 
 const FEATURES = ["Stroke Plan tab with live next steps", "Saved patient records, viewable offline", "All calculators and pathways"];
 
 /** The trial offer and the three plans, in one place so the paywall and /pricing cannot drift.
- *  Prices come from the catalog; the charged amount still comes from the plan id the server holds. */
+ *  Prices come from the catalog; the charged amount still comes from the plan id the server holds.
+ *  Prices default to USD; visitors in India can flip to ₹ with the toggle. */
 export default function PlanCards({ compact = false }: { compact?: boolean }) {
   const { user, ents, hasPremium, refresh } = useEntitlement();
   const { toast } = useToast();
   const [busy, setBusy] = useState<string | null>(null);
-  const currency = preferredCurrency();
+  const [currency, setCurrency] = useState<Currency>("USD");
   const trialUsed = ents.some((e) => e.kind === "trial");
   const saving = annualSavingPercent(currency);
 
@@ -90,6 +91,25 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
           )}
         </div>
       )}
+
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-xs text-muted-foreground">Prices in</span>
+        <div className="inline-flex rounded-full border border-border overflow-hidden" role="group" aria-label="Currency">
+          {(["USD", "INR"] as Currency[]).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCurrency(c)}
+              aria-pressed={currency === c}
+              className={`px-4 min-h-9 text-sm font-semibold transition-colors ${
+                currency === c ? "bg-primary text-primary-foreground" : "bg-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {c === "USD" ? "$ USD" : "₹ INR (India)"}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
         {plansFor(currency).map((code) => card(code, PLAN_DISPLAY[code].period === "year"))}
