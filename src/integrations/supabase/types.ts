@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      enterprise_members: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           amount_minor: number
@@ -491,6 +512,7 @@ export type Database = {
     Functions: {
       can_access_patient: { Args: { _patient_id: string }; Returns: boolean }
       get_username: { Args: { _user_id: string }; Returns: string }
+      has_active_enterprise: { Args: { _user_id: string }; Returns: boolean }
       has_premium_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -499,6 +521,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      my_enterprise_access: { Args: never; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
