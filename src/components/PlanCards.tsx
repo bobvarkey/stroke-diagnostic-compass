@@ -92,6 +92,25 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
         </div>
       )}
 
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-xs text-muted-foreground">Prices in</span>
+        <div className="inline-flex rounded-full border border-border overflow-hidden" role="group" aria-label="Currency">
+          {(["USD", "INR"] as Currency[]).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCurrency(c)}
+              aria-pressed={currency === c}
+              className={`px-4 min-h-9 text-sm font-semibold transition-colors ${
+                currency === c ? "bg-primary text-primary-foreground" : "bg-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {c === "USD" ? "$ USD" : "₹ INR (India)"}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid sm:grid-cols-2 gap-4">
         {plansFor(currency).map((code) => card(code, PLAN_DISPLAY[code].period === "year"))}
       </div>
