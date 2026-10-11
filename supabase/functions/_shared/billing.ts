@@ -7,6 +7,7 @@ export { corsHeaders };
 export const PLANS = {
   stroke_monthly: { env: "RAZORPAY_PLAN_MONTHLY", label: "Stroke Monthly", totalCount: 120 },
   stroke_yearly: { env: "RAZORPAY_PLAN_YEARLY", label: "Stroke Yearly", totalCount: 10 },
+  stroke_enterprise: { env: "RAZORPAY_PLAN_ENTERPRISE", label: "Stroke Enterprise Annual", totalCount: 10 },
 } as const;
 export type PlanCode = keyof typeof PLANS;
 

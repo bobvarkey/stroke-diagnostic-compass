@@ -42,15 +42,16 @@ export default function Pricing() {
         </div>
       )}
 
-      <div className="grid sm:grid-cols-2 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {(Object.keys(PLAN_DISPLAY) as PlanCode[]).map((code) => {
           const p = PLAN_DISPLAY[code];
+          const feats = code === "stroke_enterprise" ? [...FEATURES, "For hospitals and stroke teams", "Priority support"] : FEATURES;
           return (
             <section key={code} className="glass rounded-xl p-5 space-y-3">
               <h2 className="text-xl font-bold">{p.name}</h2>
-              <p className="text-2xl font-bold tabular-nums">{p.inr}<span className="text-sm font-normal text-muted-foreground"> / {p.period}</span></p>
-              <p className="text-sm text-muted-foreground">{p.usd} / {p.period} outside India</p>
-              <ul className="space-y-1 text-sm">{FEATURES.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-primary shrink-0" />{f}</li>)}</ul>
+              <p className="text-2xl font-bold tabular-nums">{p.inr ?? p.usd}<span className="text-sm font-normal text-muted-foreground"> / {p.period}</span></p>
+              {p.inr && <p className="text-sm text-muted-foreground">{p.usd} / {p.period} outside India</p>}
+              <ul className="space-y-1 text-sm">{feats.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-primary shrink-0" />{f}</li>)}</ul>
               <Button className="w-full min-h-11" disabled={!user || busy !== null} onClick={() => run(code, () => subscribe(code, async (ok) => {
                 toast({ title: ok ? "Payment received" : "Payment not confirmed", description: ok ? "Access unlocks as soon as Razorpay confirms (usually seconds)." : "If you were charged, access will unlock once Razorpay confirms." });
                 setTimeout(refresh, 4000);
