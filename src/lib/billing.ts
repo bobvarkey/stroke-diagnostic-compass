@@ -1,12 +1,18 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type PlanCode = "stroke_monthly" | "stroke_yearly";
+export type PlanCode = "stroke_monthly" | "stroke_yearly" | "stroke_enterprise";
 
-/** Display-only catalog. Real plan ids and charged amounts live on the server. */
-export const PLAN_DISPLAY: Record<PlanCode, { name: string; inr: string; usd: string; period: string }> = {
+/** Display-only catalog. Real plan ids and charged amounts live on the server. `inr` null = USD-only plan. */
+export const PLAN_DISPLAY: Record<PlanCode, { name: string; inr: string | null; usd: string; period: string }> = {
   stroke_monthly: { name: "Stroke Monthly", inr: "₹500", usd: "$5", period: "month" },
   stroke_yearly: { name: "Stroke Yearly", inr: "₹5,000", usd: "$50", period: "year" },
+  stroke_enterprise: { name: "Enterprise Annual", inr: null, usd: "$1,000", period: "year" },
 };
+
+export function formatMoney(amountMinor: number, currency: string): string {
+  try { return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", { style: "currency", currency }).format(amountMinor / 100); }
+  catch { return `${(amountMinor / 100).toFixed(2)} ${currency}`; }
+}
 
 async function invoke<T>(name: string, body?: unknown): Promise<T> {
   const { data, error } = await supabase.functions.invoke(name, { body: body ?? {} });

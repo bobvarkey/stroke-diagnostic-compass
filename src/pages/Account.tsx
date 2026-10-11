@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useEntitlement, isEntitlementActive } from "@/hooks/useEntitlement";
 import { cancelSubscription, startTrial } from "@/lib/billing";
 import { clearLocalRecords } from "@/lib/patientRecords";
+import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
+import InvoiceList from "@/components/InvoiceList";
 
 export function SignInForm() {
   const { toast } = useToast();
@@ -59,6 +61,7 @@ export default function Account() {
           </section>
           <section className="glass rounded-xl p-4 space-y-3">
             <h2 className="font-semibold">Access</h2>
+            {!loading && <SubscriptionStatusBadge ents={ents} />}
             {loading ? <p className="text-sm text-muted-foreground">Loading…</p> : ents.length === 0 ? <p className="text-sm">No trial, subscription or developer access yet.</p> : ents.map((e) => (
               <p key={e.kind} className="text-sm"><span className="font-semibold capitalize">{e.kind}</span> — {isEntitlementActive(e) ? "active" : e.status}{e.status === "cancelled" ? " (won't renew)" : ""}{e.expires_at ? `, until ${new Date(e.expires_at).toLocaleDateString()}` : ", no expiry"}</p>
             ))}
@@ -70,6 +73,7 @@ export default function Account() {
               <Button variant="ghost" className="min-h-11" onClick={async () => { await supabase.auth.signOut(); await clearLocalRecords(); }}>Sign out</Button>
             </div>
           </section>
+          <InvoiceList email={user.email ?? undefined} />
         </>
       )}
     </main>
