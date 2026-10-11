@@ -131,10 +131,12 @@ export default function Account() {
   const [busy, setBusy] = useState(false);
   const sub = ents.find((e) => e.kind === "subscription");
   const trialUsed = ents.some((e) => e.kind === "trial");
+  // Refreshes on the failure path too, so a refused action still leaves the screen showing what the
+  // server actually recorded rather than the state the button assumed.
   const act = async (fn: () => Promise<unknown>, ok: string) => {
     setBusy(true);
-    try { await fn(); toast({ title: ok }); await refresh(); } catch (e) { toast({ title: "Something went wrong", description: (e as Error).message, variant: "destructive" }); }
-    finally { setBusy(false); }
+    try { await fn(); toast({ title: ok }); } catch (e) { toast({ title: "Something went wrong", description: (e as Error).message, variant: "destructive" }); }
+    finally { setBusy(false); await refresh(); }
   };
 
   return (

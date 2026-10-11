@@ -21,6 +21,9 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
   const trialUsed = ents.some((e) => e.kind === "trial");
   const saving = annualSavingPercent(currency);
 
+  // Refreshes on the failure path too. A trial whose window has already closed is recorded
+  // server-side and then refused, and the only way that refusal retires the button is if we re-read
+  // the record — otherwise the user is left pressing an offer the server will never honour.
   const run = async (key: string, fn: () => Promise<void>) => {
     setBusy(key);
     try {
@@ -29,6 +32,7 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
       toast({ title: "Something went wrong", description: (e as Error).message, variant: "destructive" });
     } finally {
       setBusy(null);
+      await refresh();
     }
   };
 
@@ -83,7 +87,7 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
               <Button
                 className="min-h-11"
                 disabled={!user || busy !== null}
-                onClick={() => run("trial", async () => { await startTrial(); await refresh(); toast({ title: "Your 3-day trial has started" }); })}
+                onClick={() => run("trial", async () => { await startTrial(); toast({ title: "Your 3-day trial has started" }); })}
               >
                 {busy === "trial" ? "Starting…" : user ? "Start 3-day free trial" : "Sign in to start your free trial"}
               </Button>
