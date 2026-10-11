@@ -6,7 +6,7 @@ export type PlanCode =
   | "stroke_yearly"
   | "stroke_monthly_usd"
   | "stroke_yearly_usd"
-  | "stroke_enterprise_yearly";
+  | "stroke_enterprise";
 
 export interface PlanDisplay {
   name: string;
@@ -23,13 +23,21 @@ export const PLAN_DISPLAY: Record<PlanCode, PlanDisplay> = {
   stroke_yearly: { name: "Stroke Yearly", amount: "₹5,000", period: "year", currency: "INR" },
   stroke_monthly_usd: { name: "Stroke Monthly", amount: "$5", period: "month", currency: "USD" },
   stroke_yearly_usd: { name: "Stroke Yearly", amount: "$50", period: "year", currency: "USD" },
-  stroke_enterprise_yearly: { name: "Enterprise", amount: "$1,000", period: "year", currency: "USD" },
+  stroke_enterprise: { name: "Enterprise Annual", amount: "$1,000", period: "year", currency: "USD" },
 };
 
 /** Enterprise is quoted in dollars for every region, so it is offered *alongside* whichever
- *  individual list the visitor is shown rather than being switched by `plansFor`. It currently
- *  grants the same access as the individual plans — it is a price tier, not yet a seat or team. */
-export const ENTERPRISE_PLAN: PlanCode = "stroke_enterprise_yearly";
+ *  individual list the visitor is shown rather than being switched by `plansFor`.
+ *
+ *  This exact string is load-bearing: `public.has_active_enterprise()` and the
+ *  `enterprise_members` seat policies match on `plan_code = 'stroke_enterprise'`. Renaming it here
+ *  without renaming it there silently strips access from every Enterprise seat. */
+export const STROKE_ENTERPRISE: PlanCode = "stroke_enterprise";
+export const ENTERPRISE_PLAN: PlanCode = STROKE_ENTERPRISE;
+
+/** Must match the cap in `public.enforce_enterprise_seats()` (drizzle 0002). Advertising a seat
+ *  count the trigger does not allow is a promise the product cannot keep. */
+export const ENTERPRISE_SEATS = 50;
 
 export const monthlyPlan = (currency: Currency): PlanCode =>
   currency === "INR" ? "stroke_monthly" : "stroke_monthly_usd";

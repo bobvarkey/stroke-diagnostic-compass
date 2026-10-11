@@ -1,4 +1,4 @@
-import { useEntitlement } from "@/hooks/useEntitlement";
+import { useEntitlement, type Entitlement } from "@/hooks/useEntitlement";
 import { subscriptionStatus, type StatusTone } from "@/lib/entitlementStatus";
 
 const TONE: Record<StatusTone, string> = {
@@ -16,12 +16,15 @@ const DOT: Record<StatusTone, string> = {
 };
 
 /** Reads the server-recorded entitlement and shows it in one line. Display only — it grants
- *  nothing, and it stays hidden while the record is loading so it never flashes a wrong answer. */
-export default function SubscriptionStatusBadge({ className = "" }: { className?: string }) {
-  const { ents, loading } = useEntitlement();
-  if (loading) return null;
+ *  nothing, and it stays hidden while the record is loading so it never flashes a wrong answer.
+ *
+ *  `ents` is optional: pass it to render a caller's own snapshot, or omit it to read the shared
+ *  provider state. */
+export default function SubscriptionStatusBadge({ ents, className = "" }: { ents?: Entitlement[]; className?: string }) {
+  const ctx = useEntitlement();
+  if (!ents && ctx.loading) return null;
 
-  const { label, detail, tone } = subscriptionStatus(ents);
+  const { label, detail, tone } = subscriptionStatus(ents ?? ctx.ents);
   return (
     <div
       role="status"

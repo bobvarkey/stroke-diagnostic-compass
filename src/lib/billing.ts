@@ -3,19 +3,21 @@ import type { PlanCode } from "@/lib/planCatalog";
 
 /** The price list lives in a dependency-free module so it can be tested without a Supabase client. */
 export {
-  PLAN_DISPLAY, plansFor, monthlyPlan, yearlyPlan, ENTERPRISE_PLAN,
+  PLAN_DISPLAY, plansFor, monthlyPlan, yearlyPlan, ENTERPRISE_PLAN, STROKE_ENTERPRISE, ENTERPRISE_SEATS,
   annualSavingPercent, currencyForRegion, preferredCurrency,
 } from "@/lib/planCatalog";
 export type { PlanCode, Currency, PlanDisplay } from "@/lib/planCatalog";
 
-/** Formats a server-recorded charge for display. Amounts are stored in minor units (paise/cents). */
+/** Formats a server-recorded charge. Amounts are stored in minor units (paise/cents). */
+export function formatMoney(amountMinor: number, currency: string): string {
+  try { return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", { style: "currency", currency }).format(amountMinor / 100); }
+  catch { return `${(amountMinor / 100).toFixed(2)} ${currency}`; }
+}
+
+/** Null-tolerant wrapper for records that may not carry a charge yet. */
 export function formatAmount(minor: number | null, currency: string | null): string | null {
   if (minor === null || !currency) return null;
-  try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(minor / 100);
-  } catch {
-    return `${minor / 100} ${currency}`;
-  }
+  return formatMoney(minor, currency);
 }
 
 async function invoke<T>(name: string, body?: unknown): Promise<T> {

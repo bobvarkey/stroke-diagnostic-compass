@@ -9,8 +9,8 @@ const REVIVING = new Set(["subscription.activated", "subscription.resumed"]);
 interface RazorpayEvent {
   event?: string;
   payload?: {
-    subscription?: { entity?: { id?: string; current_end?: number; notes?: { user_id?: string; plan_code?: string } } };
-    payment?: { entity?: { amount?: number; currency?: string } };
+    subscription?: { entity?: { id?: string; current_start?: number; current_end?: number; notes?: { user_id?: string; plan_code?: string } } };
+    payment?: { entity?: { id?: string; amount?: number; currency?: string } };
   };
 }
 
@@ -68,6 +68,20 @@ Deno.serve(async (req) => {
     // No dedupe row written — Razorpay's retry will land here again and can still succeed.
     console.error("entitlement upsert failed", error.message);
     return json({ error: "store failed" }, 500);
+  }
+
+  // Record an invoice for every captured payment (idempotent on payment id).
+  if (pay?.id && pay.amount && (evt.event === "subscription.charged" || evt.event === "subscription.activated")) {
+    const d = new Date();
+    const num = `SC-${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(pay.id).slice(-8).toUpperCase()}`;
+    const { error: invErr } = await db.from("invoices").upsert({
+      user_id: userId, invoice_number: num, plan_code: sub.notes?.plan_code ?? null,
+      amount_minor: pay.amount, currency: pay.currency ?? "INR", razorpay_payment_id: pay.id,
+      razorpay_subscription_id: sub.id, status: "paid",
+      period_start: sub.current_start ? new Date(sub.current_start * 1000).toISOString() : null,
+      period_end: expires,
+    }, { onConflict: "razorpay_payment_id", ignoreDuplicates: true });
+    if (invErr) console.error("invoice insert failed", invErr.message);
   }
 
   const { error: dupErr } = await db.from("razorpay_webhook_events").insert({ event_id: eventId, event_type: String(evt.event ?? "") });

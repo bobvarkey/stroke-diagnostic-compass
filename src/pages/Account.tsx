@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { cancelSubscription, startTrial, grantDeveloper, formatAmount, PLAN_DISPLAY, type PlanCode } from "@/lib/billing";
 import { clearLocalRecords } from "@/lib/patientRecords";
 import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
+import InvoiceList from "@/components/InvoiceList";
 
 /** Human label for an entitlement row: the plan's display name where we know it, else the kind. */
 const planName = (code: string | null, kind: string) =>
@@ -194,6 +195,9 @@ do update set status = 'active', expires_at = null;`}</code></pre>
               </>
             )}
           </section>
+
+          {sub?.plan_code === "stroke_enterprise" && isEntitlementActive(sub) && <section className="glass rounded-xl p-4 space-y-2"><h2 className="font-semibold">Enterprise team</h2><p className="text-sm text-muted-foreground">Invite people, see who has joined and their activity.</p><Button asChild className="min-h-11"><Link to="/team">Open team admin</Link></Button></section>}
+          <InvoiceList email={user.email ?? undefined} />
         </>
       )}
     </main>

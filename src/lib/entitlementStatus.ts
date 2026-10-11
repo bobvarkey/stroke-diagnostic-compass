@@ -12,8 +12,9 @@ export interface StatusBadge {
  *  that is "paused" — the API's word for it is not the one that helps them. */
 const PAUSED = new Set(["paused", "halted"]);
 
-/** Most specific first: a permanent grant outranks a subscription, which outranks a trial. */
-const PRIORITY = ["developer", "subscription", "trial", "demo"] as const;
+/** Most specific first: a permanent grant outranks a subscription, which outranks a seat on
+ *  someone else's Enterprise plan, which outranks a trial. */
+const PRIORITY = ["developer", "subscription", "enterprise_member", "trial", "demo"] as const;
 
 const DAY_MS = 86_400_000;
 
@@ -54,8 +55,14 @@ export function subscriptionStatus(ents: Entitlement[], now = Date.now()): Statu
     return { label: "Expired", detail: expiry !== null ? `Ended ${fmtDate(expiry)}` : null, tone: "expired" };
   }
 
-  if (chosen.kind === "trial") {
-    if (isLive && expiry !== null) {
+  // A seat on someone else's Enterprise plan. The server resolved it from this account's confirmed
+  // email, so there is no subscription row of the member's own to describe.
+  if (chosen.kind === "enterprise_member") {
+    if (isLive && expiry !== null) return { label: "Active", detail: `Enterprise seat · until ${fmtDate(expiry)}`, tone: "active" };
+    return { label: "Expired", detail: "Enterprise seat ended", tone: "expired" };
+  }
+
+  if (chosen.kind === "trial") {    if (isLive && expiry !== null) {
       const days = Math.max(1, Math.ceil((expiry - now) / DAY_MS));
       return { label: "Trial", detail: `${days} day${days === 1 ? "" : "s"} left`, tone: "active" };
     }

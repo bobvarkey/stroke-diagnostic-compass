@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Account from "./pages/Account";
 import Pricing from "./pages/Pricing";
 import Patients from "./pages/Patients";
+import Team from "./pages/Team";
 import PrivacyScreen from "./compliance/PrivacyScreen";
 import TermsScreen from "./compliance/TermsScreen";
 import DisclaimerScreen from "./compliance/DisclaimerScreen";
@@ -84,6 +85,7 @@ const App = () => {
               <Route path="/account" element={<Account />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/patients" element={<Patients />} />
+              <Route path="/team" element={<Team />} />
               {/* Preview / marketing page */}
               <Route path="/preview" element={<Preview />} />
               {/* Catch-all */}

@@ -5,7 +5,7 @@ const Body = z.object({
   plan: z.enum([
     "stroke_monthly", "stroke_yearly",
     "stroke_monthly_usd", "stroke_yearly_usd",
-    "stroke_enterprise_yearly",
+    "stroke_enterprise",
   ]),
 });
 

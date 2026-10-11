@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      enterprise_members: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          amount_minor: number
+          created_at: string
+          currency: string
+          id: string
+          invoice_number: string
+          period_end: string | null
+          period_start: string | null
+          plan_code: string | null
+          razorpay_payment_id: string
+          razorpay_subscription_id: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_minor: number
+          created_at?: string
+          currency: string
+          id?: string
+          invoice_number: string
+          period_end?: string | null
+          period_start?: string | null
+          plan_code?: string | null
+          razorpay_payment_id: string
+          razorpay_subscription_id?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_minor?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          invoice_number?: string
+          period_end?: string | null
+          period_start?: string | null
+          plan_code?: string | null
+          razorpay_payment_id?: string
+          razorpay_subscription_id?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       patient_presence: {
         Row: {
           created_at: string
@@ -446,6 +512,7 @@ export type Database = {
     Functions: {
       can_access_patient: { Args: { _patient_id: string }; Returns: boolean }
       get_username: { Args: { _user_id: string }; Returns: string }
+      has_active_enterprise: { Args: { _user_id: string }; Returns: boolean }
       has_premium_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -454,6 +521,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      my_enterprise_access: { Args: never; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"

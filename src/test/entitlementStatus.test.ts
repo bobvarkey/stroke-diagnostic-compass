@@ -53,6 +53,25 @@ describe("subscription status badge", () => {
     expect(subscriptionStatus([at("developer", "active", null)], now)).toEqual({ label: "Developer", detail: "Permanent access", tone: "active" });
   });
 
+  it("shows a seat on someone else's Enterprise plan as Active, and says whose it is", () => {
+    const b = subscriptionStatus([at("enterprise_member", "active", live)], now);
+    expect(b.tone).toBe("active");
+    expect(b.label).toBe("Active");
+    expect(b.detail).toMatch(/Enterprise seat/);
+  });
+
+  it("reports a lapsed Enterprise seat as Expired", () => {
+    expect(subscriptionStatus([at("enterprise_member", "active", gone)], now)).toEqual({
+      label: "Expired", detail: "Enterprise seat ended", tone: "expired",
+    });
+  });
+
+  it("prefers a member's own subscription over the Enterprise seat it sits on", () => {
+    const ents = [at("enterprise_member", "active", live), at("subscription", "active", live)];
+    expect(subscriptionStatus(ents, now).tone).toBe("active");
+    expect(subscriptionStatus(ents, now).detail).toMatch(/^Renews /);
+  });
+
   it("prefers a live trial over a lapsed subscription rather than calling the account expired", () => {
     const ents = [at("subscription", "completed", gone), at("trial", "active", live)];
     expect(subscriptionStatus(ents, now).label).toBe("Trial");
@@ -72,6 +91,8 @@ describe("subscription status badge", () => {
       [at("trial", "active", gone)],
       [at("developer", "active", null)],
       [at("demo", "active", live)],
+      [at("enterprise_member", "active", live)],
+      [at("enterprise_member", "active", gone)],
       [at("subscription", "completed", gone), at("trial", "active", live)],
       [at("subscription", "active", live), at("trial", "active", live)],
     ];

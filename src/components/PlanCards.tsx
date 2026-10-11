@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useEntitlement } from "@/hooks/useEntitlement";
 import {
   PLAN_DISPLAY, plansFor, preferredCurrency, annualSavingPercent,
-  startTrial, subscribe, ENTERPRISE_PLAN, type PlanCode,
+  startTrial, subscribe, ENTERPRISE_PLAN, ENTERPRISE_SEATS, type PlanCode,
 } from "@/lib/billing";
 
 const FEATURES = ["Stroke Plan tab with live next steps", "Saved patient records, viewable offline", "All calculators and pathways"];
@@ -103,7 +103,11 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
         <p className="text-2xl font-bold tabular-nums">
           {enterprise.amount}<span className="text-sm font-normal text-muted-foreground"> / {enterprise.period}</span>
         </p>
-        <p className="text-sm text-muted-foreground">Same access as the plans above today — team seat management is not built yet.</p>
+        <ul className="space-y-1 text-sm">
+          {[...FEATURES, `Up to ${ENTERPRISE_SEATS} people, invited by email`, "For hospitals and stroke teams"].map((f) => (
+            <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-primary shrink-0" />{f}</li>
+          ))}
+        </ul>
         <Button variant="outline" className="w-full min-h-11" disabled={!user || busy !== null} onClick={() => choose(ENTERPRISE_PLAN)}>
           {busy === ENTERPRISE_PLAN ? "Opening…" : user ? `Choose ${enterprise.name}` : "Sign in to continue"}
         </Button>

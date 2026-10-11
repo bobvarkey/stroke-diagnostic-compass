@@ -5,13 +5,14 @@ export { corsHeaders };
 
 /** Server-owned plan catalog. The browser only sends a plan code; ids/prices live here.
  *  Each plan is denominated in exactly one currency, and a code is never substituted for another
- *  currency's plan — quoting rupees and charging dollars is the failure this shape prevents. */
+ *  currency's plan — quoting rupees and charging dollars is the failure this shape prevents.
+ *  `stroke_enterprise` is the code the Enterprise team tables key on; do not rename it. */
 export const PLANS = {
   stroke_monthly: { env: "RAZORPAY_PLAN_MONTHLY", label: "Stroke Monthly", totalCount: 120, currency: "INR" },
   stroke_yearly: { env: "RAZORPAY_PLAN_YEARLY", label: "Stroke Yearly", totalCount: 10, currency: "INR" },
   stroke_monthly_usd: { env: "RAZORPAY_PLAN_MONTHLY_USD", label: "Stroke Monthly", totalCount: 120, currency: "USD" },
   stroke_yearly_usd: { env: "RAZORPAY_PLAN_YEARLY_USD", label: "Stroke Yearly", totalCount: 10, currency: "USD" },
-  stroke_enterprise_yearly: { env: "RAZORPAY_PLAN_ENTERPRISE_YEARLY", label: "Enterprise", totalCount: 10, currency: "USD" },
+  stroke_enterprise: { env: "RAZORPAY_PLAN_ENTERPRISE", label: "Enterprise Annual", totalCount: 10, currency: "USD" },
 } as const;
 export type PlanCode = keyof typeof PLANS;
 

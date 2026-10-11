@@ -9,7 +9,9 @@ import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
  * Hard paywall on the home page: sign in, start the trial, or buy — all on one screen.
  *
  * Access comes only from server-recorded entitlements, and `<Index />` is not mounted until one
- * exists, so the gated app is never sent to a visitor without access.
+ * exists, so the gated app is never sent to a visitor without access. The backdrop below is a
+ * decorative stand-in, never the real app: blurring the app itself would mean shipping gated
+ * clinical content to every signed-out visitor and hiding it behind one CSS class.
  */
 export default function HomePaywall({ children }: { children: ReactNode }) {
   const { user, loading, hasPremium } = useEntitlement();
@@ -28,6 +30,7 @@ export default function HomePaywall({ children }: { children: ReactNode }) {
           <p className="text-muted-foreground">
             {user ? "Start your free 3-day trial or choose a plan." : "Sign in or create an account to start your free 3-day trial."}
           </p>
+          {user && <p className="text-sm">Signed in as {user.email}</p>}
         </header>
 
         <div className="flex justify-center"><SubscriptionStatusBadge /></div>

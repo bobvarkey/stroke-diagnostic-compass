@@ -8,3 +8,7 @@
 - [x] Update pricing page to the four prices above once billing is live
 - [ ] Grant developer access (blocked: sign up at /account with bobvarkey1@gmail.com)
 - [x] Lock premium sections, 3-day trial, pricing banner, cancel/manage on Account page
+- [x] Enterprise Annual plan ($1,000/year)
+- [x] Subscription status badge on home paywall and Account
+- [x] In-app invoices from webhook payments
+- [ ] Real payment test (blocked: user adds webhook in Razorpay dashboard and pays)

@@ -17,6 +17,9 @@ BEGIN
   IF to_regclass('public.patients') IS NULL THEN
     RAISE EXCEPTION 'public.patients is missing — apply the base schema migration before this one';
   END IF;
+  IF to_regclass('public.enterprise_members') IS NULL THEN
+    RAISE EXCEPTION 'public.enterprise_members is missing — apply the drizzle billing migrations (0000/0001/0002) before this one';
+  END IF;
 END $$;
 
 -- The previous premium predicate, has_premium_access(uuid), was referenced by no policy and no
@@ -35,6 +38,12 @@ END $$;
 
 -- Premium = an active developer grant with no expiry, or an unexpired trial, subscription or
 -- server-recorded demo. Mirrors isEntitlementActive() in src/hooks/useEntitlement.ts.
+--
+-- It also honours a seat on someone else's Enterprise plan. Without that clause a team member
+-- would hold access in the client (my_enterprise_access() feeds the hook) but be denied here, at
+-- the layer that actually protects the data — the feature would look broken in a way that only
+-- shows up as empty patient lists. Membership is matched on the caller's *confirmed* email, the
+-- same rule my_enterprise_access() uses, so an unconfirmed account cannot claim a seat.
 CREATE OR REPLACE FUNCTION public.is_premium()
 RETURNS boolean
 LANGUAGE sql
@@ -52,6 +61,12 @@ AS $$
             AND e.expires_at IS NOT NULL
             AND e.expires_at > now())
       )
+  ) OR EXISTS (
+    SELECT 1 FROM public.enterprise_members m
+    JOIN auth.users u ON u.id = auth.uid()
+      AND u.email_confirmed_at IS NOT NULL
+      AND lower(u.email) = m.email
+    WHERE public.has_active_enterprise(m.owner_id)
   )
 $$;
 
