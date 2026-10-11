@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      invoices: {
+        Row: {
+          amount_minor: number
+          created_at: string
+          currency: string
+          id: string
+          invoice_number: string
+          period_end: string | null
+          period_start: string | null
+          plan_code: string | null
+          razorpay_payment_id: string
+          razorpay_subscription_id: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_minor: number
+          created_at?: string
+          currency: string
+          id?: string
+          invoice_number: string
+          period_end?: string | null
+          period_start?: string | null
+          plan_code?: string | null
+          razorpay_payment_id: string
+          razorpay_subscription_id?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_minor?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          invoice_number?: string
+          period_end?: string | null
+          period_start?: string | null
+          plan_code?: string | null
+          razorpay_payment_id?: string
+          razorpay_subscription_id?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       patient_presence: {
         Row: {
           created_at: string
