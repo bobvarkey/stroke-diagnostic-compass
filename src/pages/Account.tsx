@@ -11,6 +11,7 @@ import { cancelSubscription, startTrial } from "@/lib/billing";
 import { clearLocalRecords } from "@/lib/patientRecords";
 import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
 import InvoiceList from "@/components/InvoiceList";
+import EnterpriseTeam from "@/components/EnterpriseTeam";
 
 export function SignInForm() {
   const { toast } = useToast();
@@ -73,6 +74,7 @@ export default function Account() {
               <Button variant="ghost" className="min-h-11" onClick={async () => { await supabase.auth.signOut(); await clearLocalRecords(); }}>Sign out</Button>
             </div>
           </section>
+          {sub?.plan_code === "stroke_enterprise" && isEntitlementActive(sub) && <EnterpriseTeam ownerId={user.id} />}
           <InvoiceList email={user.email ?? undefined} />
         </>
       )}
