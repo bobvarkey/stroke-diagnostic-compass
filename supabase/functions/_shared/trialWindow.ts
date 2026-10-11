@@ -11,16 +11,37 @@
 /** Length of the free trial, in days. */
 export const TRIAL_DAYS = 3;
 
+/**
+ * The day the trial stopped starting at the button press and started running from the account.
+ *
+ * Accounts created before this would find their window already spent the moment the rule changed,
+ * so they are anchored here instead and get their three days from the changeover; accounts created
+ * after it are anchored to their own creation date and are unaffected. The clamp only ever moves an
+ * anchor forward, so it cannot re-open the hole it exists to close.
+ *
+ * Set this to the day the change was deployed. Once every account predating it has had its window,
+ * this constant and the clamp below can be deleted.
+ */
+export const GRANDFATHER_FROM = "2026-10-11T00:00:00.000Z";
+
 const DAY_MS = 86_400_000;
+
+/** The instant the trial is measured from: the later of account creation and the changeover. */
+function anchorMs(createdAt: string): number {
+  const created = Date.parse(createdAt);
+  const changeover = Date.parse(GRANDFATHER_FROM);
+  // An unreadable creation date is treated as a pre-changeover account: that grants the standard
+  // window, where throwing would turn one odd record into a 500 on the trial endpoint.
+  return Number.isNaN(created) ? changeover : Math.max(created, changeover);
+}
 
 /**
  * When the free trial for an account created at `createdAt` runs out.
  *
- * The result may already be in the past. That is not an error: it means the account is older than
- * the window and has no trial time left to take.
+ * The result may already be in the past for an account whose window has genuinely been spent.
  */
 export function trialExpiry(createdAt: string): string {
-  return new Date(Date.parse(createdAt) + TRIAL_DAYS * DAY_MS).toISOString();
+  return new Date(anchorMs(createdAt) + TRIAL_DAYS * DAY_MS).toISOString();
 }
 
 /**
