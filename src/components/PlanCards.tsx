@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement } from "@/hooks/useEntitlement";
 import {
-  PLAN_DISPLAY, plansFor, annualSavingPercent,
+  PLAN_DISPLAY, plansFor, annualSavingPercent, monthlyPlan, yearlyPlan,
   startTrial, subscribe, ENTERPRISE_PLAN, ENTERPRISE_SEATS, type PlanCode, type Currency,
 } from "@/lib/billing";
 
@@ -132,6 +132,39 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
           {busy === ENTERPRISE_PLAN ? "Opening…" : user ? `Choose ${enterprise.name}` : "Sign in to continue"}
         </Button>
       </section>
+
+      {!compact && (
+        <section className="glass rounded-xl p-4 overflow-x-auto">
+          <h2 className="text-lg font-bold mb-3">Compare plans</h2>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left border-b border-border">
+                <th className="py-2 pr-2 font-semibold">Feature</th>
+                <th className="py-2 px-2 font-semibold">Monthly</th>
+                <th className="py-2 px-2 font-semibold">Yearly</th>
+                <th className="py-2 pl-2 font-semibold">Enterprise</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr>
+                <td className="py-2 pr-2">Price</td>
+                <td className="py-2 px-2 font-bold tabular-nums">{PLAN_DISPLAY[monthlyPlan(currency)].amount}/mo</td>
+                <td className="py-2 px-2 font-bold tabular-nums">{PLAN_DISPLAY[yearlyPlan(currency)].amount}/yr</td>
+                <td className="py-2 pl-2 font-bold tabular-nums">{enterprise.amount}/yr{currency === "INR" && <span className="block text-xs font-normal text-muted-foreground">USD only</span>}</td>
+              </tr>
+              {[
+                ["People", "1", "1", `Up to ${ENTERPRISE_SEATS}`],
+                ["Plan tab, calculators, pathways", "✓", "✓", "✓"],
+                ["Offline patient records", "✓", "✓", "✓"],
+                ["Team admin page", "—", "—", "✓"],
+                ["3-day free trial", "✓", "✓", "—"],
+              ].map(([f, ...v]) => (
+                <tr key={f}><td className="py-2 pr-2">{f}</td>{v.map((x, i) => <td key={i} className="py-2 px-2">{x}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
     </div>
   );
 }

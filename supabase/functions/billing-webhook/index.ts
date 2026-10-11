@@ -76,7 +76,10 @@ Deno.serve(async (req) => {
     const num = `SC-${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(pay.id).slice(-8).toUpperCase()}`;
     const { error: invErr } = await db.from("invoices").upsert({
       user_id: userId, invoice_number: num, plan_code: sub.notes?.plan_code ?? null,
-      amount_minor: pay.amount, currency: pay.currency ?? "INR", razorpay_payment_id: pay.id,
+      // Razorpay's charged currency wins; otherwise derive from the plan code, never assume INR.
+      amount_minor: pay.amount,
+      currency: (pay.currency ?? (/_usd$|enterprise/.test(sub.notes?.plan_code ?? "") ? "USD" : "INR")).toUpperCase(),
+      razorpay_payment_id: pay.id,
       razorpay_subscription_id: sub.id, status: "paid",
       period_start: sub.current_start ? new Date(sub.current_start * 1000).toISOString() : null,
       period_end: expires,
