@@ -1,7 +1,13 @@
 import { z } from "npm:zod@3";
 import { corsHeaders, json, requireUser, razorpayAuth, PLANS } from "../_shared/billing.ts";
 
-const Body = z.object({ plan: z.enum(["stroke_monthly", "stroke_yearly", "stroke_monthly_usd", "stroke_yearly_usd"]) });
+const Body = z.object({
+  plan: z.enum([
+    "stroke_monthly", "stroke_yearly",
+    "stroke_monthly_usd", "stroke_yearly_usd",
+    "stroke_enterprise_yearly",
+  ]),
+});
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });

@@ -3,7 +3,7 @@ import type { PlanCode } from "@/lib/planCatalog";
 
 /** The price list lives in a dependency-free module so it can be tested without a Supabase client. */
 export {
-  PLAN_DISPLAY, plansFor, monthlyPlan, yearlyPlan,
+  PLAN_DISPLAY, plansFor, monthlyPlan, yearlyPlan, ENTERPRISE_PLAN,
   annualSavingPercent, currencyForRegion, preferredCurrency,
 } from "@/lib/planCatalog";
 export type { PlanCode, Currency, PlanDisplay } from "@/lib/planCatalog";

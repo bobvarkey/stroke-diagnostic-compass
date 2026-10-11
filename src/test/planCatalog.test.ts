@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   PLAN_DISPLAY, plansFor, monthlyPlan, yearlyPlan, annualSavingPercent,
-  currencyForRegion, type Currency, type PlanCode,
+  currencyForRegion, ENTERPRISE_PLAN, type Currency, type PlanCode,
 } from "@/lib/planCatalog";
 
 const CURRENCIES: Currency[] = ["INR", "USD"];
@@ -45,6 +45,17 @@ describe("plan catalog", () => {
     for (const code of Object.keys(PLAN_DISPLAY) as PlanCode[]) {
       const plan = PLAN_DISPLAY[code];
       expect(plan.amount.startsWith(symbol[plan.currency]), `${code} shows ${plan.amount}`).toBe(true);
+    }
+  });
+
+  it("offers Enterprise in dollars to every region, without displacing the individual pair", () => {
+    const ent = PLAN_DISPLAY[ENTERPRISE_PLAN];
+    expect(ent.currency).toBe("USD");
+    expect(ent.amount).toBe("$1,000");
+    expect(ent.period).toBe("year");
+    for (const c of CURRENCIES) {
+      expect(plansFor(c)).not.toContain(ENTERPRISE_PLAN);
+      expect(plansFor(c)).toHaveLength(2);
     }
   });
 

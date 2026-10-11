@@ -11,6 +11,7 @@ export const PLANS = {
   stroke_yearly: { env: "RAZORPAY_PLAN_YEARLY", label: "Stroke Yearly", totalCount: 10, currency: "INR" },
   stroke_monthly_usd: { env: "RAZORPAY_PLAN_MONTHLY_USD", label: "Stroke Monthly", totalCount: 120, currency: "USD" },
   stroke_yearly_usd: { env: "RAZORPAY_PLAN_YEARLY_USD", label: "Stroke Yearly", totalCount: 10, currency: "USD" },
+  stroke_enterprise_yearly: { env: "RAZORPAY_PLAN_ENTERPRISE_YEARLY", label: "Enterprise", totalCount: 10, currency: "USD" },
 } as const;
 export type PlanCode = keyof typeof PLANS;
 

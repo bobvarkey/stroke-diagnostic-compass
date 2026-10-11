@@ -1,28 +1,41 @@
 import { ReactNode } from "react";
 import { useEntitlement } from "@/hooks/useEntitlement";
 import { SignInForm } from "@/pages/Account";
-import Pricing from "@/pages/Pricing";
+import PlanCards from "@/components/PlanCards";
+import PaywallBackdrop from "@/components/PaywallBackdrop";
 import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
-import { PLAN_DISPLAY, monthlyPlan, yearlyPlan, preferredCurrency } from "@/lib/billing";
 
-/** Hard paywall on the home page: sign in, then trial or paid plan. Access comes only from server-recorded entitlements. */
+/**
+ * Hard paywall on the home page: sign in, start the trial, or buy — all on one screen.
+ *
+ * Access comes only from server-recorded entitlements, and `<Index />` is not mounted until one
+ * exists, so the gated app is never sent to a visitor without access.
+ */
 export default function HomePaywall({ children }: { children: ReactNode }) {
   const { user, loading, hasPremium } = useEntitlement();
-  const currency = preferredCurrency();
-  const monthly = PLAN_DISPLAY[monthlyPlan(currency)];
-  const yearly = PLAN_DISPLAY[yearlyPlan(currency)];
+
   if (loading) return <main className="min-h-screen grid place-items-center text-muted-foreground">Checking access…</main>;
   if (hasPremium) return <>{children}</>;
-  if (user) return <Pricing />;
+
   return (
-    <main className="min-h-screen p-4 pt-16 max-w-md mx-auto space-y-4">
-      <header className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Stroke Companion</h1>
-        <p className="text-muted-foreground">Sign in or create an account to start your free 3-day trial.</p>
-        <p className="text-sm">Then {monthly.amount}/month or {yearly.amount}/year</p>
-      </header>
-      <div className="flex justify-center"><SubscriptionStatusBadge /></div>
-      <SignInForm />
+    <main className="relative min-h-screen overflow-hidden">
+      <PaywallBackdrop />
+      <div className="absolute inset-0 bg-background/70" aria-hidden="true" />
+
+      <div className="relative z-10 mx-auto max-w-md space-y-4 p-4 pt-14 pb-16">
+        <header className="text-center space-y-2">
+          <h1 className="text-3xl font-bold">Stroke Companion</h1>
+          <p className="text-muted-foreground">
+            {user ? "Start your free 3-day trial or choose a plan." : "Sign in or create an account to start your free 3-day trial."}
+          </p>
+        </header>
+
+        <div className="flex justify-center"><SubscriptionStatusBadge /></div>
+
+        {!user && <SignInForm />}
+
+        <PlanCards />
+      </div>
     </main>
   );
 }

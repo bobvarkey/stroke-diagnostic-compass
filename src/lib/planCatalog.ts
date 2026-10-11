@@ -1,7 +1,12 @@
 /** Which price list a visitor is shown. India is priced in rupees; everywhere else, dollars. */
 export type Currency = "INR" | "USD";
 
-export type PlanCode = "stroke_monthly" | "stroke_yearly" | "stroke_monthly_usd" | "stroke_yearly_usd";
+export type PlanCode =
+  | "stroke_monthly"
+  | "stroke_yearly"
+  | "stroke_monthly_usd"
+  | "stroke_yearly_usd"
+  | "stroke_enterprise_yearly";
 
 export interface PlanDisplay {
   name: string;
@@ -18,7 +23,13 @@ export const PLAN_DISPLAY: Record<PlanCode, PlanDisplay> = {
   stroke_yearly: { name: "Stroke Yearly", amount: "₹5,000", period: "year", currency: "INR" },
   stroke_monthly_usd: { name: "Stroke Monthly", amount: "$5", period: "month", currency: "USD" },
   stroke_yearly_usd: { name: "Stroke Yearly", amount: "$50", period: "year", currency: "USD" },
+  stroke_enterprise_yearly: { name: "Enterprise", amount: "$1,000", period: "year", currency: "USD" },
 };
+
+/** Enterprise is quoted in dollars for every region, so it is offered *alongside* whichever
+ *  individual list the visitor is shown rather than being switched by `plansFor`. It currently
+ *  grants the same access as the individual plans — it is a price tier, not yet a seat or team. */
+export const ENTERPRISE_PLAN: PlanCode = "stroke_enterprise_yearly";
 
 export const monthlyPlan = (currency: Currency): PlanCode =>
   currency === "INR" ? "stroke_monthly" : "stroke_monthly_usd";
