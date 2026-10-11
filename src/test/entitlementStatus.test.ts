@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { subscriptionStatus } from "@/lib/entitlementStatus";
+import { subscriptionStatus, trialDaysLeft } from "@/lib/entitlementStatus";
 import { isEntitlementActive, type Entitlement } from "@/hooks/useEntitlement";
 
 const now = Date.parse("2026-10-10T00:00:00Z");
@@ -100,5 +100,48 @@ describe("subscription status badge", () => {
       const hasAccess = ents.some((e) => isEntitlementActive(e, now));
       expect(subscriptionStatus(ents, now).tone === "active", JSON.stringify(ents)).toBe(hasAccess);
     }
+  });
+});
+
+describe("trial countdown for the in-app bar", () => {
+  it("counts whole days left on a live trial", () => {
+    expect(trialDaysLeft([at("trial", "active", "2026-10-12T00:00:00Z")], now)).toBe(2);
+  });
+
+  it("rounds a part-day up, so an hour left still reads as a day", () => {
+    expect(trialDaysLeft([at("trial", "active", "2026-10-10T06:00:00Z")], now)).toBe(1);
+  });
+
+  it("says nothing when the account has no entitlements", () => {
+    expect(trialDaysLeft([], now)).toBeNull();
+  });
+
+  it("says nothing once the trial has lapsed", () => {
+    expect(trialDaysLeft([at("trial", "active", gone)], now)).toBeNull();
+  });
+
+  it("stays out of the way for a paying subscriber who also holds a trial", () => {
+    const ents = [at("subscription", "active", live), at("trial", "active", "2026-10-12T00:00:00Z")];
+    expect(trialDaysLeft(ents, now)).toBeNull();
+  });
+
+  it("stays out of the way for a permanent developer grant", () => {
+    const ents = [at("developer", "active", null), at("trial", "active", "2026-10-12T00:00:00Z")];
+    expect(trialDaysLeft(ents, now)).toBeNull();
+  });
+
+  it("stays out of the way for a seat on someone else's Enterprise plan", () => {
+    const ents = [at("enterprise_member", "active", live), at("trial", "active", "2026-10-12T00:00:00Z")];
+    expect(trialDaysLeft(ents, now)).toBeNull();
+  });
+
+  it("still counts a live trial that outlives a lapsed subscription", () => {
+    const ents = [at("subscription", "completed", gone), at("trial", "active", "2026-10-12T00:00:00Z")];
+    expect(trialDaysLeft(ents, now)).toBe(2);
+  });
+
+  it("counts from the caller's clock, not the wall clock", () => {
+    const ents = [at("trial", "active", "2026-10-12T00:00:00Z")];
+    expect(trialDaysLeft(ents, Date.parse("2026-10-11T00:00:00Z"))).toBe(1);
   });
 });

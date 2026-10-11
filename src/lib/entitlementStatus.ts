@@ -72,3 +72,16 @@ export function subscriptionStatus(ents: Entitlement[], now = Date.now()): Statu
   if (isLive) return { label: chosen.kind === "demo" ? "Demo" : "Active", detail: null, tone: "active" };
   return { label: "Expired", detail: null, tone: "expired" };
 }
+
+/**
+ * Whole days left on a live trial, or null when a trial is not what the person is actually getting.
+ *
+ * Shares `firstOf(live)` with `subscriptionStatus`, so the bar can only appear when the badge would
+ * also read "Trial" — someone who subscribes mid-trial stops being counted down rather than being
+ * nagged by a stale trial row they still hold.
+ */
+export function trialDaysLeft(ents: Entitlement[], now = Date.now()): number | null {
+  const chosen = firstOf(ents.filter((e) => isEntitlementActive(e, now)));
+  if (!chosen || chosen.kind !== "trial" || chosen.expires_at === null) return null;
+  return Math.max(1, Math.ceil((Date.parse(chosen.expires_at) - now) / DAY_MS));
+}

@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { goBack } from "@/lib/navHistory";
 import InstallAppButton from "@/components/InstallAppButton";
+import TrialBar from "@/components/TrialBar";
 import { ChevronUp, Users, LogOut, Shield, Play, Home, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -241,6 +242,7 @@ const Index = () => {
               </Button>
             </div>
           </header>
+          <TrialBar />
           <main className="flex-1 relative">
             <StrokeWorkupChecklist 
               patient={selectedPatient}
