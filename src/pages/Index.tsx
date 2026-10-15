@@ -165,15 +165,10 @@ const Index = () => {
   // Show main workup interface with selected patient
   return (
     <SidebarProvider defaultOpen={false}>
-      {/* Background orbs for glassmorphic effect */}
-      <div className="bg-orb bg-orb-1" />
-      <div className="bg-orb bg-orb-2" />
-      <div className="bg-orb bg-orb-3" />
-
-      <div className="min-h-screen flex w-full relative z-10">
+      <div className="min-h-screen flex w-full relative z-10 bg-background tabular-nums">
         <AppSidebar activeSection={activeSection} onSectionClick={setActiveSection} />
-        <SidebarInset className="flex-1 min-w-0">
-          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b px-2 sm:px-4 glass-strong safe-top">
+        <SidebarInset className="flex-1 min-w-0 bg-background">
+          <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b border-border/70 bg-background/85 backdrop-blur-md px-2 sm:px-4 safe-top shadow-sm">
             <SidebarTrigger className="-ml-1" />
 
             {/* Home & Back navigation */}
