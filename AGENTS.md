@@ -1,6 +1,7 @@
 # StrokeSuite ID — Agent Notes
 
 ## Architecture rules
+- **Emergency records and the automated caller require a server-verified admin role**, preventing ordinary accounts bypassing database access rules through service-role calls.
 - **Treatment pathways use pure rules and a shared event/storage snapshot**, with stroke-type filtering in the Plan and registered next-action targets; treatment eligibility and documented completion remain distinct.
 
 - **Secondary ICH selections publish a completed/incomplete snapshot to the shared Plan state**; CTA and conditional DSA steps use registered section targets so links activate ICH and mount/open the calculator.

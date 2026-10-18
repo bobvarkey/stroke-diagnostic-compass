@@ -49,6 +49,22 @@ serve(async (req) => {
       );
     }
 
+    // Service-role access must enforce the same administrator boundary as RLS.
+    const callerId = data.claims.sub;
+    if (typeof callerId !== 'string') {
+      return new Response(JSON.stringify({ success: false, error: 'Authentication required' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const { data: isAdmin, error: roleError } = await authClient.rpc('has_role', {
+      _user_id: callerId, _role: 'admin',
+    });
+    if (roleError || isAdmin !== true) {
+      return new Response(JSON.stringify({ success: false, error: 'Administrator access required' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // Create service role client for database operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
