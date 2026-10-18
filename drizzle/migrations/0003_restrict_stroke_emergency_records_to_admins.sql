@@ -1,0 +1,11 @@
+DROP POLICY IF EXISTS "Authenticated users can create activations" ON public.stroke_activations;
+DROP POLICY IF EXISTS "Authenticated users can view activations" ON public.stroke_activations;
+DROP POLICY IF EXISTS "Authenticated users can create call logs" ON public.stroke_call_logs;
+CREATE POLICY "Admins can create activations" ON public.stroke_activations FOR INSERT TO authenticated WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can view activations" ON public.stroke_activations FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can create call logs" ON public.stroke_call_logs FOR INSERT TO authenticated WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
+ALTER TABLE public.stroke_activations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.stroke_call_logs ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.stroke_activations, public.stroke_call_logs FROM anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.stroke_activations, public.stroke_call_logs TO authenticated;
+GRANT ALL ON public.stroke_activations, public.stroke_call_logs TO service_role;
