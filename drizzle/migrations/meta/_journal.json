@@ -22,6 +22,13 @@
       "when": 1791678333882,
       "tag": "0002_enterprise_members",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792320657221,
+      "tag": "0003_restrict_stroke_emergency_records_to_admins",
+      "breakpoints": true
     }
   ]
 }
