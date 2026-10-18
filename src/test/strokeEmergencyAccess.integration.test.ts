@@ -1,3 +1,4 @@
+/// <reference types="node" />
 // Opt-in live regression: RUN_DATABASE_SECURITY_TESTS=1 bun run test -- src/test/strokeEmergencyAccess.integration.test.ts
 import { execFileSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
