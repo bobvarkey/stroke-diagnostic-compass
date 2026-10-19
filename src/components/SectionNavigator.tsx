@@ -16,9 +16,11 @@ interface SectionNavigatorProps {
   sections: SectionItem[];
   title: string;
   onNavigateToSection: (id: string) => void;
+  /** Set false for a navigator embedded in another tab: scroll locally instead of switching tabs. */
+  dispatchNavigation?: boolean;
 }
 
-const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, onNavigateToSection }) => {
+const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, onNavigateToSection, dispatchNavigation = true }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
@@ -27,7 +29,9 @@ const SectionNavigator: React.FC<SectionNavigatorProps> = ({ sections, title, on
   const scrollToSection = (id: string) => {
     onNavigateToSection(id);
 
-    window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
+    if (dispatchNavigation) {
+      window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
+    }
 
     // Force-mount the LazySection containing the target so it has real height
     window.dispatchEvent(new CustomEvent('force-mount-section', { detail: id }));

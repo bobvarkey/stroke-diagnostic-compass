@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, GitBranch, ScanSearch } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 type NIHSSItemMeta = { canBeUntestable?: boolean; neverUntestable?: boolean; untestableReason?: string };
@@ -19,8 +19,6 @@ import {
 } from "@/lib/sectionTabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
-import carotidAlgorithmPoster from "@/assets/carotid-revascularisation-algorithm.jpg";
-import carotidLandmarkTrials from "@/assets/carotid-landmark-trials.png";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
 import DocumentAnalyzer from "./DocumentAnalyzer";
 import DemographicsForm from "./DemographicsForm";
@@ -68,8 +66,7 @@ import DrugSafetyCard from "./DrugSafetyCard";
 import InfusionDurationPicker from "./InfusionDurationPicker";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
-import CarotidRevascularisation from "./CarotidRevascularisation";
-import CarotidRevascularisationDecisionTree from "./CarotidRevascularisationDecisionTree";
+import CarotidTabContent from "./CarotidTabContent";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
@@ -5806,8 +5803,20 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
         {/* Ischemic Stroke Tab Content */}
         <TabsContent value="ischemic" className="space-y-6">
+          {/* Sub-tabs: carotid revascularisation is reachable from the ischemic modules too */}
+          <Tabs defaultValue="ischemic-modules" className="w-full">
+            <TabsList aria-label="Ischemic module tabs" className="flex w-full h-auto gap-1 rounded-lg border bg-muted/40 p-1 overflow-x-auto justify-start">
+              <TabsTrigger value="ischemic-modules" className="text-xs font-bold px-3 rounded-md border-0 data-[state=active]:bg-accent-blue data-[state=active]:text-white">
+                Ischemic Modules
+              </TabsTrigger>
+              <TabsTrigger value="carotid-revasc" className="text-xs font-bold px-3 rounded-md border-0 data-[state=active]:bg-teal-600 data-[state=active]:text-white">
+                Carotid Revascularisation
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="ischemic-modules" className="space-y-6 mt-4">
           {/* Section Navigator */}
-          <SectionNavigator 
+          <SectionNavigator
             title="Ischemic Stroke Modules"
             sections={[
               { id: "treatment-recommender", label: "Treatment Pathway", icon: <Brain className="h-3.5 w-3.5 text-primary" /> },
@@ -6422,6 +6431,12 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <div className="text-center text-sm text-muted-foreground border-t pt-4">
             <p>Ischemic stroke investigation checklist - Always correlate with clinical presentation</p>
           </div>
+            </TabsContent>
+
+            <TabsContent value="carotid-revasc" className="space-y-6 mt-4">
+              <CarotidTabContent embedded />
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         {/* Intracerebral Hemorrhage Tab Content */}
@@ -6582,94 +6597,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
         </TabsContent>
         {/* Carotid Revascularisation Tab Content */}
         <TabsContent value="carotid" className="space-y-6">
-          <SectionNavigator
-            title="Carotid Revascularisation Modules"
-            sections={[
-              { id: "carotid-decision-tree", label: "Decision tree", icon: <GitBranch className="h-3.5 w-3.5 text-teal-500" /> },
-              { id: "carotid-algorithm-poster", label: "Algorithm poster", icon: <FileText className="h-3.5 w-3.5 text-teal-500" /> },
-              { id: "carotid-symptomatic", label: "Symptomatic disease", icon: <HeartPulse className="h-3.5 w-3.5 text-rose-500" /> },
-              { id: "carotid-asymptomatic", label: "Asymptomatic disease", icon: <ShieldAlert className="h-3.5 w-3.5 text-sky-500" /> },
-              { id: "carotid-cea-vs-cas", label: "CEA vs CAS / medical therapy", icon: <Activity className="h-3.5 w-3.5 text-violet-500" /> },
-              { id: "carotid-landmark-trials", label: "Landmark trials slide", icon: <FileText className="h-3.5 w-3.5 text-teal-500" /> },
-            ]}
-            onNavigateToSection={(id) => {
-              window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
-            }}
-          />
-
-          <div id="carotid-decision-tree" className="scroll-mt-24">
-            <CarotidRevascularisationDecisionTree />
-          </div>
-
-          <div id="carotid-algorithm-poster" className="scroll-mt-24">
-            <CollapsibleModule
-              title="Carotid revascularization algorithm"
-              subtitle="Full decision pathway — symptomatic and asymptomatic disease"
-              icon={<FileText className="h-5 w-5 text-teal-600 dark:text-teal-400" />}
-              badge={<Badge className="border-0 bg-teal-600 text-white hover:bg-teal-600">Reference</Badge>}
-              defaultOpen
-              className="border-teal-300 dark:border-teal-700"
-              headerClassName="bg-teal-50 dark:bg-teal-950/30"
-            >
-              <div className="space-y-2 pt-4">
-                <a
-                  href={carotidAlgorithmPoster}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block overflow-hidden rounded-lg border bg-white"
-                >
-                  <img
-                    src={carotidAlgorithmPoster}
-                    alt="Carotid revascularization decision algorithm covering symptomatic and asymptomatic disease, stenosis grading, contralateral disease, timing, procedural risk and revascularization options"
-                    className="h-auto w-full"
-                    loading="lazy"
-                  />
-                </a>
-                <p className="text-xs text-muted-foreground">
-                  Tap or click the image to open it full size.
-                </p>
-              </div>
-            </CollapsibleModule>
-          </div>
-
-          <div id="carotid-revascularisation" className="scroll-mt-24">
-            <CarotidRevascularisation />
-          </div>
-
-          <div id="carotid-landmark-trials" className="scroll-mt-24">
-            <CollapsibleModule
-              title="Landmark trials in carotid stenosis"
-              subtitle="Symptomatic, asymptomatic and modern era — visual summary"
-              icon={<FileText className="h-5 w-5 text-teal-600 dark:text-teal-400" />}
-              badge={<Badge className="border-0 bg-teal-600 text-white hover:bg-teal-600">Slide</Badge>}
-              defaultOpen
-              className="border-teal-300 dark:border-teal-700"
-              headerClassName="bg-teal-50 dark:bg-teal-950/30"
-            >
-              <div className="space-y-2 pt-4">
-                <a
-                  href={carotidLandmarkTrials}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block overflow-hidden rounded-lg border"
-                >
-                  <img
-                    src={carotidLandmarkTrials}
-                    alt="Landmark trials in carotid stenosis: symptomatic CEA trials NASCET and ECST, asymptomatic ACAS and ACST-1, and modern-era CREST, CREST-2 and CREST-H"
-                    className="h-auto w-full"
-                    loading="lazy"
-                  />
-                </a>
-                <p className="text-xs text-muted-foreground">
-                  Tap or click the slide to open it full size.
-                </p>
-              </div>
-            </CollapsibleModule>
-          </div>
-
-          <div className="text-center text-sm text-muted-foreground border-t pt-4">
-            <p>Carotid revascularisation evidence summary — Always correlate with current guidelines and local outcomes</p>
-          </div>
+          <CarotidTabContent />
         </TabsContent>
 
         {/* Subarachnoid Hemorrhage Tab Content */}
