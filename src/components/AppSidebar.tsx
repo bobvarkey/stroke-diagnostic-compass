@@ -4,6 +4,7 @@ import {
   Activity,
   Brain,
   Heart,
+  HeartPulse,
   TestTube,
   Calculator,
   ClipboardList,
@@ -105,13 +106,18 @@ const navGroups: NavGroup[] = [
         label: "CVT Procedures", 
         icon: <Crosshair className="h-4 w-4 text-teal-500" /> 
       },
-      { 
-        id: "cvt-endovascular-techniques", 
-        label: "CVT Endovascular", 
-        icon: <Target className="h-4 w-4 text-orange-500" /> 
+      {
+        id: "cvt-endovascular-techniques",
+        label: "CVT Endovascular",
+        icon: <Target className="h-4 w-4 text-orange-500" />
       },
-      { 
-        id: "lvo-dashboard", 
+      {
+        id: "carotid-revascularisation",
+        label: "Carotid Revascularisation",
+        icon: <HeartPulse className="h-4 w-4 text-teal-500" />
+      },
+      {
+        id: "lvo-dashboard",
         label: "LVO Dashboard", 
         icon: <Target className="h-4 w-4 text-purple-500" /> 
       },

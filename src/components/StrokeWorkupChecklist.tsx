@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, GitBranch, ScanSearch } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 type NIHSSItemMeta = { canBeUntestable?: boolean; neverUntestable?: boolean; untestableReason?: string };
@@ -19,6 +19,8 @@ import {
 } from "@/lib/sectionTabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
+import carotidAlgorithmPoster from "@/assets/carotid-revascularisation-algorithm.jpg";
+import carotidLandmarkTrials from "@/assets/carotid-landmark-trials.png";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
 import DocumentAnalyzer from "./DocumentAnalyzer";
 import DemographicsForm from "./DemographicsForm";
@@ -66,6 +68,8 @@ import DrugSafetyCard from "./DrugSafetyCard";
 import InfusionDurationPicker from "./InfusionDurationPicker";
 import PostThrombolysisICHManagement from "./PostThrombolysisICHManagement";
 import CerebralVenousThrombosis from "./CerebralVenousThrombosis";
+import CarotidRevascularisation from "./CarotidRevascularisation";
+import CarotidRevascularisationDecisionTree from "./CarotidRevascularisationDecisionTree";
 import SubarachnoidHemorrhage from "./SubarachnoidHemorrhage";
 import SubduralHematoma from "./SubduralHematoma";
 import LabInvestigationsModule from "./LabInvestigationsModule";
@@ -5765,7 +5769,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
       {/* Main Category Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Floating condition tabs remain accessible while reading any section. */}
-        <TabsList aria-label="Stroke condition tabs" className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-40 flex sm:grid w-full sm:grid-cols-7 h-14 mb-5 glass-strong rounded-lg p-1 overflow-x-auto justify-start sm:justify-center [&>button]:shrink-0 [&>button]:min-h-11 [&>button]:min-w-[84px] sm:[&>button]:min-w-0">
+        <TabsList aria-label="Stroke condition tabs" className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-40 flex sm:grid w-full sm:grid-cols-8 h-14 mb-5 glass-strong rounded-lg p-1 overflow-x-auto justify-start sm:justify-center [&>button]:shrink-0 [&>button]:min-h-11 [&>button]:min-w-[84px] sm:[&>button]:min-w-0">
           <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-blue/15 border-accent-blue/40 text-accent-blue hover:bg-accent-blue/25 data-[state=active]:bg-accent-blue data-[state=active]:border-accent-blue data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Zap className="h-4 w-4 shrink-0" />
             Ischemic
@@ -5781,6 +5785,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <TabsTrigger value="cvt" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-purple/15 border-accent-purple/40 text-accent-purple hover:bg-accent-purple/25 data-[state=active]:bg-accent-purple data-[state=active]:border-accent-purple data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Brain className="h-4 w-4 shrink-0" />
             CVT
+          </TabsTrigger>
+          <TabsTrigger value="carotid" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-teal-500/15 border-teal-500/40 text-teal-400 hover:bg-teal-500/25 data-[state=active]:bg-teal-600 data-[state=active]:border-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
+            <HeartPulse className="h-4 w-4 shrink-0" />
+            Carotid
           </TabsTrigger>
           <TabsTrigger value="sah" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-red-500/15 border-red-500/40 text-red-400 hover:bg-red-500/25 data-[state=active]:bg-red-600 data-[state=active]:border-red-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
             <Droplets className="h-4 w-4 shrink-0" />
@@ -6571,6 +6579,98 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <p>Cerebral venous thrombosis evaluation and management - Always correlate with clinical presentation</p>
           </div>
         </TabsContent>
+        {/* Carotid Revascularisation Tab Content */}
+        <TabsContent value="carotid" className="space-y-6">
+          <SectionNavigator
+            title="Carotid Revascularisation Modules"
+            sections={[
+              { id: "carotid-decision-tree", label: "Decision tree", icon: <GitBranch className="h-3.5 w-3.5 text-teal-500" /> },
+              { id: "carotid-algorithm-poster", label: "Algorithm poster", icon: <FileText className="h-3.5 w-3.5 text-teal-500" /> },
+              { id: "carotid-symptomatic", label: "Symptomatic disease", icon: <HeartPulse className="h-3.5 w-3.5 text-rose-500" /> },
+              { id: "carotid-asymptomatic", label: "Asymptomatic disease", icon: <ShieldAlert className="h-3.5 w-3.5 text-sky-500" /> },
+              { id: "carotid-cea-vs-cas", label: "CEA vs CAS / medical therapy", icon: <Activity className="h-3.5 w-3.5 text-violet-500" /> },
+              { id: "carotid-landmark-trials", label: "Landmark trials slide", icon: <FileText className="h-3.5 w-3.5 text-teal-500" /> },
+            ]}
+            onNavigateToSection={(id) => {
+              window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
+            }}
+          />
+
+          <div id="carotid-decision-tree" className="scroll-mt-24">
+            <CarotidRevascularisationDecisionTree />
+          </div>
+
+          <div id="carotid-algorithm-poster" className="scroll-mt-24">
+            <CollapsibleModule
+              title="Carotid revascularization algorithm"
+              subtitle="Full decision pathway — symptomatic and asymptomatic disease"
+              icon={<FileText className="h-5 w-5 text-teal-600 dark:text-teal-400" />}
+              badge={<Badge className="border-0 bg-teal-600 text-white hover:bg-teal-600">Reference</Badge>}
+              defaultOpen
+              className="border-teal-300 dark:border-teal-700"
+              headerClassName="bg-teal-50 dark:bg-teal-950/30"
+            >
+              <div className="space-y-2 pt-4">
+                <a
+                  href={carotidAlgorithmPoster}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block overflow-hidden rounded-lg border bg-white"
+                >
+                  <img
+                    src={carotidAlgorithmPoster}
+                    alt="Carotid revascularization decision algorithm covering symptomatic and asymptomatic disease, stenosis grading, contralateral disease, timing, procedural risk and revascularization options"
+                    className="h-auto w-full"
+                    loading="lazy"
+                  />
+                </a>
+                <p className="text-xs text-muted-foreground">
+                  Tap or click the image to open it full size.
+                </p>
+              </div>
+            </CollapsibleModule>
+          </div>
+
+          <div id="carotid-revascularisation" className="scroll-mt-24">
+            <CarotidRevascularisation />
+          </div>
+
+          <div id="carotid-landmark-trials" className="scroll-mt-24">
+            <CollapsibleModule
+              title="Landmark trials in carotid stenosis"
+              subtitle="Symptomatic, asymptomatic and modern era — visual summary"
+              icon={<FileText className="h-5 w-5 text-teal-600 dark:text-teal-400" />}
+              badge={<Badge className="border-0 bg-teal-600 text-white hover:bg-teal-600">Slide</Badge>}
+              defaultOpen
+              className="border-teal-300 dark:border-teal-700"
+              headerClassName="bg-teal-50 dark:bg-teal-950/30"
+            >
+              <div className="space-y-2 pt-4">
+                <a
+                  href={carotidLandmarkTrials}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block overflow-hidden rounded-lg border"
+                >
+                  <img
+                    src={carotidLandmarkTrials}
+                    alt="Landmark trials in carotid stenosis: symptomatic CEA trials NASCET and ECST, asymptomatic ACAS and ACST-1, and modern-era CREST, CREST-2 and CREST-H"
+                    className="h-auto w-full"
+                    loading="lazy"
+                  />
+                </a>
+                <p className="text-xs text-muted-foreground">
+                  Tap or click the slide to open it full size.
+                </p>
+              </div>
+            </CollapsibleModule>
+          </div>
+
+          <div className="text-center text-sm text-muted-foreground border-t pt-4">
+            <p>Carotid revascularisation evidence summary — Always correlate with current guidelines and local outcomes</p>
+          </div>
+        </TabsContent>
+
         {/* Subarachnoid Hemorrhage Tab Content */}
         <TabsContent value="sah" className="space-y-6">
           <LazySection id="sah-management">
@@ -6595,12 +6695,13 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-border/50 backdrop-blur-xl bg-background/90" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
-        <div className="grid grid-cols-7 h-16">
+        <div className="grid grid-cols-8 h-16">
           {[
             { value: "ischemic", icon: <Zap className="h-5 w-5" />, label: "Ischemic", color: "text-accent-blue", pill: "bg-accent-blue/20" },
             { value: "hemorrhagic", icon: <Droplets className="h-5 w-5" />, label: "ICH", color: "text-accent-amber", pill: "bg-accent-amber/20" },
             { value: "post-ivt", icon: <AlertTriangle className="h-5 w-5" />, label: "Post IVT-ICH", color: "text-accent-rose", pill: "bg-accent-rose/20" },
             { value: "cvt", icon: <Brain className="h-5 w-5" />, label: "CVT", color: "text-accent-purple", pill: "bg-accent-purple/20" },
+            { value: "carotid", icon: <HeartPulse className="h-5 w-5" />, label: "Carotid", color: "text-teal-400", pill: "bg-teal-500/20" },
             { value: "sah", icon: <Droplets className="h-5 w-5" />, label: "SAH", color: "text-red-400", pill: "bg-red-500/20" },
             { value: "sdh", icon: <Layers className="h-5 w-5" />, label: "SDH", color: "text-orange-400", pill: "bg-orange-500/20" },
             { value: "plan", icon: <ClipboardList className="h-5 w-5" />, label: "Plan", color: "text-emerald-400", pill: "bg-emerald-500/20" },

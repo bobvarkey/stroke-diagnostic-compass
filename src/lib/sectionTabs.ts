@@ -11,6 +11,14 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "cvt-endovascular-techniques": "cvt",
   "cvt-etiological-evaluation": "cvt",
 
+  "carotid-revascularisation": "carotid",
+  "carotid-decision-tree": "carotid",
+  "carotid-algorithm-poster": "carotid",
+  "carotid-symptomatic": "carotid",
+  "carotid-asymptomatic": "carotid",
+  "carotid-cea-vs-cas": "carotid",
+  "carotid-landmark-trials": "carotid",
+
   "post-ivt-hemorrhage": "post-ivt",
 
   "sah-management": "sah",
