@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLeft, GitBranch, RotateCcw, ShieldAlert } from "lucide-react";
+import { ChevronLeft, ExternalLink, GitBranch, RotateCcw, ShieldAlert } from "lucide-react";
 
 type Option = {
   label: string;
@@ -401,6 +401,15 @@ const CarotidRevascularisationDecisionTree = () => {
           Contralateral occlusion · Contralateral stenosis · High-grade · Timing ·
           TCAR · CREST-H (2026)
         </p>
+        <a
+          href="/carotid-revascularization-decision-tree.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-teal-800 underline underline-offset-2 hover:text-teal-900 dark:text-teal-300 dark:hover:text-teal-200"
+        >
+          <ExternalLink className="h-3.5 w-3.5" />
+          Open standalone clickable HTML
+        </a>
       </CardHeader>
 
       <CardContent className="space-y-4 pt-5">
