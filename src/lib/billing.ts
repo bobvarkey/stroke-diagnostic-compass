@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { PlanCode } from "@/lib/planCatalog";
+import { requireWebBilling } from "@/lib/distribution";
 
 /** The price list lives in a dependency-free module so it can be tested without a Supabase client. */
 export {
@@ -51,9 +52,12 @@ function loadCheckout(): Promise<void> {
 
 /** Opens Razorpay Standard Checkout. Access is granted only when the server webhook confirms payment. */
 export async function subscribe(plan: PlanCode, onDone: (verified: boolean) => void) {
+  requireWebBilling();
   const { subscription_id, key_id, label } = await invoke<{ subscription_id: string; key_id: string; label: string }>("billing-create-subscription", { plan });
   await loadCheckout();
-  new window.Razorpay!({
+  const Checkout = window.Razorpay;
+  if (!Checkout) throw new Error("Could not load checkout");
+  new Checkout({
     key: key_id, subscription_id, name: "StrokeSuite ID", description: label,
     handler: async (r: Record<string, string>) => {
       try { const v = await invoke<{ verified: boolean }>("billing-verify", r); onDone(v.verified); } catch { onDone(false); }

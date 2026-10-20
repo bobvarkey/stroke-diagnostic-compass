@@ -3,10 +3,22 @@ import { Button } from "@/components/ui/button";
 import { useEntitlement } from "@/hooks/useEntitlement";
 import PlanCards from "@/components/PlanCards";
 import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
+import HomePaywall from "@/components/HomePaywall";
+import { allowsWebBilling } from "@/lib/distribution";
 
 /** Standalone pricing route. Renders the same PlanCards as the home paywall, so the two agree. */
 export default function Pricing() {
   const { user, hasPremium } = useEntitlement();
+
+  if (!allowsWebBilling()) return (
+    <HomePaywall>
+      <main className="min-h-screen p-4 pt-20 max-w-xl mx-auto space-y-4">
+        <h1 className="text-2xl font-bold">Your access</h1>
+        <SubscriptionStatusBadge />
+        <Button asChild className="min-h-11"><Link to="/">Open Stroke Companion</Link></Button>
+      </main>
+    </HomePaywall>
+  );
 
   return (
     <main className="min-h-screen p-4 pt-20 max-w-3xl mx-auto space-y-6">

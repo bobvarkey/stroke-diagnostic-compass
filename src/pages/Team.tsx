@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement, isEntitlementActive } from "@/hooks/useEntitlement";
+import { allowsWebBilling } from "@/lib/distribution";
 
 interface Member { id: string; email: string; added_at: string; status: "invited" | "pending_confirmation" | "active"; last_sign_in_at: string | null; records: number; last_record_at: string | null }
 const LABEL = { invited: "Invite sent", pending_confirmation: "Awaiting email confirmation", active: "Active" } as const;
@@ -54,7 +55,7 @@ export default function Team() {
     <main className="min-h-screen p-4 pt-20 max-w-3xl mx-auto space-y-3">
       <h1 className="text-2xl font-bold">Team admin</h1>
       <p className="text-muted-foreground">This page is for owners of an active Enterprise Annual plan.</p>
-      <Button asChild className="min-h-11"><Link to={user ? "/pricing" : "/account"}>{user ? "See plans" : "Sign in"}</Link></Button>
+      <Button asChild className="min-h-11"><Link to={user && allowsWebBilling() ? "/pricing" : "/account"}>{user ? allowsWebBilling() ? "See plans" : "Account access" : "Sign in"}</Link></Button>
     </main>
   );
 
