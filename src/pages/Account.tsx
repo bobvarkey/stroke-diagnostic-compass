@@ -12,6 +12,7 @@ import { cancelSubscription, startTrial, grantDeveloper, formatAmount, PLAN_DISP
 import { clearLocalRecords } from "@/lib/patientRecords";
 import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
 import InvoiceList from "@/components/InvoiceList";
+import { allowsWebBilling } from "@/lib/distribution";
 
 /** Human label for an entitlement row: the plan's display name where we know it, else the kind. */
 const planName = (code: string | null, kind: string) =>
@@ -96,6 +97,7 @@ export function SignInForm() {
 }
 
 export default function Account() {
+  const webBilling = allowsWebBilling();
   const { user, ents, loading, hasPremium, refresh } = useEntitlement();
   const { isAdmin } = useAuth();
   const { toast } = useToast();
@@ -135,8 +137,8 @@ export default function Account() {
             })}
             <div className="flex flex-wrap gap-2">
               {!hasPremium && !trialUsed && <Button className="min-h-11" disabled={busy} onClick={() => act(startTrial, "Your 3-day trial has started")}>Start 3-day free trial</Button>}
-              <Button asChild variant="outline" className="min-h-11"><Link to="/pricing">{sub ? "Change plan" : "See plans"}</Link></Button>
-              {sub?.status === "active" && <Button variant="destructive" className="min-h-11" disabled={busy} onClick={() => { if (confirm("Cancel at the end of the current period?")) act(cancelSubscription, "Subscription will end at the period end"); }}>Cancel subscription</Button>}
+              {webBilling && <Button asChild variant="outline" className="min-h-11"><Link to="/pricing">{sub ? "Change plan" : "See plans"}</Link></Button>}
+              {webBilling && sub?.status === "active" && <Button variant="destructive" className="min-h-11" disabled={busy} onClick={() => { if (confirm("Cancel at the end of the current period?")) act(cancelSubscription, "Subscription will end at the period end"); }}>Cancel subscription</Button>}
               <Button asChild variant="outline" className="min-h-11"><Link to="/patients">My patient records</Link></Button>
               <Button variant="ghost" className="min-h-11" onClick={async () => { await supabase.auth.signOut(); await clearLocalRecords(); }}>Sign out</Button>
             </div>

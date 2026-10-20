@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEntitlement } from "@/hooks/useEntitlement";
+import { allowsWebBilling } from "@/lib/distribution";
 import {
   PLAN_DISPLAY, plansFor, annualSavingPercent, monthlyPlan, yearlyPlan,
   startTrial, subscribe, ENTERPRISE_PLAN, ENTERPRISE_SEATS, type PlanCode, type Currency,
@@ -68,11 +69,7 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
     );
   };
 
-  const enterprise = PLAN_DISPLAY[ENTERPRISE_PLAN];
-
-  return (
-    <div className="space-y-4">
-      {!hasPremium && (
+  const trial = !hasPremium && (
         <div className="glass-strong rounded-xl p-4 text-center space-y-2">
           <p className="font-semibold">Try everything free for 3 days</p>
           {trialUsed ? (
@@ -90,8 +87,14 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
             </>
           )}
         </div>
-      )}
+      );
+  if (!allowsWebBilling()) return trial || null;
 
+  const enterprise = PLAN_DISPLAY[ENTERPRISE_PLAN];
+
+  return (
+    <div className="space-y-4">
+      {trial}
       <div className="flex items-center justify-center gap-2">
         <span className="text-xs text-muted-foreground">Prices in</span>
         <div className="inline-flex rounded-full border border-border overflow-hidden" role="group" aria-label="Currency">
