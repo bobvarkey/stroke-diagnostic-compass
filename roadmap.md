@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Hide Razorpay in App Store/Google Play launches (blocked: approval of focused audit and plan).
 - [x] Fix scanned emergency-record access policies and verify administrator-only access.
 - [x] Expand IVT into eligibility, treatment preparation and post-treatment monitoring steps.
 - [x] Add thrombectomy assessment, transfer and follow-up steps linked to Plan.
