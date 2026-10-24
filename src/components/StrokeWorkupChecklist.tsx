@@ -21,6 +21,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
 import DocumentAnalyzer from "./DocumentAnalyzer";
+import AiTextImport, { type ImportedClinicalData } from "./AiTextImport";
+import { publishImportedLabs } from "@/lib/labImport";
 import DemographicsForm from "./DemographicsForm";
 import PDFScoreSummary from "./PDFScoreSummary";
 import InteractiveASPECTSCalculator from "./InteractiveASPECTSCalculator";
@@ -5665,6 +5667,56 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
   };
 
   const checkedTestNames = strokeTests.filter(t => checkedItems.has(t.id)).map(t => t.name);
+
+  /** Apply reviewed import output to the existing form. Empty values never overwrite filled ones. */
+  const applyImportedData = (data: ImportedClinicalData) => {
+    if (data.demographics) {
+      const rawSex = (data.demographics.sex ?? "").toLowerCase();
+      const sex = rawSex.startsWith("m") ? "male" : rawSex.startsWith("f") ? "female" : undefined;
+      const rawRace = (data.demographics.race ?? "").toLowerCase();
+      const raceRules: Array<[RegExp, string]> = [
+        [/african|black|afro/, "african"],
+        [/south asian|indian|pakistan|bangladesh|sri lankan|nepal/, "south-asian"],
+        [/east asian|chinese|japanese|korean|vietnam|thai/, "east-asian"],
+        [/southeast asian|filipino|indonesia|malaysia|cambod/, "southeast-asian"],
+        [/hispanic|latino|mexican|central american|south american/, "hispanic"],
+        [/middle eastern|north african|arab|persian|turk/, "middle-eastern"],
+        [/caucasian|white|european/, "caucasian"],
+        [/pacific islander|hawaiian|samoan|tongan|fijian/, "pacific-islander"],
+        [/mixed|multiple/, "mixed"],
+        [/other/, "other"],
+      ];
+      const race = raceRules.find(([pattern]) => pattern.test(rawRace))?.[1];
+
+      setDemographics(prev => ({
+        ...prev,
+        ...(data.demographics?.name ? { name: data.demographics.name } : {}),
+        ...(data.demographics?.age ? { age: String(data.demographics.age) } : {}),
+        ...(sex ? { sex } : {}),
+        ...(race ? { race } : {}),
+      }));
+    }
+
+    if (data.investigations?.length) {
+      setCheckedItems(prev => {
+        const next = new Set(prev);
+        data.investigations?.forEach(raw => {
+          const alias = raw.toLowerCase().trim();
+          if (alias.length < 2) return;
+          const match = strokeTests.find(test => {
+            const full = test.name.toLowerCase();
+            const base = full.split("(")[0].trim();
+            return base === alias || (alias.length >= 3 && full.includes(alias));
+          });
+          if (match) next.add(match.id);
+        });
+        return next;
+      });
+    }
+
+    if (data.labs?.length) publishImportedLabs(data.labs);
+  };
+
   const categories = Array.from(new Set(strokeTests.map(test => test.category)));
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
   const activeTabRef = useRef(activeTab);
@@ -5864,6 +5916,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           {/* AI Document Analyzer */}
           <DocumentAnalyzer checkedTests={checkedTestNames} calculatedScores={calculatedScores} demographics={demographics} />
+
+          {/* Text / image OCR / PDF import with BYOK structuring */}
+          <AiTextImport onPopulate={applyImportedData} />
 
           {/* PDF Score Summary */}
           <PDFScoreSummary scores={calculatedScores} demographics={demographics} checkedTests={checkedTestNames} />

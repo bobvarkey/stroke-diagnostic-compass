@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,9 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { tabColor } from "@/lib/tabColors";
+import { AiProviderError, callAiProvider, describeAiError, getAiSettings } from '@/lib/aiProviders';
+import { buildLabExtractionMessages, parseJsonFromModel } from '@/lib/aiPrompts';
+import { consumeImportedLabs, subscribeImportedLabs } from '@/lib/labImport';
 
 interface LabValue {
   id: string;
@@ -108,6 +111,36 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
     });
   }, [onLabsChange]);
 
+  /** Merge labs produced by the import panel, updating by name and keeping existing ids. */
+  const mergeLabs = useCallback((incoming: Array<{ name: string; value: string; unit?: string; reference_range?: string; flag?: string }>) => {
+    if (!incoming.length) return;
+    setLabs(prev => {
+      const updated = [...prev];
+      incoming.forEach(lab => {
+        const index = updated.findIndex(l => l.name.toLowerCase() === lab.name.toLowerCase());
+        const next: LabValue = {
+          id: index >= 0 ? updated[index].id : crypto.randomUUID(),
+          name: lab.name,
+          value: lab.value,
+          unit: lab.unit ?? '',
+          reference_range: lab.reference_range,
+          flag: (lab.flag as LabValue['flag']) || undefined,
+        };
+        if (index >= 0) updated[index] = next;
+        else updated.push(next);
+      });
+      onLabsChange?.(updated);
+      return updated;
+    });
+  }, [onLabsChange]);
+
+  // The import panel may publish before this module mounts (it lives in a lazy section).
+  useEffect(() => {
+    const pending = consumeImportedLabs();
+    if (pending) mergeLabs(pending);
+    return subscribeImportedLabs(mergeLabs);
+  }, [mergeLabs]);
+
   const determineFlag = (name: string, value: string, reference?: string): 'high' | 'low' | 'normal' | 'critical' | undefined => {
     if (!value || !reference) return undefined;
     
@@ -164,19 +197,38 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
         const base64 = reader.result as string;
         
         try {
-          const { data, error } = await supabase.functions.invoke('extract-lab-values', {
-            body: { imageBase64: base64 }
-          });
+          const settings = getAiSettings();
+          type ExtractedLab = { name: string; value: string; unit?: string; reference_range?: string; flag?: 'high' | 'low' | 'normal' | 'critical' };
+          let data: { labs?: ExtractedLab[]; error?: string };
 
-          if (error) throw error;
+          if (settings) {
+            // BYOK: image goes straight to the user's provider, bypassing the Lovable gateway.
+            const { user } = buildLabExtractionMessages(base64);
+            const reply = await callAiProvider({
+              provider: settings.provider,
+              apiKey: settings.apiKey,
+              model: settings.model,
+              user,
+              maxTokens: 2000,
+            });
+            data = reply
+              ? parseJsonFromModel<{ labs?: ExtractedLab[]; error?: string }>(reply)
+              : { labs: [], error: 'The AI provider returned an empty reply' };
+          } else {
+            const { data: responseData, error } = await supabase.functions.invoke('extract-lab-values', {
+              body: { imageBase64: base64 }
+            });
+            if (error) throw error;
+            data = responseData;
+          }
 
           if (data.labs && data.labs.length > 0) {
             // Merge extracted labs with existing
-            const newLabs: LabValue[] = data.labs.map((lab: Omit<LabValue, "id">) => ({
+            const newLabs: LabValue[] = data.labs.map((lab) => ({
               id: crypto.randomUUID(),
               name: lab.name,
               value: lab.value,
-              unit: lab.unit,
+              unit: lab.unit ?? "",
               reference_range: lab.reference_range,
               flag: lab.flag,
             }));
@@ -211,9 +263,11 @@ export default function LabInvestigationsModule({ onLabsChange }: LabInvestigati
           }
         } catch (err: unknown) {
           console.error('OCR error:', err);
-          toast({ 
-            title: 'Extraction failed', 
-            description: err instanceof Error ? err.message : 'Failed to extract lab values',
+          toast({
+            title: 'Extraction failed',
+            description: err instanceof AiProviderError
+              ? describeAiError(err)
+              : err instanceof Error ? err.message : 'Failed to extract lab values',
             variant: 'destructive'
           });
         } finally {

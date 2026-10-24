@@ -7,6 +7,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Upload, FileText, Loader2, ChevronDown, AlertTriangle, CheckCircle, AlertCircle, Brain, Camera, Image, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { AiProviderError, callAiProvider, describeAiError, getAiSettings } from "@/lib/aiProviders";
+import { buildAnalyzeDocumentMessages, parseJsonFromModel } from "@/lib/aiPrompts";
 
 interface DocumentAnalysisResult {
   completedInvestigations?: string[];
@@ -128,37 +130,73 @@ export default function DocumentAnalyzer({ checkedTests, calculatedScores, demog
         imageBase64 = await convertImageToBase64(file);
       }
 
-      const { data, error } = await supabase.functions.invoke("analyze-document", {
-        body: {
+      const settings = getAiSettings();
+      let result: DocumentAnalysisResult;
+
+      if (settings) {
+        // BYOK: the document goes straight from this browser to the user's provider, so the
+        // Lovable gateway (and its server-side entitlement check) is bypassed entirely.
+        const { system, user } = buildAnalyzeDocumentMessages({
           documentText: documentText || "Please analyze the uploaded image for clinical documentation.",
           additionalNotes: additionalNotes.trim() || undefined,
-          imageBase64,
           checkedTests,
           demographics,
           calculatedScores,
-        },
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data.error) {
-        if (data.error.includes("Rate limit")) {
-          toast.error("Rate limit exceeded. Please wait a moment and try again.");
-        } else if (data.error.includes("credits")) {
-          toast.error("AI credits exhausted. Please add credits to continue.");
-        } else {
-          toast.error(data.error);
+          imageDataUrl: imageBase64,
+        });
+        const reply = await callAiProvider({
+          provider: settings.provider,
+          apiKey: settings.apiKey,
+          model: settings.model,
+          system,
+          user,
+          maxTokens: 4000,
+        });
+        if (!reply) throw new Error("The AI provider returned an empty reply");
+        try {
+          result = parseJsonFromModel<DocumentAnalysisResult>(reply);
+        } catch {
+          result = { rawAnalysis: reply };
         }
-        return;
+      } else {
+        const { data, error } = await supabase.functions.invoke("analyze-document", {
+          body: {
+            documentText: documentText || "Please analyze the uploaded image for clinical documentation.",
+            additionalNotes: additionalNotes.trim() || undefined,
+            imageBase64,
+            checkedTests,
+            demographics,
+            calculatedScores,
+          },
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        if (data.error) {
+          if (data.error.includes("Rate limit")) {
+            toast.error("Rate limit exceeded. Please wait a moment and try again.");
+          } else if (data.error.includes("credits")) {
+            toast.error("AI credits exhausted. Please add credits to continue.");
+          } else {
+            toast.error(data.error);
+          }
+          return;
+        }
+
+        result = data.analysis;
       }
 
-      setAnalysis(data.analysis);
-      toast.success("Document analysis complete");
+      setAnalysis(result);
+      toast.success(settings ? "Document analysis complete (your API key)" : "Document analysis complete");
     } catch (error) {
       console.error("Analysis error:", error);
-      toast.error("Failed to analyze document. Please try again.");
+      if (error instanceof AiProviderError) {
+        toast.error(describeAiError(error));
+      } else {
+        toast.error("Failed to analyze document. Please try again.");
+      }
     } finally {
       setIsAnalyzing(false);
     }

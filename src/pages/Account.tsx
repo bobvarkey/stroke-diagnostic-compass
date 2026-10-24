@@ -10,9 +10,11 @@ import { useEntitlement, isEntitlementActive } from "@/hooks/useEntitlement";
 import { useAuth } from "@/hooks/useAuth";
 import { cancelSubscription, startTrial, grantDeveloper, formatAmount, PLAN_DISPLAY, type PlanCode } from "@/lib/billing";
 import { clearLocalRecords } from "@/lib/patientRecords";
+import { clearAiSettings } from "@/lib/aiProviders";
 import SubscriptionStatusBadge from "@/components/SubscriptionStatusBadge";
 import InvoiceList from "@/components/InvoiceList";
 import { allowsWebBilling } from "@/lib/distribution";
+import AiSettingsCard from "@/components/AiSettingsCard";
 
 /** Human label for an entitlement row: the plan's display name where we know it, else the kind. */
 const planName = (code: string | null, kind: string) =>
@@ -140,9 +142,11 @@ export default function Account() {
               {webBilling && <Button asChild variant="outline" className="min-h-11"><Link to="/pricing">{sub ? "Change plan" : "See plans"}</Link></Button>}
               {webBilling && sub?.status === "active" && <Button variant="destructive" className="min-h-11" disabled={busy} onClick={() => { if (confirm("Cancel at the end of the current period?")) act(cancelSubscription, "Subscription will end at the period end"); }}>Cancel subscription</Button>}
               <Button asChild variant="outline" className="min-h-11"><Link to="/patients">My patient records</Link></Button>
-              <Button variant="ghost" className="min-h-11" onClick={async () => { await supabase.auth.signOut(); await clearLocalRecords(); }}>Sign out</Button>
+              <Button variant="ghost" className="min-h-11" onClick={async () => { await supabase.auth.signOut(); clearAiSettings(); await clearLocalRecords(); }}>Sign out</Button>
             </div>
           </section>
+
+          <AiSettingsCard />
 
           <section className="glass rounded-xl p-4 space-y-2">
             <h2 className="font-semibold flex items-center gap-2"><ShieldCheck className="h-4 w-4" />Developer access</h2>
