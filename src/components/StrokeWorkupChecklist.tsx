@@ -5884,7 +5884,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
-              { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
+              { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT or DOAC", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
               { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
               { id: "ischemic-ich-options", label: "ICH Treatment Options", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "ich hemorrhagic transformation reversal pcc andexanet platelets plan" },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
