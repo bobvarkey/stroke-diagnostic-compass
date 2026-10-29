@@ -16,3 +16,14 @@ describe("recurrent stroke on DOAC pathway", () => {
     expect(p.find((s) => s.title === "Other mechanism")?.detail).toContain("warfarin");
   });
 });
+
+import { buildDoacRecurrencePlan as plan2 } from "@/lib/recurrentDoacPathway";
+describe("apixaban + antiplatelet, adequate, undetermined", () => {
+  it("gives provisional plan, asks why antiplatelet, forbids switching", () => {
+    const t = plan2({ doac: "apixaban", exposure: "adequate", mechanism: "undetermined", antiplatelet: "yes_reason_unknown" }).map(p => p.title + " " + p.detail).join("\n");
+    expect(t).toContain("Provisional plan for this scenario");
+    expect(t).toContain("Find out why the antiplatelet was started");
+    expect(t).toContain("Do not add aspirin");
+    expect(t).not.toContain("Correct Apixaban exposure");
+  });
+});

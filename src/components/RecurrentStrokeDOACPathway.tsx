@@ -66,7 +66,7 @@ const RecurrentStrokeDOACPathway: React.FC = () => {
             <MechanismChoice label="3. Most likely stroke mechanism" value={mechanism} onChange={setMechanism}
               options={[["cardioembolic", "Cardioembolic"], ["large_artery", "Large-artery"], ["lacunar", "Small-vessel / lacunar"], ["other", "Other (APS, malignancy…)"], ["undetermined", "Undetermined"]]} />
             <AntiplateletReasonChoice label="4. Also on clopidogrel or aspirin — why?" value={antiplatelet} onChange={setAntiplatelet}
-              options={[["none_taken", "Not on antiplatelet"], ["prior_stroke_only", "Prior stroke only"], ["stable_cad_gt12m", "Stable CAD >12 mo post-PCI"], ["recent_pci_acs", "Recent PCI / ACS"], ["recent_carotid_stent", "Recent carotid stent"], ["severe_icas", "Severe intracranial stenosis"], ["no_indication", "No documented reason"]]} />
+              options={[["none_taken", "Not on antiplatelet"], ["yes_reason_unknown", "Yes — reason not yet known"], ["prior_stroke_only", "Prior stroke only"], ["stable_cad_gt12m", "Stable CAD >12 mo post-PCI"], ["recent_pci_acs", "Recent PCI / ACS"], ["recent_carotid_stent", "Recent carotid stent"], ["severe_icas", "Severe intracranial stenosis"], ["no_indication", "No documented reason"]]} />
 
             <div className="space-y-2">
               <p className="text-sm font-semibold">Treatment plan</p>
@@ -81,6 +81,7 @@ const RecurrentStrokeDOACPathway: React.FC = () => {
                 );
               })}
             </div>
+            <p className="text-[11px] text-muted-foreground">Assumes the DOAC is for atrial fibrillation; if the indication is venous thromboembolism, the long-term strategy needs modification.</p>
             <p className="text-[11px] text-muted-foreground">Evidence: 2024 ESC AF guideline; 2026 AHA/ASA acute ischaemic stroke guideline; 2023 ACC/AHA AF guideline; 2025 meta-analysis (n=14,307, observational) — DOAC continuation ≈ switching DOAC, warfarin switch worse; 2026 BMJ breakthrough-stroke review.</p>
           </CardContent>
         </CollapsibleContent>
