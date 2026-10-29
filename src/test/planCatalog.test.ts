@@ -51,7 +51,7 @@ describe("plan catalog", () => {
   it("offers Enterprise in dollars to every region, without displacing the individual pair", () => {
     const ent = PLAN_DISPLAY[ENTERPRISE_PLAN];
     expect(ent.currency).toBe("USD");
-    expect(ent.amount).toBe("$1,000");
+    expect(ent.amount).toBe("$250");
     expect(ent.period).toBe("year");
     for (const c of CURRENCIES) {
       expect(plansFor(c)).not.toContain(ENTERPRISE_PLAN);

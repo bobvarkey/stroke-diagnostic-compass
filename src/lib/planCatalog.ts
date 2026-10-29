@@ -23,7 +23,7 @@ export const PLAN_DISPLAY: Record<PlanCode, PlanDisplay> = {
   stroke_yearly: { name: "Stroke Yearly", amount: "₹5,000", period: "year", currency: "INR" },
   stroke_monthly_usd: { name: "Stroke Monthly", amount: "$5", period: "month", currency: "USD" },
   stroke_yearly_usd: { name: "Stroke Yearly", amount: "$50", period: "year", currency: "USD" },
-  stroke_enterprise: { name: "Enterprise Annual", amount: "$1,000", period: "year", currency: "USD" },
+  stroke_enterprise: { name: "Enterprise Annual", amount: "$250", period: "year", currency: "USD" },
 };
 
 /** Enterprise is quoted in dollars for every region, so it is offered *alongside* whichever
