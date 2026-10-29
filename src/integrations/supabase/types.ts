@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_allowlist: {
+        Row: {
+          created_at: string
+          email: string
+          note: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          note?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          note?: string | null
+        }
+        Relationships: []
+      }
       enterprise_members: {
         Row: {
           created_at: string
@@ -512,6 +530,10 @@ export type Database = {
     Functions: {
       can_access_patient: { Args: { _patient_id: string }; Returns: boolean }
       get_username: { Args: { _user_id: string }; Returns: string }
+      grant_allowlisted_access: {
+        Args: { p_email: string; p_user_id: string }
+        Returns: boolean
+      }
       has_active_enterprise: { Args: { _user_id: string }; Returns: boolean }
       has_premium_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
