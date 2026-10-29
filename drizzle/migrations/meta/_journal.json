@@ -29,6 +29,13 @@
       "when": 1792320657221,
       "tag": "0003_restrict_stroke_emergency_records_to_admins",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793269042802,
+      "tag": "0004_owner_allowlist",
+      "breakpoints": true
     }
   ]
 }
