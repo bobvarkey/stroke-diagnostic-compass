@@ -50,7 +50,7 @@ const RecurrentStrokeDOACPathway: React.FC = () => {
         <CollapsibleContent>
           <CardContent className="space-y-5 pt-5">
             <p className="text-xs text-muted-foreground">Secondary-prevention pathway, not an acute reperfusion algorithm. Separates under-exposure, a competing mechanism, and true breakthrough cardioembolism.</p>
-            <Choice label="1. Anticoagulant at time of stroke" value={doac} onChange={setDoac}
+            <Choice<Doac> label="1. Anticoagulant at time of stroke" value={doac} onChange={setDoac}
               options={[["dabigatran", "Dabigatran"], ["apixaban", "Apixaban"], ["rivaroxaban", "Rivaroxaban"]]} />
             <div className="grid gap-2 rounded-lg border bg-muted/40 p-3 text-xs sm:grid-cols-2">
               <div><b>Standard AF dose:</b> {d.standard}</div>
@@ -61,11 +61,11 @@ const RecurrentStrokeDOACPathway: React.FC = () => {
               <div><b>Reversal:</b> {d.reversal}</div>
               <div className="sm:col-span-2 text-muted-foreground">{d.note}</div>
             </div>
-            <Choice label="2. Is anticoagulant exposure adequate?" value={exposure} onChange={setExposure}
+            <Choice<Exposure> label="2. Is anticoagulant exposure adequate?" value={exposure} onChange={setExposure}
               options={[["adequate", "Yes — dose & adherence verified"], ["inadequate", "No — missed / underdosed / interaction"], ["unknown", "Not yet established"]]} />
-            <Choice label="3. Most likely stroke mechanism" value={mechanism} onChange={setMechanism}
+            <Choice<Mechanism> label="3. Most likely stroke mechanism" value={mechanism} onChange={setMechanism}
               options={[["cardioembolic", "Cardioembolic"], ["large_artery", "Large-artery"], ["lacunar", "Small-vessel / lacunar"], ["other", "Other (APS, malignancy…)"], ["undetermined", "Undetermined"]]} />
-            <Choice label="4. Also on clopidogrel or aspirin — why?" value={antiplatelet} onChange={setAntiplatelet}
+            <Choice<AntiplateletReason> label="4. Also on clopidogrel or aspirin — why?" value={antiplatelet} onChange={setAntiplatelet}
               options={[["none_taken", "Not on antiplatelet"], ["prior_stroke_only", "Prior stroke only"], ["stable_cad_gt12m", "Stable CAD >12 mo post-PCI"], ["recent_pci_acs", "Recent PCI / ACS"], ["recent_carotid_stent", "Recent carotid stent"], ["severe_icas", "Severe intracranial stenosis"], ["no_indication", "No documented reason"]]} />
 
             <div className="space-y-2">
