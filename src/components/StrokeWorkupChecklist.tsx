@@ -42,6 +42,7 @@ import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
 import CollapsibleModule from "./CollapsibleModule";
 import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendation";
+import RecurrentStrokeDOACPathway from "./RecurrentStrokeDOACPathway";
 import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
@@ -5931,6 +5932,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Recurrent stroke on aspirin + clopidogrel — switch-to-Ticagrelor pathway */}
           <LazySection id="recurrent-dapt">
             <RecurrentStrokeDAPTRecommendation />
+          </LazySection>
+
+          {/* Recurrent stroke despite DOAC — interactive secondary-prevention pathway */}
+          <LazySection id="recurrent-doac">
+            <RecurrentStrokeDOACPathway />
           </LazySection>
 
           {/* Anticoagulant Reversal — NCS/SCCM guideline update (PCC, andexanet, platelets, desmopressin) */}
