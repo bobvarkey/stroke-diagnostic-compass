@@ -3,7 +3,7 @@ export type Doac = "dabigatran" | "apixaban" | "rivaroxaban";
 export type Exposure = "adequate" | "inadequate" | "unknown";
 export type Mechanism = "cardioembolic" | "large_artery" | "lacunar" | "other" | "undetermined";
 export type AntiplateletReason =
-  | "none_taken" | "prior_stroke_only" | "stable_cad_gt12m" | "recent_pci_acs"
+  | "none_taken" | "yes_reason_unknown" | "prior_stroke_only" | "stable_cad_gt12m" | "recent_pci_acs"
   | "recent_carotid_stent" | "severe_icas" | "no_indication";
 
 export interface DoacInputs {
@@ -44,8 +44,15 @@ export function buildDoacRecurrencePlan(i: DoacInputs): PlanStep[] {
   };
   s.push(mech[i.mechanism]);
 
+  if (i.exposure === "adequate" && i.mechanism === "undetermined" && i.antiplatelet !== "none_taken") {
+    s.push({ title: "Provisional plan for this scenario", detail: `Adequate ${d.label} exposure, unknown mechanism, on antiplatelet: continue appropriately dosed ${d.label} when safe; urgently define the infarct mechanism (MRI pattern, CTA); investigate vascular and cardiac embolic sources; reassess the antiplatelet indication before discharge. No evidence-based reason to switch to another DOAC or warfarin, or to add aspirin.`, tone: "action" });
+  }
+
+  s.push({ title: "Laboratory work-up", detail: `Routine: CBC/platelets, creatinine with Cockcroft-Gault CrCl, liver function, HbA1c, lipids, medication reconciliation. Selected: antiphospholipid panel (DOACs interfere with lupus anticoagulant), malignancy screen, ESR/CRP and vasculitis work-up, blood cultures if endocarditis suspected, ${d.assay} level, thrombophilia testing.`, tone: "action" });
+
   const ap: Record<AntiplateletReason, PlanStep | null> = {
     none_taken: null,
+    yes_reason_unknown: { title: "Find out why the antiplatelet was started", detail: "This is the most decision-changing missing fact. Review stent history (coronary/carotid, dates, any stent thrombosis), recent ACS and intracranial stenosis before discharge. Do not add aspirin to an existing DOAC + clopidogrel; do not stop clopidogrel abruptly if a recent stent is possible.", tone: "caution" },
     prior_stroke_only: { title: "Stop the antiplatelet", detail: "Prescribed only for prior stroke — generally discontinue after confirming no independent indication (AHA/ASA 2026 III: Harm).", tone: "avoid" },
     stable_cad_gt12m: { title: "DOAC monotherapy", detail: "Stable CAD >12 months after PCI without stent thrombosis — prefer DOAC alone (ACC/AHA 2023 I, B-R).", tone: "avoid" },
     recent_pci_acs: { title: "Time-limited combination", detail: "Recent PCI/ACS — continue DOAC + clopidogrel for an individualised, limited duration. Do not stop abruptly.", tone: "caution" },
@@ -56,7 +63,7 @@ export function buildDoacRecurrencePlan(i: DoacInputs): PlanStep[] {
   const a = ap[i.antiplatelet];
   if (a) s.push(a);
 
-  s.push({ title: "Do not", detail: `Routinely switch ${d.label} to another DOAC or warfarin (ESC III, B; warfarin switch linked to more recurrence and ICH), or add antiplatelet therapy solely to prevent AF embolism, or escalate to triple therapy.`, tone: "avoid" });
-  s.push({ title: "Risk factors & follow-up", detail: "BP <130/80; LDL <70 mg/dL (<55 very-high risk) with statin ± ezetimibe/PCSK9; HbA1c ~≤7%; stop smoking; screen sleep apnoea. Review at 1–2 wk (results, renal, bleeding), 4–12 wk (lipids, BP, adherence), 3 mo (mechanism, regimen), then every 6–12 mo (renal, bleeding risk).", tone: "action" });
+  s.push({ title: "Do not", detail: `Routinely switch ${d.label} to another DOAC or warfarin (ESC III, B; warfarin switch linked to more recurrence and ICH), or add antiplatelet therapy solely to prevent AF embolism, or escalate to triple therapy. Do not continue DOAC + antiplatelet through a large acute infarct without reassessing haemorrhagic risk.`, tone: "avoid" });
+  s.push({ title: "Risk factors & follow-up", detail: "BP <130/80; LDL <70 mg/dL (<55 very-high risk) with statin ± ezetimibe/PCSK9; HbA1c ~≤7%; stop smoking; screen sleep apnoea. First 48 h: imaging, vascular assessment, medication review, initial cardiac work-up. Before discharge: provisional aetiology, anticoagulation restart plan, antiplatelet indication, risk-factor treatment. Review at 1–2 wk (results, renal, bleeding), 4–12 wk (lipids, BP, adherence), 3 mo (mechanism, regimen), then every 6–12 mo (renal, bleeding risk).", tone: "action" });
   return s;
 }
