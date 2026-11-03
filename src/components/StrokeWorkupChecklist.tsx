@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch, ExternalLink } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 type NIHSSItemMeta = { canBeUntestable?: boolean; neverUntestable?: boolean; untestableReason?: string };
@@ -5868,6 +5868,29 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             </TabsList>
 
             <TabsContent value="ischemic-modules" className="space-y-6 mt-4">
+          {/* Radiology companion app link */}
+          <a
+            href="https://radiology-interpretation.lovable.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block group"
+          >
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 transition-colors group-hover:bg-primary/10">
+              <div className="flex items-center gap-3 min-w-0">
+                <Brain className="h-4 w-4 shrink-0 text-primary" />
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-foreground truncate-none">
+                    Radiology Interpretation
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate-none">
+                    CT/MRI pattern reference companion app for stroke imaging
+                  </p>
+                </div>
+              </div>
+              <ExternalLink className="h-4 w-4 shrink-0 text-primary" />
+            </div>
+          </a>
+
           {/* Section Navigator */}
           <SectionNavigator
             title="Ischemic Stroke Modules"
