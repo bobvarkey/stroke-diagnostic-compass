@@ -13,4 +13,5 @@
 - [x] Enterprise Annual plan ($1,000/year)
 - [x] Subscription status badge on home paywall and Account
 - [x] In-app invoices from webhook payments
+- [x] Add Stroke-Heart Syndrome module (mechanistic cascade figure, 7 pathways, cardiac outcomes, bedside screening).
 - [ ] Real payment test (blocked: user adds webhook in Razorpay dashboard and pays)

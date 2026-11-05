@@ -44,6 +44,7 @@ import StrokeTreatmentRecommender from "./StrokeTreatmentRecommender";
 import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendation";
 import RecurrentStrokeDOACPathway from "./RecurrentStrokeDOACPathway";
 import PCNSVImagingSection from "./PCNSVImagingSection";
+import StrokeHeartSyndromeSection from "./StrokeHeartSyndromeSection";
 import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
@@ -5910,6 +5911,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT or DOAC", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
               { id: "pcnsv", label: "PCNSV (CNS Vasculitis)", icon: <Brain className="h-3.5 w-3.5 text-fuchsia-500" />, keywords: "pacns primary cns vasculitis cerebellar tonsillar hemorrhage enhancement swi" },
+              { id: "stroke-heart", label: "Stroke-Heart Syndrome", icon: <HeartPulse className="h-3.5 w-3.5 text-rose-500" />, keywords: "stroke heart syndrome shs takotsubo troponin ecg qtc arrhythmia atrial fibrillation lv dysfunction heart failure neurogenic myocardial injury autonomic insular" },
               { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
               { id: "ischemic-ich-options", label: "ICH Treatment Options", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "ich hemorrhagic transformation reversal pcc andexanet platelets plan" },
               { id: "lvo-dashboard", label: "LVO Dashboard", icon: <Crosshair className="h-3.5 w-3.5 text-rose-500" /> },
@@ -5967,6 +5969,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Primary CNS vasculitis imaging marker */}
           <LazySection id="pcnsv">
             <PCNSVImagingSection />
+          </LazySection>
+
+          {/* Stroke-heart syndrome — mechanistic cascade from brain injury to cardiac injury */}
+          <LazySection id="stroke-heart">
+            <StrokeHeartSyndromeSection />
           </LazySection>
 
           {/* Anticoagulant Reversal — NCS/SCCM guideline update (PCC, andexanet, platelets, desmopressin) */}
