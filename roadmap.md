@@ -1,5 +1,5 @@
 # Tasks
-- [ ] Add MRI-CSVD-5 brain frailty scoring, evidence cautions and report exports to Ischemic Stroke; verify calculations and on-screen flow.
+- [x] Add MRI-CSVD-5 brain frailty scoring, evidence cautions and report exports to Ischemic Stroke; verified 17 tests and signed-in desktop/mobile scoring and exports.
 - [x] Hide Razorpay in Capacitor store launches; verify native-mode screens, account access and unchanged web billing (actual store-package testing still required).
 - [x] Fix scanned emergency-record access policies and verify administrator-only access.
 - [x] Expand IVT into eligibility, treatment preparation and post-treatment monitoring steps.
