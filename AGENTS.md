@@ -1,6 +1,7 @@
 # StrokeSuite ID — Agent Notes
 
 ## Architecture rules
+- **MRI-CSVD-5 calculations use a pure validated rules module and retain raw imaging inputs in reports.** Unknown markers and unverified EPVS protocols remain incomplete, keeping research burden separate from treatment eligibility.
 - **Store launches use the existing Capacitor native-runtime API to suppress web billing presentation and reject Razorpay checkout before subscription creation.** This is a presentation boundary only: browser/PWA billing and server-verified entitlements stay unchanged, and no client runtime flag grants access.
 - **Emergency records and the automated caller require a server-verified admin role**, preventing ordinary accounts bypassing database access rules through service-role calls.
 - **Treatment pathways use pure rules and a shared event/storage snapshot**, with stroke-type filtering in the Plan and registered next-action targets; treatment eligibility and documented completion remain distinct.

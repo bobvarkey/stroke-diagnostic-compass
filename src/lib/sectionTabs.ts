@@ -32,6 +32,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "abcd2-score": "ischemic",
   "thrive-score": "ischemic",
   "mrs-scale": "ischemic",
+  "csvd-brain-frailty": "ischemic",
   "secondary-ich-score": "hemorrhagic",
   "sich-cta": "hemorrhagic",
   "sich-dsa": "hemorrhagic",
