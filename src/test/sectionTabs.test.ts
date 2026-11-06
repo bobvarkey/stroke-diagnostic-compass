@@ -6,6 +6,9 @@ import {
 } from "@/lib/sectionTabs";
 
 describe("section tab routing", () => {
+  it("routes MRI-CSVD brain frailty to ischemic stroke", () => {
+    expect(getTabForSection("csvd-brain-frailty")).toBe("ischemic");
+  });
   it("routes all new CVT modules onto the CVT tab", () => {
     expect(getTabForSection("cvt-management")).toBe("cvt");
     expect(getTabForSection("cvt-evaluation-pathway")).toBe("cvt");

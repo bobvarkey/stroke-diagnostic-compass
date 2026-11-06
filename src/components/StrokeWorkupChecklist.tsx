@@ -45,6 +45,7 @@ import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendati
 import RecurrentStrokeDOACPathway from "./RecurrentStrokeDOACPathway";
 import PCNSVImagingSection from "./PCNSVImagingSection";
 import StrokeHeartSyndromeSection from "./StrokeHeartSyndromeSection";
+import MriCsvdBrainFrailty from "./MriCsvdBrainFrailty";
 import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
 import LVODecisionDashboard from "./LVODecisionDashboard";
@@ -5923,6 +5924,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "abcd2-score", label: "ABCD² Score", icon: <Brain className="h-3.5 w-3.5 text-sky-500" />, keywords: "abcd2 abcd tia transient ischemic attack risk stratification age blood pressure weakness speech duration diabetes" },
               { id: "thrive-score", label: "THRIVE Score", icon: <Calculator className="h-3.5 w-3.5 text-emerald-500" />, keywords: "thrive outcome prognosis mortality nihss age hypertension diabetes af" },
               { id: "mrs-scale", label: "Modified Rankin Scale", icon: <Calculator className="h-3.5 w-3.5 text-sky-500" />, keywords: "mrs modified rankin scale disability outcome 90 day functional independence" },
+              { id: "csvd-brain-frailty", label: "CSVD / Brain Frailty", icon: <Brain className="h-3.5 w-3.5 text-primary" />, keywords: "mri csvd brain frailty strive goulart small vessel disease fazekas epvs lacunes microbleeds atrophy prognosis" },
               { id: "gcs-calculator", label: "GCS Calculator", icon: <Brain className="h-3.5 w-3.5 text-orange-500" /> },
               { id: "prevent-score", label: "PREVENT Score", icon: <ShieldAlert className="h-3.5 w-3.5 text-emerald-500" /> },
               { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
@@ -6261,6 +6263,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           <LazySection id="mrs-scale">
             <ModifiedRankinScaleCalculator />
+          </LazySection>
+
+          <LazySection id="csvd-brain-frailty">
+            <MriCsvdBrainFrailty />
           </LazySection>
 
           {/* Visual GCS Calculator */}
