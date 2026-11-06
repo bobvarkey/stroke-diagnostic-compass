@@ -45,6 +45,7 @@ import RecurrentStrokeDAPTRecommendation from "./RecurrentStrokeDAPTRecommendati
 import RecurrentStrokeDOACPathway from "./RecurrentStrokeDOACPathway";
 import PCNSVImagingSection from "./PCNSVImagingSection";
 import StrokeHeartSyndromeSection from "./StrokeHeartSyndromeSection";
+import IcasDaptSection from "./IcasDaptSection";
 import MriCsvdBrainFrailty from "./MriCsvdBrainFrailty";
 import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
@@ -5911,6 +5912,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT or DOAC", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
+              { id: "icas-dapt", label: "DAPT in Intracranial Atherosclerosis", icon: <Pill className="h-3.5 w-3.5 text-violet-500" />, keywords: "icas sicas intracranial stenosis dapt duration chance point thales sammpris inspires chance-2 clopidogrel ticagrelor 21 90 days" },
               { id: "pcnsv", label: "PCNSV (CNS Vasculitis)", icon: <Brain className="h-3.5 w-3.5 text-fuchsia-500" />, keywords: "pacns primary cns vasculitis cerebellar tonsillar hemorrhage enhancement swi" },
               { id: "stroke-heart", label: "Stroke-Heart Syndrome", icon: <HeartPulse className="h-3.5 w-3.5 text-rose-500" />, keywords: "stroke heart syndrome shs takotsubo troponin ecg qtc arrhythmia atrial fibrillation lv dysfunction heart failure neurogenic myocardial injury autonomic insular" },
               { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
@@ -5966,6 +5968,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* Recurrent stroke despite DOAC — interactive secondary-prevention pathway */}
           <LazySection id="recurrent-doac">
             <RecurrentStrokeDOACPathway />
+          </LazySection>
+
+          <LazySection id="icas-dapt">
+            <IcasDaptSection />
           </LazySection>
 
           {/* Primary CNS vasculitis imaging marker */}
