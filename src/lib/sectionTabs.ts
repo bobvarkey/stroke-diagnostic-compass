@@ -9,6 +9,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "cvt-intraclot-thrombolysis": "cvt",
   "cvt-procedural-techniques": "cvt",
   "cvt-endovascular-techniques": "cvt",
+  "cvt-fogarty-balloon": "cvt",
   "cvt-etiological-evaluation": "cvt",
 
   "carotid-revascularisation": "carotid",
@@ -77,6 +78,7 @@ const LAZY_PARENT: Record<string, string> = {
   "cvt-intraclot-thrombolysis": "cvt-management",
   "cvt-procedural-techniques": "cvt-management",
   "cvt-endovascular-techniques": "cvt-management",
+  "cvt-fogarty-balloon": "cvt-management",
   "cvt-etiological-evaluation": "cvt-management",
 };
 

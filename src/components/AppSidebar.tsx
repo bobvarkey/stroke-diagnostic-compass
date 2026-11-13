@@ -117,6 +117,11 @@ const navGroups: NavGroup[] = [
         icon: <Target className="h-4 w-4 text-orange-500" />
       },
       {
+        id: "cvt-fogarty-balloon",
+        label: "Fogarty balloon",
+        icon: <Target className="h-4 w-4 text-orange-500" />
+      },
+      {
         id: "carotid-revascularisation",
         label: "Carotid Revascularisation",
         icon: <HeartPulse className="h-4 w-4 text-teal-500" />

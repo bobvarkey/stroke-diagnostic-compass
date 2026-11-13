@@ -85,3 +85,18 @@ export type CvtEndovascularTechniqueId = (typeof CVT_ENDOVASCULAR_TECHNIQUES)[nu
 export function getCvtEndovascularTechnique(id: CvtEndovascularTechniqueId) {
   return CVT_ENDOVASCULAR_TECHNIQUES.find((t) => t.id === id) ?? CVT_ENDOVASCULAR_TECHNIQUES[0];
 }
+
+/** Balloon-assisted thrombectomy notes supplied with the Fogarty catheter slide. */
+export const CVT_FOGARTY_BALLOON = {
+  id: "cvt-fogarty-balloon",
+  title: "Balloon thrombectomy (Fogarty catheter)",
+  points: [
+    "4 F Fogarty requires a 5 Fr short sheath",
+    "Cheaper (only 5000 Rs for catheter)",
+  ],
+  spec: "4 Fr catheter / 80 cm usable length / 9 mm inflated balloon",
+  model: "12TLW804F",
+  warning: "Edwards' instructions warn against use of this catheter in the venous system.",
+  figure:
+    "Balloon-assisted cerebral venous sinus thrombectomy: Edwards Fogarty Thru-Lumen embolectomy catheter, over-the-wire models and manufacturer specifications.",
+} as const;
