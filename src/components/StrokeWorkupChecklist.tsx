@@ -6696,6 +6696,12 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "cvt-intraclot-thrombolysis", label: "Intraclot dosing", icon: <Syringe className="h-3.5 w-3.5 text-rose-500" /> },
               { id: "cvt-procedural-techniques", label: "Procedural techniques", icon: <Crosshair className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "cvt-endovascular-techniques", label: "Endovascular A–D", icon: <Target className="h-3.5 w-3.5 text-orange-500" /> },
+              {
+                id: "cvt-fogarty-balloon",
+                label: "Fogarty balloon",
+                icon: <Target className="h-3.5 w-3.5 text-orange-500" />,
+                keywords: "Balloon thrombectomy Fogarty catheter 12TLW804F 4 F 5 Fr sheath",
+              },
             ]}
             onNavigateToSection={(id) => {
               window.dispatchEvent(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));

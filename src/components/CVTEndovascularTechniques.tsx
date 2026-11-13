@@ -1,24 +1,90 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, Info, Target } from "lucide-react";
+import { AlertTriangle, ChevronDown, Info, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
 import cvtEndovascularFigure from "@/assets/cvt-endovascular-techniques.png";
+import fogartySlide from "@/assets/fogarty-balloon-thrombectomy.jpg";
 import {
   CVT_ENDOVASCULAR_ATTRIBUTION,
   CVT_ENDOVASCULAR_LABELS,
   CVT_ENDOVASCULAR_PANELS,
   CVT_ENDOVASCULAR_TECHNIQUES,
   CVT_ENDOVASCULAR_TITLE,
+  CVT_FOGARTY_BALLOON,
   getCvtEndovascularTechnique,
   type CvtEndovascularTechniqueId,
 } from "@/lib/cvtEndovascularTechniques";
+
+function FogartyFigure() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <figure className="min-w-0 max-w-full">
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="block w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-border bg-white p-2 text-left shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        <img
+          src={fogartySlide}
+          alt={CVT_FOGARTY_BALLOON.figure}
+          className="mx-auto h-auto w-full max-w-full"
+          loading="lazy"
+        />
+      </button>
+      <figcaption className="mt-2 text-xs leading-snug break-words text-slate-700 dark:text-slate-300">
+        {CVT_FOGARTY_BALLOON.figure}
+      </figcaption>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] min-w-0 max-w-[calc(100vw-1.5rem)] flex-col gap-3 overflow-hidden p-3 sm:max-w-5xl sm:p-4">
+          <DialogHeader className="shrink-0 space-y-0 pr-8 text-left">
+            <DialogTitle className="text-sm font-medium leading-snug">{CVT_FOGARTY_BALLOON.figure}</DialogTitle>
+            <DialogDescription className="sr-only">{CVT_FOGARTY_BALLOON.figure}</DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 min-w-0 flex-1 overflow-auto overscroll-contain bg-white">
+            <img src={fogartySlide} alt={CVT_FOGARTY_BALLOON.figure} className="h-auto w-full max-w-full" />
+          </div>
+          <DialogFooter className="shrink-0 sm:justify-end">
+            <DialogClose asChild>
+              <Button type="button" variant="outline" className="min-h-11 w-full sm:w-auto">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </figure>
+  );
+}
 
 export default function CVTEndovascularTechniques() {
   const [isOpen, setIsOpen] = useState(true);
   const [techniqueId, setTechniqueId] = useState<CvtEndovascularTechniqueId>("venoplasty");
   const technique = getCvtEndovascularTechnique(techniqueId);
+
+  useEffect(() => {
+    const openForFogarty = (id: string) => {
+      if (id === CVT_FOGARTY_BALLOON.id) setIsOpen(true);
+    };
+    const onNavigate = (event: Event) => openForFogarty((event as CustomEvent<string>).detail);
+    window.addEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
+    openForFogarty(window.location.hash.replace(/^#/, ""));
+    return () => window.removeEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
+  }, []);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -142,6 +208,30 @@ export default function CVTEndovascularTechniques() {
               </p>
             </div>
             <p className="text-[11px] text-muted-foreground">{CVT_ENDOVASCULAR_ATTRIBUTION}</p>
+
+            <section
+              id={CVT_FOGARTY_BALLOON.id}
+              className="scroll-mt-36 min-w-0 space-y-3 border-t border-border pt-4 text-foreground"
+            >
+              <h3 className="text-base font-semibold leading-snug tracking-tight">
+                {CVT_FOGARTY_BALLOON.title}
+              </h3>
+              <ul className="list-disc space-y-1.5 pl-5 text-sm leading-6">
+                {CVT_FOGARTY_BALLOON.points.map((point) => (
+                  <li key={point} className="break-words pl-1">
+                    {point}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-sm leading-6 break-words">
+                {CVT_FOGARTY_BALLOON.spec} (model {CVT_FOGARTY_BALLOON.model})
+              </p>
+              <p className="flex items-start gap-1.5 text-xs leading-5 text-amber-800 dark:text-amber-300">
+                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                <span className="min-w-0 break-words">{CVT_FOGARTY_BALLOON.warning}</span>
+              </p>
+              <FogartyFigure />
+            </section>
           </CardContent>
         </CollapsibleContent>
       </Card>

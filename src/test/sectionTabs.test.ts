@@ -18,11 +18,13 @@ describe("section tab routing", () => {
     expect(getTabForSection("cvt-intraclot-thrombolysis")).toBe("cvt");
     expect(getTabForSection("cvt-procedural-techniques")).toBe("cvt");
     expect(getTabForSection("cvt-endovascular-techniques")).toBe("cvt");
+    expect(getTabForSection("cvt-fogarty-balloon")).toBe("cvt");
   });
 
   it("force-mounts the CVT lazy wrapper before scrolling to a submodule", () => {
     expect(getLazyParentSection("cvt-intraclot-thrombolysis")).toBe("cvt-management");
     expect(getLazyParentSection("cvt-endovascular-techniques")).toBe("cvt-management");
+    expect(getLazyParentSection("cvt-fogarty-balloon")).toBe("cvt-management");
   });
 
   it("does not treat ischemic sections as CVT", () => {

@@ -5,6 +5,7 @@ import {
   CVT_ENDOVASCULAR_PANELS,
   CVT_ENDOVASCULAR_TECHNIQUES,
   CVT_ENDOVASCULAR_TITLE,
+  CVT_FOGARTY_BALLOON,
   getCvtEndovascularTechnique,
 } from "@/lib/cvtEndovascularTechniques";
 
@@ -42,5 +43,23 @@ describe("CVT endovascular techniques content", () => {
   it("returns the selected technique and falls back to venoplasty", () => {
     expect(getCvtEndovascularTechnique("pipeline-pigging").name).toBe("Pipeline pigging technique");
     expect(getCvtEndovascularTechnique("venoplasty").number).toBe(1);
+  });
+
+  it("keeps the Fogarty balloon notes to the supplied lines", () => {
+    expect(CVT_FOGARTY_BALLOON.title).toBe("Balloon thrombectomy (Fogarty catheter)");
+    expect([...CVT_FOGARTY_BALLOON.points]).toEqual([
+      "4 F Fogarty requires a 5 Fr short sheath",
+      "Cheaper (only 5000 Rs for catheter)",
+    ]);
+    expect(CVT_FOGARTY_BALLOON.spec).toBe(
+      "4 Fr catheter / 80 cm usable length / 9 mm inflated balloon",
+    );
+    expect(CVT_FOGARTY_BALLOON.model).toBe("12TLW804F");
+    expect(CVT_FOGARTY_BALLOON.warning).toBe(
+      "Edwards' instructions warn against use of this catheter in the venous system.",
+    );
+    expect(CVT_FOGARTY_BALLOON.figure).toBe(
+      "Balloon-assisted cerebral venous sinus thrombectomy: Edwards Fogarty Thru-Lumen embolectomy catheter, over-the-wire models and manufacturer specifications.",
+    );
   });
 });
