@@ -215,6 +215,11 @@ const navGroups: NavGroup[] = [
     title: "Documentation",
     defaultOpen: false,
     items: [
+      {
+        id: "rope-pascal",
+        label: "RoPE–PASCAL",
+        icon: <Heart className="h-4 w-4 text-rose-400" />,
+      },
       { 
         id: "stroke-history", 
         label: "Stroke History", 
