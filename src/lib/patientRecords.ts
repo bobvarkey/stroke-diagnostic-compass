@@ -21,6 +21,9 @@ class RecordsDB extends Dexie {
 }
 export const db = new RecordsDB();
 
+/** Records saved without an account. Server sync still requires a signed-in session. */
+export const LOCAL_OWNER_ID = "local";
+
 export const IMAGING_STEP = /(ct|mri|cta|angiogram|imaging|scan|dsa)/i;
 
 function toRow(r: PatientRecord) {
@@ -41,6 +44,9 @@ export async function saveRecord(r: Omit<PatientRecord, "updated_at" | "sync_sta
 /** Push pending local edits, then pull the server copy. Newer updated_at wins on conflict. */
 export async function syncRecords(ownerId: string): Promise<boolean> {
   if (!navigator.onLine) return false;
+  const { data: { session } } = await supabase.auth.getSession();
+  // Row-level security keys writes to the signed-in user. With no session, keep the local copy.
+  if (!session?.user) return false;
   const pending = await db.records.where("sync_status").equals("pending").filter((r) => r.owner_id === ownerId).toArray();
   for (const r of pending) {
     const { error } = await supabase.from("patients").upsert(toRow(r), { onConflict: "id" });
@@ -65,5 +71,5 @@ export async function syncRecords(ownerId: string): Promise<boolean> {
 export const listRecords = (ownerId: string) =>
   db.records.where("owner_id").equals(ownerId).filter((r) => !r.deleted).reverse().sortBy("updated_at");
 
-/** Clears offline copies (e.g. on sign-out) so patient data doesn't linger on shared devices. */
+/** Clears offline copies so patient data doesn't linger on a shared device. */
 export const clearLocalRecords = () => db.records.clear();

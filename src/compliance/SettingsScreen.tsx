@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════════
 // Settings Screen — StrokeSuite
-// Legal links, consent management, account closure, data export.
+// Legal links, consent management, and a local data export.
 // ══════════════════════════════════════════════════════════════════
 
 import React, { useState } from 'react';
@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
@@ -21,31 +20,15 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import {
   ChevronLeft,
   Shield,
   FileText,
   Gavel,
   AlertTriangle,
   Download,
-  Trash2,
-  UserX,
   Database,
-  Eye,
   CheckCircle,
   XCircle,
-  Lock,
-  Server,
   Smartphone,
   RefreshCw,
 } from 'lucide-react';
@@ -53,30 +36,13 @@ import {
 import { PrivacyScreen, PRIVACY_VERSION as PV } from './PrivacyScreen';
 import { TermsScreen, TERMS_VERSION as TV } from './TermsScreen';
 import { DisclaimerScreen, DISCLAIMER_VERSION as DV } from './DisclaimerScreen';
-import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import AiSettingsCard from '@/components/AiSettingsCard';
+import { LOCAL_OWNER_ID, listRecords } from '@/lib/patientRecords';
 
 type LegalView = 'privacy' | 'terms' | 'disclaimer' | null;
 
-// Mock — in production this would call backend APIs
-const mockRequestDataExport = async (userId: string): Promise<string> => {
-  await new Promise((r) => setTimeout(r, 500));
-  return JSON.stringify({
-    user: { id: userId },
-    profile: { /* ... */ },
-    patients: [],
-    consents: [],
-    auditLogs: [],
-    exportedAt: new Date().toISOString(),
-  }, null, 2);
-};
-
-const mockDeleteAccount = async (userId: string): Promise<void> => {
-  await new Promise((r) => setTimeout(r, 1000));
-};
-
 export function SettingsScreen({ onBack }: { onBack: () => void }) {
-  const { user, profile, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
   const [legalView, setLegalView] = useState<LegalView>(null);
   const [analyticsConsent, setAnalyticsConsent] = useState(() => {
@@ -85,8 +51,6 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
     } catch { return false; }
   });
   const [exporting, setExporting] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState('');
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [appCacheInfo, setAppCacheInfo] = useState({
     cachedAlgorithms: 36,
@@ -109,15 +73,24 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
   };
 
   const handleExport = async () => {
-    if (!user) return;
     setExporting(true);
     try {
-      const data = await mockRequestDataExport(user.id);
+      const records = await listRecords(LOCAL_OWNER_ID);
+      const data = JSON.stringify({
+        records,
+        consents: {
+          privacy: localStorage.getItem(`stroke_privacy_consent_local_${PV}`),
+          terms: localStorage.getItem(`stroke_terms_consent_local_${TV}`),
+          disclaimer: localStorage.getItem(`stroke_disclaimer_ack_local_${DV}`),
+          analytics: localStorage.getItem('stroke_analytics_consent'),
+        },
+        exportedAt: new Date().toISOString(),
+      }, null, 2);
       const blob = new Blob([data], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `strokesuite-data-export-${user.id.slice(0, 8)}.json`;
+      a.download = 'strokesuite-data-export.json';
       a.click();
       URL.revokeObjectURL(url);
       toast({ title: 'Data exported', description: 'Download started' });
@@ -126,20 +99,6 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
       toast({ title: 'Export failed', description: 'Please try again', variant: 'destructive' });
     } finally {
       setExporting(false);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (!user || deleteConfirm !== user.email?.split('@')[0]) return;
-    setDeleting(true);
-    try {
-      await mockDeleteAccount(user.id);
-      toast({ title: 'Account deletion initiated', description: 'Your data will be purged within 30 days' });
-      await signOut();
-    } catch {
-      toast({ title: 'Deletion failed', description: 'Please contact support', variant: 'destructive' });
-    } finally {
-      setDeleting(false);
     }
   };
 
@@ -160,39 +119,11 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <span className="font-semibold text-sm">Settings</span>
-          {isAdmin && (
-            <Badge variant="secondary" className="ml-auto text-xs">
-              Admin
-            </Badge>
-          )}
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-8">
-        {/* Profile */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Eye className="h-4 w-4 text-primary" />
-              Account
-            </CardTitle>
-            <CardDescription>
-              Signed in as {profile?.display_name || profile?.username || user?.email}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p>User ID: <code className="text-primary">{user?.id?.slice(0, 12)}...</code></p>
-              <p>Account created: {/* Would come from profile */}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" onClick={signOut}>
-                <UserX className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <AiSettingsCard />
 
         {/* Privacy & Consent */}
         <Card>
@@ -212,9 +143,9 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
                 Consent Status
               </Label>
               {[
-                { label: 'Privacy Policy v' + PV, key: `stroke_privacy_consent_${user?.id}_${PV}` },
-                { label: 'Terms of Use v' + TV, key: `stroke_terms_consent_${user?.id}_${TV}` },
-                { label: 'Disclaimer v' + DV, key: `stroke_disclaimer_ack_${user?.id}_${DV}` },
+                { label: 'Privacy Policy v' + PV, key: `stroke_privacy_consent_local_${PV}` },
+                { label: 'Terms of Use v' + TV, key: `stroke_terms_consent_local_${TV}` },
+                { label: 'Disclaimer v' + DV, key: `stroke_disclaimer_ack_local_${DV}` },
                 { label: 'Analytics Collection', key: 'stroke_analytics_consent' },
               ].map(({ label, key }) => (
                 <div key={key} className="flex items-center justify-between py-1.5">
@@ -285,7 +216,7 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
               Data Management
             </CardTitle>
             <CardDescription>
-              Export or delete your data
+              Export the records and consent choices stored on this device
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -301,17 +232,14 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
                 <DialogHeader>
                   <DialogTitle>Export Your Data</DialogTitle>
                   <DialogDescription>
-                    You will receive a JSON file containing your account data, patient records,
-                    consent history, and audit logs. This is for personal backup or portability.
+                    You will receive a JSON file of the patient records and consent choices stored on this device.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="text-sm text-muted-foreground space-y-2">
                   <p><strong>What's included:</strong></p>
                   <ul className="list-disc list-inside">
-                    <li>Profile information</li>
-                    <li>Patient records (clinical data)</li>
-                    <li>Consent history</li>
-                    <li>Audit logs (non-sensitive)</li>
+                    <li>Patient records saved on this device</li>
+                    <li>Consent choices stored on this device</li>
                   </ul>
                   <p className="text-xs text-amber-400">
                     ⚠️ Export contains sensitive patient data. Handle securely.
@@ -331,59 +259,6 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-
-            {/* Delete Account */}
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-destructive border-destructive/30 hover:bg-destructive/10">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Account & All Data
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="text-destructive">Delete Account</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will permanently delete your account and all associated data.
-                    This action cannot be undone. Patient data will be purged within 30 days.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="space-y-3 py-2">
-                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-                    <p className="text-sm font-medium text-destructive">
-                      ⚠️ Irreversible action
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      All patient records, clinical data, and account information will be permanently deleted.
-                      Export your data first if you need a copy.
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="delete-confirm" className="text-sm">
-                      Type your username to confirm:
-                      <code className="ml-2 text-primary">{user?.email?.split('@')[0]}</code>
-                    </Label>
-                    <Input
-                      id="delete-confirm"
-                      value={deleteConfirm}
-                      onChange={(e) => setDeleteConfirm(e.target.value)}
-                      placeholder="Type your username"
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDeleteAccount}
-                    disabled={deleteConfirm !== user?.email?.split('@')[0] || deleting}
-                    className="bg-destructive hover:bg-destructive/90"
-                  >
-                    {deleting ? 'Deleting...' : 'Permanently Delete'}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
           </CardContent>
         </Card>
 

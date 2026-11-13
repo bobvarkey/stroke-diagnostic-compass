@@ -82,7 +82,6 @@ import OccultCancerScreeningSection from "./OccultCancerScreeningSection";
 import ICHAntithromboticGuideline from "./ICHAntithromboticGuideline";
 import ICHReversalPlanner from "./ICHReversalPlanner";
 import StrokePlanTab from "./StrokePlanTab";
-import PremiumGate from "./PremiumGate";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 import ICHHematomaExpansion from "./ICHHematomaExpansion";
@@ -6734,7 +6733,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
         </TabsContent>
 
         <TabsContent value="plan" className="space-y-6">
-          <PremiumGate feature="The Stroke Plan"><StrokePlanTab /></PremiumGate>
+          <StrokePlanTab />
         </TabsContent>
       </Tabs>
 

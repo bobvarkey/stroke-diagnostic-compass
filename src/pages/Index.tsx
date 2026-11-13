@@ -1,17 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 import StrokeWorkupChecklist from "@/components/StrokeWorkupChecklist";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { goBack } from "@/lib/navHistory";
 import InstallAppButton from "@/components/InstallAppButton";
-import { ChevronUp, Users, LogOut, Shield, Play, Home, ArrowLeft } from "lucide-react";
+import { ChevronUp, Users, Home, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import { Json } from "@/integrations/supabase/types";
 
 interface Patient {
   id: string;
@@ -47,14 +43,10 @@ const DEMO_PATIENT: Patient = {
 };
 
 const Index = () => {
-  const { user, profile, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [activeSection, setActiveSection] = useState<string>("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
-  const [patientData, setPatientData] = useState<Record<string, unknown>>({});
-  const [isDemoMode, setIsDemoMode] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,61 +78,8 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto-save patient data when it changes (skip in demo mode)
-  const savePatientData = useCallback(async (data: Record<string, unknown>) => {
-    if (!selectedPatient || !user || isDemoMode) return;
-    
-    try {
-      const { error } = await supabase
-        .from('patients')
-        .update({
-          clinical_data: data as Json,
-          last_edited_by: user.id,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', selectedPatient.id);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error saving patient data:', error);
-    }
-  }, [selectedPatient, user, isDemoMode]);
-
-  // Debounced save
-  useEffect(() => {
-    if (!selectedPatient) return;
-    
-    const timeoutId = setTimeout(() => {
-      savePatientData(patientData);
-    }, 2000);
-
-    return () => clearTimeout(timeoutId);
-  }, [patientData, savePatientData, selectedPatient]);
-
-  const handleSelectPatient = (patient: Patient) => {
-    setSelectedPatient(patient);
-    setPatientData((patient.clinical_data as Record<string, unknown>) || {});
-    toast({ title: 'Patient Selected', description: `Now viewing ${patient.patient_id}` });
-  };
-
   const handleReturnToPatientList = () => {
     setSelectedPatient(null);
-    setPatientData({});
-    setIsDemoMode(false);
-  };
-
-  const handleSignOut = async () => {
-    if (isDemoMode) {
-      setIsDemoMode(false);
-      setSelectedPatient(null);
-      setPatientData({});
-      
-      return;
-    }
-    await signOut();
-    setSelectedPatient(null);
-    setPatientData({});
-    toast({ title: 'Signed out', description: 'You have been logged out' });
   };
 
   const scrollToTop = () => {
@@ -148,21 +87,6 @@ const Index = () => {
   };
 
 
-  // Show loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        <div className="bg-orb bg-orb-1" />
-        <div className="bg-orb bg-orb-2" />
-        <div className="text-center relative z-10 glass-strong rounded-2xl p-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show main workup interface with selected patient
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full relative z-10 bg-background tabular-nums">
@@ -208,39 +132,19 @@ const Index = () => {
 
             <div className="flex-1" />
             <InstallAppButton />
-            
-            {/* User info and actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              {!isDemoMode && (
-                <span className="text-xs text-muted-foreground hidden md:inline">
-                  {profile?.display_name || profile?.username}
-                </span>
-              )}
-              {isAdmin && !isDemoMode && (
-                <Badge variant="secondary" className="items-center gap-1 hidden md:flex text-xs">
-                  <Shield className="h-3 w-3" />
-                  Admin
-                </Badge>
-              )}
-              <Button
-                variant="ghost" 
-                size="sm" 
-                onClick={handleReturnToPatientList}
-                className="flex items-center gap-1 h-9 px-2 sm:px-3"
-              >
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline text-xs">Cases</span>
-              </Button>
-              <Button variant="ghost" size="icon" onClick={handleSignOut} className="h-9 w-9">
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleReturnToPatientList}
+              className="flex items-center gap-1 h-9 px-2 sm:px-3"
+            >
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline text-xs">Cases</span>
+            </Button>
           </header>
           <main className="flex-1 relative">
-            <StrokeWorkupChecklist 
-              patient={selectedPatient}
-              onPatientDataChange={setPatientData}
-            />
+            <StrokeWorkupChecklist patient={selectedPatient} />
           </main>
         </SidebarInset>
       </div>

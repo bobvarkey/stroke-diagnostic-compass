@@ -12,7 +12,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertTriangle, ChevronLeft, Info, ShieldAlert, BookOpen, Stethoscope, Scale, FileWarning } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
+
+const LOCAL_CONSENT_ID = "local";
 
 export const DISCLAIMER_VERSION = '1.0.0';
 export const DISCLAIMER_EFFECTIVE_DATE = '2026-06-03';
@@ -25,16 +26,13 @@ interface DisclaimerScreenProps {
 }
 
 export function DisclaimerScreen({ onBack, standalone = false, showAcknowledgement = false, onAcknowledge }: DisclaimerScreenProps) {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [acknowledged, setAcknowledged] = useState(false);
 
   const handleAcknowledge = () => {
     try {
-      if (user?.id) {
-        localStorage.setItem(`stroke_disclaimer_ack_${user.id}_${DISCLAIMER_VERSION}`, 'true');
-        localStorage.setItem(`stroke_disclaimer_ack_date_${user.id}`, new Date().toISOString());
-      }
+      localStorage.setItem(`stroke_disclaimer_ack_${LOCAL_CONSENT_ID}_${DISCLAIMER_VERSION}`, 'true');
+      localStorage.setItem(`stroke_disclaimer_ack_date_${LOCAL_CONSENT_ID}`, new Date().toISOString());
     } catch { /* noop */ }
     setAcknowledged(true);
     toast({ title: 'Disclaimer acknowledged', description: `Version ${DISCLAIMER_VERSION}` });

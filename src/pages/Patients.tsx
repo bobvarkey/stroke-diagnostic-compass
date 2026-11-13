@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/hooks/useAuth";
-import PremiumGate from "@/components/PremiumGate";
-import { listRecords, syncRecords, IMAGING_STEP, type PatientRecord } from "@/lib/patientRecords";
+import { LOCAL_OWNER_ID, listRecords, syncRecords, IMAGING_STEP, type PatientRecord } from "@/lib/patientRecords";
 
 function RecordView({ r }: { r: PatientRecord }) {
   const imaging = r.plan.filter((s) => IMAGING_STEP.test(`${s.title} ${s.id}`));
@@ -26,17 +23,20 @@ function RecordView({ r }: { r: PatientRecord }) {
 }
 
 export default function Patients() {
-  const { user } = useAuth();
   const [records, setRecords] = useState<PatientRecord[]>([]);
   const [online, setOnline] = useState(navigator.onLine);
   const [syncing, setSyncing] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (!user) return;
-    setRecords(await listRecords(user.id));
-    if (navigator.onLine) { setSyncing(true); await syncRecords(user.id).catch(() => false); setSyncing(false); setRecords(await listRecords(user.id)); }
-  }, [user]);
+    setRecords(await listRecords(LOCAL_OWNER_ID));
+    if (navigator.onLine) {
+      setSyncing(true);
+      await syncRecords(LOCAL_OWNER_ID).catch(() => false);
+      setSyncing(false);
+      setRecords(await listRecords(LOCAL_OWNER_ID));
+    }
+  }, []);
   useEffect(() => { load(); }, [load]);
   useEffect(() => {
     const on = () => { setOnline(true); load(); }, off = () => setOnline(false);
@@ -50,24 +50,21 @@ export default function Patients() {
         <h1 className="text-2xl font-bold">My patient records</h1>
         <Badge variant="outline" className="gap-1">{syncing ? <><RefreshCw className="h-3 w-3 animate-spin" />Syncing</> : online ? <><Wifi className="h-3 w-3" />Online</> : <><WifiOff className="h-3 w-3" />Offline</>}</Badge>
       </div>
-      {!user ? <p>Please <Link to="/account" className="underline">sign in</Link> to see your records.</p> : (
-        <PremiumGate feature="Patient records">
-          {records.length === 0 ? <p className="text-sm text-muted-foreground">No saved records yet. Use "Save patient record" in the Plan tab.</p> : (
-            <ul className="space-y-2">
-              {records.map((r) => (
-                <li key={r.id} className="glass rounded-xl p-3">
-                  <button className="w-full text-left min-h-11 flex items-center justify-between gap-2" onClick={() => setOpen(open === r.id ? null : r.id)} aria-expanded={open === r.id}>
-                    <span className="font-semibold">{r.label}</span>
-                    <span className="text-xs text-muted-foreground">{new Date(r.updated_at).toLocaleString()}{r.sync_status === "pending" ? " · not uploaded yet" : ""}</span>
-                  </button>
-                  {open === r.id && <RecordView r={r} />}
-                </li>
-              ))}
-            </ul>
-          )}
-          <Button variant="outline" className="min-h-11 mt-3" disabled={!online || syncing} onClick={load}><RefreshCw className="h-4 w-4 mr-1" />Sync now</Button>
-        </PremiumGate>
+      <p className="text-sm text-muted-foreground">Saved on this device. A server copy is uploaded only when a session already exists.</p>
+      {records.length === 0 ? <p className="text-sm text-muted-foreground">No saved records yet. Use "Save patient record" in the Plan tab.</p> : (
+        <ul className="space-y-2">
+          {records.map((r) => (
+            <li key={r.id} className="glass rounded-xl p-3">
+              <button className="w-full text-left min-h-11 flex items-center justify-between gap-2" onClick={() => setOpen(open === r.id ? null : r.id)} aria-expanded={open === r.id}>
+                <span className="font-semibold">{r.label}</span>
+                <span className="text-xs text-muted-foreground">{new Date(r.updated_at).toLocaleString()}{r.sync_status === "pending" ? " · saved on this device" : ""}</span>
+              </button>
+              {open === r.id && <RecordView r={r} />}
+            </li>
+          ))}
+        </ul>
       )}
+      <Button variant="outline" className="min-h-11 mt-3" disabled={!online || syncing} onClick={load}><RefreshCw className="h-4 w-4 mr-1" />Refresh</Button>
     </main>
   );
 }
