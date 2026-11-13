@@ -14,6 +14,7 @@ import {
   Zap,
   Beaker,
   BookOpen,
+  Pill,
   ChevronUp,
   ChevronDown,
   Home,
@@ -90,6 +91,11 @@ const navGroups: NavGroup[] = [
         id: "thrombolytics-anticoag", 
         label: "Thrombolytics & Anticoag", 
         icon: <Beaker className="h-4 w-4 text-amber-600" /> 
+      },
+      {
+        id: "factor-xia-inhibitors",
+        label: "Asundexian and milvexian",
+        icon: <Pill className="h-4 w-4 text-violet-400" />
       },
       { 
         id: "post-ivt-hemorrhage", 

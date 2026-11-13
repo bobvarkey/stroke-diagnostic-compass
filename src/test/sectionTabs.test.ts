@@ -13,6 +13,7 @@ describe("section tab routing", () => {
     expect(getTabForSection("evt-guidelines")).toBe("ischemic");
     expect(getTabForSection("mevo-oriental")).toBe("ischemic");
     expect(getTabForSection("icas-dapt")).toBe("ischemic");
+    expect(getTabForSection("factor-xia-inhibitors")).toBe("ischemic");
   });
   it("routes IV thrombolysis in acute ischaemic stroke to the ischemic tab", () => {
     expect(getTabForSection("ivt-ais")).toBe("ischemic");
