@@ -135,9 +135,8 @@ export function runReleaseGates(platform: 'ios' | 'android' | 'both' = 'both'): 
     description: 'Password min 8 chars, uppercase, lowercase, number',
     category: 'security',
     severity: 'warning',
-    status: 'pass',
-    checkedAt: now,
-    notes: 'Validate in AuthScreen.tsx',
+    status: 'not_checked',
+    notes: 'Client sign-in was removed, so this app no longer collects a password. Server auth rules are unchanged.',
   });
 
   gates.push({

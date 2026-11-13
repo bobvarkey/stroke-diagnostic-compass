@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 
 interface LandingPreviewProps {
   onOpenAppShell: () => void;
-  onShowAuth: () => void;
 }
 
 interface CaseFields {
@@ -73,7 +72,7 @@ const parseCaseText = (text: string): CaseFields => {
   };
 };
 
-export default function MobilePreviewLanding({ onOpenAppShell, onShowAuth }: LandingPreviewProps) {
+export default function MobilePreviewLanding({ onOpenAppShell }: LandingPreviewProps) {
   const { toast } = useToast();
   const pricingRef = useRef<HTMLDivElement>(null);
   const [feedback, setFeedback] = useState("");
@@ -152,9 +151,6 @@ export default function MobilePreviewLanding({ onOpenAppShell, onShowAuth }: Lan
           <div className="flex flex-col items-center gap-6">
             <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-slate-300">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2">Secure. Fast. Mobile.</span>
-              <button onClick={onShowAuth} className="text-slate-200 underline underline-offset-4 decoration-fuchsia-400/30 hover:text-white">
-                Sign in for full access
-              </button>
             </div>
             <div className="animate-bounce text-3xl">⬇️</div>
           </div>

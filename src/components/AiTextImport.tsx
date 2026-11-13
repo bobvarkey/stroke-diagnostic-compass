@@ -294,7 +294,7 @@ export default function AiTextImport({ onPopulate }: Props) {
     }
     const settings = getAiSettings();
     if (!settings) {
-      toast.error("Add your own API key in Account → AI settings to use AI analysis.");
+      toast.error("Add your own API key in Settings → AI settings to use AI analysis.");
       return;
     }
     setBusy("ai");
@@ -608,7 +608,7 @@ export default function AiTextImport({ onPopulate }: Props) {
               <p className="text-xs text-amber-700 dark:text-amber-400">
                 <strong>Privacy:</strong> paste or scan only what you need. Text is sent to the AI provider only when you
                 press <em>Analyze with AI</em>, and only to the provider whose key you configured in
-                Account → AI settings.
+                Settings → AI settings.
               </p>
             </div>
           </CardContent>

@@ -12,7 +12,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FileText, ChevronLeft, Check, Gavel, Scale, AlertTriangle, UserCheck, Ban } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
+
+const LOCAL_CONSENT_ID = "local";
 
 export const TERMS_VERSION = '1.0.0';
 export const TERMS_EFFECTIVE_DATE = '2026-06-03';
@@ -36,23 +37,22 @@ interface TermsScreenProps {
 }
 
 export function TermsScreen({ onBack, standalone = false }: TermsScreenProps) {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [hasConsented, setHasConsented] = useState(false);
 
   useEffect(() => {
-    const status = getConsentStatus(user?.id || null);
+    const status = getConsentStatus(LOCAL_CONSENT_ID);
     if (status !== null) setHasConsented(status);
-  }, [user]);
+  }, []);
 
   const handleConsent = () => {
-    setConsentStatus(user?.id || null, true);
+    setConsentStatus(LOCAL_CONSENT_ID, true);
     setHasConsented(true);
     toast({ title: 'Terms accepted', description: `Version ${TERMS_VERSION}` });
   };
 
   const handleRevoke = () => {
-    setConsentStatus(user?.id || null, false);
+    setConsentStatus(LOCAL_CONSENT_ID, false);
     setHasConsented(false);
     toast({ title: 'Terms acceptance revoked', variant: 'destructive' });
   };

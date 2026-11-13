@@ -63,7 +63,7 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
         </p>
         {!compact && <ul className="space-y-1 text-sm">{FEATURES.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-primary shrink-0" />{f}</li>)}</ul>}
         <Button className="w-full min-h-11" disabled={!user || busy !== null} onClick={() => choose(code)}>
-          {busy === code ? "Opening…" : user ? `Choose ${p.name}` : "Sign in to continue"}
+          {busy === code ? "Opening…" : `Choose ${p.name}`}
         </Button>
       </section>
     );
@@ -82,13 +82,21 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
                 disabled={!user || busy !== null}
                 onClick={() => run("trial", async () => { await startTrial(); await refresh(); toast({ title: "Your 3-day trial has started" }); })}
               >
-                {busy === "trial" ? "Starting…" : user ? "Start 3-day free trial" : "Sign in to start your free trial"}
+                {busy === "trial" ? "Starting…" : "Start 3-day free trial"}
               </Button>
             </>
           )}
         </div>
       );
-  if (!allowsWebBilling()) return trial || null;
+  const serverNote = !user ? (
+    <p className="text-xs text-muted-foreground text-center">Trials and subscriptions are recorded on the server and are unavailable from this app.</p>
+  ) : null;
+  if (!allowsWebBilling()) return (
+    <div className="space-y-3">
+      {trial}
+      {serverNote}
+    </div>
+  );
 
   const enterprise = PLAN_DISPLAY[ENTERPRISE_PLAN];
 
@@ -132,7 +140,7 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
           ))}
         </ul>
         <Button variant="outline" className="w-full min-h-11" disabled={!user || busy !== null} onClick={() => choose(ENTERPRISE_PLAN)}>
-          {busy === ENTERPRISE_PLAN ? "Opening…" : user ? `Choose ${enterprise.name}` : "Sign in to continue"}
+          {busy === ENTERPRISE_PLAN ? "Opening…" : `Choose ${enterprise.name}`}
         </Button>
       </section>
 
@@ -168,6 +176,7 @@ export default function PlanCards({ compact = false }: { compact?: boolean }) {
           </table>
         </section>
       )}
+      {serverNote}
     </div>
   );
 }

@@ -3,12 +3,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/hooks/useAuth";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Preview from "./pages/Preview";
 import NotFound from "./pages/NotFound";
-import Account from "./pages/Account";
 import Pricing from "./pages/Pricing";
 import Patients from "./pages/Patients";
 import Team from "./pages/Team";
@@ -18,7 +16,6 @@ import DisclaimerScreen from "./compliance/DisclaimerScreen";
 import SettingsScreen from "./compliance/SettingsScreen";
 import { getFocusStyleOverrides } from "./services/accessibility";
 import GlobalNavButtons from "@/components/GlobalNavButtons";
-import HomePaywall from "@/components/HomePaywall";
 import PwaUpdatePrompt from "@/components/PwaUpdatePrompt";
 import { EntitlementProvider } from "@/hooks/EntitlementProvider";
 
@@ -28,7 +25,7 @@ const queryClient = new QueryClient();
  * App — root component with routing and global setup.
  *
  * Routes:
- *   /           — Main clinical app (opens directly, no onboarding gate)
+ *   /           — Main clinical app (opens directly, no sign-in or onboarding gate)
  *   /preview    — Mobile preview landing
  *   /privacy    — Standalone privacy policy
  *   /terms      — Standalone terms of use
@@ -66,7 +63,6 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
         <EntitlementProvider>
         <TooltipProvider>
           <Toaster />
@@ -76,13 +72,13 @@ const App = () => {
             <GlobalNavButtons />
             <Routes>
               {/* Main app — opens directly */}
-              <Route path="/" element={<HomePaywall><Index /></HomePaywall>} />
+              <Route path="/" element={<Index />} />
               {/* Standalone compliance screens */}
               <Route path="/privacy" element={<PrivacyScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/terms" element={<TermsScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/disclaimer" element={<DisclaimerScreen standalone onBack={() => window.history.back()} />} />
               <Route path="/settings" element={<SettingsScreen onBack={() => window.history.back()} />} />
-              <Route path="/account" element={<Account />} />
+              <Route path="/account" element={<Navigate to="/" replace />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/patients" element={<Patients />} />
               <Route path="/team" element={<Team />} />
@@ -94,7 +90,6 @@ const App = () => {
           </BrowserRouter>
         </TooltipProvider>
         </EntitlementProvider>
-      </AuthProvider>
     </QueryClientProvider>
   );
 };

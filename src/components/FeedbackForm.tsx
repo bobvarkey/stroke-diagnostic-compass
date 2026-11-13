@@ -4,12 +4,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquarePlus, Send, CheckCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
+const FEEDBACK_KEY = "stroke_local_feedback";
+
 const FeedbackForm: React.FC = () => {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,24 +17,19 @@ const FeedbackForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!message.trim() || !user) return;
+    if (!message.trim()) return;
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from('user_feedback')
-        .insert({
-          user_id: user.id,
-          message: message.trim(),
-        });
-
-      if (error) throw error;
+      const existing = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "[]") as { message: string; at: string }[];
+      existing.push({ message: message.trim(), at: new Date().toISOString() });
+      localStorage.setItem(FEEDBACK_KEY, JSON.stringify(existing));
 
       setSubmitted(true);
       setMessage("");
       toast({
-        title: "Feedback sent!",
-        description: "Thank you for your feedback. We appreciate it!",
+        title: "Feedback saved",
+        description: "Stored on this device.",
       });
 
       // Reset submitted state after 3 seconds
@@ -43,8 +37,8 @@ const FeedbackForm: React.FC = () => {
     } catch (error) {
       console.error('Error submitting feedback:', error);
       toast({
-        title: "Error",
-        description: "Failed to send feedback. Please try again.",
+        title: "Could not save feedback",
+        description: "Please try again.",
         variant: "destructive",
       });
     } finally {
