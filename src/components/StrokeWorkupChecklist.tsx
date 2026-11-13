@@ -48,6 +48,7 @@ import RecurrentStrokeDOACPathway from "./RecurrentStrokeDOACPathway";
 import PCNSVImagingSection from "./PCNSVImagingSection";
 import StrokeHeartSyndromeSection from "./StrokeHeartSyndromeSection";
 import IcasDaptSection from "./IcasDaptSection";
+import PfoClosureSlides from "./PfoClosureSlides";
 import FactorXIaInhibitors from "./FactorXIaInhibitors";
 import { FACTOR_XIA_SECTION_ID, FACTOR_XIA_TITLE } from "@/lib/factorXIaInhibitors";
 import MriCsvdBrainFrailty from "./MriCsvdBrainFrailty";
@@ -5915,6 +5916,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "evt-guidelines", label: "Endovascular Thrombectomy", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy trials anterior circulation large core posterior circulation basilar guidelines" },
               { id: "secondary-prevention-pathway", label: "Secondary Prevention Pathway", icon: <Heart className="h-3.5 w-3.5 text-primary" />, keywords: "secondary prevention af esus dapt anticoagulation carotid bp lipids plan" },
               { id: "rope-pascal", label: "Combined RoPE and extended PASCAL", icon: <Heart className="h-3.5 w-3.5 text-rose-400" />, keywords: "rope pascal pfo patent foramen ovale cryptogenic esus shunt asa atrial septal aneurysm dvt pe straddling thrombus" },
+              { id: "pfo", label: "PFO", icon: <Heart className="h-3.5 w-3.5 text-teal-600" />, keywords: "pfo patent foramen ovale closure safety timing atrial fibrillation complications antiplatelet endocarditis echocardiographic follow-up" },
               { id: "carotid-decision-tree", label: "Carotid Revascularisation", icon: <HeartPulse className="h-3.5 w-3.5 text-teal-500" />, keywords: "carotid revascularisation revascularization endarterectomy cea cas tcar stenting stenosis nascet ecst acas acst crest crest-2 crest-h contralateral occlusion timing" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
@@ -6324,6 +6326,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* PFO likelihood: combined RoPE score and extended PASCAL */}
           <LazySection id="rope-pascal">
             <RopePascalChecklist />
+          </LazySection>
+
+          <LazySection id="pfo">
+            <PfoClosureSlides />
           </LazySection>
 
           {/* Stroke History Template */}

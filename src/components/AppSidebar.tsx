@@ -227,6 +227,11 @@ const navGroups: NavGroup[] = [
         label: "RoPE–PASCAL",
         icon: <Heart className="h-4 w-4 text-rose-400" />,
       },
+      {
+        id: "pfo",
+        label: "PFO closure",
+        icon: <Heart className="h-4 w-4 text-teal-500" />,
+      },
       { 
         id: "stroke-history", 
         label: "Stroke History", 
