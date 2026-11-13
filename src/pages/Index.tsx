@@ -53,12 +53,12 @@ const Index = () => {
       setShowScrollTop(window.scrollY > 400);
       
       const sections = [
-        "stroke-code", "acute-algorithm", "tpa-eligibility", "ivt-ais", "minor-non-disabling-stroke", "thrombolytics-anticoag", "post-ivt-hemorrhage", "cvt-management",
+        "stroke-code", "acute-algorithm", "tpa-eligibility", "ivt-ais", "minor-non-disabling-stroke", "thrombolytics-anticoag", "factor-xia-inhibitors", "post-ivt-hemorrhage", "cvt-management",
         "cvt-evaluation-pathway", "cvt-intraclot-thrombolysis", "cvt-procedural-techniques", "cvt-endovascular-techniques", "cvt-fogarty-balloon",
         "lvo-dashboard", "treatment-decision",
         "ctp-penumbra", "aspects-calculator", "vascular-anatomy",
         "nihss-calculator", "gcs-calculator", "prevent-score", "kdigo-heatmap",
-        "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "workup-checklist",
+        "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "esus", "workup-checklist",
         "mevo-oriental", "vessel-occlusion-spectrum"
       ];
       

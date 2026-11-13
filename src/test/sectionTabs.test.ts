@@ -13,6 +13,7 @@ describe("section tab routing", () => {
     expect(getTabForSection("evt-guidelines")).toBe("ischemic");
     expect(getTabForSection("mevo-oriental")).toBe("ischemic");
     expect(getTabForSection("icas-dapt")).toBe("ischemic");
+    expect(getTabForSection("factor-xia-inhibitors")).toBe("ischemic");
   });
   it("routes IV thrombolysis in acute ischaemic stroke to the ischemic tab", () => {
     expect(getTabForSection("ivt-ais")).toBe("ischemic");
@@ -23,6 +24,9 @@ describe("section tab routing", () => {
     expect(getTabForSection("pfo-after-closure")).toBe("ischemic");
     expect(getLazyParentSection("pfo-closure-safety")).toBe("pfo");
     expect(getLazyParentSection("pfo-after-closure")).toBe("pfo");
+  });
+  it("routes ESUS to the ischemic tab", () => {
+    expect(getTabForSection("esus")).toBe("ischemic");
   });
   it("routes all new CVT modules onto the CVT tab", () => {
     expect(getTabForSection("cvt-management")).toBe("cvt");
@@ -43,5 +47,10 @@ describe("section tab routing", () => {
     expect(getTabForSection("acute-algorithm")).toBeUndefined();
     expect(isCvtSection("acute-algorithm")).toBe(false);
     expect(isCvtSection("cvt-procedural-techniques")).toBe(true);
+  });
+
+  it("routes the combined RoPE and extended PASCAL checklist to the ischemic tab", () => {
+    expect(getTabForSection("rope-pascal")).toBe("ischemic");
+    expect(isCvtSection("rope-pascal")).toBe(false);
   });
 });

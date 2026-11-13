@@ -49,6 +49,8 @@ import PCNSVImagingSection from "./PCNSVImagingSection";
 import StrokeHeartSyndromeSection from "./StrokeHeartSyndromeSection";
 import IcasDaptSection from "./IcasDaptSection";
 import PfoClosureSlides from "./PfoClosureSlides";
+import FactorXIaInhibitors from "./FactorXIaInhibitors";
+import { FACTOR_XIA_SECTION_ID, FACTOR_XIA_TITLE } from "@/lib/factorXIaInhibitors";
 import MriCsvdBrainFrailty from "./MriCsvdBrainFrailty";
 import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
@@ -64,6 +66,7 @@ import ThrombectomyOutcomeTracker from "./ThrombectomyOutcomeTracker";
 import PREVENTScoreCalculator from "./PREVENTScoreCalculator";
 import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
+import EsusSection from "./EsusSection";
 import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 import KDIGOHeatMap from "./KDIGOHeatMap";
 import CancerStrokeRiskModule from "./CancerStrokeRiskModule";
@@ -87,6 +90,7 @@ import StrokePlanTab from "./StrokePlanTab";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 import ICHHematomaExpansion from "./ICHHematomaExpansion";
+import RopePascalChecklist from "./RopePascalChecklist";
 
 interface TestItem {
   id: string;
@@ -5911,12 +5915,15 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "evt-pathway", label: "Thrombectomy Pathway", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy transfer basilar large core plan" },
               { id: "evt-guidelines", label: "Endovascular Thrombectomy", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy trials anterior circulation large core posterior circulation basilar guidelines" },
               { id: "secondary-prevention-pathway", label: "Secondary Prevention Pathway", icon: <Heart className="h-3.5 w-3.5 text-primary" />, keywords: "secondary prevention af esus dapt anticoagulation carotid bp lipids plan" },
+              { id: "rope-pascal", label: "Combined RoPE and extended PASCAL", icon: <Heart className="h-3.5 w-3.5 text-rose-400" />, keywords: "rope pascal pfo patent foramen ovale cryptogenic esus shunt asa atrial septal aneurysm dvt pe straddling thrombus" },
+              { id: "pfo", label: "PFO", icon: <Heart className="h-3.5 w-3.5 text-teal-600" />, keywords: "pfo patent foramen ovale closure safety timing atrial fibrillation complications antiplatelet endocarditis echocardiographic follow-up" },
               { id: "carotid-decision-tree", label: "Carotid Revascularisation", icon: <HeartPulse className="h-3.5 w-3.5 text-teal-500" />, keywords: "carotid revascularisation revascularization endarterectomy cea cas tcar stenting stenosis nascet ecst acas acst crest crest-2 crest-h contralateral occlusion timing" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT or DOAC", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
               { id: "icas-dapt", label: "DAPT — minor stroke, TIA, ICAS", icon: <Pill className="h-3.5 w-3.5 text-violet-500" />, keywords: "dapt ischemic dual antiplatelet minor stroke tia noncardioembolic aha asa 2026 eso cyp2c19 abcd2 nihss icas sicas intracranial atherosclerosis stenosis dapt duration chance point thales sammpris inspires chance-2 clopidogrel ticagrelor 21 30 90 days" },
+              { id: FACTOR_XIA_SECTION_ID, label: FACTOR_XIA_TITLE, icon: <Pill className="h-3.5 w-3.5 text-violet-500" />, keywords: "asundexian milvexian factor xia fxia oceanic-stroke librexia-stroke oral inhibitor antiplatelet secondary prevention tia" },
               { id: "pcnsv", label: "PCNSV (CNS Vasculitis)", icon: <Brain className="h-3.5 w-3.5 text-fuchsia-500" />, keywords: "pacns primary cns vasculitis cerebellar tonsillar hemorrhage enhancement swi" },
               { id: "stroke-heart", label: "Stroke-Heart Syndrome", icon: <HeartPulse className="h-3.5 w-3.5 text-rose-500" />, keywords: "stroke heart syndrome shs takotsubo troponin ecg qtc arrhythmia atrial fibrillation lv dysfunction heart failure neurogenic myocardial injury autonomic insular" },
               { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
@@ -5936,9 +5943,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
               { id: "cancer-stroke-risk", label: "Cancer & Stroke Risk (PRIME + OCCULT-5)", icon: <Calculator className="h-3.5 w-3.5 text-rose-500" />, keywords: "prime malignancy cancer stroke risk ohri occult-5 occult d-dimer ddimer dimer fibrin feu ddu" },
               { id: "lipid-risk", label: "Lipid Risk", icon: <Pill className="h-3.5 w-3.5 text-yellow-500" /> },
-              { id: "pfo", label: "PFO", icon: <Heart className="h-3.5 w-3.5 text-teal-600" />, keywords: "pfo patent foramen ovale closure safety timing atrial fibrillation complications antiplatelet endocarditis echocardiographic follow-up" },
               { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
               { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
+              { id: "esus", label: "ESUS", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "esus embolic stroke of undetermined source cryptogenic atrial cardiopathy pfo aortic arch plaque cancer nbte arcadia hart" },
               { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
               { id: "occult-cancer-screening", label: "Occult Cancer Screening", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "occult cancer malignancy screening occult-5 ct pet mammography imaging tumor active cancer aha 2026 causality nbte dic tumor embolism marantic" },
               { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
@@ -5977,6 +5984,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           <LazySection id="icas-dapt">
             <IcasDaptSection />
+          </LazySection>
+
+          <LazySection id={FACTOR_XIA_SECTION_ID}>
+            <FactorXIaInhibitors />
           </LazySection>
 
           {/* Primary CNS vasculitis imaging marker */}
@@ -6312,7 +6323,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <LAILipidRiskClassification strokeHistoryFactors={strokeHistoryFactors} />
           </LazySection>
 
-          {/* PFO closure: safety, timing, and care after device closure */}
+          {/* PFO likelihood: combined RoPE score and extended PASCAL */}
+          <LazySection id="rope-pascal">
+            <RopePascalChecklist />
+          </LazySection>
+
           <LazySection id="pfo">
             <PfoClosureSlides />
           </LazySection>
@@ -6325,6 +6340,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* ISPS25 Stroke Phenotyping System */}
           <LazySection id="stroke-phenotyping">
             <ISPS25StrokePhenotyping />
+          </LazySection>
+
+          <LazySection id="esus">
+            <EsusSection />
           </LazySection>
 
           {/* Lab Investigations Module */}

@@ -9,11 +9,13 @@ import {
   Calculator,
   ClipboardList,
   FileText,
+  Search,
   Scale,
   Target,
   Zap,
   Beaker,
   BookOpen,
+  Pill,
   ChevronUp,
   ChevronDown,
   Home,
@@ -90,6 +92,11 @@ const navGroups: NavGroup[] = [
         id: "thrombolytics-anticoag", 
         label: "Thrombolytics & Anticoag", 
         icon: <Beaker className="h-4 w-4 text-amber-600" /> 
+      },
+      {
+        id: "factor-xia-inhibitors",
+        label: "Asundexian and milvexian",
+        icon: <Pill className="h-4 w-4 text-violet-400" />
       },
       { 
         id: "post-ivt-hemorrhage", 
@@ -215,6 +222,16 @@ const navGroups: NavGroup[] = [
     title: "Documentation",
     defaultOpen: false,
     items: [
+      {
+        id: "rope-pascal",
+        label: "RoPE–PASCAL",
+        icon: <Heart className="h-4 w-4 text-rose-400" />,
+      },
+      {
+        id: "pfo",
+        label: "PFO closure",
+        icon: <Heart className="h-4 w-4 text-teal-500" />,
+      },
       { 
         id: "stroke-history", 
         label: "Stroke History", 
@@ -224,6 +241,11 @@ const navGroups: NavGroup[] = [
         id: "stroke-phenotyping", 
         label: "Stroke Phenotyping", 
         icon: <FileText className="h-4 w-4 text-indigo-500" /> 
+      },
+      {
+        id: "esus",
+        label: "ESUS",
+        icon: <Search className="h-4 w-4 text-amber-500" />
       },
       { 
         id: "workup-checklist", 
