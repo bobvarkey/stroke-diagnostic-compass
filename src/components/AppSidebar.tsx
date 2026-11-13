@@ -76,6 +76,11 @@ const navGroups: NavGroup[] = [
         label: "tPA Eligibility", 
         icon: <Zap className="h-4 w-4 text-amber-500" /> 
       },
+      {
+        id: "ivt-ais",
+        label: "IV Thrombolysis",
+        icon: <Syringe className="h-4 w-4 text-sky-400" />
+      },
       { 
         id: "minor-non-disabling-stroke", 
         label: "Minor Non-Disabling Stroke", 

@@ -37,6 +37,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "sich-cta": "hemorrhagic",
   "sich-dsa": "hemorrhagic",
   "tpa-eligibility": "ischemic",
+  "ivt-ais": "ischemic",
   "ivt-decision-tree": "ischemic",
   "ivt-care-pathway": "ischemic",
   "evt-pathway": "ischemic",

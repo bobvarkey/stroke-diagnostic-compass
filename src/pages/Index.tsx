@@ -61,7 +61,7 @@ const Index = () => {
       setShowScrollTop(window.scrollY > 400);
       
       const sections = [
-        "stroke-code", "acute-algorithm", "tpa-eligibility", "minor-non-disabling-stroke", "thrombolytics-anticoag", "post-ivt-hemorrhage", "cvt-management",
+        "stroke-code", "acute-algorithm", "tpa-eligibility", "ivt-ais", "minor-non-disabling-stroke", "thrombolytics-anticoag", "post-ivt-hemorrhage", "cvt-management",
         "cvt-evaluation-pathway", "cvt-intraclot-thrombolysis", "cvt-procedural-techniques", "cvt-endovascular-techniques",
         "lvo-dashboard", "treatment-decision",
         "ctp-penumbra", "aspects-calculator", "vascular-anatomy",
