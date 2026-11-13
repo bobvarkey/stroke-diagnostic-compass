@@ -40,4 +40,9 @@ describe("section tab routing", () => {
     expect(isCvtSection("acute-algorithm")).toBe(false);
     expect(isCvtSection("cvt-procedural-techniques")).toBe(true);
   });
+
+  it("routes the combined RoPE and extended PASCAL checklist to the ischemic tab", () => {
+    expect(getTabForSection("rope-pascal")).toBe("ischemic");
+    expect(isCvtSection("rope-pascal")).toBe(false);
+  });
 });

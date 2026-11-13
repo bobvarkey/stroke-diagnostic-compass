@@ -87,6 +87,7 @@ import StrokePlanTab from "./StrokePlanTab";
 import FeedbackForm from "./FeedbackForm";
 import ICHAnticoagReversalCalculators from "./ICHAnticoagReversalCalculators";
 import ICHHematomaExpansion from "./ICHHematomaExpansion";
+import RopePascalChecklist from "./RopePascalChecklist";
 
 interface TestItem {
   id: string;
@@ -5911,6 +5912,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "evt-pathway", label: "Thrombectomy Pathway", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy transfer basilar large core plan" },
               { id: "evt-guidelines", label: "Endovascular Thrombectomy", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy trials anterior circulation large core posterior circulation basilar guidelines" },
               { id: "secondary-prevention-pathway", label: "Secondary Prevention Pathway", icon: <Heart className="h-3.5 w-3.5 text-primary" />, keywords: "secondary prevention af esus dapt anticoagulation carotid bp lipids plan" },
+              { id: "rope-pascal", label: "Combined RoPE and extended PASCAL", icon: <Heart className="h-3.5 w-3.5 text-rose-400" />, keywords: "rope pascal pfo patent foramen ovale cryptogenic esus shunt asa atrial septal aneurysm dvt pe straddling thrombus" },
               { id: "carotid-decision-tree", label: "Carotid Revascularisation", icon: <HeartPulse className="h-3.5 w-3.5 text-teal-500" />, keywords: "carotid revascularisation revascularization endarterectomy cea cas tcar stenting stenosis nascet ecst acas acst crest crest-2 crest-h contralateral occlusion timing" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
@@ -6310,6 +6312,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* LAI 2024 Lipid Risk Classification */}
           <LazySection id="lipid-risk">
             <LAILipidRiskClassification strokeHistoryFactors={strokeHistoryFactors} />
+          </LazySection>
+
+          {/* PFO likelihood: combined RoPE score and extended PASCAL */}
+          <LazySection id="rope-pascal">
+            <RopePascalChecklist />
           </LazySection>
 
           {/* Stroke History Template */}
