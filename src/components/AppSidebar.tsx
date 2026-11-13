@@ -9,6 +9,7 @@ import {
   Calculator,
   ClipboardList,
   FileText,
+  Search,
   Scale,
   Target,
   Zap,
@@ -224,6 +225,11 @@ const navGroups: NavGroup[] = [
         id: "stroke-phenotyping", 
         label: "Stroke Phenotyping", 
         icon: <FileText className="h-4 w-4 text-indigo-500" /> 
+      },
+      {
+        id: "esus",
+        label: "ESUS",
+        icon: <Search className="h-4 w-4 text-amber-500" />
       },
       { 
         id: "workup-checklist", 

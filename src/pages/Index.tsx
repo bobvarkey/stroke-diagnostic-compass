@@ -58,7 +58,7 @@ const Index = () => {
         "lvo-dashboard", "treatment-decision",
         "ctp-penumbra", "aspects-calculator", "vascular-anatomy",
         "nihss-calculator", "gcs-calculator", "prevent-score", "kdigo-heatmap",
-        "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "workup-checklist",
+        "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "esus", "workup-checklist",
         "mevo-oriental", "vessel-occlusion-spectrum"
       ];
       
