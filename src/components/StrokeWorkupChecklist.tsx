@@ -5944,7 +5944,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "cancer-stroke-risk", label: "Cancer & Stroke Risk (PRIME + OCCULT-5)", icon: <Calculator className="h-3.5 w-3.5 text-rose-500" />, keywords: "prime malignancy cancer stroke risk ohri occult-5 occult d-dimer ddimer dimer fibrin feu ddu" },
               { id: "lipid-risk", label: "Lipid Risk", icon: <Pill className="h-3.5 w-3.5 text-yellow-500" /> },
               { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
-              { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
+              { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" />, keywords: "isps25 ischemic stroke phenotyping system 2025" },
               { id: "esus", label: "ESUS", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "esus embolic stroke of undetermined source cryptogenic atrial cardiopathy pfo aortic arch plaque cancer nbte arcadia hart" },
               { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
               { id: "occult-cancer-screening", label: "Occult Cancer Screening", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "occult cancer malignancy screening occult-5 ct pet mammography imaging tumor active cancer aha 2026 causality nbte dic tumor embolism marantic" },

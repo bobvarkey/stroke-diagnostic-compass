@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -6,7 +6,90 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Brain, AlertTriangle, CheckCircle2, Info, FileText, Heart, Activity } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import ClinicalSlide from "./ClinicalSlide";
+import isps25Proposal from "@/assets/isps25-proposal.webp";
+
+const ISPS25_CAPTION = "ISPS25 proposal — Yaghi S, et al. Stroke (2025).";
+const ISPS25_CITATION = "Yaghi S, et al. Stroke (2025).";
+
+function fineHover(): boolean {
+  return typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+}
+
+function Isps25Citation() {
+  const [open, setOpen] = useState(false);
+  const hoverOpenedAt = useRef(0);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  }, []);
+
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  };
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpen(false), 220);
+  };
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        if (!next && fineHover() && Date.now() - hoverOpenedAt.current < 350) return;
+        setOpen(next);
+      }}
+    >
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label="Citation"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
+          onMouseEnter={() => {
+            cancelClose();
+            hoverOpenedAt.current = Date.now();
+            setOpen(true);
+          }}
+          onMouseLeave={() => {
+            if (fineHover()) scheduleClose();
+          }}
+          onPointerEnter={() => {
+            cancelClose();
+            hoverOpenedAt.current = Date.now();
+            setOpen(true);
+          }}
+          onPointerLeave={() => {
+            if (fineHover()) scheduleClose();
+          }}
+        >
+          <Info className="h-4 w-4" aria-hidden="true" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        collisionPadding={12}
+        onOpenAutoFocus={(event) => {
+          if (Date.now() - hoverOpenedAt.current < 350) event.preventDefault();
+        }}
+        onMouseEnter={cancelClose}
+        onMouseLeave={() => {
+          if (fineHover()) scheduleClose();
+        }}
+        onPointerEnter={cancelClose}
+        onPointerLeave={() => {
+          if (fineHover()) scheduleClose();
+        }}
+        className="w-[min(22rem,calc(100vw-1.5rem))] border-slate-200 bg-white p-3 text-left text-[13px] font-normal leading-relaxed text-slate-800 shadow-lg dark:border-border dark:bg-popover dark:text-popover-foreground"
+      >
+        <p className="break-words">{ISPS25_CITATION}</p>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 interface ISPS25Findings {
   // Imaging Evidence
@@ -174,18 +257,24 @@ const ISPS25StrokePhenotyping: React.FC = () => {
   const phenotypeDisplay = getPhenotypeDisplay(phenotypeAssessment.phenotype);
 
   return (
-    <Card className="border-primary/20">
+    <Card className="min-w-0 border-primary/20">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Brain className="h-5 w-5 text-primary" />
-          ISPS25 Stroke Phenotyping System
-          <Badge variant="outline" className="ml-2">2025 Classification</Badge>
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Ischemic Stroke Phenotyping System 2025 - Evidence-based etiological classification
-        </p>
+        <div className="flex items-start gap-2">
+          <div className="min-w-0 flex-1">
+            <CardTitle className="flex flex-wrap items-center gap-2 text-lg">
+              <Brain className="h-5 w-5 text-primary" />
+              ISPS25 Stroke Phenotyping System
+              <Badge variant="outline" className="ml-2">2025 Classification</Badge>
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Ischemic Stroke Phenotyping System 2025 - Evidence-based etiological classification
+            </p>
+          </div>
+          <Isps25Citation />
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        <ClinicalSlide src={isps25Proposal} caption={ISPS25_CAPTION} alt={ISPS25_CAPTION} />
         {/* Workup Completion Checklist */}
         <Card className="bg-muted/50">
           <CardHeader className="pb-2">
