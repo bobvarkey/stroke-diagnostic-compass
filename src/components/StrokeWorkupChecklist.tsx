@@ -48,6 +48,7 @@ import RecurrentStrokeDOACPathway from "./RecurrentStrokeDOACPathway";
 import PCNSVImagingSection from "./PCNSVImagingSection";
 import StrokeHeartSyndromeSection from "./StrokeHeartSyndromeSection";
 import IcasDaptSection from "./IcasDaptSection";
+import PfoClosureSlides from "./PfoClosureSlides";
 import MriCsvdBrainFrailty from "./MriCsvdBrainFrailty";
 import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
@@ -5935,6 +5936,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "kdigo-heatmap", label: "KDIGO Heat Map", icon: <Activity className="h-3.5 w-3.5 text-pink-500" /> },
               { id: "cancer-stroke-risk", label: "Cancer & Stroke Risk (PRIME + OCCULT-5)", icon: <Calculator className="h-3.5 w-3.5 text-rose-500" />, keywords: "prime malignancy cancer stroke risk ohri occult-5 occult d-dimer ddimer dimer fibrin feu ddu" },
               { id: "lipid-risk", label: "Lipid Risk", icon: <Pill className="h-3.5 w-3.5 text-yellow-500" /> },
+              { id: "pfo", label: "PFO", icon: <Heart className="h-3.5 w-3.5 text-teal-600" />, keywords: "pfo patent foramen ovale closure safety timing atrial fibrillation complications antiplatelet endocarditis echocardiographic follow-up" },
               { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
               { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" /> },
               { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
@@ -6308,6 +6310,11 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* LAI 2024 Lipid Risk Classification */}
           <LazySection id="lipid-risk">
             <LAILipidRiskClassification strokeHistoryFactors={strokeHistoryFactors} />
+          </LazySection>
+
+          {/* PFO closure: safety, timing, and care after device closure */}
+          <LazySection id="pfo">
+            <PfoClosureSlides />
           </LazySection>
 
           {/* Stroke History Template */}

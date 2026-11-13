@@ -17,6 +17,13 @@ describe("section tab routing", () => {
   it("routes IV thrombolysis in acute ischaemic stroke to the ischemic tab", () => {
     expect(getTabForSection("ivt-ais")).toBe("ischemic");
   });
+  it("routes PFO closure slides to the ischemic tab and mounts the PFO section", () => {
+    expect(getTabForSection("pfo")).toBe("ischemic");
+    expect(getTabForSection("pfo-closure-safety")).toBe("ischemic");
+    expect(getTabForSection("pfo-after-closure")).toBe("ischemic");
+    expect(getLazyParentSection("pfo-closure-safety")).toBe("pfo");
+    expect(getLazyParentSection("pfo-after-closure")).toBe("pfo");
+  });
   it("routes all new CVT modules onto the CVT tab", () => {
     expect(getTabForSection("cvt-management")).toBe("cvt");
     expect(getTabForSection("cvt-evaluation-pathway")).toBe("cvt");

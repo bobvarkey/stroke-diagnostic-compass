@@ -45,6 +45,9 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "evt-guidelines": "ischemic",
   "mevo-oriental": "ischemic",
   "icas-dapt": "ischemic",
+  "pfo": "ischemic",
+  "pfo-closure-safety": "ischemic",
+  "pfo-after-closure": "ischemic",
   "ich-care-pathway": "hemorrhagic",
   "secondary-prevention-pathway": "ischemic",
   "lvo-dashboard": "ischemic",
@@ -80,6 +83,8 @@ const LAZY_PARENT: Record<string, string> = {
   "cvt-endovascular-techniques": "cvt-management",
   "cvt-fogarty-balloon": "cvt-management",
   "cvt-etiological-evaluation": "cvt-management",
+  "pfo-closure-safety": "pfo",
+  "pfo-after-closure": "pfo",
 };
 
 export const NAVIGATE_SECTION_EVENT = "navigate-section";
