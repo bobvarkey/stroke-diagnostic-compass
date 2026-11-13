@@ -46,6 +46,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "evt-guidelines": "ischemic",
   "mevo-oriental": "ischemic",
   "icas-dapt": "ischemic",
+  "factor-xia-inhibitors": "ischemic",
   "ich-care-pathway": "hemorrhagic",
   "secondary-prevention-pathway": "ischemic",
   "lvo-dashboard": "ischemic",

@@ -48,6 +48,8 @@ import RecurrentStrokeDOACPathway from "./RecurrentStrokeDOACPathway";
 import PCNSVImagingSection from "./PCNSVImagingSection";
 import StrokeHeartSyndromeSection from "./StrokeHeartSyndromeSection";
 import IcasDaptSection from "./IcasDaptSection";
+import FactorXIaInhibitors from "./FactorXIaInhibitors";
+import { FACTOR_XIA_SECTION_ID, FACTOR_XIA_TITLE } from "@/lib/factorXIaInhibitors";
 import MriCsvdBrainFrailty from "./MriCsvdBrainFrailty";
 import AnticoagulantReversalSection from "./AnticoagulantReversalSection";
 import HeadsUpTest from "./HeadsUpTest";
@@ -5919,6 +5921,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT or DOAC", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
               { id: "icas-dapt", label: "DAPT — minor stroke, TIA, ICAS", icon: <Pill className="h-3.5 w-3.5 text-violet-500" />, keywords: "dapt ischemic dual antiplatelet minor stroke tia noncardioembolic aha asa 2026 eso cyp2c19 abcd2 nihss icas sicas intracranial atherosclerosis stenosis dapt duration chance point thales sammpris inspires chance-2 clopidogrel ticagrelor 21 30 90 days" },
+              { id: FACTOR_XIA_SECTION_ID, label: FACTOR_XIA_TITLE, icon: <Pill className="h-3.5 w-3.5 text-violet-500" />, keywords: "asundexian milvexian factor xia fxia oceanic-stroke librexia-stroke oral inhibitor antiplatelet secondary prevention tia" },
               { id: "pcnsv", label: "PCNSV (CNS Vasculitis)", icon: <Brain className="h-3.5 w-3.5 text-fuchsia-500" />, keywords: "pacns primary cns vasculitis cerebellar tonsillar hemorrhage enhancement swi" },
               { id: "stroke-heart", label: "Stroke-Heart Syndrome", icon: <HeartPulse className="h-3.5 w-3.5 text-rose-500" />, keywords: "stroke heart syndrome shs takotsubo troponin ecg qtc arrhythmia atrial fibrillation lv dysfunction heart failure neurogenic myocardial injury autonomic insular" },
               { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
@@ -5979,6 +5982,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           <LazySection id="icas-dapt">
             <IcasDaptSection />
+          </LazySection>
+
+          <LazySection id={FACTOR_XIA_SECTION_ID}>
+            <FactorXIaInhibitors />
           </LazySection>
 
           {/* Primary CNS vasculitis imaging marker */}
