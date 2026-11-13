@@ -14,6 +14,9 @@ describe("section tab routing", () => {
     expect(getTabForSection("mevo-oriental")).toBe("ischemic");
     expect(getTabForSection("icas-dapt")).toBe("ischemic");
   });
+  it("routes IV thrombolysis in acute ischaemic stroke to the ischemic tab", () => {
+    expect(getTabForSection("ivt-ais")).toBe("ischemic");
+  });
   it("routes all new CVT modules onto the CVT tab", () => {
     expect(getTabForSection("cvt-management")).toBe("cvt");
     expect(getTabForSection("cvt-evaluation-pathway")).toBe("cvt");

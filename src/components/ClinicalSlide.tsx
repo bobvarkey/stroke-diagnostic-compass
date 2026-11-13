@@ -40,7 +40,7 @@ export default function ClinicalSlide({ src, caption, alt }: ClinicalSlideProps)
           loading="lazy"
         />
       </button>
-      <figcaption className="mt-2 text-center text-xs leading-snug text-muted-foreground">
+      <figcaption className="mt-2 text-center text-xs leading-snug text-current opacity-80">
         {caption}
       </figcaption>
 

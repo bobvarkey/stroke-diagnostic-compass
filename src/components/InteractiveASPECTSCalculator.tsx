@@ -1,9 +1,74 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Brain, RotateCcw, ChevronDown, Image } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import aspectsDiagram from "@/assets/aspects-diagram.png";
 import aspectsReferenceDiagram from "@/assets/aspects-reference-diagram.jpeg";
+
+const ASPECTS_DIAGRAM_CAPTION =
+  "ASPECTS — Basal ganglia level and Coronal radiata level showing Anterior MCA territories";
+
+function AspectsDiagram() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <figure className="mb-4 min-w-0 max-w-full">
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="block w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-border bg-white p-2 text-left shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        <img
+          src={aspectsDiagram}
+          alt={ASPECTS_DIAGRAM_CAPTION}
+          className="mx-auto h-auto w-full max-w-full"
+          loading="lazy"
+        />
+      </button>
+      <figcaption className="mt-2 text-center text-xs leading-snug text-slate-700 dark:text-slate-300">
+        {ASPECTS_DIAGRAM_CAPTION}
+      </figcaption>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent
+          className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] min-w-0 max-w-[calc(100vw-1.5rem)] flex-col gap-3 overflow-hidden p-3 sm:max-w-5xl sm:p-4"
+        >
+          <DialogHeader className="shrink-0 space-y-0 pr-8 text-left">
+            <DialogTitle className="text-sm font-medium leading-snug">
+              {ASPECTS_DIAGRAM_CAPTION}
+            </DialogTitle>
+            <DialogDescription className="sr-only">{ASPECTS_DIAGRAM_CAPTION}</DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 min-w-0 flex-1 overflow-auto overscroll-contain">
+            <img
+              src={aspectsDiagram}
+              alt={ASPECTS_DIAGRAM_CAPTION}
+              className="h-auto w-full max-w-full"
+            />
+          </div>
+          <DialogFooter className="shrink-0 sm:justify-end">
+            <DialogClose asChild>
+              <Button type="button" variant="outline" className="min-h-11 w-full sm:w-auto">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </figure>
+  );
+}
 
 interface ASPECTSRegion {
   id: string;
@@ -101,6 +166,8 @@ export default function InteractiveASPECTSCalculator({ onScoreChange }: Props) {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="pt-6">
+            <AspectsDiagram />
+
             {/* Instructions */}
             <div className="mb-4 p-3 bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-700 rounded-lg">
               <p className="text-sm text-cyan-700 dark:text-cyan-400">

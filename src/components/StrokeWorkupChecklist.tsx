@@ -34,6 +34,7 @@ import SerialNIHSSTracker from "./SerialNIHSSTracker";
 import { ThemeToggle } from "./ThemeToggle";
 import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
+import IVThrombolysisAis from "./IVThrombolysisAis";
 import IVTDecisionTree from "./IVTDecisionTree";
 import TreatmentPathwayModule from "./TreatmentPathwayModule";
 import EvtGuidelineSlides from "./EvtGuidelineSlides";
@@ -5904,6 +5905,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-code", label: "Stroke Code System", icon: <Zap className="h-3.5 w-3.5 text-red-500" /> },
               { id: "acute-algorithm", label: "Acute Stroke Algorithm", icon: <Activity className="h-3.5 w-3.5 text-blue-500" /> },
               { id: "tpa-eligibility", label: "tPA / TNK Contraindications", icon: <ClipboardList className="h-3.5 w-3.5 text-green-500" />, keywords: "tpa tnk tenecteplase alteplase ivt thrombolysis contraindications eligibility checklist" },
+              { id: "ivt-ais", label: "IV Thrombolysis", icon: <Syringe className="h-3.5 w-3.5 text-sky-500" />, keywords: "iv thrombolysis acute ischaemic ischemic stroke window 4.5 9 24 hours wake-up unknown onset dwi flair alteplase tenecteplase contraindication doac dabigatran apixaban rivaroxaban edoxaban meinel assay anti-xa thrombin time evt lvo class 2a 2b" },
               { id: "ivt-decision-tree", label: "IVT Decision Tree", icon: <ClipboardList className="h-3.5 w-3.5 text-emerald-500" />, keywords: "ivt decision tree thrombolysis tnk tpa wake-up mismatch lvo thrombectomy extended window" },
               { id: "ivt-care-pathway", label: "IVT Treatment & Monitoring", icon: <ClipboardList className="h-3.5 w-3.5 text-primary" />, keywords: "ivt preparation bp glucose 24 hour monitoring plan" },
               { id: "evt-pathway", label: "Thrombectomy Pathway", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy transfer basilar large core plan" },
@@ -5914,7 +5916,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
               { id: "recurrent-dapt", label: "Recurrent Stroke on DAPT or DOAC", icon: <Pill className="h-3.5 w-3.5 text-violet-500" /> },
-              { id: "icas-dapt", label: "DAPT in Intracranial Atherosclerosis", icon: <Pill className="h-3.5 w-3.5 text-violet-500" />, keywords: "icas sicas intracranial stenosis dapt duration chance point thales sammpris inspires chance-2 clopidogrel ticagrelor 21 90 days" },
+              { id: "icas-dapt", label: "DAPT — minor stroke, TIA, ICAS", icon: <Pill className="h-3.5 w-3.5 text-violet-500" />, keywords: "dapt ischemic dual antiplatelet minor stroke tia noncardioembolic aha asa 2026 eso cyp2c19 abcd2 nihss icas sicas intracranial atherosclerosis stenosis dapt duration chance point thales sammpris inspires chance-2 clopidogrel ticagrelor 21 30 90 days" },
               { id: "pcnsv", label: "PCNSV (CNS Vasculitis)", icon: <Brain className="h-3.5 w-3.5 text-fuchsia-500" />, keywords: "pacns primary cns vasculitis cerebellar tonsillar hemorrhage enhancement swi" },
               { id: "stroke-heart", label: "Stroke-Heart Syndrome", icon: <HeartPulse className="h-3.5 w-3.5 text-rose-500" />, keywords: "stroke heart syndrome shs takotsubo troponin ecg qtc arrhythmia atrial fibrillation lv dysfunction heart failure neurogenic myocardial injury autonomic insular" },
               { id: "anticoagulant-reversal", label: "Anticoagulant Reversal", icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, keywords: "pcc 4f-pcc andexanet reversal platelets desmopressin ncs sccm ich bleeding doac xa inhibitor" },
@@ -6010,6 +6012,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           {/* tPA Eligibility Checklist */}
           <LazySection id="tpa-eligibility">
             <TPAEligibilityChecklist />
+          </LazySection>
+
+          <LazySection id="ivt-ais">
+            <IVThrombolysisAis />
           </LazySection>
 
           {/* IVT Decision Tree — feeds the Plan tab */}
