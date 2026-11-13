@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronDown, Pill, AlertTriangle } from "lucide-react";
+import ClinicalSlide from "./ClinicalSlide";
+import daptVsIvt from "@/assets/dapt-vs-ivt-implication.png";
 import { tabColor } from "@/lib/tabColors";
 import MinorStrokeDaptGuidance from "@/components/MinorStrokeDaptGuidance";
 
@@ -134,8 +136,8 @@ export default function IcasDaptSection({ defaultOpen = false }: { defaultOpen?:
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <CardContent className="space-y-4">
-            <Tabs defaultValue="minor" className="w-full">
+          <CardContent className="min-w-0 space-y-4">
+            <Tabs defaultValue="minor" className="w-full min-w-0">
               <TabsList aria-label="DAPT topics" className="flex h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0">
                 <TabsTrigger value="minor" className={`min-h-11 flex-1 whitespace-normal px-2 text-center text-xs leading-tight sm:text-sm ${tabColor("teal")}`}>
                   Minor stroke / TIA
@@ -144,7 +146,12 @@ export default function IcasDaptSection({ defaultOpen = false }: { defaultOpen?:
                   Intracranial atherosclerosis
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="minor" className="mt-4">
+              <TabsContent value="minor" className="mt-4 min-w-0 space-y-4">
+                <ClinicalSlide
+                  src={daptVsIvt}
+                  caption="Clinical Implication: For patients with acute minor ischemic stroke (NIHSS ≤5), DAPT is likely the optimal treatment"
+                  alt="Slide titled Clinical Implication, with University of Calgary, Hotchkiss Brain Institute, and Calgary Stroke Program marks. Efficacy and Safety panels each show a balance scale labeled IVT and DAPT. The banner reads: For patients with acute minor ischemic stroke (NIHSS ≤5), DAPT is likely the optimal treatment."
+                />
                 <MinorStrokeDaptGuidance />
               </TabsContent>
               <TabsContent value="icas" className="mt-4">
