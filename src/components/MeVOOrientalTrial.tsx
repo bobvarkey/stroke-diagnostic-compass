@@ -2,6 +2,9 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Target, AlertTriangle, Info, ExternalLink } from "lucide-react";
+import ClinicalSlide from "./ClinicalSlide";
+import mevoGuidelines from "@/assets/mevo-guidelines.png";
+import pcaOcclusion from "@/assets/pca-occlusion.png";
 
 const MeVOOrientalTrial = () => {
   return (
@@ -132,6 +135,17 @@ const MeVOOrientalTrial = () => {
           </div>
         </CardContent>
       </Card>
+
+      <ClinicalSlide
+        src={mevoGuidelines}
+        caption="What do the guidelines say about MeVO?"
+        alt="Table titled What do the guidelines say about MeVO? Columns are AHA/ASA 2026, SVIN 2026, and CSBPR 2025. Rows are dominant proximal M2, co- or non-dominant M2, M3/M4, ACA (A2/A3), and PCA (P1–P3)."
+      />
+      <ClinicalSlide
+        src={pcaOcclusion}
+        caption="PCA occlusion: no routine thrombectomy"
+        alt="Slide titled PCA occlusion: no routine thrombectomy. A schematic labels distal PCA, P1, P2, P3, basilar artery, and vertebral arteries. Beside it, AHA/ASA 2026 reads 3: No benefit · A, thrombectomy is not recommended for PCA occlusion. SVIN 2026 reads IIb · B-R, may be considered for isolated P1–P3 occlusion when the patient presents early, has a severe deficit, or cannot have IV thrombolysis."
+      />
     </div>
   );
 };

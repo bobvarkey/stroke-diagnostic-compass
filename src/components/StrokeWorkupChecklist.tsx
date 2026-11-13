@@ -36,6 +36,7 @@ import TreatmentDecisionAid from "./TreatmentDecisionAid";
 import TPAEligibilityChecklist from "./TPAEligibilityChecklist";
 import IVTDecisionTree from "./IVTDecisionTree";
 import TreatmentPathwayModule from "./TreatmentPathwayModule";
+import EvtGuidelineSlides from "./EvtGuidelineSlides";
 import { ThriveScoreCalculator, ModifiedRankinScaleCalculator, SecondaryICHScoreCalculator } from "./OutcomeScoreCalculators";
 import MinorNonDisablingStroke from "./MinorNonDisablingStroke";
 import IVTAnticoagulationGuide from "./IVTAnticoagulationGuide";
@@ -5906,6 +5907,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "ivt-decision-tree", label: "IVT Decision Tree", icon: <ClipboardList className="h-3.5 w-3.5 text-emerald-500" />, keywords: "ivt decision tree thrombolysis tnk tpa wake-up mismatch lvo thrombectomy extended window" },
               { id: "ivt-care-pathway", label: "IVT Treatment & Monitoring", icon: <ClipboardList className="h-3.5 w-3.5 text-primary" />, keywords: "ivt preparation bp glucose 24 hour monitoring plan" },
               { id: "evt-pathway", label: "Thrombectomy Pathway", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy transfer basilar large core plan" },
+              { id: "evt-guidelines", label: "Endovascular Thrombectomy", icon: <Crosshair className="h-3.5 w-3.5 text-primary" />, keywords: "evt thrombectomy trials anterior circulation large core posterior circulation basilar guidelines" },
               { id: "secondary-prevention-pathway", label: "Secondary Prevention Pathway", icon: <Heart className="h-3.5 w-3.5 text-primary" />, keywords: "secondary prevention af esus dapt anticoagulation carotid bp lipids plan" },
               { id: "carotid-decision-tree", label: "Carotid Revascularisation", icon: <HeartPulse className="h-3.5 w-3.5 text-teal-500" />, keywords: "carotid revascularisation revascularization endarterectomy cea cas tcar stenting stenosis nascet ecst acas acst crest crest-2 crest-h contralateral occlusion timing" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
@@ -6016,6 +6018,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           </LazySection>
           <LazySection id="ivt-care-pathway"><TreatmentPathwayModule kind="ivt" /></LazySection>
           <LazySection id="evt-pathway"><TreatmentPathwayModule kind="evt" /></LazySection>
+          <LazySection id="evt-guidelines">
+            <EvtGuidelineSlides />
+          </LazySection>
           <LazySection id="secondary-prevention-pathway"><TreatmentPathwayModule kind="prevention" /></LazySection>
 
           {/* Minor non-disabling stroke — BATHE definition + IVT Class 3 vs DAPT */}

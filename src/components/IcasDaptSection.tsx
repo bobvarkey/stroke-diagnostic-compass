@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, Pill, AlertTriangle } from "lucide-react";
+import ClinicalSlide from "./ClinicalSlide";
+import daptVsIvt from "@/assets/dapt-vs-ivt-implication.png";
 
 const TRIALS = [
   ["CHANCE", "Aspirin + clopidogrel", "21 days DAPT, then clopidogrel to day 90", "Minor stroke NIHSS ≤3 or high-risk TIA"],
@@ -49,7 +51,12 @@ export default function IcasDaptSection() {
           </CardHeader>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <CardContent className="space-y-5 text-sm">
+          <CardContent className="space-y-5 text-sm min-w-0">
+            <ClinicalSlide
+              src={daptVsIvt}
+              caption="Clinical Implication: For patients with acute minor ischemic stroke (NIHSS ≤5), DAPT is likely the optimal treatment"
+              alt="Slide titled Clinical Implication, with University of Calgary, Hotchkiss Brain Institute, and Calgary Stroke Program marks. Efficacy and Safety panels each show a balance scale labeled IVT and DAPT. The banner reads: For patients with acute minor ischemic stroke (NIHSS ≤5), DAPT is likely the optimal treatment."
+            />
             <p className="rounded-md border border-violet-500/30 bg-violet-500/10 p-3">
               Short-term DAPT for minor non-cardioembolic stroke or high-risk TIA is generally <strong>21 days</strong>, whereas
               severe symptomatic intracranial atherosclerotic stenosis (sICAS, 70–99%) generally warrants <strong>90 days</strong> of
