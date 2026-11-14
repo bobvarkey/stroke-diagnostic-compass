@@ -5,6 +5,7 @@ import {
   Brain,
   Heart,
   HeartPulse,
+  Waves,
   TestTube,
   Calculator,
   ClipboardList,
@@ -132,6 +133,16 @@ const navGroups: NavGroup[] = [
         id: "carotid-revascularisation",
         label: "Carotid Revascularisation",
         icon: <HeartPulse className="h-4 w-4 text-teal-500" />
+      },
+      {
+        id: "acetazolamide-asl-cvr",
+        label: "Acetazolamide MRI-ASL CVR",
+        icon: <Activity className="h-4 w-4 text-teal-500" />
+      },
+      {
+        id: "tcd-bhi-cvr",
+        label: "TCD BHI CVR",
+        icon: <Waves className="h-4 w-4 text-sky-500" />
       },
       {
         id: "lvo-dashboard",
