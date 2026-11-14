@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Calculator, AlertTriangle, Syringe, Clock, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
+import OctaplexDosageGuide from "./OctaplexDosageGuide";
 
 type AgentTab = "pcc" | "idarucizumab" | "andexanet" | "protamine" | "vitK" | "desmopressin";
 
@@ -197,6 +198,8 @@ const ICHAnticoagReversalCalculators = ({ weight: initialWeight = 70 }: { weight
             <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
             <span>Contains heparin — <strong>contraindicated in HIT</strong>. Use aPCC (FEIBA) if HIT history.</span>
           </div>
+
+          <OctaplexDosageGuide />
         </div>
       )}
 
