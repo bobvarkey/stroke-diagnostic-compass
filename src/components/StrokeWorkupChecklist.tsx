@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch, ExternalLink } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch, ExternalLink, Waves } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 type NIHSSItemMeta = { canBeUntestable?: boolean; neverUntestable?: boolean; untestableReason?: string };
@@ -5918,6 +5918,8 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "rope-pascal", label: "Combined RoPE and extended PASCAL", icon: <Heart className="h-3.5 w-3.5 text-rose-400" />, keywords: "rope pascal pfo patent foramen ovale cryptogenic esus shunt asa atrial septal aneurysm dvt pe straddling thrombus" },
               { id: "pfo", label: "PFO", icon: <Heart className="h-3.5 w-3.5 text-teal-600" />, keywords: "pfo patent foramen ovale closure safety timing atrial fibrillation complications antiplatelet endocarditis echocardiographic follow-up" },
               { id: "carotid-decision-tree", label: "Carotid Revascularisation", icon: <HeartPulse className="h-3.5 w-3.5 text-teal-500" />, keywords: "carotid revascularisation revascularization endarterectomy cea cas tcar stenting stenosis nascet ecst acas acst crest crest-2 crest-h contralateral occlusion timing" },
+              { id: "acetazolamide-asl-cvr", label: "Acetazolamide MRI-ASL CVR", icon: <Activity className="h-3.5 w-3.5 text-teal-500" />, keywords: "acetazolamide diamox asl pcasl cvr cerebrovascular reserve moyamoya stenosis oral mri cbf" },
+              { id: "tcd-bhi-cvr", label: "TCD BHI CVR", icon: <Waves className="h-3.5 w-3.5 text-sky-500" />, keywords: "tcd bhi breath-holding breath hold index cerebrovascular reactivity transcranial doppler mca mfv carotid stenosis" },
               { id: "minor-non-disabling-stroke", label: "Minor Non-Disabling Stroke", icon: <Activity className="h-3.5 w-3.5 text-teal-500" /> },
               { id: "thrombolytics-anticoag", label: "Thrombolytics and Anticoagulants", icon: <Beaker className="h-3.5 w-3.5 text-amber-500" /> },
               { id: "treatment-decision", label: "Treatment Decisions", icon: <Target className="h-3.5 w-3.5 text-purple-500" /> },
