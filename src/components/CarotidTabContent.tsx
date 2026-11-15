@@ -4,7 +4,9 @@ import SectionNavigator from "@/components/SectionNavigator";
 import CarotidRevascularisation from "@/components/CarotidRevascularisation";
 import CarotidRevascularisationDecisionTree from "@/components/CarotidRevascularisationDecisionTree";
 import { NAVIGATE_SECTION_EVENT } from "@/lib/sectionTabs";
-import { Activity, FileText, GitBranch, HeartPulse, ShieldAlert } from "lucide-react";
+import { Activity, FileText, GitBranch, HeartPulse, ShieldAlert, Waves } from "lucide-react";
+import AcetazolamideAslCvr from "@/components/AcetazolamideAslCvr";
+import TcdBhiCvr from "@/components/TcdBhiCvr";
 import carotidAlgorithmPoster from "@/assets/carotid-revascularisation-algorithm.jpg";
 import carotidLandmarkTrials from "@/assets/carotid-landmark-trials.png";
 
@@ -28,6 +30,8 @@ const CarotidTabContent = ({ embedded = false }: CarotidTabContentProps) => {
           { id: "carotid-asymptomatic", label: "Asymptomatic disease", icon: <ShieldAlert className="h-3.5 w-3.5 text-sky-500" /> },
           { id: "carotid-cea-vs-cas", label: "CEA vs CAS / medical therapy", icon: <Activity className="h-3.5 w-3.5 text-violet-500" /> },
           { id: "carotid-landmark-trials", label: "Landmark trials slide", icon: <FileText className="h-3.5 w-3.5 text-teal-500" /> },
+          { id: "acetazolamide-asl-cvr", label: "Acetazolamide MRI-ASL CVR", icon: <Activity className="h-3.5 w-3.5 text-teal-500" />, keywords: "acetazolamide diamox asl pcasl cvr cerebrovascular reserve moyamoya stenosis oral mri cbf" },
+          { id: "tcd-bhi-cvr", label: "TCD BHI CVR", icon: <Waves className="h-3.5 w-3.5 text-sky-500" />, keywords: "tcd bhi breath-holding breath hold index cerebrovascular reactivity transcranial doppler mca mfv carotid stenosis" },
         ]}
         onNavigateToSection={(id) => {
           if (!embedded) {
@@ -106,6 +110,9 @@ const CarotidTabContent = ({ embedded = false }: CarotidTabContentProps) => {
           </div>
         </CollapsibleModule>
       </div>
+
+      <AcetazolamideAslCvr />
+      <TcdBhiCvr />
 
       <div className="text-center text-sm text-muted-foreground border-t pt-4">
         <p>Carotid revascularisation evidence summary — Always correlate with current guidelines and local outcomes</p>

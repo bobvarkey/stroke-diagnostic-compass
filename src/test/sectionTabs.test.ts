@@ -30,6 +30,10 @@ describe("section tab routing", () => {
     expect(getTabForSection("cor-triatriatum")).toBe("ischemic");
     expect(getLazyParentSection("cor-triatriatum")).toBe("esus");
   });
+  it("routes the atrial cardiopathy checklist to the ischemic tab", () => {
+    expect(getTabForSection("atrial-cardiopathy")).toBe("ischemic");
+    expect(isCvtSection("atrial-cardiopathy")).toBe(false);
+  });
   it("routes all new CVT modules onto the CVT tab", () => {
     expect(getTabForSection("cvt-management")).toBe("cvt");
     expect(getTabForSection("cvt-evaluation-pathway")).toBe("cvt");
@@ -49,6 +53,13 @@ describe("section tab routing", () => {
     expect(getTabForSection("acute-algorithm")).toBeUndefined();
     expect(isCvtSection("acute-algorithm")).toBe(false);
     expect(isCvtSection("cvt-procedural-techniques")).toBe(true);
+  });
+
+  it("routes acetazolamide ASL CVR and TCD BHI to the carotid tab", () => {
+    expect(getTabForSection("acetazolamide-asl-cvr")).toBe("carotid");
+    expect(getTabForSection("tcd-bhi-cvr")).toBe("carotid");
+    expect(isCvtSection("acetazolamide-asl-cvr")).toBe(false);
+    expect(isCvtSection("tcd-bhi-cvr")).toBe(false);
   });
 
   it("routes the combined RoPE and extended PASCAL checklist to the ischemic tab", () => {

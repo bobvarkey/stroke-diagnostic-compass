@@ -19,6 +19,8 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "carotid-asymptomatic": "carotid",
   "carotid-cea-vs-cas": "carotid",
   "carotid-landmark-trials": "carotid",
+  "acetazolamide-asl-cvr": "carotid",
+  "tcd-bhi-cvr": "carotid",
 
   "post-ivt-hemorrhage": "post-ivt",
 
@@ -63,6 +65,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "occult-cancer-screening": "ischemic",
   "esus": "ischemic",
   "cor-triatriatum": "ischemic",
+  "atrial-cardiopathy": "ischemic",
   "stroke-phenotyping": "ischemic",
   "treatment-recommender": "ischemic",
   "recurrent-dapt": "ischemic",

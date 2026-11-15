@@ -303,3 +303,46 @@ html {
 .dark .teaching-figure {
   color: hsl(222 47% 11%);
 }
+
+/* Atrial cardiopathy checklist: print only this section, in one column, on white. */
+@media print {
+  body.print-atrial-cardiopathy {
+    background: #fff !important;
+    background-image: none !important;
+  }
+
+  body.print-atrial-cardiopathy #root {
+    display: none !important;
+  }
+
+  body.print-atrial-cardiopathy #atrial-cardiopathy-print-root {
+    display: block !important;
+    width: 100% !important;
+    background: #fff !important;
+    color: #111 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body.print-atrial-cardiopathy #atrial-cardiopathy-print-root .no-print {
+    display: none !important;
+  }
+
+  body.print-atrial-cardiopathy #atrial-cardiopathy-print-root .print-stack {
+    display: block !important;
+  }
+
+  body.print-atrial-cardiopathy #atrial-cardiopathy-print-root,
+  body.print-atrial-cardiopathy #atrial-cardiopathy-print-root * {
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+  }
+
+  body.print-atrial-cardiopathy #atrial-cardiopathy-print-root img {
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    break-inside: avoid;
+  }
+}
