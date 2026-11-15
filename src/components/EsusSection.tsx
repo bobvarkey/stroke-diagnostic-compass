@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import ClinicalSlide from "./ClinicalSlide";
 import esusChecklistSlide from "@/assets/esus-diagnostic-checklist.webp";
+import corTriatriatumDiagram from "@/assets/cor-triatriatum-diagram.webp";
+import corTriatriatumEcho from "@/assets/cor-triatriatum-sinistrum-echo.webp";
 import { cn } from "@/lib/utils";
 import {
   classificationInfoNotes,
@@ -110,6 +112,61 @@ const ESUS_CHECKLIST_ALT =
 const panelClass =
   "min-w-0 rounded-xl border border-slate-200 bg-white p-3 text-slate-900 shadow-sm dark:border-border dark:bg-background/40 dark:text-foreground sm:p-4";
 
+const COR_TRIATRIATUM_FIGURES = [
+  {
+    src: corTriatriatumDiagram,
+    caption: "Cor triatriatum: membrane dividing the left atrium (Cleveland Clinic)",
+    alt: "Cor triatriatum: membrane dividing the left atrium (Cleveland Clinic)",
+  },
+  {
+    src: corTriatriatumEcho,
+    caption: "Echocardiogram: cor triatriatum sinistrum",
+    alt: "Echocardiogram: cor triatriatum sinistrum",
+  },
+] as const;
+
+function CorTriatriatumFigures() {
+  return (
+    <div className="min-w-0 space-y-4">
+      {COR_TRIATRIATUM_FIGURES.map((figure) => (
+        <ClinicalSlide key={figure.caption} src={figure.src} caption={figure.caption} alt={figure.alt} />
+      ))}
+    </div>
+  );
+}
+
+function SlideCopy({ slide }: { slide: (typeof ESUS_SLIDES)[number] }) {
+  const notes = slideInfoNotes(slide.id);
+  return (
+    <div className="min-w-0">
+      {(slide.title || notes.length > 0) && (
+        <div className="flex items-start gap-2">
+          {slide.title && (
+            <h3 className="min-w-0 flex-1 text-sm font-semibold leading-snug break-words">{slide.title}</h3>
+          )}
+          <InfoNote label={slide.title ?? slide.id} notes={notes} />
+        </div>
+      )}
+      {slide.article_label && (
+        <p className="mt-2 text-xs leading-relaxed break-words text-slate-500 dark:text-muted-foreground">{slide.article_label}</p>
+      )}
+      {slide.article_title && (
+        <p className="mt-1 text-sm font-medium leading-snug break-words">{slide.article_title}</p>
+      )}
+      <BulletList bullets={slide.bullets} className={slide.title || notes.length > 0 ? "mt-2" : undefined} />
+      {slide.figure_caption && (
+        <p className="mt-2 text-sm leading-relaxed break-words">{slide.figure_caption}</p>
+      )}
+      {slide.additional_citation && (
+        <p className="mt-2 text-sm leading-relaxed break-words">{slide.additional_citation}</p>
+      )}
+      {slide.citation && (
+        <p className="mt-2 text-sm leading-relaxed break-words">{slide.citation}</p>
+      )}
+    </div>
+  );
+}
+
 function BulletList({ bullets, className }: { bullets: readonly EsusBullet[]; className?: string }) {
   return (
     <ul className={cn("list-disc space-y-1 pl-4 text-sm leading-relaxed", className)}>
@@ -171,32 +228,20 @@ export default function EsusSection() {
 
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
         {ESUS_SLIDES.map((slide) => {
-          const notes = slideInfoNotes(slide.id);
+          const corTriatriatum = slide.id === "S5";
           return (
-            <article key={slide.id} className={panelClass}>
-              {(slide.title || notes.length > 0) && (
-                <div className="flex items-start gap-2">
-                  {slide.title && (
-                    <h3 className="min-w-0 flex-1 text-sm font-semibold leading-snug break-words">{slide.title}</h3>
-                  )}
-                  <InfoNote label={slide.title ?? slide.id} notes={notes} />
+            <article
+              key={slide.id}
+              id={corTriatriatum ? "cor-triatriatum" : undefined}
+              className={cn(panelClass, corTriatriatum && "scroll-mt-40 md:col-span-2")}
+            >
+              {corTriatriatum ? (
+                <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-[minmax(0,1fr)_minmax(16rem,32rem)]">
+                  <SlideCopy slide={slide} />
+                  <CorTriatriatumFigures />
                 </div>
-              )}
-              {slide.article_label && (
-                <p className="mt-2 text-xs leading-relaxed break-words text-slate-500 dark:text-muted-foreground">{slide.article_label}</p>
-              )}
-              {slide.article_title && (
-                <p className="mt-1 text-sm font-medium leading-snug break-words">{slide.article_title}</p>
-              )}
-              <BulletList bullets={slide.bullets} className={slide.title || notes.length > 0 ? "mt-2" : undefined} />
-              {slide.figure_caption && (
-                <p className="mt-2 text-sm leading-relaxed break-words">{slide.figure_caption}</p>
-              )}
-              {slide.additional_citation && (
-                <p className="mt-2 text-sm leading-relaxed break-words">{slide.additional_citation}</p>
-              )}
-              {slide.citation && (
-                <p className="mt-2 text-sm leading-relaxed break-words">{slide.citation}</p>
+              ) : (
+                <SlideCopy slide={slide} />
               )}
             </article>
           );
@@ -222,11 +267,7 @@ export default function EsusSection() {
               {section.items.map((item) => {
                 const selected = responseFor(answers, item.id);
                 return (
-                  <div
-                    key={item.id}
-                    id={item.id === "other_la_disease" ? "cor-triatriatum" : undefined}
-                    className={cn(panelClass, item.id === "other_la_disease" && "scroll-mt-36")}
-                  >
+                  <div key={item.id} className={panelClass}>
                     <div className="flex items-start gap-2">
                       <p className="min-w-0 flex-1 text-sm leading-relaxed break-words">{item.prompt}</p>
                       <InfoNote label={item.prompt} notes={itemInfoNotes(item)} />

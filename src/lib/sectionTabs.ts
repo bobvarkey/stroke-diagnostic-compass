@@ -64,6 +64,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "cancer-stroke-risk": "ischemic",
   "occult-cancer-screening": "ischemic",
   "esus": "ischemic",
+  "cor-triatriatum": "ischemic",
   "atrial-cardiopathy": "ischemic",
   "stroke-phenotyping": "ischemic",
   "treatment-recommender": "ischemic",
@@ -92,7 +93,6 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "pcnsv": "ischemic",
   "stroke-heart": "ischemic",
   "recurrent-doac": "ischemic",
-  "cor-triatriatum": "ischemic",
 };
 
 const LAZY_PARENT: Record<string, string> = {
