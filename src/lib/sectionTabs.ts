@@ -19,6 +19,8 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "carotid-asymptomatic": "carotid",
   "carotid-cea-vs-cas": "carotid",
   "carotid-landmark-trials": "carotid",
+  "acetazolamide-asl-cvr": "carotid",
+  "tcd-bhi-cvr": "carotid",
 
   "post-ivt-hemorrhage": "post-ivt",
 
