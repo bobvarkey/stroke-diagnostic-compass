@@ -28,6 +28,10 @@ describe("section tab routing", () => {
   it("routes ESUS to the ischemic tab", () => {
     expect(getTabForSection("esus")).toBe("ischemic");
   });
+  it("routes the atrial cardiopathy checklist to the ischemic tab", () => {
+    expect(getTabForSection("atrial-cardiopathy")).toBe("ischemic");
+    expect(isCvtSection("atrial-cardiopathy")).toBe(false);
+  });
   it("routes all new CVT modules onto the CVT tab", () => {
     expect(getTabForSection("cvt-management")).toBe("cvt");
     expect(getTabForSection("cvt-evaluation-pathway")).toBe("cvt");

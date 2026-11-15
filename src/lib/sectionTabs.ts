@@ -62,6 +62,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "cancer-stroke-risk": "ischemic",
   "occult-cancer-screening": "ischemic",
   "esus": "ischemic",
+  "atrial-cardiopathy": "ischemic",
   "stroke-phenotyping": "ischemic",
   "treatment-recommender": "ischemic",
   "recurrent-dapt": "ischemic",
