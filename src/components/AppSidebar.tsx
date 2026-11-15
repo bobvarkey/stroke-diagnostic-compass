@@ -258,6 +258,11 @@ const navGroups: NavGroup[] = [
         label: "ESUS",
         icon: <Search className="h-4 w-4 text-amber-500" />
       },
+      {
+        id: "atrial-cardiopathy",
+        label: "Atrial cardiopathy",
+        icon: <Heart className="h-4 w-4 text-rose-400" />
+      },
       { 
         id: "workup-checklist", 
         label: "Workup Checklist", 

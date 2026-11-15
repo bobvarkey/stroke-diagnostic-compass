@@ -67,6 +67,7 @@ import PREVENTScoreCalculator from "./PREVENTScoreCalculator";
 import CTPPenumbraCalculator from "./CTPPenumbraCalculator";
 import ISPS25StrokePhenotyping from "./ISPS25StrokePhenotyping";
 import EsusSection from "./EsusSection";
+import AtrialCardiopathyChecklist from "./AtrialCardiopathyChecklist";
 import StrokeHistoryTemplate from "./StrokeHistoryTemplate";
 import KDIGOHeatMap from "./KDIGOHeatMap";
 import CancerStrokeRiskModule from "./CancerStrokeRiskModule";
@@ -5948,6 +5949,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
               { id: "stroke-history", label: "Stroke History", icon: <FileText className="h-3.5 w-3.5 text-slate-500" /> },
               { id: "stroke-phenotyping", label: "Stroke Phenotyping", icon: <Search className="h-3.5 w-3.5 text-blue-400" />, keywords: "isps25 ischemic stroke phenotyping system 2025" },
               { id: "esus", label: "ESUS", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "esus embolic stroke of undetermined source cryptogenic atrial cardiopathy pfo aortic arch plaque cancer nbte arcadia hart" },
+              { id: "atrial-cardiopathy", label: "Atrial cardiopathy", icon: <Heart className="h-3.5 w-3.5 text-rose-400" />, keywords: "atrial cardiopathy ptfv1 nt-probnp lavi left atrial volume p wave terminal force esus cryptogenic arcadia" },
               { id: "lab-investigations", label: "Lab Investigations", icon: <TestTube className="h-3.5 w-3.5 text-green-400" />, keywords: "labs ocr cbc coagulation lipid" },
               { id: "occult-cancer-screening", label: "Occult Cancer Screening", icon: <Search className="h-3.5 w-3.5 text-amber-500" />, keywords: "occult cancer malignancy screening occult-5 ct pet mammography imaging tumor active cancer aha 2026 causality nbte dic tumor embolism marantic" },
               { id: "workup-checklist", label: "Workup Checklist", icon: <ClipboardList className="h-3.5 w-3.5 text-gray-500" /> },
@@ -6346,6 +6348,10 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           <LazySection id="esus">
             <EsusSection />
+          </LazySection>
+
+          <LazySection id="atrial-cardiopathy">
+            <AtrialCardiopathyChecklist />
           </LazySection>
 
           {/* Lab Investigations Module */}
