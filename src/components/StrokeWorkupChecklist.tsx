@@ -1,13 +1,14 @@
 import { registerBackHandler } from "@/lib/navHistory";
 import { publishAbcd2 } from "@/lib/strokePlan";
-import React, { useState, useRef, useCallback, memo, useEffect } from "react";
+import React, { useState, useRef, useCallback, memo, useEffect, useLayoutEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import LazySection from "./LazySection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch, ExternalLink, Waves } from "lucide-react";
+import { Stethoscope, Activity, Heart, Brain, Eye, TestTube, Search, Droplets, ArrowRight, ChevronDown, ChevronLeft, AlertTriangle, Zap, Layers, Beaker, Target, Crosshair, BarChart3, Calculator, ClipboardList, FileText, Pill, ShieldAlert, Syringe, HeartPulse, ScanSearch, ExternalLink, Waves } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 type NIHSSItemMeta = { canBeUntestable?: boolean; neverUntestable?: boolean; untestableReason?: string };
@@ -17,6 +18,16 @@ import {
   getTabForSection,
   NAVIGATE_SECTION_EVENT,
 } from "@/lib/sectionTabs";
+import {
+  backToHomeAction,
+  isWorkupTab,
+  openTabHistoryMode,
+  resolveWorkupLocation,
+  seedEntriesForDirectTabLoad,
+  shouldSeedTabHistory,
+  tabPath,
+  type WorkupView,
+} from "@/lib/tabNavigation";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import bostonCriteriaFlowchart from "@/assets/boston-criteria-flowchart.jpeg";
 import fourScoreDiagram from "@/assets/four-score-diagram.png";
@@ -5655,10 +5666,26 @@ interface StrokeWorkupChecklistProps {
   onPatientDataChange?: (data: Record<string, unknown>) => void;
 }
 
+const HOME_TILES: { id: string; label: string; icon: LucideIcon; className: string }[] = [
+  { id: "ischemic", label: "Ischemic", icon: Zap, className: "border-accent-blue/40 bg-accent-blue/15 text-accent-blue hover:bg-accent-blue/25" },
+  { id: "hemorrhagic", label: "ICH", icon: Droplets, className: "border-accent-amber/40 bg-accent-amber/15 text-accent-amber hover:bg-accent-amber/25" },
+  { id: "post-ivt", label: "Post IVT-ICH", icon: AlertTriangle, className: "border-accent-rose/40 bg-accent-rose/15 text-accent-rose hover:bg-accent-rose/25" },
+  { id: "cvt", label: "CVT", icon: Brain, className: "border-accent-purple/40 bg-accent-purple/15 text-accent-purple hover:bg-accent-purple/25" },
+  { id: "carotid", label: "Carotid", icon: HeartPulse, className: "border-teal-500/40 bg-teal-500/15 text-teal-400 hover:bg-teal-500/25" },
+  { id: "sah", label: "SAH", icon: Droplets, className: "border-red-500/40 bg-red-500/15 text-red-400 hover:bg-red-500/25" },
+  { id: "sdh", label: "SDH", icon: Layers, className: "border-orange-500/40 bg-orange-500/15 text-orange-400 hover:bg-orange-500/25" },
+  { id: "plan", label: "Plan", icon: ClipboardList, className: "border-emerald-500/40 bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25" },
+];
+
 export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: StrokeWorkupChecklistProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [view, setView] = useState<WorkupView>(() => resolveWorkupLocation(window.location.search, window.location.hash));
+  const activeTab = view.tab;
+  const initialViewRef = useRef(view);
+  const initialHistoryState = useRef(location.state);
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [strokeHistoryFactors, setStrokeHistoryFactors] = useState<Record<string, boolean>>({});
-  const [activeTab, setActiveTab] = useState("ischemic");
   const [demographics, setDemographics] = useState<{ patientId: string; name?: string; age?: string; sex?: string; race?: string; lastKnownWell?: string }>({ 
     patientId: patient?.patient_id || "",
     name: patient?.name || undefined,
@@ -5731,84 +5758,121 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
   const categories = Array.from(new Set(strokeTests.map(test => test.category)));
   const completionPercentage = (checkedItems.size / strokeTests.length) * 100;
-  const activeTabRef = useRef(activeTab);
-  activeTabRef.current = activeTab;
-  // Remember visited condition tabs so the header Back button returns to the previous tab first.
-  const tabHistoryRef = useRef<string[]>([]);
-  const goingBackRef = useRef(false);
-  const prevTabRef = useRef(activeTab);
-  useEffect(() => {
-    if (prevTabRef.current !== activeTab) {
-      if (!goingBackRef.current) tabHistoryRef.current.push(prevTabRef.current);
-      goingBackRef.current = false;
-      prevTabRef.current = activeTab;
+  const viewRef = useRef(view);
+  viewRef.current = view;
+  const showTabRef = useRef<(tab: string, sectionId?: string | null) => void>(() => {});
+  const goHomeRef = useRef<() => void>(() => {});
+
+  showTabRef.current = (tab: string, sectionId?: string | null) => {
+    if (!isWorkupTab(tab)) return;
+    const nextSection = sectionId ?? null;
+    const current = viewRef.current;
+    if (current.tab === tab && (current.sectionId ?? null) === nextSection) {
+      if (!nextSection) window.scrollTo({ top: 0, behavior: "instant" });
+      return;
     }
-  }, [activeTab]);
+    const nextView: WorkupView = { tab, sectionId: nextSection };
+    viewRef.current = nextView;
+    setView(nextView);
+    navigate(tabPath(tab, nextSection), {
+      replace: openTabHistoryMode(current.tab) === "replace",
+      state: { workupNav: "tab" },
+    });
+    if (!nextSection) window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  goHomeRef.current = () => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+    const comingFromTab = viewRef.current.tab != null;
+    const nextView: WorkupView = { tab: null, sectionId: null };
+    viewRef.current = nextView;
+    setView((prev) => (prev.tab == null && prev.sectionId == null ? prev : nextView));
+    if (!comingFromTab) {
+      if (location.pathname !== "/" || location.search || location.hash) {
+        navigate("/", { replace: true, state: { workupNav: "home" } });
+      }
+      return;
+    }
+    if (backToHomeAction(location.state) === "back") navigate(-1);
+    else navigate("/", { replace: true, state: { workupNav: "home" } });
+  };
+
+  // A reloaded or pasted tab URL has no in-app page under it. Put home there so Back returns home.
+  useLayoutEffect(() => {
+    const initial = initialViewRef.current;
+    if (!shouldSeedTabHistory(initialHistoryState.current, initial)) return;
+    const seed = seedEntriesForDirectTabLoad(initial);
+    if (!seed) return;
+    navigate(seed.replace, { replace: true, state: { workupNav: "home" } });
+    navigate(seed.push, { state: { workupNav: "tab" } });
+  }, [navigate]);
+
+  useEffect(() => {
+    const next = resolveWorkupLocation(location.search, location.hash);
+    setView((prev) => (prev.tab === next.tab && prev.sectionId === next.sectionId ? prev : next));
+  }, [location.search, location.hash, location.key]);
+
   useEffect(() => {
     registerBackHandler(() => {
-      const prev = tabHistoryRef.current.pop();
-      if (!prev) return false;
-      goingBackRef.current = true;
-      setActiveTab(prev);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (!viewRef.current.tab) return false;
+      goHomeRef.current();
       return true;
     });
-    return () => registerBackHandler(null);
+    const onHome = () => goHomeRef.current();
+    window.addEventListener("workup-go-home", onHome);
+    return () => {
+      registerBackHandler(null);
+      window.removeEventListener("workup-go-home", onHome);
+    };
   }, []);
 
   useEffect(() => {
-    const scrollToId = (sectionId: string, behavior: ScrollBehavior = "smooth") => {
+    const onNavigate = (e: Event) => {
+      const sectionId = (e as CustomEvent<string>).detail;
+      if (!sectionId || typeof sectionId !== "string") return;
+      if (isWorkupTab(sectionId)) {
+        showTabRef.current(sectionId, null);
+        return;
+      }
+      const current = viewRef.current.tab;
+      const visibleHere = current ? document.getElementById(sectionId) : null;
+      const mapped = getTabForSection(sectionId);
+      const tab = visibleHere && isWorkupTab(current) ? current : mapped;
+      if (!tab || !isWorkupTab(tab)) return;
+      showTabRef.current(tab, sectionId);
+    };
+    window.addEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
+    return () => window.removeEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
+  }, []);
+
+  useEffect(() => {
+    const sectionId = view.sectionId;
+    if (!view.tab || !sectionId) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      return;
+    }
+
+    const scrollToId = (behavior: ScrollBehavior) => {
       const parentId = getLazyParentSection(sectionId);
       if (parentId) {
         const trigger = document.getElementById(parentId)?.querySelector<HTMLElement>('[data-state="closed"][aria-expanded="false"]:not([role="combobox"])');
         trigger?.click();
       }
       const element = document.getElementById(sectionId);
-      if (!element) return false;
+      if (!element) return;
       const headerOffset = 136;
       const offsetPosition = element.getBoundingClientRect().top + window.scrollY - headerOffset;
-      window.scrollTo({ top: offsetPosition, behavior });
-      return true;
+      window.scrollTo({ top: Math.max(0, offsetPosition), behavior });
     };
 
-    const mountAndScroll = (sectionId: string) => {
-      const parent = getLazyParentSection(sectionId);
-      if (parent) {
-        window.dispatchEvent(new CustomEvent("force-mount-section", { detail: parent }));
-      }
-      window.dispatchEvent(new CustomEvent("force-mount-section", { detail: sectionId }));
-      [50, 150, 400, 800, 1600].forEach((ms) => {
-        window.setTimeout(() => scrollToId(sectionId, ms < 400 ? "instant" : "smooth"), ms);
-      });
-    };
-
-    const onNavigate = (e: Event) => {
-      const sectionId = (e as CustomEvent<string>).detail;
-      if (!sectionId) return;
-      const tab = getTabForSection(sectionId);
-      if (tab && tab !== activeTabRef.current) {
-        setActiveTab(tab);
-        window.setTimeout(() => mountAndScroll(sectionId), 50);
-        return;
-      }
-      mountAndScroll(sectionId);
-    };
-
-    const onHash = () => {
-      const id = window.location.hash.replace(/^#/, "");
-      if (id) onNavigate(new CustomEvent(NAVIGATE_SECTION_EVENT, { detail: id }));
-    };
-
-    window.addEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
-    window.addEventListener("hashchange", onHash);
-    if (window.location.hash) {
-      onHash();
-    }
-    return () => {
-      window.removeEventListener(NAVIGATE_SECTION_EVENT, onNavigate);
-      window.removeEventListener("hashchange", onHash);
-    };
-  }, []);
+    const parent = getLazyParentSection(sectionId);
+    if (parent) window.dispatchEvent(new CustomEvent("force-mount-section", { detail: parent }));
+    window.dispatchEvent(new CustomEvent("force-mount-section", { detail: sectionId }));
+    const timers = [50, 150, 400, 800, 1600].map((ms) =>
+      window.setTimeout(() => scrollToId(ms < 400 ? "instant" : "smooth"), ms),
+    );
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [view.tab, view.sectionId]);
 
   return (
     <div className="max-w-6xl mx-auto px-[max(0.75rem,env(safe-area-inset-left))] sm:px-4 md:px-6 py-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-4 space-y-5">
@@ -5819,16 +5883,22 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
           <ThemeToggle />
         </div>
         
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text mb-2 leading-relaxed">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text mb-2 px-12 leading-relaxed sm:px-14">
           Acute Stroke Workup Checklist
         </h1>
-        <p className="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed">
+        <p className="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed px-12 sm:px-14">
           Comprehensive clinical investigation checklist for stroke evaluation
         </p>
       </div>
 
       {/* Main Category Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs
+        value={activeTab ?? "home"}
+        onValueChange={(value) => {
+          if (isWorkupTab(value)) showTabRef.current(value);
+        }}
+        className="w-full"
+      >
         {/* Floating condition tabs remain accessible while reading any section. */}
         <TabsList aria-label="Stroke condition tabs" className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-40 flex sm:grid w-full sm:grid-cols-8 h-14 mb-5 glass-strong rounded-lg p-1 overflow-x-auto justify-start sm:justify-center [&>button]:shrink-0 [&>button]:min-h-11 [&>button]:min-w-[84px] sm:[&>button]:min-w-0">
           <TabsTrigger value="ischemic" className="flex items-center gap-1 text-xs font-bold px-2 rounded-lg border transition-all bg-accent-blue/15 border-accent-blue/40 text-accent-blue hover:bg-accent-blue/25 data-[state=active]:bg-accent-blue data-[state=active]:border-accent-blue data-[state=active]:text-white data-[state=active]:shadow-lg">
@@ -5864,6 +5934,37 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             Plan
           </TabsTrigger>
         </TabsList>
+
+        {activeTab && (
+          <button
+            type="button"
+            onClick={() => goHomeRef.current()}
+            data-testid="workup-back"
+            className="print:hidden mb-3 inline-flex min-h-11 items-center gap-0.5 rounded-lg px-1 text-[15px] font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+            Back
+          </button>
+        )}
+
+        <TabsContent value="home" className="mt-1">
+          <div data-testid="workup-home" className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+            {HOME_TILES.map((tile) => {
+              const Icon = tile.icon;
+              return (
+                <button
+                  key={tile.id}
+                  type="button"
+                  onClick={() => showTabRef.current(tile.id)}
+                  className={`flex min-h-[5.5rem] flex-col items-center justify-center gap-2 rounded-2xl border px-2 py-3 text-center transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${tile.className}`}
+                >
+                  <Icon className="h-6 w-6" aria-hidden="true" />
+                  <span className="text-xs font-semibold leading-tight sm:text-sm">{tile.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </TabsContent>
 
         {/* Ischemic Stroke Tab Content */}
         <TabsContent value="ischemic" className="space-y-6">
@@ -6319,7 +6420,9 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
 
           {/* Cancer & Stroke Risk — PRIME + OCCULT-5 combined */}
           <LazySection id="cancer-stroke-risk">
-            <CancerStrokeRiskModule onOccult5Change={(st) => setCalculatedScores(prev => ({ ...prev, occult5: st.notApplicable ? "N/A (known cancer)" : st.definitive ? `${st.min}/5` : `${st.min}-${st.max} (provisional)` }))} />
+            <div id="prime-tool">
+              <CancerStrokeRiskModule onOccult5Change={(st) => setCalculatedScores(prev => ({ ...prev, occult5: st.notApplicable ? "N/A (known cancer)" : st.definitive ? `${st.min}/5` : `${st.min}-${st.max} (provisional)` }))} />
+            </div>
           </LazySection>
 
           {/* LAI 2024 Lipid Risk Classification */}
@@ -6798,8 +6901,7 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
             <button
               key={tab.value}
               onClick={() => {
-                setActiveTab(tab.value);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showTabRef.current(tab.value);
               }}
               className={`flex flex-col items-center justify-center gap-0.5 transition-all active:scale-95 ${tab.color} ${
                 activeTab === tab.value ? 'font-semibold' : 'opacity-60'

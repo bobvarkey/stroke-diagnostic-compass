@@ -222,7 +222,11 @@ export default function EsusSection() {
               {section.items.map((item) => {
                 const selected = responseFor(answers, item.id);
                 return (
-                  <div key={item.id} className={panelClass}>
+                  <div
+                    key={item.id}
+                    id={item.id === "other_la_disease" ? "cor-triatriatum" : undefined}
+                    className={cn(panelClass, item.id === "other_la_disease" && "scroll-mt-36")}
+                  >
                     <div className="flex items-start gap-2">
                       <p className="min-w-0 flex-1 text-sm leading-relaxed break-words">{item.prompt}</p>
                       <InfoNote label={item.prompt} notes={itemInfoNotes(item)} />

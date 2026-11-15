@@ -75,6 +75,24 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "func-score": "hemorrhagic",
   "sah-grading": "hemorrhagic",
   "fisher-scale": "hemorrhagic",
+
+  // Ischemic anchors that are not their own condition tab. A cold link still opens ischemic alone.
+  "stroke-code": "ischemic",
+  "acute-algorithm": "ischemic",
+  "minor-non-disabling-stroke": "ischemic",
+  "treatment-decision": "ischemic",
+  "vessel-occlusion-spectrum": "ischemic",
+  "vascular-anatomy": "ischemic",
+  "gcs-calculator": "ischemic",
+  "prevent-score": "ischemic",
+  "kdigo-heatmap": "ischemic",
+  "prime-tool": "ischemic",
+  "stroke-history": "ischemic",
+  "workup-checklist": "ischemic",
+  "pcnsv": "ischemic",
+  "stroke-heart": "ischemic",
+  "recurrent-doac": "ischemic",
+  "cor-triatriatum": "ischemic",
 };
 
 const LAZY_PARENT: Record<string, string> = {
@@ -92,6 +110,8 @@ const LAZY_PARENT: Record<string, string> = {
   "cvt-etiological-evaluation": "cvt-management",
   "pfo-closure-safety": "pfo",
   "pfo-after-closure": "pfo",
+  "cor-triatriatum": "esus",
+  "prime-tool": "cancer-stroke-risk",
 };
 
 export const NAVIGATE_SECTION_EVENT = "navigate-section";
