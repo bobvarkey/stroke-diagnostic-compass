@@ -59,7 +59,8 @@ const Index = () => {
         "ctp-penumbra", "aspects-calculator", "vascular-anatomy",
         "nihss-calculator", "gcs-calculator", "prevent-score", "kdigo-heatmap",
         "prime-tool", "lipid-risk", "stroke-history", "stroke-phenotyping", "esus", "workup-checklist",
-        "mevo-oriental", "vessel-occlusion-spectrum"
+        "mevo-oriental", "vessel-occlusion-spectrum",
+        "acetazolamide-asl-cvr", "tcd-bhi-cvr"
       ];
       
       for (const sectionId of sections) {

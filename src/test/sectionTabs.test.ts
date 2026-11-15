@@ -49,6 +49,13 @@ describe("section tab routing", () => {
     expect(isCvtSection("cvt-procedural-techniques")).toBe(true);
   });
 
+  it("routes acetazolamide ASL CVR and TCD BHI to the carotid tab", () => {
+    expect(getTabForSection("acetazolamide-asl-cvr")).toBe("carotid");
+    expect(getTabForSection("tcd-bhi-cvr")).toBe("carotid");
+    expect(isCvtSection("acetazolamide-asl-cvr")).toBe(false);
+    expect(isCvtSection("tcd-bhi-cvr")).toBe(false);
+  });
+
   it("routes the combined RoPE and extended PASCAL checklist to the ischemic tab", () => {
     expect(getTabForSection("rope-pascal")).toBe("ischemic");
     expect(isCvtSection("rope-pascal")).toBe(false);
