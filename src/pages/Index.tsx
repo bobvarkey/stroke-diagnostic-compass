@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { goBack } from "@/lib/navHistory";
 import InstallAppButton from "@/components/InstallAppButton";
 import { ChevronUp, Users, Home, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 
 interface Patient {
@@ -43,7 +42,6 @@ const DEMO_PATIENT: Patient = {
 };
 
 const Index = () => {
-  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<string>("");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(DEMO_PATIENT);
@@ -100,7 +98,7 @@ const Index = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => goBack(() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); })}
+              onClick={() => goBack(() => window.dispatchEvent(new CustomEvent("workup-go-home")))}
               className="h-9 w-9"
               aria-label="Go back to previous tab or page"
               title="Back"
@@ -110,7 +108,7 @@ const Index = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+              onClick={() => window.dispatchEvent(new CustomEvent("workup-go-home"))}
               className="h-9 w-9"
               aria-label="Go to home page"
               title="Home"

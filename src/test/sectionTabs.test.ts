@@ -50,9 +50,20 @@ describe("section tab routing", () => {
   });
 
   it("does not treat ischemic sections as CVT", () => {
-    expect(getTabForSection("acute-algorithm")).toBeUndefined();
+    expect(getTabForSection("acute-algorithm")).toBe("ischemic");
     expect(isCvtSection("acute-algorithm")).toBe(false);
     expect(isCvtSection("cvt-procedural-techniques")).toBe(true);
+  });
+
+  it("routes sidebar ischemic anchors and cor triatriatum onto the ischemic tab", () => {
+    expect(getTabForSection("stroke-code")).toBe("ischemic");
+    expect(getTabForSection("gcs-calculator")).toBe("ischemic");
+    expect(getTabForSection("prime-tool")).toBe("ischemic");
+    expect(getTabForSection("workup-checklist")).toBe("ischemic");
+    expect(getTabForSection("cor-triatriatum")).toBe("ischemic");
+    expect(getLazyParentSection("cor-triatriatum")).toBe("esus");
+    expect(getLazyParentSection("prime-tool")).toBe("cancer-stroke-risk");
+    expect(isCvtSection("cor-triatriatum")).toBe(false);
   });
 
   it("routes acetazolamide ASL CVR and TCD BHI to the carotid tab", () => {
