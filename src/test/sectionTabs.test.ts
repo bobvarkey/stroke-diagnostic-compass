@@ -27,6 +27,8 @@ describe("section tab routing", () => {
   });
   it("routes ESUS to the ischemic tab", () => {
     expect(getTabForSection("esus")).toBe("ischemic");
+    expect(getTabForSection("cor-triatriatum")).toBe("ischemic");
+    expect(getLazyParentSection("cor-triatriatum")).toBe("esus");
   });
   it("routes all new CVT modules onto the CVT tab", () => {
     expect(getTabForSection("cvt-management")).toBe("cvt");

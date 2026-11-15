@@ -62,6 +62,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "cancer-stroke-risk": "ischemic",
   "occult-cancer-screening": "ischemic",
   "esus": "ischemic",
+  "cor-triatriatum": "ischemic",
   "stroke-phenotyping": "ischemic",
   "treatment-recommender": "ischemic",
   "recurrent-dapt": "ischemic",
@@ -89,6 +90,7 @@ const LAZY_PARENT: Record<string, string> = {
   "cvt-etiological-evaluation": "cvt-management",
   "pfo-closure-safety": "pfo",
   "pfo-after-closure": "pfo",
+  "cor-triatriatum": "esus",
 };
 
 export const NAVIGATE_SECTION_EVENT = "navigate-section";
