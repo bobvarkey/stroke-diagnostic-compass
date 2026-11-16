@@ -31,6 +31,15 @@ describe("workup tab routing", () => {
       tab: "ischemic",
       sectionId: "cor-triatriatum",
     });
+    expect(resolveWorkupLocation("", "#dapt-trials")).toEqual({
+      tab: "ischemic",
+      sectionId: "dapt-trials",
+    });
+    expect(resolveWorkupLocation("?tab=ischemic", "#dapt-trials")).toEqual({
+      tab: "ischemic",
+      sectionId: "dapt-trials",
+    });
+    expect(tabPath("ischemic", "dapt-trials")).toBe("/?tab=ischemic#dapt-trials");
     expect(resolveWorkupLocation("", "#acetazolamide-asl-cvr")).toEqual({
       tab: "carotid",
       sectionId: "acetazolamide-asl-cvr",

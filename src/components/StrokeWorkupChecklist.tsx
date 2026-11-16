@@ -5853,12 +5853,16 @@ export default function StrokeWorkupChecklist({ patient, onPatientDataChange }: 
     }
 
     const scrollToId = (behavior: ScrollBehavior) => {
+      const element = document.getElementById(sectionId);
       const parentId = getLazyParentSection(sectionId);
-      if (parentId) {
-        const trigger = document.getElementById(parentId)?.querySelector<HTMLElement>('[data-state="closed"][aria-expanded="false"]:not([role="combobox"])');
+      // Open the collapsed parent only until the anchor is mounted. Later retries
+      // must not click info notes or nested triggers once the target is present.
+      if (!element && parentId) {
+        const trigger = document.getElementById(parentId)?.querySelector<HTMLElement>(
+          '[data-state="closed"][aria-expanded="false"]:not([role="combobox"]):not([aria-haspopup])',
+        );
         trigger?.click();
       }
-      const element = document.getElementById(sectionId);
       if (!element) return;
       const headerOffset = 136;
       const offsetPosition = element.getBoundingClientRect().top + window.scrollY - headerOffset;

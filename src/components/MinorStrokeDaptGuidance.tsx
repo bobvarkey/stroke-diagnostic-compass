@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Info } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import ClinicalSlide from "@/components/ClinicalSlide";
+import daptTrials from "@/assets/dapt-trials.webp";
 import { cn } from "@/lib/utils";
 import {
   MINOR_STROKE_DAPT,
@@ -148,10 +150,15 @@ export default function MinorStrokeDaptGuidance() {
         </div>
       </section>
 
-      <section className="space-y-2" aria-labelledby="dapt-trial-heading">
+      <section id="dapt-trials" className="scroll-mt-40 space-y-2" aria-labelledby="dapt-trial-heading">
         <h5 id="dapt-trial-heading" className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-muted-foreground">
           {MINOR_STROKE_DAPT.trialsHeading}
         </h5>
+        <ClinicalSlide
+          src={daptTrials}
+          caption="Dual Antiplatelet Therapy (DAPT) After Minor Stroke / High-Risk TIA"
+          alt="DAPT after minor stroke or high-risk TIA: CHANCE, POINT, THALES and INSPIRES trials compared"
+        />
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {MINOR_STROKE_DAPT_TRIALS.map((trial) => (
             <article key={trial.id} className={panelClass}>

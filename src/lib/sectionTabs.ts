@@ -48,6 +48,7 @@ export const SECTION_TO_TAB: Record<string, string> = {
   "evt-guidelines": "ischemic",
   "mevo-oriental": "ischemic",
   "icas-dapt": "ischemic",
+  "dapt-trials": "ischemic",
   "pfo": "ischemic",
   "pfo-closure-safety": "ischemic",
   "pfo-after-closure": "ischemic",
@@ -111,6 +112,7 @@ const LAZY_PARENT: Record<string, string> = {
   "pfo-closure-safety": "pfo",
   "pfo-after-closure": "pfo",
   "cor-triatriatum": "esus",
+  "dapt-trials": "icas-dapt",
   "prime-tool": "cancer-stroke-risk",
 };
 
