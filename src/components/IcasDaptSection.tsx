@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -39,6 +39,17 @@ const CAVEATS = [
 ];
 
 const quiet = "text-slate-500 dark:text-muted-foreground";
+
+function locationTargetsDaptTrials(): boolean {
+  if (typeof window === "undefined") return false;
+  const raw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  if (!raw) return false;
+  try {
+    return decodeURIComponent(raw) === "dapt-trials";
+  } catch {
+    return raw === "dapt-trials";
+  }
+}
 
 function IcasDurationGuidance() {
   return (
@@ -108,7 +119,19 @@ function IcasDurationGuidance() {
 }
 
 export default function IcasDaptSection({ defaultOpen = false }: { defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpen] = useState(() => defaultOpen || locationTargetsDaptTrials());
+  const [topic, setTopic] = useState("minor");
+
+  useEffect(() => {
+    const openTrials = (event: Event) => {
+      if ((event as CustomEvent<string>).detail !== "dapt-trials") return;
+      setOpen(true);
+      setTopic("minor");
+    };
+    window.addEventListener("force-mount-section", openTrials);
+    return () => window.removeEventListener("force-mount-section", openTrials);
+  }, []);
+
   return (
     <Card className="border-slate-200 bg-white text-slate-900 shadow-sm dark:border-violet-500/30 dark:bg-card/80 dark:text-card-foreground">
       <Collapsible open={open} onOpenChange={setOpen}>
@@ -137,7 +160,7 @@ export default function IcasDaptSection({ defaultOpen = false }: { defaultOpen?:
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="min-w-0 space-y-4">
-            <Tabs defaultValue="minor" className="w-full min-w-0">
+            <Tabs value={topic} onValueChange={setTopic} className="w-full min-w-0">
               <TabsList aria-label="DAPT topics" className="flex h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0">
                 <TabsTrigger value="minor" className={`min-h-11 flex-1 whitespace-normal px-2 text-center text-xs leading-tight sm:text-sm ${tabColor("teal")}`}>
                   Minor stroke / TIA
